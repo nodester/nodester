@@ -5,7 +5,7 @@ This is an *experimental* service for managing hosted nodejs apps.  It consists 
 Dependencies:
 Node.js and the following NPM modules: forever, http-proxy, express
 
-Flow:
+Get Started:
 Launch proxy.js to start services and it will launch app.js (node proxy.js)
 - forever start proxy.js (launches proxy server redirecting port 8080 traffic to appropriate node app)
 - forever start app.js (launches API on port 4000 for creating and managing node apps)
@@ -22,14 +22,16 @@ Subdomains can be tested by editing /etc/hosts like this:
 127.0.0.1	localhost a.localhost b.localhost c.localhost
 save etc/hosts and flush DNS like this: sudo dscacheutil -flushcache
 
-Homepage: http://localhost:8080 
-Access hello8124.js app on port 8124: http://a.localhost:8080
-Access hello8125.js app on port 8125: http://b.localhost:8080
-Access API: http://localhost:8080/api/2.json
+http://localhost:8080 = Homepage
+http://a.localhost:8080 = Access hello8124.js app on port 8124
+http://b.localhost:8080 = Access hello8125.js app on port 8125
+http://localhost:8080/list/2.json = Access API
 
+Not sure why node.js isn't returning the basic auth creds
+http://chris:123456@a.localhost:8080/list/
 
 Todos:
-- Look into using Fugue instead of Forever to better control instances
+- Look into using Fugue instead of Forever for better instance control
 - Connect to hosted CouchDB or Mongo instance for user authentication and app registration
 - API updates to control instances
 - Add Command Line Interface

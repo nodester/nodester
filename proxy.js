@@ -8,7 +8,9 @@ Checkout https://github.com/nodejitsu/node-http-proxy/blob/master/demo.js for ht
 */
 
 var http = require('http'),
-    httpProxy = require('http-proxy');
+    httpProxy = require('http-proxy'),
+	url = require('url'),
+	sys = require('sys');
 
 // startup app.js API (use Forever in Production)
 // var exec = require('child_process').exec;
@@ -25,6 +27,9 @@ httpProxy.createServer(function (req, res, proxy) {
 
 	var hostname = req.headers.host;
 	var subdomain = hostname.substring(0,hostname.indexOf("."));
+	
+	sys.puts(JSON.stringify(req.headers));
+	// sys.puts(req.headers.auth);
 	
 	// TODO: Use subdomains
 	if (subdomain == 'a') {
