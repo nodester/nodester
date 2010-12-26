@@ -16,6 +16,12 @@ NodeFu Start = Inputs (basicauth, appid, dynos) / Outputs (status)
 NodeFu Stop = Inputs (basicauth, appid, dynos) / Outputs (status)
 NodeFu List = Inputs (basicauth) / Outputs ([appid, status])
 
+Test:
+Homepage: http://localhost:8080 
+Access hello8124.js app on port 8124: http://localhost:8080/8124
+Access hello8125.js app on port 8124: http://localhost:8080/8125
+Access API: http://localhost:8080/api/2.json
+
 Todos:
 - Look into using Fugue instead of Forever to better control instances
 - Push apps (git local repos?, github raw?, ...)
