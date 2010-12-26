@@ -22,7 +22,7 @@ Written by: @ChrisMatthieu
 
 // var fugue = require('fugue');
 var express = require('express');
-
+var url = require('url');
 var app = express.createServer();
 
 // Fake DB items - TODO: Implement CouchDB or Mongo
@@ -35,6 +35,7 @@ var items = [
 // Routes
 
 app.get('/', function(req, res, next){
+		
   res.writeHead(200, { 'Content-Type': 'text/html' });
   res.write('<h1>NodeFu - HiYa! / Node.js hosting</h1>');
   res.write('<p>Visit /api/2</p>');

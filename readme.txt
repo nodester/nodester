@@ -16,11 +16,17 @@ NodeFu Start = Inputs (basicauth, appid, dynos) / Outputs (status)
 NodeFu Stop = Inputs (basicauth, appid, dynos) / Outputs (status)
 NodeFu List = Inputs (basicauth) / Outputs ([appid, status])
 
-Test:
+
+Testing:
+Subdomains can be tested by editing /etc/hosts like this:
+127.0.0.1	localhost a.localhost b.localhost c.localhost
+save etc/hosts and flush DNS like this: sudo dscacheutil -flushcache
+
 Homepage: http://localhost:8080 
-Access hello8124.js app on port 8124: http://localhost:8080/8124
-Access hello8125.js app on port 8125: http://localhost:8080/8125
+Access hello8124.js app on port 8124: http://a.localhost:8080
+Access hello8125.js app on port 8125: http://b.localhost:8080
 Access API: http://localhost:8080/api/2.json
+
 
 Todos:
 - Look into using Fugue instead of Forever to better control instances

@@ -8,7 +8,6 @@ Checkout https://github.com/nodejitsu/node-http-proxy/blob/master/demo.js for ht
 */
 
 var http = require('http'),
-	url = require('url'),
     httpProxy = require('http-proxy');
 
 // startup app.js API (use Forever in Production)
@@ -22,13 +21,17 @@ var app = spawn('node', ['app.js']);
 var child1 = spawn('node', ['hello8124.js']);
 var child2 = spawn('node', ['hello8125.js']);
 
-httpProxy.createServer(function (req, res, proxy) {
+httpProxy.createServer(function (req, res, proxy) {	
+
+	var hostname = req.headers.host;
+	var subdomain = hostname.substring(0,hostname.indexOf("."));
+	
 	// TODO: Use subdomains
-	if (req.url == '/8124') {
+	if (subdomain == 'a') {
 		// http://localhost:8080/8124
     	proxy.proxyRequest(8124, 'localhost');
 
-	} else if (req.url == '/8125') {
+	} else if (subdomain == 'b') {
 		// http://localhost:8080/8125
     	proxy.proxyRequest(8125, 'localhost');
 		
