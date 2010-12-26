@@ -24,8 +24,9 @@ Access API: http://localhost:8080/api/2.json
 
 Todos:
 - Look into using Fugue instead of Forever to better control instances
+- Connect to hosted CouchDB or Mongo instance for user authentication and app registration
+- API updates to control instances
 - Push apps (git local repos?, github raw?, ...)
-
 Read git with node - https://github.com/creationix/node-git
 ruby-git - https://github.com/christkv/node-git
 
