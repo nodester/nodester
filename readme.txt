@@ -19,7 +19,7 @@ NodeFu List = Inputs (basicauth) / Outputs ([appid, status])
 Test:
 Homepage: http://localhost:8080 
 Access hello8124.js app on port 8124: http://localhost:8080/8124
-Access hello8125.js app on port 8124: http://localhost:8080/8125
+Access hello8125.js app on port 8125: http://localhost:8080/8125
 Access API: http://localhost:8080/api/2.json
 
 Todos:
