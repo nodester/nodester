@@ -26,9 +26,13 @@ Todos:
 - Look into using Fugue instead of Forever to better control instances
 - Connect to hosted CouchDB or Mongo instance for user authentication and app registration
 - API updates to control instances
+- Add Command Line Interface
 - Push apps (git local repos?, github raw?, ...)
 Read git with node - https://github.com/creationix/node-git
 ruby-git - https://github.com/christkv/node-git
+
+Contribute:
+If this project inspires you, please feel free to help out by forking this project and sending me pull requests.
 
 License:
 Apache 2 - Have fun! :)
