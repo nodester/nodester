@@ -7,8 +7,7 @@ Checkout https://github.com/nodejitsu/node-http-proxy/blob/master/demo.js for ht
 
 */
 
-var http = require('http'),
-    httpProxy = require('http-proxy'),
+var httpProxy = require('http-proxy'),
 	url = require('url'),
 	sys = require('sys');
 
@@ -29,7 +28,7 @@ httpProxy.createServer(function (req, res, proxy) {
 	var subdomain = hostname.substring(0,hostname.indexOf("."));
 	
 	sys.puts(JSON.stringify(req.headers));
-	// sys.puts(req.headers.auth);
+	sys.puts(req.headers.Authorization);
 	
 	// TODO: Use subdomains
 	if (subdomain == 'a') {
@@ -40,9 +39,24 @@ httpProxy.createServer(function (req, res, proxy) {
 		// http://localhost:8080/8125
     	proxy.proxyRequest(8125, 'localhost');
 		
+	} else if (subdomain == 'api') {
+
+		// send browser request for user credentials
+		if(req.headers.authorization==undefined) {
+		  	res.writeHead(401, {'Content-Type': 'text/plain', 'WWW-Authenticate': 'Basic'});
+			res.end('password?\n');
+		} else {
+		  	proxy.proxyRequest(4000, 'localhost');
+		};
+		
 	} else {
 		proxy.proxyRequest(4000, 'localhost');	  
 	}
 }).listen(8080); // Use port 80 in production
+console.log('NodeFu started on port 8080');
+
+
+
+
 
 

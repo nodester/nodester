@@ -23,6 +23,7 @@ Written by: @ChrisMatthieu
 // var fugue = require('fugue');
 var express = require('express');
 var url = require('url');
+// var base64 = require('node-base64');
 var app = express.createServer();
 
 // Fake DB items - TODO: Implement CouchDB or Mongo
@@ -77,6 +78,7 @@ app.get('/list/:id.:format?', function(req, res, next){
         res.send('<h1>' + item.subdomain + '</h1>');
     }
   } else {
+			
     // We could simply pass route control and potentially 404
     // by calling next(), or pass an exception like below.
     next(new Error('item ' + id + ' does not exist'));
