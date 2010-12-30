@@ -28,7 +28,6 @@ httpProxy.createServer(function (req, res, proxy) {
 	var subdomain = hostname.substring(0,hostname.indexOf("."));
 	
 	sys.puts(JSON.stringify(req.headers));
-	sys.puts(req.headers.Authorization);
 	
 	// TODO: Use subdomains
 	if (subdomain == 'a') {

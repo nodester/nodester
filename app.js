@@ -23,34 +23,60 @@ Written by: @ChrisMatthieu
 // var fugue = require('fugue');
 var express = require('express');
 var url = require('url');
-// var base64 = require('node-base64');
+var base64_decode = require('base64').decode;
 var app = express.createServer();
+var sys = require('sys');
+
+// var sys = require('sys');
 
 // Fake DB items - TODO: Implement CouchDB or Mongo
-var users = [
-    { username: 'chris', password: '123456', userid: '1' }
-  , { username: 'mark', password: '123456', userid: '2' }
-  , { username: 'jason', password: '123456', userid: '3' }
-];
+var users = {
+    'chris' : { username: 'chris', password: '123', userid: '1' }
+  , 'mark' : { username: 'mark', password: '123', userid: '2' }
+  , 'jason' : { username: 'jason', password: '123', userid: '3' }
+};
+
+var nodeapps = {
+    '1' : { subdomain: 'a', port: '8001' }
+  , '2' : { subdomain: 'b', port: '8002' }
+  , '3' : { subdomain: 'c', port: '8003' }
+};
+	
 var items = [
     { userid: '1', subdomain: 'a', port: '8001' }
   , { userid: '2', subdomain: 'b', port: '8002' }
   , { userid: '3', subdomain: 'c', port: '8003' }
-];
-
+];	
+	
 // Routes
 
 app.get('/', function(req, res, next){
-		
   res.writeHead(200, { 'Content-Type': 'text/html' });
   res.write('<h1>NodeFu - HiYa! / node.js hosting</h1>');
+  res.write('<p>Visit <a href="http://chris:123@api.localhost:8080/status">http://chris:123@api.localhost:8080/status</a></p>');
   res.write('<p>Visit /list/2</p>');
   res.write('<p>Visit /list/2.json</p>');
   res.write('<p>Visit /list/2.xml</p>');
   res.end();
 });
 
+app.get('/status', function(req, res, next){
+	res.writeHead(200, { 'Content-Type': 'text/html' });
+
+	if(authenticate(req.headers.authorization)){
+		res.write('<h1>good auth - now to list apps</h1>');
+	} else {
+		res.write('<h1>auth failed</h1>');
+	};
+
+  res.end();
+});
+
 app.get('/list/:id.:format?', function(req, res, next){
+	
+	// sys.puts(base64_decode(req.headers.authorization.substring(req.headers.authorization.indexOf(" ") + 1 )));
+	// sys.puts(req.headers.authorization);
+		
   var id = req.params.id
     , format = req.params.format
     , item = items[id];
@@ -93,3 +119,20 @@ app.listen(4000);
 // fugue.start(app, 4000, null, 1, {verbose : true}); // Start with Fugue
 
 console.log('NodeFu started on port 4000');
+
+
+function authenticate(basicauth){
+	
+	var creds = base64_decode(basicauth.substring(basicauth.indexOf(" ") + 1 ));
+	var username = creds.substring(0,creds.indexOf(":"));
+	var password = creds.substring(creds.indexOf(":")+1);
+
+	var user = users[username];
+
+	if(user.username == username && user.password == password){
+		return true;
+	} else {
+		return false;
+	};
+
+};
