@@ -32,14 +32,14 @@ var sys = require('sys');
 // Fake DB items - TODO: Implement CouchDB or Mongo
 var users = {
     'chris' : { username: 'chris', password: '123', userid: '1' }
-  , 'mark' : { username: 'mark', password: '123', userid: '2' }
+  , 'mark' :  { username: 'mark',  password: '123', userid: '2' }
   , 'jason' : { username: 'jason', password: '123', userid: '3' }
 };
 
 var nodeapps = {
-    '1' : { subdomain: 'a', port: '8001' }
-  , '2' : { subdomain: 'b', port: '8002' }
-  , '3' : { subdomain: 'c', port: '8003' }
+    'a' : { appname: 'hello8124.js', port: '8124', userid: '1'  }
+  , 'b' : { appname: 'hello8125.js', port: '8125', userid: '2'  }
+  , 'c' : { appname: 'hello8126.js', port: '8126', userid: '3'  }
 };
 	
 var items = [
