@@ -4,13 +4,31 @@ This is an *experimental* service for managing hosted nodejs apps.  It consists 
 
 Dependencies:
 Node.js and the following NPM modules: forever, http-proxy, express, node-base64, couch-client
+CouchDB instance or CouchOne account
 
 Get Started:
 Launch proxy.js to start services and it will launch app.js (node proxy.js)
 - forever start proxy.js (launches proxy server redirecting port 8080 traffic to appropriate node app)
-- forever start app.js (launches API on port 4000 for creating and managing node apps)
+- proxy performs forever start app.js (launches API on port 4000 for creating and managing node apps)
 
-APIs:
+API Documentation:
+
+USERS
+/register - creates user account (pass in user and password)
+curl -X POST -d "user=testuser&password=123" http://localhost:8080/register
+
+/destroy - delete user account (requires basic auth)
+curl -X DELETE -u "testuser:123" http://api.localhost:8080/destroy
+
+APPS
+/apps - create nodejs app for hosting (requires basic auth and returns the port address required to use)
+curl -X POST -u "testuser:123" -d "appname=test&start=hello.js" http://api.localhost:8080/apps
+
+/apps - delete nodejs app (requires basic auth and appname)
+curl -X DELETE -u "testuser:123" -d "appname=test" http://api.localhost:8080/apps
+
+
+
 NodeFu Create = Inputs (basicauth, appname) / Outputs (status, appid, port)
 NodeFu Start = Inputs (basicauth, appid, dynos) / Outputs (status)
 NodeFu Stop = Inputs (basicauth, appid, dynos) / Outputs (status)

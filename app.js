@@ -15,7 +15,7 @@
 
 /* 
 
-NodeFu server-side itemjs hosting 
+NodeFu server-side nodejs hosting 
 Written by: @ChrisMatthieu
 
 */
@@ -37,11 +37,6 @@ app.configure(function(){
 });
 
 // Fake DB items - TODO: Implement CouchDB or Mongo
-// var users = {
-//     'chris' : { username: 'chris', password: '123', userid: '1' }
-//   , 'mark' :  { username: 'mark',  password: '123', userid: '2' }
-//   , 'jason' : { username: 'jason', password: '123', userid: '3' }
-// };
 
 var nodeapps = {
     'a' : { appname: 'hello8124.js', port: '8124', userid: '1'  }
@@ -56,7 +51,7 @@ var items = [
 ];	
 	
 // Routes
-
+// Homepage
 app.get('/', function(req, res, next){
   res.writeHead(200, { 'Content-Type': 'text/html' });
   res.write('<h1>NodeFu - HiYa! / node.js hosting</h1>');
@@ -67,33 +62,160 @@ app.get('/', function(req, res, next){
   res.end();
 });
 
+// New user account registration
+// curl -X POST -d "user=testuser&password=123" http://localhost:8080/register
 app.post('/register', function(req, res, next){
-	res.writeHead(200, { 'Content-Type': 'application/json' });
 
-	var Nodefu = CouchClient("http://nodefu.couchone.com:80/nodefu");
 	var newuser = req.param("user");
 	var newpass = req.param("password");
-	// md5(newpass)
-	Nodefu.save({_id: newuser, password: newpass}, function (err, doc) {sys.puts(JSON.stringify(doc));});
+
+	var Nodefu = CouchClient("http://nodefu.couchone.com:80/nodefu");
 	
-	res.end();
+	// Check to see if account exists
+	Nodefu.get(newuser, function (err, doc) {
+		if (doc){
+			// account already registered
+			res.writeHead(400, { 'Content-Type': 'application/json' });
+			res.write('{status : "failure"}');
+			res.end();
+		} else {
+			Nodefu.save({_id: newuser, password: md5(newpass)}, function (err, doc) {sys.puts(JSON.stringify(doc));});
+			res.writeHead(200, { 'Content-Type': 'application/json' });
+			res.write('{status : "success"}');
+			res.end();
+		}
+	});
 });
 
+// api.localhost requires basic auth to access this section
+
+// Delete your user account 
+// curl -X DELETE -u "testuser:123" http://api.localhost:8080/destroy
+app.delete('/destroy', function(req, res, next){
+
+	var user
+	authenticate(req.headers.authorization, function(user){
+	
+		if(user){
+			var Nodefu = CouchClient("http://nodefu.couchone.com:80/nodefu");
+			Nodefu.remove(user._id, function (err, doc) {sys.puts(JSON.stringify(doc));});
+			res.writeHead(200, { 'Content-Type': 'application/json' });
+			res.write('{status : "success"}');
+		  	res.end();
+		} else {
+			// basic auth didn't match account
+			res.writeHead(400, { 'Content-Type': 'application/json' });
+			res.write('{status : "failure"}');
+		  	res.end();
+		};
+
+	
+	});
+});
+
+// Create node app 
+// curl -X POST -u "testuser:123" -d "appname=test&start=hello.js" http://api.localhost:8080/apps
+app.post('/apps', function(req, res, next){
+
+	var user
+	authenticate(req.headers.authorization, function(user){
+	
+		if(user){
+			var appname = req.param("appname");
+			var start = req.param("start");
+			var Nodeport = CouchClient("http://nodefu.couchone.com:80/nextport");
+			var Nodefu = CouchClient("http://nodefu.couchone.com:80/apps");
+
+			// Check to see if node app exists
+			Nodefu.get(appname, function (err, doc) {
+				if (doc){
+					// subdomain already exists
+					res.writeHead(400, { 'Content-Type': 'application/json' });
+					res.write('{status : "failure"}');
+					res.end();
+				} else {
+					// subdomain available - get next available port address
+					Nodeport.get('port', function (err, doc) {
+						var appport = doc.address
+						// increment next port address
+						Nodeport.save({_id: "port", address: appport + 1}, function (err, doc) {sys.puts(JSON.stringify(doc));});
+					
+						// Create the app
+						Nodefu.save({_id: appname, start: start, port: appport, username: user._id }, function (err, doc) {sys.puts(JSON.stringify(doc));});
+						res.writeHead(200, { 'Content-Type': 'application/json' });
+						res.write('{status : "success", port : "' + appport + '"}');
+						res.end();
+					
+					});
+				};
+			});
+
+		} else {
+			// basic auth didn't match account
+			res.writeHead(400, { 'Content-Type': 'application/json' });
+			res.write('{status : "failure"}');
+		  	res.end();
+		};
+	
+	});
+});
+
+// Delete your nodejs app 
+// curl -X DELETE -u "testuser:123" -d "appname=test" http://api.localhost:8080/apps
+app.delete('/apps', function(req, res, next){
+
+	var user
+	var appname = req.param("appname");
+	authenticate(req.headers.authorization, function(user){
+	
+		if(user){
+			var Nodefu = CouchClient("http://nodefu.couchone.com:80/apps");
+
+			// Check if app exists and if user is the owner of the app
+			Nodefu.get(appname, function (err, doc) {
+				if (doc && doc.username == valuser){
+					Nodefu.remove(appname, function (err, doc) {sys.puts(JSON.stringify(doc));});
+					res.writeHead(200, { 'Content-Type': 'application/json' });
+					res.write('{status : "success"}');
+				  	res.end();
+					
+				} else {
+					// subdomain doesn't exist or you don't own it
+					res.writeHead(400, { 'Content-Type': 'application/json' });
+					res.write('{status : "failure"}');
+					res.end();
+				};
+			
+			});
+			
+		} else {
+			// basic auth didn't match account
+			res.writeHead(400, { 'Content-Type': 'application/json' });
+			res.write('{status : "failure"}');
+		  	res.end();
+		};
+
+	
+	});
+});
+
+
+// status shell
 app.get('/status', function(req, res, next){
 
 	var user
 	authenticate(req.headers.authorization, function(user){
-
-		res.writeHead(200, { 'Content-Type': 'text/html' });
 	
 		if(user){
-			res.write('<h1>good auth - ' + user._id + ' - now to list apps</h1>');
+			res.writeHead(200, { 'Content-Type': 'application/json' });
+			res.write('{status : "success", user : "' +  user._id + '"}');
+		  	res.end();
 		} else {
-			res.write('<h1>auth failed</h1>');
+			// basic auth didn't match account
+			res.writeHead(400, { 'Content-Type': 'application/json' });
+			res.write('{status : "failure"}');
+		  	res.end();
 		};
-
-	  	res.end();
-	
 	});
 });
 
@@ -152,14 +274,14 @@ function authenticate(basicauth, callback){
 	var username = creds.substring(0,creds.indexOf(":"));
 	var password = creds.substring(creds.indexOf(":")+1);
 
-	// var username = "wiki"
+	// var username = "topher"
 	// var password = "123"
 
 	var Nodefu = CouchClient("http://nodefu.couchone.com:80/nodefu");
 	Nodefu.get(username, function (err, doc) {
 
 		if (doc){	
-			if(doc._id == username && doc.password == password){
+			if(doc._id == username && doc.password == md5(password)){
 				valuser = username;
 				// return true;
 				callback(doc);
