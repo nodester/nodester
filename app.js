@@ -24,17 +24,24 @@ Written by: @ChrisMatthieu
 var express = require('express');
 var url = require('url');
 var base64_decode = require('base64').decode;
+var crypto = require('crypto');
 var app = express.createServer();
 var sys = require('sys');
+var CouchClient = require('couch-client');
 
-// var sys = require('sys');
+var valuser
+
+// needed to process post data
+app.configure(function(){
+	app.use(express.bodyDecoder());
+});
 
 // Fake DB items - TODO: Implement CouchDB or Mongo
-var users = {
-    'chris' : { username: 'chris', password: '123', userid: '1' }
-  , 'mark' :  { username: 'mark',  password: '123', userid: '2' }
-  , 'jason' : { username: 'jason', password: '123', userid: '3' }
-};
+// var users = {
+//     'chris' : { username: 'chris', password: '123', userid: '1' }
+//   , 'mark' :  { username: 'mark',  password: '123', userid: '2' }
+//   , 'jason' : { username: 'jason', password: '123', userid: '3' }
+// };
 
 var nodeapps = {
     'a' : { appname: 'hello8124.js', port: '8124', userid: '1'  }
@@ -60,16 +67,34 @@ app.get('/', function(req, res, next){
   res.end();
 });
 
+app.post('/register', function(req, res, next){
+	res.writeHead(200, { 'Content-Type': 'application/json' });
+
+	var Nodefu = CouchClient("http://nodefu.couchone.com:80/nodefu");
+	var newuser = req.param("user");
+	var newpass = req.param("password");
+	// md5(newpass)
+	Nodefu.save({_id: newuser, password: newpass}, function (err, doc) {sys.puts(JSON.stringify(doc));});
+	
+	res.end();
+});
+
 app.get('/status', function(req, res, next){
-	res.writeHead(200, { 'Content-Type': 'text/html' });
 
-	if(authenticate(req.headers.authorization)){
-		res.write('<h1>good auth - now to list apps</h1>');
-	} else {
-		res.write('<h1>auth failed</h1>');
-	};
+	var user
+	authenticate(req.headers.authorization, function(user){
 
-  res.end();
+		res.writeHead(200, { 'Content-Type': 'text/html' });
+	
+		if(user){
+			res.write('<h1>good auth - ' + user._id + ' - now to list apps</h1>');
+		} else {
+			res.write('<h1>auth failed</h1>');
+		};
+
+	  	res.end();
+	
+	});
 });
 
 app.get('/list/:id.:format?', function(req, res, next){
@@ -121,18 +146,39 @@ app.listen(4000);
 console.log('NodeFu started on port 4000');
 
 
-function authenticate(basicauth){
+function authenticate(basicauth, callback){
 	
 	var creds = base64_decode(basicauth.substring(basicauth.indexOf(" ") + 1 ));
 	var username = creds.substring(0,creds.indexOf(":"));
 	var password = creds.substring(creds.indexOf(":")+1);
 
-	var user = users[username];
+	// var username = "wiki"
+	// var password = "123"
 
-	if(user.username == username && user.password == password){
-		return true;
-	} else {
-		return false;
-	};
+	var Nodefu = CouchClient("http://nodefu.couchone.com:80/nodefu");
+	Nodefu.get(username, function (err, doc) {
+
+		if (doc){	
+			if(doc._id == username && doc.password == password){
+				valuser = username;
+				// return true;
+				callback(doc);
+				return;
+			} else {
+				// return false;
+				callback(null);
+				return;
+			};
+		} else {
+			callback(null);
+			return;
+		};
+	
+	});
 
 };
+
+function md5(str) {
+  return crypto.createHash('md5').update(str).digest('hex');
+}
+

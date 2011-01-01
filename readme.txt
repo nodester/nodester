@@ -3,7 +3,7 @@ NodeFu (http://nodefu.com) = Node.js Hosting Services
 This is an *experimental* service for managing hosted nodejs apps.  It consists of an API that allows developers to create and manage nodejs apps.  Node apps are assigned subdomains that proxy to ports with an assigned address.  Instances (dynos) are launched using Forever so that they run until you stop them.
 
 Dependencies:
-Node.js and the following NPM modules: forever, http-proxy, express, node-base64
+Node.js and the following NPM modules: forever, http-proxy, express, node-base64, couch-client
 
 Get Started:
 Launch proxy.js to start services and it will launch app.js (node proxy.js)
@@ -27,6 +27,10 @@ http://a.localhost:8080 = Runs hello8124.js app on port 8124
 http://b.localhost:8080 = Runs hello8125.js app on port 8125
 http://chris:123@api.localhost:8080/status = API to list status of all node apps
 http://chris:123@api.localhost:8080/list/2.json = API TBD
+
+Register user:
+curl -X POST -d "user=testuser&password=123" http://localhost:8080/register
+
 
 
 Todos:
