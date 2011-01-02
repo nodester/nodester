@@ -5,16 +5,11 @@ This app runs on port 80 and forwards traffic to the appropriate node app
 
 */
 
-// Fake DB items - TODO: Implement CouchDB or Mongo
-var nodeapps = {
-    'a' : { appname: 'hello8124.js', port: '8124', userid: '1'  }
-  , 'b' : { appname: 'hello8125.js', port: '8125', userid: '2'  }
-  , 'c' : { appname: 'hello8126.js', port: '8126', userid: '3'  }
-};
-
 var httpProxy = require('http-proxy'),
 	url = require('url'),
 	sys = require('sys');
+
+var CouchClient = require('couch-client');
 
 // startup app.js API (use Forever in Production)
 // var exec = require('child_process').exec;
@@ -36,12 +31,17 @@ var app = spawn('node', ['app.js']);
 // child.start();
 
 // Launch all nodefu hosted apps
-for (var key in nodeapps) {
-   	var obj = nodeapps[key];
-	sys.puts('launching: subdomain ' + key + ' on port ' + obj['port']);
-	spawn('node', [obj['appname']]);
-}
-
+var Nodefu = CouchClient("http://nodefu.couchone.com:80/apps");
+Nodefu.view('/apps/_design/nodeapps/_view/all', {}, function(err, doc) {
+	// sys.puts(JSON.stringify(doc.rows[0].id))
+	
+	for (var key in doc.rows) {
+	   	var obj = doc.rows[key];
+		sys.puts('launching: subdomain ' + obj["value"]["_id"] + ' on port ' + obj["value"]['port']);
+		spawn('node', [obj["value"]['start']]);
+	}
+		
+});
 
 httpProxy.createServer(function (req, res, proxy) {	
 
@@ -63,17 +63,20 @@ httpProxy.createServer(function (req, res, proxy) {
 		  	proxy.proxyRequest(4000, 'localhost');
 		};
 		
-	} else if (nodeapps[subdomain]) {
-		// 	redirect to subdomain's port
-		proxy.proxyRequest(nodeapps[subdomain]['port'], 'localhost');
-	
+	} else if (subdomain) {
+		// 	redirect to subdomain's port by looking up subdomain and port in couchdb
+		Nodefu.get(subdomain, function (err, doc) {
+			if (doc){
+				proxy.proxyRequest(doc.port, 'localhost');
+			}
+		});
 		
 	} else {
 		// redirect to Nodefu's home page
 		proxy.proxyRequest(4000, 'localhost');	  
 	}
 }).listen(8080); // Use port 80 in production
-console.log('NodeFu started on port 8080');
+sys.puts('NodeFu started on port 8080');
 
 
 
