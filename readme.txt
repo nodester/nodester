@@ -5,6 +5,7 @@ This is an *experimental* service for managing hosted nodejs apps.  It consists 
 Dependencies:
 Node.js and the following NPM modules: forever, http-proxy, express, node-base64, couch-client
 CouchDB instance or CouchOne account
+Git
 
 Get Started:
 Launch proxy.js to start services and it will launch app.js (node proxy.js)
@@ -28,7 +29,6 @@ curl -X POST -u "testuser:123" -d "appname=test&start=hello.js" http://api.local
 curl -X DELETE -u "testuser:123" -d "appname=test" http://api.localhost:8080/apps
 
 
-
 NodeFu Create = Inputs (basicauth, appname) / Outputs (status, appid, port)
 NodeFu Start = Inputs (basicauth, appid, dynos) / Outputs (status)
 NodeFu Stop = Inputs (basicauth, appid, dynos) / Outputs (status)
@@ -46,19 +46,27 @@ http://b.localhost:8080 = Runs hello8125.js app on port 8125
 http://chris:123@api.localhost:8080/status = API to list status of all node apps
 http://chris:123@api.localhost:8080/list/2.json = API TBD
 
-Register user:
-curl -X POST -d "user=testuser&password=123" http://localhost:8080/register
-
-
 
 Todos:
-- Look into using Fugue instead of Forever for better instance control
-- Connect to hosted CouchDB or Mongo instance for user authentication and app registration
-- API updates to control instances
+- on app create update git and return git repo url
+- write routine to install all NPM modules on server
+- Find a better way to interact with forever as an API (on clone, kill process - new one restarts)
+- add ability to control number of instances
 - Add Command Line Interface
+- 64k port limitation per IP address on Linux - how do we scale horizontally?
+- sandbox node instances?
+
 - Push apps (git local repos?, github raw?, ...)
 Read git with node - https://github.com/creationix/node-git
 ruby-git - https://github.com/christkv/node-git
+
+-- on app create:
+mkdir _rev.git
+cd _rev.git
+git init --bare
+set on commit hook to clone to repo to _rev directory
+look into watcher app to restart node on new clone directory
+
 
 Contribute:
 If this project inspires you, please feel free to help out by forking this project and sending me pull requests.
