@@ -61,7 +61,7 @@ Read git with node - https://github.com/creationix/node-git
 ruby-git - https://github.com/christkv/node-git
 
 -- on app create:
-mkdir _rev.git
+mkdir _rev.git (create sh script with _rev parameter)
 cd _rev.git
 git init --bare
 set on commit hook to clone to repo to _rev directory

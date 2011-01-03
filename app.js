@@ -28,6 +28,7 @@ var crypto = require('crypto');
 var app = express.createServer();
 var sys = require('sys');
 var CouchClient = require('couch-client');
+var spawn = require('child_process').spawn;
 
 var valuser
 
@@ -76,7 +77,7 @@ app.post('/register', function(req, res, next){
 		if (doc){
 			// account already registered
 			res.writeHead(400, { 'Content-Type': 'application/json' });
-			res.write('{status : "failure"}');
+			res.write('{status : "failure - account exists"}');
 			res.end();
 		} else {
 			Nodefu.save({_id: newuser, password: md5(newpass)}, function (err, doc) {sys.puts(JSON.stringify(doc));});
@@ -105,7 +106,7 @@ app.delete('/destroy', function(req, res, next){
 		} else {
 			// basic auth didn't match account
 			res.writeHead(400, { 'Content-Type': 'application/json' });
-			res.write('{status : "failure"}');
+			res.write('{status : "failure - authentication"}');
 		  	res.end();
 		};
 
@@ -131,7 +132,7 @@ app.post('/apps', function(req, res, next){
 				if (doc){
 					// subdomain already exists
 					res.writeHead(400, { 'Content-Type': 'application/json' });
-					res.write('{status : "failure"}');
+					res.write('{status : "failure - appname exists"}');
 					res.end();
 				} else {
 					// subdomain available - get next available port address
@@ -141,10 +142,17 @@ app.post('/apps', function(req, res, next){
 						Nodeport.save({_id: "port", address: appport + 1}, function (err, doc) {sys.puts(JSON.stringify(doc));});
 					
 						// Create the app
-						Nodefu.save({_id: appname, start: start, port: appport, username: user._id }, function (err, doc) {sys.puts(JSON.stringify(doc));});
-						res.writeHead(200, { 'Content-Type': 'application/json' });
-						res.write('{status : "success", port : "' + appport + '"}');
-						res.end();
+						Nodefu.save({_id: appname, start: start, port: appport, username: user._id }, function (err, doc) {
+							sys.puts(JSON.stringify(doc));
+							
+							// Setup git repo
+							var gitsetup = spawn('./gitreposetup.sh', [doc._rev]);
+							// Respond to API request
+							res.writeHead(200, { 'Content-Type': 'application/json' });
+							res.write('{status : "success", port : "' + appport + '", git : "git://nodefu.com/' + doc._rev + '.git"}');
+							res.end();
+
+						});
 					
 					});
 				};
@@ -153,7 +161,7 @@ app.post('/apps', function(req, res, next){
 		} else {
 			// basic auth didn't match account
 			res.writeHead(400, { 'Content-Type': 'application/json' });
-			res.write('{status : "failure"}');
+			res.write('{status : "failure - authentication"}');
 		  	res.end();
 		};
 	
@@ -182,7 +190,7 @@ app.delete('/apps', function(req, res, next){
 				} else {
 					// subdomain doesn't exist or you don't own it
 					res.writeHead(400, { 'Content-Type': 'application/json' });
-					res.write('{status : "failure"}');
+					res.write('{status : "failure - bad appname"}');
 					res.end();
 				};
 			
@@ -191,7 +199,7 @@ app.delete('/apps', function(req, res, next){
 		} else {
 			// basic auth didn't match account
 			res.writeHead(400, { 'Content-Type': 'application/json' });
-			res.write('{status : "failure"}');
+			res.write('{status : "failure - authentication"}');
 		  	res.end();
 		};
 
