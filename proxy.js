@@ -10,9 +10,10 @@ var httpProxy = require('http-proxy'),
 	sys = require('sys');
 
 var CouchClient = require('couch-client');
+// var nodemon = require('nodemon');
 
 // startup app.js API (use Forever in Production)
-// var exec = require('child_process').exec;
+var exec = require('child_process').exec;
 // exec('forever start app.js');
 
 var spawn = require('child_process').spawn;
@@ -38,7 +39,11 @@ Nodefu.view('/apps/_design/nodeapps/_view/all', {}, function(err, doc) {
 	for (var key in doc.rows) {
 	   	var obj = doc.rows[key];
 		sys.puts('launching: subdomain ' + obj["value"]["_id"] + ' on port ' + obj["value"]['port']);
+		process.chdir('apps/' + obj["value"]['_rev']);
 		spawn('node', [obj["value"]['start']]);
+		process.chdir('../..');
+		// spawn('cd apps/' + obj["value"]["_rev"] + ' | node', [obj["value"]['_rev'] + '/' + [obj["value"]['start']]);
+		// exec('cd apps/' + obj["value"]["_rev"] + ' | node ' + obj["value"]["start"]);
 	}
 		
 });

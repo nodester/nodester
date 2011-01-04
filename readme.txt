@@ -8,7 +8,7 @@ CouchDB instance or CouchOne account
 Git
 
 Get Started:
-Launch proxy.js to start services and it will launch app.js (node proxy.js)
+Launch proxy.js to start services and it will launch app.js (node proxy.js) (consider using nodemon to restart app on file changes)
 - forever start proxy.js (launches proxy server redirecting port 8080 traffic to appropriate node app)
 - proxy performs forever start app.js (launches API on port 4000 for creating and managing node apps)
 
@@ -24,6 +24,7 @@ curl -X DELETE -u "testuser:123" http://api.localhost:8080/destroy
 APPS
 /apps - create nodejs app for hosting (requires basic auth and returns the port address required to use)
 curl -X POST -u "testuser:123" -d "appname=test&start=hello.js" http://api.localhost:8080/apps
+curl -X POST -u "topher:123" -d "appname=a&start=hello.js" http://api.localhost:8080/apps
 
 /apps - delete nodejs app (requires basic auth and appname)
 curl -X DELETE -u "testuser:123" -d "appname=test" http://api.localhost:8080/apps
@@ -55,6 +56,7 @@ Todos:
 - Add Command Line Interface
 - 64k port limitation per IP address on Linux - how do we scale horizontally?
 - sandbox node instances?
+- Add SSL support
 
 - Push apps (git local repos?, github raw?, ...)
 Read git with node - https://github.com/creationix/node-git
@@ -65,7 +67,9 @@ mkdir _rev.git (create sh script with _rev parameter)
 cd _rev.git
 git init --bare
 set on commit hook to clone to repo to _rev directory
-look into watcher app to restart node on new clone directory
+look into watcher app to restart node on new clone directory (nodemon)
+git remote add nodefu /usr/local/src/nodefu/apps/7-46e95eaa00d2785e6c73e5a4fc25d88c.git
+git pus nodefu master
 
 
 Contribute:
