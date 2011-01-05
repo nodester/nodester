@@ -1,0 +1,36 @@
+<html>
+<head>
+	<style type="text/css">
+	body { 
+		background-color: #aaa; 
+		padding-left: 20%;
+		padding-right: 20%;
+		text-align: left;
+		font-family: Neucha, arial, serif;
+		}
+	</style>
+</head>	
+<body>
+<h1><img src="nodefu.gif"><br/>Opensource Node.js Hosting Services!</h1>
+<p>NodeFu is offering free experimental Node.js hosting services via our RESTful API running on Amazon EC2.  We are currently running Node v.0.3.3 and updating all of the NPM modules on a weekly basis. Git is also required to push your updates to Nodefu.  We do not currently have a full featured website as we are focusing on the API and the service.  All we ask is that you be a good steward of this service and community.  In other words, please don't try to hack our service and please reuse your port assignments when possible.</p>
+
+<h2>BASE URL: http://api.nodefu.com</h2>
+
+<h3>USERS</h3>
+<p>/register - creates user account (pass in user and password)<br/>
+curl -X POST -d "user=testuser&password=123" http://nodefu.com/register</p>
+
+<p>/destroy - delete user account (requires basic auth)<br/>
+curl -X DELETE -u "testuser:123" http://api.nodefu.com/destroy</p>
+
+<h3>APPS</h3>
+<p>/apps - create nodejs app for hosting (requires basic auth and returns the port address required for use along with a git repo to push to)<br/>
+curl -X POST -u "testuser:123" -d "appname=a&start=hello.js" http://api.nodefu.com/apps</p>
+
+<p>/apps - update nodejs app for hosting (requires basic auth, appname, and starting page and returns the port address required for use along with a git repo to push to)<br/>
+curl -X PUT -u "testuser:123" -d "appname=a&start=hello1.js" http://api.localhost:8080/apps</p>
+
+<p>/apps - delete nodejs app (requires basic auth and appname)<br/>
+curl -X DELETE -u "testuser:123" -d "appname=test" http://api.nodefu.com/apps</p>
+</body>
+</html>

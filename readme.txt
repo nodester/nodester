@@ -1,9 +1,9 @@
 NodeFu (http://nodefu.com) = Node.js Hosting Services
 
-This is an *experimental* service for managing hosted nodejs apps.  It consists of an API that allows developers to create and manage nodejs apps.  Node apps are assigned subdomains that proxy to ports with an assigned address.  Instances (dynos) are launched using Forever so that they run until you stop them.
+This is an *experimental* service for managing hosted nodejs apps.  It consists of an API that allows developers to create and manage nodejs apps.  Node apps are assigned subdomains that proxy to ports with an assigned address.  Instances (dynos) are launched using Forever so that they run until you stop them or using Nodemon where they run until a file changes from a git update.
 
 Dependencies:
-Node.js and the following NPM modules: forever, http-proxy, express, node-base64, couch-client
+Node.js and the following NPM modules: http-proxy, express, node-base64, couch-client, forever?, nodemon?, fugue?
 CouchDB instance or CouchOne account
 Git
 
@@ -22,9 +22,11 @@ curl -X POST -d "user=testuser&password=123" http://localhost:8080/register
 curl -X DELETE -u "testuser:123" http://api.localhost:8080/destroy
 
 APPS
-/apps - create nodejs app for hosting (requires basic auth and returns the port address required to use)
-curl -X POST -u "testuser:123" -d "appname=test&start=hello.js" http://api.localhost:8080/apps
-curl -X POST -u "topher:123" -d "appname=a&start=hello.js" http://api.localhost:8080/apps
+/apps - create nodejs app for hosting (requires basic auth and returns the port address required for use along with a git repo to push to)
+curl -X POST -u "testuser:123" -d "appname=a&start=hello.js" http://api.localhost:8080/apps
+
+/apps - update nodejs app for hosting (requires basic auth, appname, and starting page and returns the port address required for use along with a git repo to push to)
+curl -X PUT -u "testuser:123" -d "appname=a&start=hello1.js" http://api.localhost:8080/apps
 
 /apps - delete nodejs app (requires basic auth and appname)
 curl -X DELETE -u "testuser:123" -d "appname=test" http://api.localhost:8080/apps
@@ -42,34 +44,26 @@ Subdomains can be tested by editing /etc/hosts like this:
 save etc/hosts and flush DNS like this: sudo dscacheutil -flushcache
 
 http://localhost:8080 = Homepage
-http://a.localhost:8080 = Runs hello8124.js app on port 8124
-http://b.localhost:8080 = Runs hello8125.js app on port 8125
+http://a.localhost:8080 = Runs app associated with subdomain a on couch-configured port
+http://b.localhost:8080 = Runs app associated with subdomain b on couch-configured port
 http://chris:123@api.localhost:8080/status = API to list status of all node apps
 http://chris:123@api.localhost:8080/list/2.json = API TBD
 
 
 Todos:
-- on app create update git and return git repo url
 - write routine to install all NPM modules on server
-- Find a better way to interact with forever as an API (on clone, kill process - new one restarts)
+- Find a better way to interact with forever as an API (on clone, kill process - new one restarts << consider using nodemon)
 - add ability to control number of instances
 - Add Command Line Interface
+
+Considerations:
 - 64k port limitation per IP address on Linux - how do we scale horizontally?
 - sandbox node instances?
 - Add SSL support
 
-- Push apps (git local repos?, github raw?, ...)
-Read git with node - https://github.com/creationix/node-git
-ruby-git - https://github.com/christkv/node-git
-
--- on app create:
-mkdir _rev.git (create sh script with _rev parameter)
-cd _rev.git
-git init --bare
-set on commit hook to clone to repo to _rev directory
-look into watcher app to restart node on new clone directory (nodemon)
+- Push apps to local git repos
 git remote add nodefu /usr/local/src/nodefu/apps/7-46e95eaa00d2785e6c73e5a4fc25d88c.git
-git pus nodefu master
+git push nodefu master
 
 
 Contribute:

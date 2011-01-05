@@ -1,22 +1,9 @@
-// var forever = require('forever');
-// 
-// var child = new (forever.Forever)('helloserver.js', {
-//   max: 3,
-//   silent: true,
-//   options: []
-// });
-// 
-// child.on('exit', this.callback);
-// child.start();
-
-// var exec = require('child_process').exec;
-// exec('forever start /usr/local/src/itemapps/helloserver.js');
-// exec('forever start /usr/local/src/itemapps/helloserver2.js');
-
 /* 
 
-NodeFu server-side nodejs hosting 
+NodeFu opensource Node.js hosting service
 Written by: @ChrisMatthieu
+
+http://nodefu.com
 
 */
 
@@ -32,35 +19,31 @@ var spawn = require('child_process').spawn;
 
 var valuser
 
-// needed to process post data
+
 app.configure(function(){
-	app.use(express.bodyDecoder());
+	app.use(express.bodyDecoder()); // needed to process post data
+	app.use(express.staticProvider(__dirname + '/public')); // needed to process static pages
 });
 
 // Fake DB items - TODO: Implement CouchDB or Mongo
-
-var nodeapps = {
-    'a' : { appname: 'hello8124.js', port: '8124', userid: '1'  }
-  , 'b' : { appname: 'hello8125.js', port: '8125', userid: '2'  }
-  , 'c' : { appname: 'hello8126.js', port: '8126', userid: '3'  }
-};
-	
-var items = [
-    { userid: '1', subdomain: 'a', port: '8001' }
-  , { userid: '2', subdomain: 'b', port: '8002' }
-  , { userid: '3', subdomain: 'c', port: '8003' }
-];	
+// var items = [
+//     { userid: '1', subdomain: 'a', port: '8001' }
+//   , { userid: '2', subdomain: 'b', port: '8002' }
+//   , { userid: '3', subdomain: 'c', port: '8003' }
+// ];	
 	
 // Routes
 // Homepage
 app.get('/', function(req, res, next){
-  res.writeHead(200, { 'Content-Type': 'text/html' });
-  res.write('<h1>NodeFu - HiYa! / node.js hosting</h1>');
-  res.write('<p>Visit <a href="http://chris:123@api.localhost:8080/status">http://chris:123@api.localhost:8080/status</a></p>');
-  res.write('<p>Visit /list/2</p>');
-  res.write('<p>Visit /list/2.json</p>');
-  res.write('<p>Visit /list/2.xml</p>');
-  res.end();
+  // res.writeHead(200, { 'Content-Type': 'text/html' });
+  // res.write('<h1>NodeFu - HiYa!<br/>Opensource Node.js Hosting services!</h1>');
+  // res.write('<p>Visit <a href="http://chris:123@api.localhost:8080/status">http://chris:123@api.localhost:8080/status</a></p>');
+  // res.write('<p>Visit /list/2</p>');
+  // res.write('<p>Visit /list/2.json</p>');
+  // res.write('<p>Visit /list/2.xml</p>');
+  // res.end();
+res.render('index.html');
+
 });
 
 // New user account registration
@@ -149,12 +132,62 @@ app.post('/apps', function(req, res, next){
 							var gitsetup = spawn('./gitreposetup.sh', [doc._rev]);
 							// Respond to API request
 							res.writeHead(200, { 'Content-Type': 'application/json' });
-							res.write('{status : "success", port : "' + appport + '", git : "git://nodefu.com/' + doc._rev + '.git"}');
+							res.write('{status : "success", port : "' + appport + '", git : "/usr/local/src/nodefu/apps/' + doc._rev + '.git"}');
 							res.end();
 
 						});
 					
 					});
+				};
+			});
+
+		} else {
+			// basic auth didn't match account
+			res.writeHead(400, { 'Content-Type': 'application/json' });
+			res.write('{status : "failure - authentication"}');
+		  	res.end();
+		};
+	
+	});
+});
+
+// Update node app 
+// curl -X PUT -u "testuser:123" -d "appname=test&start=hello.js" http://api.localhost:8080/apps
+app.put('/apps', function(req, res, next){
+
+	var user
+	authenticate(req.headers.authorization, function(user){
+	
+		if(user){
+			var appname = req.param("appname");
+			var start = req.param("start");
+			var Nodefu = CouchClient("http://nodefu.couchone.com:80/apps");
+
+			// Check to see if node app exists
+			Nodefu.get(appname, function (err, doc) {
+				if (doc){
+					
+					// subdomain found 
+					// update the app
+					Nodefu.save({_id: appname, start: start, port: doc.port, username: user._id }, function (err, doc) {
+						sys.puts(JSON.stringify(doc));
+						
+						// Setup git repo
+						var gitsetup = spawn('./gitreposetup.sh', [doc._rev]);
+						
+						// Respond to API request
+						res.writeHead(200, { 'Content-Type': 'application/json' });
+						res.write('{status : "success", port : "' + doc.port + '", git : "/usr/local/src/nodefu/apps/' + doc._rev + '.git"}');
+						res.end();
+
+					});
+				
+				} else {
+					
+					// subdomain not found
+					res.writeHead(404, { 'Content-Type': 'application/json' });
+					res.write('{status : "failure - appname not found"}');
+					res.end();
 				};
 			});
 
@@ -208,7 +241,9 @@ app.delete('/apps', function(req, res, next){
 });
 
 
-// status shell
+// Status API
+// http://chris:123@api.localhost:8080/status 
+// curl -u "testuser:123" http://api.localhost:8080/status
 app.get('/status', function(req, res, next){
 
 	var user
@@ -227,44 +262,44 @@ app.get('/status', function(req, res, next){
 	});
 });
 
-app.get('/list/:id.:format?', function(req, res, next){
-	
-	// sys.puts(base64_decode(req.headers.authorization.substring(req.headers.authorization.indexOf(" ") + 1 )));
-	// sys.puts(req.headers.authorization);
-		
-  var id = req.params.id
-    , format = req.params.format
-    , item = items[id];
-  // Ensure item exists
-  if (item) {
-    // Serve the format
-    switch (format) {
-      case 'json':
-        // Detects json
-        res.send(item);
-        break;
-      case 'xml':
-        // Set contentType as xml then sends
-        // the string
-        var xml = ''
-          + '<items>'
-          + '<item>' + item.subdomain + '</item>'
-          + '</items>';
-        res.contentType('.xml');
-        res.send(xml);
-        break;
-      case 'html':
-      default:
-        // By default send some hmtl
-        res.send('<h1>' + item.subdomain + '</h1>');
-    }
-  } else {
-			
-    // We could simply pass route control and potentially 404
-    // by calling next(), or pass an exception like below.
-    next(new Error('item ' + id + ' does not exist'));
-  }
-});
+// app.get('/list/:id.:format?', function(req, res, next){
+// 	
+// 	// sys.puts(base64_decode(req.headers.authorization.substring(req.headers.authorization.indexOf(" ") + 1 )));
+// 	// sys.puts(req.headers.authorization);
+// 		
+//   var id = req.params.id
+//     , format = req.params.format
+//     , item = items[id];
+//   // Ensure item exists
+//   if (item) {
+//     // Serve the format
+//     switch (format) {
+//       case 'json':
+//         // Detects json
+//         res.send(item);
+//         break;
+//       case 'xml':
+//         // Set contentType as xml then sends
+//         // the string
+//         var xml = ''
+//           + '<items>'
+//           + '<item>' + item.subdomain + '</item>'
+//           + '</items>';
+//         res.contentType('.xml');
+//         res.send(xml);
+//         break;
+//       case 'html':
+//       default:
+//         // By default send some hmtl
+//         res.send('<h1>' + item.subdomain + '</h1>');
+//     }
+//   } else {
+// 			
+//     // We could simply pass route control and potentially 404
+//     // by calling next(), or pass an exception like below.
+//     next(new Error('item ' + id + ' does not exist'));
+//   }
+// });
 
 // Middleware
 
@@ -273,7 +308,7 @@ app.use(express.errorHandler({ showStack: true }));
 app.listen(4000); 
 // fugue.start(app, 4000, null, 1, {verbose : true}); // Start with Fugue
 
-console.log('NodeFu started on port 4000');
+console.log('NodeFu app started on port 4000');
 
 
 function authenticate(basicauth, callback){
@@ -311,4 +346,20 @@ function authenticate(basicauth, callback){
 function md5(str) {
   return crypto.createHash('md5').update(str).digest('hex');
 }
+
+
+// var forever = require('forever');
+// 
+// var child = new (forever.Forever)('helloserver.js', {
+//   max: 3,
+//   silent: true,
+//   options: []
+// });
+// 
+// child.on('exit', this.callback);
+// child.start();
+
+// var exec = require('child_process').exec;
+// exec('forever start /usr/local/src/itemapps/helloserver.js');
+// exec('forever start /usr/local/src/itemapps/helloserver2.js');
 
