@@ -52,6 +52,7 @@ http://chris:123@api.localhost:8080/list/2.json = API TBD
 
 Todos:
 - write routine to install all NPM modules on server (http://registry.npmjs.org/ - json list)
+- add rsa keys for git
 - Find a better way to interact with forever as an API (on clone, kill process - new one restarts << consider using nodemon)
 - add ability to control number of instances
 - Add Command Line Interface
