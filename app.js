@@ -347,6 +347,10 @@ function md5(str) {
   return crypto.createHash('md5').update(str).digest('hex');
 }
 
+process.on('uncaughtException', function (err) {
+    console.log(err);
+});
+
 
 // var forever = require('forever');
 // 
