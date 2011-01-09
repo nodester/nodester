@@ -61,14 +61,13 @@ Run "ruby installmodules.rb" periodically to install and update all NPM modules 
 
 Todos:
 - add rsa keys for git?
-- Find a better way to interact with forever as an API (on clone, kill process - new one restarts << consider using nodemon)
 - add ability to control number of instances
 - Add Command Line Interface
+- Add SSL support
 
 Considerations:
 - 64k port limitation per IP address on Linux - how do we scale horizontally?
 - sandbox node instances?
-- Add SSL support
 
 - Push apps to local git repos
 git remote add nodefu /usr/local/src/nodefu/apps/7-46e95eaa00d2785e6c73e5a4fc25d88c.git
