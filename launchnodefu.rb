@@ -3,6 +3,7 @@ require 'rubygems'
 require 'net/http'
 require 'json'
 
+# Couch DB Commands
 module Couch
 
   class Server
@@ -51,6 +52,19 @@ module Couch
   end
 end
 
+# Kill all node processes
+`killall node`
+
+
+# Launch NodeFu
+child_pid = fork do
+  `nodemon proxy.js`
+  # `nodemon app.js`  
+end
+Process.detach(child_pid)
+
+
+# Launch Apps 
 server = Couch::Server.new("nodefu.couchone.com", "80")
 
 res = server.get('/apps/_design/nodeapps/_view/all')
@@ -72,6 +86,8 @@ dbdata["rows"].each do |app|
   
   
 end
+
+puts "NodeFu launched - HiYah!"
 
 exit
 # res = server.put("/imsms/phonosdk", '{ "jid":"' + jid.to_s + '", "_rev":"' + dbdata["_rev"].to_s + '" }')

@@ -90,6 +90,22 @@ myapp.post('/user', function(req, res, next){
 
 });
 
+// Status API
+// http://localhost:8080/status 
+// curl http://localhost:8080/status
+myapp.get('/status', function(req, res, next){
+
+	var Nodeport = CouchClient("http://nodefu.couchone.com:80/nextport");
+	Nodeport.get('port', function (err, doc) {
+		var appsrunning = (doc.address - 8000).toString();
+		
+		res.writeHead(200, { 'Content-Type': 'application/json' });
+		res.write('{status : "up", appsrunning : "' +  appsrunning + '"}');
+	  	res.end();
+	});
+});
+
+
 // api.localhost requires basic auth to access this section
 
 // Delete your user account 
@@ -259,34 +275,34 @@ myapp.delete('/app', function(req, res, next){
 	});
 });
 
+// // Status API
+// // http://chris:123@api.localhost:8080/status 
+// // curl -u "testuser:123" http://api.localhost:8080/status
+// myapp.get('/status', function(req, res, next){
+// 
+// 	var user
+// 	authenticate(req.headers.authorization, function(user){
+// 	
+// 		if(user){
+// 			
+// 			var Nodeport = CouchClient("http://nodefu.couchone.com:80/nextport");
+// 			Nodeport.get('port', function (err, doc) {
+// 				var appsrunning = (doc.address - 8000).toString();
+// 				
+// 				res.writeHead(200, { 'Content-Type': 'application/json' });
+// 				res.write('{status : "up", appsrunning : "' +  appsrunning + '"}');
+// 			  	res.end();
+// 			});
+// 			
+// 		} else {
+// 			// basic auth didn't match account
+// 			res.writeHead(400, { 'Content-Type': 'application/json' });
+// 			res.write('{status : "failure - authentication"}');
+// 		  	res.end();
+// 		};
+// 	});
+// });
 
-// Status API
-// http://chris:123@api.localhost:8080/status 
-// curl -u "testuser:123" http://api.localhost:8080/status
-myapp.get('/status', function(req, res, next){
-
-	var user
-	authenticate(req.headers.authorization, function(user){
-	
-		if(user){
-			
-			var Nodeport = CouchClient("http://nodefu.couchone.com:80/nextport");
-			Nodeport.get('port', function (err, doc) {
-				var appsrunning = (doc.address - 8000).toString();
-				
-				res.writeHead(200, { 'Content-Type': 'application/json' });
-				res.write('{status : "up", appsrunning : "' +  appsrunning + '"}');
-			  	res.end();
-			});
-			
-		} else {
-			// basic auth didn't match account
-			res.writeHead(400, { 'Content-Type': 'application/json' });
-			res.write('{status : "failure - authentication"}');
-		  	res.end();
-		};
-	});
-});
 
 // myapp.get('/list/:id.:format?', function(req, res, next){
 // 	

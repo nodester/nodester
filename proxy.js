@@ -24,7 +24,7 @@ var app = spawn('node', ['app.js']);
 var Nodefu = CouchClient("http://nodefu.couchone.com:80/apps");
 
 // Launch all nodefu hosted apps
-spawn('ruby', ['launchapps.rb']);
+// spawn('ruby', ['launchapps.rb']);
 
 // NODEJS ISSUE WITH TOO MANY OPEN FILES
 // Nodefu.view('/apps/_design/nodeapps/_view/all', {}, function(err, doc) {

@@ -3,22 +3,32 @@ NodeFu (http://nodefu.com) = Node.js Hosting Services
 This is an *experimental* service for managing hosted nodejs apps.  It consists of an API that allows developers to create and manage nodejs apps.  Node apps are assigned subdomains that proxy to ports with an assigned address.  Instances (dynos) are launched using Forever so that they run until you stop them or using Nodemon where they run until a file changes from a git update.
 
 Dependencies:
-Node.js and the following NPM modules: http-proxy, express, node-base64, couch-client, forever?, nodemon?, fugue?
+Node.js and the following NPM modules: http-proxy, express, node-base64, couch-client, nodemon
 CouchDB instance or CouchOne account
 Git
 
 Get Started:
-Launch proxy.js to start services and it will launch app.js (node proxy.js) (consider using nodemon to restart app on file changes)
-- forever start proxy.js (launches proxy server redirecting port 8080 traffic to appropriate node app)
-- proxy performs forever start app.js (launches API on port 4000 for creating and managing node apps)
+ruby launchnodefu.rb 
+This small Ruby script launches proxy.js to start services and it will launch app.js 
+- proxy.js launches proxy server redirecting port 8080 traffic to appropriate node app
+- proxy launches app.js on port 4000 for creating and managing node apps
+
 
 API Documentation:
 
-USERS
-/register - creates user account (pass in user and password and email) - Note: This resource does not use the api subdomain
+COUPON
+/coupon - creates coupon request for early access (pass in email) - <b>Note: This resource does not use base api url
+curl -X POST -d "email=chris@nodefu.com" http://localhost:8080/coupon
+
+STATUS
+/status - returns status of the platform and number of nodejs apps running
+// curl http://api.localhost:8080/status
+
+USER
+/user - creates user account (pass in user and password and email) - Note: This resource does not use the api subdomain
 curl -X POST -d "user=testuser&password=123&email=chris@nodefu.com" http://localhost:8080/user
 
-/destroy - delete user account (requires basic auth)
+/user - delete user account (requires basic auth)
 curl -X DELETE -u "testuser:123" http://api.localhost:8080/user
 
 APP
@@ -31,8 +41,6 @@ curl -X PUT -u "testuser:123" -d "appname=a&start=hello1.js" http://api.localhos
 /app - delete nodejs app (requires basic auth and appname)
 curl -X DELETE -u "testuser:123" -d "appname=test" http://api.localhost:8080/app
 
-/status - returns status of the platform and number of nodejs apps running (requires basic auth and appname)
-// curl -u "testuser:123" http://api.localhost:8080/status
 
 
 Testing:
