@@ -3,8 +3,21 @@
 # cd ..
 gitdirsuffix=${PWD##*/}
 gitdir=${gitdirsuffix%.git}
+
+if [ -d "../$gitdir" ]
+then
+
+cd ../$gitdir
+
+unset GIT_DIR
+git pull 
+exec git-update-server-info
+
+fi
+
+if [ ! -d "../$gitdir" ]
+then
+
 git clone . ../$gitdir/
 
-#nodemon startfile.js
-
-
+fi

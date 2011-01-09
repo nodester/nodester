@@ -12,7 +12,7 @@ var express = require('express');
 var url = require('url');
 var base64_decode = require('base64').decode;
 var crypto = require('crypto');
-var app = express.createServer();
+var myapp = express.createServer();
 var sys = require('sys');
 var CouchClient = require('couch-client');
 var spawn = require('child_process').spawn;
@@ -20,9 +20,9 @@ var spawn = require('child_process').spawn;
 var valuser
 
 
-app.configure(function(){
-	app.use(express.bodyDecoder()); // needed to process post data
-	app.use(express.staticProvider(__dirname + '/public')); // needed to process static pages
+myapp.configure(function(){
+	myapp.use(express.bodyDecoder()); // needed to process post data
+	myapp.use(express.staticProvider(__dirname + '/public')); // needed to process static pages
 });
 
 // Fake DB items - TODO: Implement CouchDB or Mongo
@@ -34,48 +34,67 @@ app.configure(function(){
 	
 // Routes
 // Homepage
-app.get('/', function(req, res, next){
-  // res.writeHead(200, { 'Content-Type': 'text/html' });
-  // res.write('<h1>NodeFu - HiYa!<br/>Opensource Node.js Hosting services!</h1>');
-  // res.write('<p>Visit <a href="http://chris:123@api.localhost:8080/status">http://chris:123@api.localhost:8080/status</a></p>');
-  // res.write('<p>Visit /list/2</p>');
-  // res.write('<p>Visit /list/2.json</p>');
-  // res.write('<p>Visit /list/2.xml</p>');
-  // res.end();
-res.render('index.html');
+myapp.get('/', function(req, res, next){
+	res.render('index.html');
+});
+
+// New coupon request
+// curl -X POST -d "email=chris@nodefu.com" http://localhost:8080/coupon
+myapp.post('/coupon', function(req, res, next){
+
+	var email = req.param("email");	
+	var Nodefu = CouchClient("http://nodefu.couchone.com:80/coupons");
+
+	Nodefu.save({email: email}, function (err, doc) {sys.puts(JSON.stringify(doc));});
+	res.writeHead(200, { 'Content-Type': 'application/json' });
+	res.write('{status : "success - bow to your sensei"}');
+	res.end();
 
 });
 
+
 // New user account registration
-// curl -X POST -d "user=testuser&password=123" http://localhost:8080/register
-app.post('/register', function(req, res, next){
+// curl -X POST -d "user=testuser&password=123&email=chris@nodefu.com&coupon=hiyah" http://localhost:8080/user
+// curl -X POST -d "user=me&password=123&coupon=hiyah" http://localhost:8080/user
+myapp.post('/user', function(req, res, next){
 
 	var newuser = req.param("user");
 	var newpass = req.param("password");
-
-	var Nodefu = CouchClient("http://nodefu.couchone.com:80/nodefu");
+	var email = req.param("email");
+	var coupon = req.param("coupon");
 	
-	// Check to see if account exists
-	Nodefu.get(newuser, function (err, doc) {
-		if (doc){
-			// account already registered
-			res.writeHead(400, { 'Content-Type': 'application/json' });
-			res.write('{status : "failure - account exists"}');
-			res.end();
-		} else {
-			Nodefu.save({_id: newuser, password: md5(newpass)}, function (err, doc) {sys.puts(JSON.stringify(doc));});
-			res.writeHead(200, { 'Content-Type': 'application/json' });
-			res.write('{status : "success"}');
-			res.end();
-		}
-	});
+	if(coupon == 'hiyah') {
+
+		var Nodefu = CouchClient("http://nodefu.couchone.com:80/nodefu");
+	
+		// Check to see if account exists
+		Nodefu.get(newuser, function (err, doc) {
+			if (doc){
+				// account already registered
+				res.writeHead(400, { 'Content-Type': 'application/json' });
+				res.write('{status : "failure - account exists"}');
+				res.end();
+			} else {
+				Nodefu.save({_id: newuser, password: md5(newpass), email: email}, function (err, doc) {sys.puts(JSON.stringify(doc));});
+				res.writeHead(200, { 'Content-Type': 'application/json' });
+				res.write('{status : "success"}');
+				res.end();
+			}
+		});
+
+	} else {
+		res.writeHead(500, { 'Content-Type': 'application/json' });
+		res.write('{status : "failure - invalid coupon"}');
+		res.end();
+	};
+
 });
 
 // api.localhost requires basic auth to access this section
 
 // Delete your user account 
-// curl -X DELETE -u "testuser:123" http://api.localhost:8080/destroy
-app.delete('/destroy', function(req, res, next){
+// curl -X DELETE -u "testuser:123" http://api.localhost:8080/user
+myapp.delete('/user', function(req, res, next){
 
 	var user
 	authenticate(req.headers.authorization, function(user){
@@ -99,7 +118,7 @@ app.delete('/destroy', function(req, res, next){
 
 // Create node app 
 // curl -X POST -u "testuser:123" -d "appname=test&start=hello.js" http://api.localhost:8080/apps
-app.post('/apps', function(req, res, next){
+myapp.post('/app', function(req, res, next){
 
 	var user
 	authenticate(req.headers.authorization, function(user){
@@ -129,7 +148,7 @@ app.post('/apps', function(req, res, next){
 							sys.puts(JSON.stringify(doc));
 							
 							// Setup git repo
-							var gitsetup = spawn('./gitreposetup.sh', [doc._rev]);
+							var gitsetup = spawn('./gitreposetup.sh', [doc._rev, start]);
 							// Respond to API request
 							res.writeHead(200, { 'Content-Type': 'application/json' });
 							res.write('{status : "success", port : "' + appport + '", git : "/usr/local/src/nodefu/apps/' + doc._rev + '.git"}');
@@ -153,7 +172,7 @@ app.post('/apps', function(req, res, next){
 
 // Update node app 
 // curl -X PUT -u "testuser:123" -d "appname=test&start=hello.js" http://api.localhost:8080/apps
-app.put('/apps', function(req, res, next){
+myapp.put('/app', function(req, res, next){
 
 	var user
 	authenticate(req.headers.authorization, function(user){
@@ -203,7 +222,7 @@ app.put('/apps', function(req, res, next){
 
 // Delete your nodejs app 
 // curl -X DELETE -u "testuser:123" -d "appname=test" http://api.localhost:8080/apps
-app.delete('/apps', function(req, res, next){
+myapp.delete('/app', function(req, res, next){
 
 	var user
 	var appname = req.param("appname");
@@ -244,25 +263,32 @@ app.delete('/apps', function(req, res, next){
 // Status API
 // http://chris:123@api.localhost:8080/status 
 // curl -u "testuser:123" http://api.localhost:8080/status
-app.get('/status', function(req, res, next){
+myapp.get('/status', function(req, res, next){
 
 	var user
 	authenticate(req.headers.authorization, function(user){
 	
 		if(user){
-			res.writeHead(200, { 'Content-Type': 'application/json' });
-			res.write('{status : "success", user : "' +  user._id + '"}');
-		  	res.end();
+			
+			var Nodeport = CouchClient("http://nodefu.couchone.com:80/nextport");
+			Nodeport.get('port', function (err, doc) {
+				var appsrunning = (doc.address - 8000).toString();
+				
+				res.writeHead(200, { 'Content-Type': 'application/json' });
+				res.write('{status : "up", appsrunning : "' +  appsrunning + '"}');
+			  	res.end();
+			});
+			
 		} else {
 			// basic auth didn't match account
 			res.writeHead(400, { 'Content-Type': 'application/json' });
-			res.write('{status : "failure"}');
+			res.write('{status : "failure - authentication"}');
 		  	res.end();
 		};
 	});
 });
 
-// app.get('/list/:id.:format?', function(req, res, next){
+// myapp.get('/list/:id.:format?', function(req, res, next){
 // 	
 // 	// sys.puts(base64_decode(req.headers.authorization.substring(req.headers.authorization.indexOf(" ") + 1 )));
 // 	// sys.puts(req.headers.authorization);
@@ -303,9 +329,9 @@ app.get('/status', function(req, res, next){
 
 // Middleware
 
-app.use(express.errorHandler({ showStack: true }));
+myapp.use(express.errorHandler({ showStack: true }));
 
-app.listen(4000); 
+myapp.listen(4000); 
 // fugue.start(app, 4000, null, 1, {verbose : true}); // Start with Fugue
 
 console.log('NodeFu app started on port 4000');

@@ -15,27 +15,24 @@ Launch proxy.js to start services and it will launch app.js (node proxy.js) (con
 API Documentation:
 
 USERS
-/register - creates user account (pass in user and password)
-curl -X POST -d "user=testuser&password=123" http://localhost:8080/register
+/register - creates user account (pass in user and password and email) - Note: This resource does not use the api subdomain
+curl -X POST -d "user=testuser&password=123&email=chris@nodefu.com" http://localhost:8080/user
 
 /destroy - delete user account (requires basic auth)
-curl -X DELETE -u "testuser:123" http://api.localhost:8080/destroy
+curl -X DELETE -u "testuser:123" http://api.localhost:8080/user
 
-APPS
-/apps - create nodejs app for hosting (requires basic auth and returns the port address required for use along with a git repo to push to)
-curl -X POST -u "testuser:123" -d "appname=a&start=hello.js" http://api.localhost:8080/apps
+APP
+/app - create nodejs app for hosting (requires basic auth and returns the port address required for use along with a git repo to push to)
+curl -X POST -u "testuser:123" -d "appname=a&start=hello.js" http://api.localhost:8080/app
 
-/apps - update nodejs app for hosting (requires basic auth, appname, and starting page and returns the port address required for use along with a git repo to push to)
-curl -X PUT -u "testuser:123" -d "appname=a&start=hello1.js" http://api.localhost:8080/apps
+/app - update nodejs app for hosting (requires basic auth, appname, and starting page and returns the port address required for use along with a git repo to push to)
+curl -X PUT -u "testuser:123" -d "appname=a&start=hello1.js" http://api.localhost:8080/app
 
-/apps - delete nodejs app (requires basic auth and appname)
-curl -X DELETE -u "testuser:123" -d "appname=test" http://api.localhost:8080/apps
+/app - delete nodejs app (requires basic auth and appname)
+curl -X DELETE -u "testuser:123" -d "appname=test" http://api.localhost:8080/app
 
-
-NodeFu Create = Inputs (basicauth, appname) / Outputs (status, appid, port)
-NodeFu Start = Inputs (basicauth, appid, dynos) / Outputs (status)
-NodeFu Stop = Inputs (basicauth, appid, dynos) / Outputs (status)
-NodeFu Status = Inputs (basicauth) / Outputs ([appid, status])
+/status - returns status of the platform and number of nodejs apps running (requires basic auth and appname)
+// curl -u "testuser:123" http://api.localhost:8080/status
 
 
 Testing:
@@ -50,9 +47,12 @@ http://chris:123@api.localhost:8080/status = API to list status of all node apps
 http://chris:123@api.localhost:8080/list/2.json = API TBD
 
 
+Maintenance:
+Run "ruby installmodules.rb" periodically to install and update all NPM modules on system. 
+
+
 Todos:
-- write routine to install all NPM modules on server (http://registry.npmjs.org/ - json list)
-- add rsa keys for git
+- add rsa keys for git?
 - Find a better way to interact with forever as an API (on clone, kill process - new one restarts << consider using nodemon)
 - add ability to control number of instances
 - Add Command Line Interface
