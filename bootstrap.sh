@@ -77,31 +77,33 @@ echo 'gem: --no-ri --no-rdoc' > /root/.gemrc
 sudo rpm -Uvh http://download.fedora.redhat.com/pub/epel/5/i386/epel-release-5-4.noarch.rpm
 
 
-cd /tmp ;
-wget http://kernel.org/pub/software/scm/git/git-1.7.3.5.tar.bz2 ;
-bzip2 -d git-1.7.3.5.tar.bz2 ;
-tar xvf git-1.7.3.5.tar;
-cd git-* ;
-make;
-make install ;
+# yum install git-core
+cd /tmp 
+wget http://kernel.org/pub/software/scm/git/git-1.7.3.5.tar.bz2 
+bzip2 -d git-1.7.3.5.tar.bz2 
+tar xvf git-1.7.3.5.tar
+cd git-* 
+./configure
+make prefix=/usr install
+# make install 
 
 
-curl -O http://production.cf.rubygems.org/rubygems/rubygems-1.4.1.tgz
+# curl -O http://production.cf.rubygems.org/rubygems/rubygems-1.4.1.tgz
+wget http://production.cf.rubygems.org/rubygems/rubygems-1.4.1.tgz
 tar xfz rubygems-1.4.1.tgz
-ruby rubygems-1.4.1/setup.rb
+/usr/local/bin/ruby setup.rb
 
 gem install chef ohai --no-rdoc --no-ri
-
 mkdir /etc/chef
 chown root:root /etc/chef
 
-cd /tmp ;
-wget http://nodejs.org/dist/node-v0.3.4.tar.gz;
-tar -zxvf node-v0.3.4.tar.gz;
-cd node* ;
-./configure;
-make;
-make install ;
+cd /tmp 
+wget http://nodejs.org/dist/node-v0.3.4.tar.gz
+tar -zxvf node-v0.3.4.tar.gz
+cd node* 
+./configure
+make
+make install 
 
 
 echo "Installation completed."
