@@ -74,10 +74,14 @@ nodefudir = Dir.pwd
 dbdata["rows"].each do |app|
   begin
     child_pid = fork do
-      Dir.chdir("apps/#{app["value"]["_rev"]}")
-      `nodemon #{app["value"]["start"]}`
-      Dir.chdir("../..")
-      puts app["value"]["_id"] + ' : ' + app["value"]["_rev"]  + ' : ' + app["value"]["start"] 
+      begin
+        Dir.chdir("apps/#{app["value"]["_rev"]}") 
+        `nodemon #{app["value"]["start"]}`
+        Dir.chdir("../..")
+        puts app["value"]["_id"] + ' : ' + app["value"]["_rev"]  + ' : ' + app["value"]["start"] 
+      rescue Exception => e
+        Dir.chdir(nodefudir)
+      end
     end
     Process.detach(child_pid)
   rescue Exception => e
