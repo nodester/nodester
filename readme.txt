@@ -3,7 +3,7 @@ NodeFu (http://nodefu.com) = Node.js Hosting Platform
 This is an *experimental* service for managing hosted nodejs apps.  It consists of an API that allows developers to create and manage nodejs apps.  Node apps are assigned subdomains that proxy to ports with an assigned address.  Instances (dynos) are launched using Forever so that they run until you stop them or using Nodemon where they run until a file changes from a git update.
 
 Dependencies:
-Node.js and the following NPM modules: http-proxy, express, node-base64, couch-client, nodemon
+Node.js and the following NPM modules: http-proxy, express, node-base64, couch-client, nodemon (https://github.com/substack/node-base64)
 CouchDB instance or CouchOne account
 Git
 
