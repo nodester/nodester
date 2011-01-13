@@ -81,8 +81,8 @@ httpProxy.createServer(function (req, res, proxy) {
 		proxy.proxyRequest(4000, 'localhost');	  
 	};
 	
-}).listen(80); // Use port 80 in production
-sys.puts('NodeFu started on port 80');
+}).listen(8080); // Use port 80 in production
+sys.puts('NodeFu started on port 8080');
 
 process.on('uncaughtException', function (err) {
     console.log(err);
