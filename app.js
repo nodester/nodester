@@ -347,10 +347,10 @@ myapp.delete('/app', function(req, res, next){
 
 myapp.use(express.errorHandler({ showStack: true }));
 
-myapp.listen(4000); 
-// fugue.start(app, 4000, null, 1, {verbose : true}); // Start with Fugue
+myapp.listen(4001); 
+// fugue.start(app, 4001, null, 1, {verbose : true}); // Start with Fugue
 
-console.log('NodeFu app started on port 4000');
+console.log('NodeFu app started on port 4001');
 
 
 function authenticate(basicauth, callback){

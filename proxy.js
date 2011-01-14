@@ -64,7 +64,7 @@ httpProxy.createServer(function (req, res, proxy) {
 				res.end('password?\n');
 			} else {
 				// Redirect to Nodefu's home page if no credentials are provided
-			  	proxy.proxyRequest(4000, 'localhost');
+			  	proxy.proxyRequest(4001, 'localhost');
 			};
 		// };
 		
@@ -78,11 +78,11 @@ httpProxy.createServer(function (req, res, proxy) {
 		
 	} else {
 		// redirect to Nodefu's home page
-		proxy.proxyRequest(4000, 'localhost');	  
+		proxy.proxyRequest(4001, 'localhost');	  
 	};
 	
-}).listen(80); // Use port 80 in production
-sys.puts('NodeFu started on port 80');
+}).listen(4000); // Use port 80 in production
+sys.puts('NodeFu started on port 4000');
 
 process.on('uncaughtException', function (err) {
     console.log(err);
