@@ -167,7 +167,7 @@ myapp.post('/app', function(req, res, next){
 							var gitsetup = spawn('./gitreposetup.sh', [doc._rev, start]);
 							// Respond to API request
 							res.writeHead(200, { 'Content-Type': 'application/json' });
-							res.write('{status : "success", port : "' + appport + '", git : "/usr/local/src/nodefu/apps/' + doc._rev + '.git"}');
+							res.write('{status : "success", port : "' + appport + '", git : "git:nodefu.com/nodefu/apps/' + doc._rev + '.git"}');
 							res.end();
 
 						});

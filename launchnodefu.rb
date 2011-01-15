@@ -58,8 +58,16 @@ end
 
 # Launch NodeFu
 child_pid = fork do
-  `nodemon proxy.js`
+  # `nodemon proxy.js`
+  
+  # Must be started with SUDO to run on port 80
+  `sudo sh -c "/usr/local/bin/node proxy.js"`
   # `nodemon app.js`  
+end
+Process.detach(child_pid)
+
+child_pid = fork do
+  `nodemon app.js`  
 end
 Process.detach(child_pid)
 
