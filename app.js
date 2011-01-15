@@ -169,7 +169,7 @@ myapp.post('/app', function(req, res, next){
 							// Respond to API request
 							res.writeHead(200, { 'Content-Type': 'application/json' });
 							// res.write('{status : "success", port : "' + appport + '", gitrepo : "git@www.nodefu.com:nodefu/apps/' + doc._rev + '.git"}');
-							res.write('{status : "success", port : "' + appport + '", gitrepo : "git@www.nodefu.com:nodefu/apps/' + appname + '.git"}');
+							res.write('{status : "success", port : "' + appport + '", gitrepo : "ec2-user@www.nodefu.com:nodefu/apps/' + appname + '.git"}');
 							res.end();
 
 						});
@@ -216,7 +216,7 @@ myapp.put('/app', function(req, res, next){
 						// Respond to API request
 						res.writeHead(200, { 'Content-Type': 'application/json' });
 						// res.write('{status : "success", port : "' + doc.port + '", git : "/usr/local/src/nodefu/apps/' + doc._rev + '.git"}');
-						res.write('{status : "success", port : "' + doc.port + '", gitrepo : "git@www.nodefu.com:nodefu/apps/' + appname + '.git"}');
+						res.write('{status : "success", port : "' + doc.port + '", gitrepo : "ec2-user@www.nodefu.com:nodefu/apps/' + appname + '.git"}');
 						res.end();
 
 					});
