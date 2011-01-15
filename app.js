@@ -45,7 +45,7 @@ myapp.post('/coupon', function(req, res, next){
 	var email = req.param("email");	
 	var Nodefu = CouchClient("http://nodefu.couchone.com:80/coupons");
 
-	Nodefu.save({email: email}, function (err, doc) {sys.puts(JSON.stringify(doc));});
+	Nodefu.save({_id: email}, function (err, doc) {sys.puts(JSON.stringify(doc));});
 	res.writeHead(200, { 'Content-Type': 'application/json' });
 	res.write('{status : "success - bow to your sensei"}');
 	res.end();
@@ -164,10 +164,12 @@ myapp.post('/app', function(req, res, next){
 							sys.puts(JSON.stringify(doc));
 							
 							// Setup git repo
-							var gitsetup = spawn('./gitreposetup.sh', [doc._rev, start]);
+							// var gitsetup = spawn('./gitreposetup.sh', [doc._rev, start]);
+							var gitsetup = spawn('./gitreposetup.sh', [appname, start]);
 							// Respond to API request
 							res.writeHead(200, { 'Content-Type': 'application/json' });
-							res.write('{status : "success", port : "' + appport + '", git : "git:nodefu.com/nodefu/apps/' + doc._rev + '.git"}');
+							// res.write('{status : "success", port : "' + appport + '", gitrepo : "git@www.nodefu.com:nodefu/apps/' + doc._rev + '.git"}');
+							res.write('{status : "success", port : "' + appport + '", gitrepo : "git@www.nodefu.com:nodefu/apps/' + appname + '.git"}');
 							res.end();
 
 						});
@@ -204,15 +206,17 @@ myapp.put('/app', function(req, res, next){
 					
 					// subdomain found 
 					// update the app
-					Nodefu.save({_id: appname, start: start, port: doc.port, username: user._id }, function (err, doc) {
+					// Nodefu.save({_id: appname, start: start, port: doc.port, username: user._id }, function (err, doc) {
+					Nodefu.save({start: start, port: doc.port, username: user._id }, function (err, doc) {
 						sys.puts(JSON.stringify(doc));
 						
 						// Setup git repo
-						var gitsetup = spawn('./gitreposetup.sh', [doc._rev]);
+						// var gitsetup = spawn('./gitreposetup.sh', [doc._rev]);
 						
 						// Respond to API request
 						res.writeHead(200, { 'Content-Type': 'application/json' });
-						res.write('{status : "success", port : "' + doc.port + '", git : "/usr/local/src/nodefu/apps/' + doc._rev + '.git"}');
+						// res.write('{status : "success", port : "' + doc.port + '", git : "/usr/local/src/nodefu/apps/' + doc._rev + '.git"}');
+						res.write('{status : "success", port : "' + doc.port + '", gitrepo : "git@www.nodefu.com:nodefu/apps/' + appname + '.git"}');
 						res.end();
 
 					});

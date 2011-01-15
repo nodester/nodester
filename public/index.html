@@ -40,7 +40,7 @@ curl -X POST -d "email=chris@nodefu.com" http://nodefu.com/coupon</p>
 <h3>STATUS</h3>
 <p><b>Get Status :: GET</b></p>
 <p>/status - Returns platform status and number of apps running<br/>
-curl http://localhost:8080/status</p>
+curl http://nodefu.com/status</p>
 
 <h3>USER</h3>
 <p><b>Register User :: POST</b></p>
@@ -70,7 +70,7 @@ curl -X DELETE -u "testuser:123" -d "appname=test" http://api.nodefu.com/app</p>
 
 
 <h3>GIT</h3>
-<p>Upon creating or changing your application via our API, you will receive a Git URL in our API response.  Add a NodeFu remote to your project as follow:</p>
+<p>Upon creating or changing your application via our API, you will receive a Git URL in our API response.  Add a NodeFu remote to your project as follows:</p>
 <p><b>git remote add nodefu the_url_returned_by_our_api</b></p>
 <p>Finally push your updates to your new NodeFu environment as follows:</p>
 <p><b>git push nodefu master</b></p>
