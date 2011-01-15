@@ -82,11 +82,11 @@ dbdata["rows"].each do |app|
     child_pid = fork do
       begin
         # Dir.chdir("apps/#{app["value"]["_rev"]}") 
-        Dir.chdir("apps/#{app["value"]["appname"]}") 
+        Dir.chdir("apps/#{app["value"]["_id"]}") 
         `nodemon #{app["value"]["start"]}`
         Dir.chdir("../..")
         # puts app["value"]["_id"] + ' : ' + app["value"]["_rev"]  + ' : ' + app["value"]["start"] 
-        puts app["value"]["_id"] + ' : ' + app["value"]["appname"]  + ' : ' + app["value"]["start"] 
+        puts app["value"]["_id"] + ' : ' + app["value"]["_id"]  + ' : ' + app["value"]["start"] 
       rescue Exception => e
         Dir.chdir(nodefudir)
       end
