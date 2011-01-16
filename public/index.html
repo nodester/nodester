@@ -11,28 +11,57 @@ Download: http://www.spyka.net/web-templates/ablaze/
 
 License: Creative Commons Attribution
 //-->
+
+<script type="text/javascript" src="/jquery-1.4.4.min.js"></script>
+<script type="text/javascript" src="/thickbox.js"></script>
+
+<link rel="stylesheet" href="/thickbox.css" type="text/css" />
+
 </head>
 
 <body>
+	 
+	<div id="hiddenModalContent" style="display:none"> 
+		<h3>Did you get your coupon code? - <a href="#" onclick="tb_remove()">No?</a></p></h3>
+		<fieldset>
+
+			<form action="http://www.nodefu.com/user" method="post">
+				<p><label for="name">Coupon:</label>
+				<input type="text" name="coupon" id="coupon" value="" /><br />		
+				<label for="name">Username:</label>
+				<input type="text" name="user" id="user" value="" /><br />		
+				<label for="name">Password:</label>
+				<input type="password" name="password" id="password" value="" /><br />		
+				<label for="email">Email:</label>
+				<input type="text" name="email" id="email" value="" /><br />
+				<label for="rsakey">Public RSA Key:<br/>
+					(Copy & Paste RSA key from command line by typing:<br/>"cat ~/.ssh/id_rsa.pub | pbcopy")
+					</label>	
+				<textarea cols="60" rows="8" name="rsakey" id="rsakey"></textarea><br />
+				<input type="submit" name="send" class="formbutton" value="Send" />
+			</form>
+
+		</fieldset>
+	 
+	</div>
+	
 	<div id="wrapper">
 		<div id="sitename">
-			<h1><a href="#">Node<strong>Fu</strong></a></h1>
+			<h1><img src="images/ninjasmall.png" align="left"><a href="#">Node<strong>Fu</strong></a></h1>
 		</div>
        <div id="nav">
 			<ul>
 				<li class="selected"><a href="/"><span>Home</span></a></li>
-                <li><a href="/"><span>Blog</span></a></li>
-				<!-- <li><a href="examples.html"><span>Examples</span></a></li>
-				<li><a href="#"><span>Solutions</span></a></li>
-				<li><a href="#"><span>Contact</span></a></li> -->
+                <li><a href="#TB_inline?height=400&width=600&inlineId=hiddenModalContent&modal=true" class="thickbox"><span>Register</span></a></li>
+                <li><a href="/api.html"><span>API</span></a></li>
+                <li><a href="/blog.html"><span>Blog</span></a></li>
 			</ul>
 		</div>
 
 		<div id="header" class="clear">
-			<img src="images/ninjasmall.png" align="left" width="100">
-			<h2>Node.JS Opensource Hosting Platform!</h2><br/>
+			<h2><center>Node.js Open Source Hosting Platform!</center></h2><br/>
 			
-			<div class="tagline"><p>Deploy your Node.JS applications on NodeFu for FREE!  NodeFu is an opensource Node.JS hosting platform with a RESTful API running on Amazon EC2. </p></div>
+			<div class="tagline"><p>Deploy your Node.js applications on NodeFu for FREE!  NodeFu is an open source Node.JS hosting platform with a RESTful API running in the cloud on Amazon EC2. </p></div>
 		</div>
         
 		<div id="body" class="clear">
@@ -42,11 +71,11 @@ License: Creative Commons Attribution
 						<h4>API</h4>
                         <ul class="blocklist">
                             <!-- <li class="selected-item"><a href="index.html">Home</a></li> -->
-                            <li><a href="#coupon">Coupon Request</a></li>
-                            <li><a href="#status">API Status</a></li>
-                            <li><a href="#user">User Resource</a></li>
-                            <li><a href="#app">App Resource</a></li>
-                            <li><a href="#git">Git Resources</a></li>
+                            <li><a href="/api.html#coupon">Coupon Request</a></li>
+                            <li><a href="/api.html#status">API Status</a></li>
+                            <li><a href="/api.html#user">User Resource</a></li>
+                            <li><a href="/api.html#app">App Resource</a></li>
+                            <li><a href="/api.html#git">Git Resources</a></li>
                         </ul>
 
 					</li>	
@@ -60,67 +89,18 @@ License: Creative Commons Attribution
 				</ul>
 			</div>
 			<div id="content" class="column-right">
-                <h2>Introduction</h2>
-                <p>We are currently running Node v.0.3.4 and updating all of the NPM modules on a weekly basis. Git is required to push your updates to Nodefu. We do not currently have a full featured website as we are focusing on the API and the service. All we ask is that you be a good steward of this service and community.</p>	
-                
-				<p>You can access our source code repository at <a href="http://github.com/chrismatthieu/nodefu">http://github.com/chrismatthieu/nodefu</a></p> 
+                <h2>Welcome to the Ninja Node.js Dojo!</h2>
+                <p>We do not currently have a full featured website as we are focusing on the API and the service. We are currently running Node v.0.3.4 and updating all NPM modules on a weekly basis. Git is required to push your updates to Nodefu. All we ask is that you be a good steward of our service and community.</p>	
+                <h3>Wanna join our Dojo? Request a coupon via cURL & Kata</h3>
+				<code>curl -X POST -d "email=chris@nodefu.com" http://www.nodefu.com/coupon</code>
 
-				<hr/>
-				<h2>Base URL: http://www.nodefu.com</h2> 
-				<hr/>
-
-				<a name="coupon"></a>
-				<h3>COUPON</h3> 
-				<p><b>Request Coupon :: POST</b></p> 
-				<p>/coupon - creates coupon request for early access (pass in email) - <b>Note: This resource does not use base api url</b><br/> 
-				curl -X POST -d "email=chris@nodefu.com" http://www.nodefu.com/coupon</p> 
-
-				<a name="status"></a>
-				<h3>STATUS</h3> 
-				<p><b>Get Status :: GET</b></p> 
-				<p>/status - Returns platform status and number of apps running<br/> 
-				curl http://www.nodefu.com/status</p> 
-
-				<a name="user"></a>
-				<h3>USER</h3> 
-				<p><b>Register User :: POST (Coupon is required.)</b></p> 
-				<p>/user - creates user account (pass in user and password and email and id_rsa.pub string) - <b>Note: This resource does not use base api url</b><br/> 
-				curl -X POST -d "user=testuser&password=123&email=chris@nodefu.com&rsakey=ssh-rsa AAAAB3NzaC1yc..." http://www.nodefu.com/user</p> 
-
-
-				<hr/>
-				<h2>Base URL: http://api.nodefu.com</h2> 
-				<hr/>
-
-				<p><b>Delete User :: DELETE</b></p> 
-				<p>/user - delete user account (requires basic auth)<br/> 
-				curl -X DELETE -u "testuser:123" http://api.nodefu.com/user</p> 
-
-				<a name="app"></a>
-				<h3>APP</h3> 
-				<p><b>Create Application :: POST</b></p> 
-				<p>/apps - create nodejs app for hosting (requires basic auth and returns the port address required for use along with a git repo to push to)<br/> 
-				curl -X POST -u "testuser:123" -d "appname=a&start=hello.js" http://api.nodefu.com/app</p> 
-
-				<p><b>Change Application :: PUT</b></p> 
-				<p>/apps - update nodejs app for hosting (requires basic auth, appname, and starting page and returns the port address required for use along with a git repo to push to)<br/> 
-				curl -X PUT -u "testuser:123" -d "appname=a&start=hello1.js" http://api.localhost:8080/app</p> 
-
-				<p><b>Delete Application :: DELETE</b></p> 
-				<p>/apps - delete nodejs app (requires basic auth and appname)<br/> 
-				curl -X DELETE -u "testuser:123" -d "appname=test" http://api.nodefu.com/app</p> 
-
-
-				<a name="git"></a>
-				<h3>GIT</h3> 
-				<p>Upon creating or changing your application via our API, you will receive a Git URL in our API response.  Add a NodeFu remote to your project as follows:</p> 
-				<p><b>git remote add nodefu the_url_returned_by_our_api</b></p> 
-				<p>Finally push your updates to your new NodeFu environment as follows:</p> 
-				<p><b>git push nodefu master</b></p> 
-				<p>Also make sure that you update your project's port address with the new one assigned by NodeFu.</p> 
-				<br/> 
-				<h3>SUPPORT</h3> 
-				<p>You can contact us at support [at] nodefu.com</p> 
+				<h3>Deployment is Easy - Create & Git Push!</h3> 
+				<ol>
+					<li> curl -X POST -u "testuser:123" -d "appname=myapp&start=hello.js" http://api.nodefu.com/app</li>
+					<li> git remote add nodefu the_url_returned_by_our_api</li>
+					<li> git push nodefu master</li>
+				</ol>
+				<code><b>Visit your app at http://myapp.nodefu.com</b></code>
 			</div>
 		</div>
 	</div>
@@ -128,15 +108,15 @@ License: Creative Commons Attribution
           <div class="footer-content">
 
             <div class="footer-box">
-                <h4>About our site</h4>
+                <h4>About Us</h4>
     
                 <p>
-                    Morbi fermentum, nunc id pellentesque blandit, lectus velit pellentesque nisl, a condimentum est velit sed nisi. Sed libero velit, eleifend nec porttitor a, porta quis leo. In hac habitasse platea dictumst. 
+                    We started this project because the "other" node.js hosting services were not sending out coupon invitations.  Now anyone can host node.js apps! You can access our source code repository at <a href="http://github.com/chrismatthieu/nodefu">http://github.com/chrismatthieu/nodefu</a>
                 </p>
             </div>
             
             <div class="footer-box">
-                <h4>Categories</h4>
+                <h4>Node.js News</h4>
 
                 <ul>
                   <li><a href="#">Lorem ipsum dolor sit amet.</a></li>
@@ -150,14 +130,13 @@ License: Creative Commons Attribution
             
             <div class="footer-box">
     
-                <h4>Network sites</h4>
+                <h4>Node.js Blogs</h4>
                 <ul>
-                    <li><a href="http://www.spyka.net" title="spyka Webmaster resources">spyka webmaster</a></li>
-                    <li><a href="http://www.justfreetemplates.com" title="free web templates">Free web templates</a></li>
-
-                    <li><a href="http://www.spyka.net/forums" title="webmaster forums">Webmaster forums</a></li>
-                    <li><a href="http://www.awesomestyles.com/mybb-themes" title="mybb themes">MyBB themes</a></li>
-                    <li><a href="http://www.awesomestyles.com" title="free phpbb3 themes">phpBB3 styles</a></li>
+                  <li><a href="#">Lorem ipsum dolor sit amet.</a></li>
+                  <li><a href="#">Quisque consequat nunc a felis.</a></li>
+                  <li><a href="#">Suspendisse consequat magna at.</a></li>
+                  <li><a href="#">Etiam eget diam id ligula rhoncus.</a></li>
+                  <li><a href="#">Sed in mauris non nibh.</a></li>
                 </ul>	
             </div>
             
@@ -177,7 +156,7 @@ License: Creative Commons Attribution
         <div id="footer-links">
 
         <!-- A link to http://www.spyka.net must remain. To remove link see http://www.spyka.net/licensing -->
-                <p>&copy; YourSite 2010. Website design by <a href="http://www.spyka.net">Free CSS Templates</a> | <a href="http://www.justfreetemplates.com">Free Web Templates</a></p>
+                <p>Website design by <a href="http://www.spyka.net">Free CSS Templates</a> | <a href="http://www.justfreetemplates.com">Free Web Templates</a></p>
         </div>  
     </div>
 </body>
