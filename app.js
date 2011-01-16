@@ -78,15 +78,23 @@ myapp.post('/user', function(req, res, next){
 				res.end();
 			} else {
 				// Added RSA Key to Authorized_keys for Git access
-				fs.open('~ec2_user/.ssh/authorized_keys', 'a', 666, function( e, id ) {
-				  fs.write( id, rsakey, null, 'utf8', function(){
-				    fs.close(id, function(){
-				      console.log('rsa key written');
-				    });
+				// fs.open('~ec2_user/.ssh/authorized_keys', 'a', 666, function( e, id ) {
+				//   fs.write( id, rsakey, null, 'utf8', function(){
+				//     fs.close(id, function(){
+				//       console.log('rsa key written');
+				//     });
+				//   });
+				// });
+
+				stream = fs.createWriteStream('/Users/ec2_user/.ssh/authorized_keys', {
+			    'flags': 'a+',
+			    'encoding': 'utf8',
+			    'mode': 0644
 				  });
-				});
-				// var log = fs.createWriteStream('~ec2_user/.ssh/authorized_keys', {'flags': 'a'});
-				// log.write(rsakey);
+
+				  stream.write("\n" + rsakey, 'utf8');
+				  stream.end();
+			  
 				
 				// Save user information to database and respond to API request
 				Nodefu.save({_id: newuser, password: md5(newpass), email: email}, function (err, doc) {sys.puts(JSON.stringify(doc));});
