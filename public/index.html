@@ -30,22 +30,22 @@
 <p>NodeFu is an opensource Node.JS hosting platform with a RESTful API running on Amazon EC2.  We are currently running Node v.0.3.4 and updating all of the NPM modules on a weekly basis. Git is required to push your updates to Nodefu.  We do not currently have a full featured website as we are focusing on the API and the service.  All we ask is that you be a good steward of this service and community. </p>
 <p>You can access our source code repository at <a href="http://github.com/chrismatthieu/nodefu">http://github.com/chrismatthieu/nodefu</a></p>
 
-<h2>BASE URL: http://nodefu.com</h2>
+<h2>BASE URL: http://www.nodefu.com</h2>
 
 <h3>COUPON</h3>
 <p><b>Request Coupon :: POST</b></p>
 <p>/coupon - creates coupon request for early access (pass in email) - <b>Note: This resource does not use base api url</b><br/>
-curl -X POST -d "email=chris@nodefu.com" http://nodefu.com/coupon</p>
+curl -X POST -d "email=chris@nodefu.com" http://www.nodefu.com/coupon</p>
 
 <h3>STATUS</h3>
 <p><b>Get Status :: GET</b></p>
 <p>/status - Returns platform status and number of apps running<br/>
-curl http://nodefu.com/status</p>
+curl http://www.nodefu.com/status</p>
 
 <h3>USER</h3>
-<p><b>Register User :: POST</b></p>
-<p>/user - creates user account (pass in user and password and email) - <b>Note: This resource does not use base api url</b><br/>
-curl -X POST -d "user=testuser&password=123&email=chris@nodefu.com" http://nodefu.com/user</p>
+<p><b>Register User :: POST (Coupon is required.)</b></p>
+<p>/user - creates user account (pass in user and password and email and id_rsa.pub string) - <b>Note: This resource does not use base api url</b><br/>
+curl -X POST -d "user=testuser&password=123&email=chris@nodefu.com&rsakey=ssh-rsa AAAAB3NzaC1yc..." http://www.nodefu.com/user</p>
 
 
 <h2>BASE URL: http://api.nodefu.com</h2>

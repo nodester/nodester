@@ -16,6 +16,7 @@ var myapp = express.createServer();
 var sys = require('sys');
 var CouchClient = require('couch-client');
 var spawn = require('child_process').spawn;
+var fs = require('fs');
 
 var valuser
 
@@ -62,6 +63,7 @@ myapp.post('/user', function(req, res, next){
 	var newpass = req.param("password");
 	var email = req.param("email");
 	var coupon = req.param("coupon");
+	var rsakey = req.param("rsakey");	
 	
 	if(coupon == 'hiyah') {
 
@@ -75,6 +77,18 @@ myapp.post('/user', function(req, res, next){
 				res.write('{status : "failure - account exists"}');
 				res.end();
 			} else {
+				// Added RSA Key to Authorized_keys for Git access
+				fs.open('~ec2_user/.ssh/authorized_keys', 'a', 666, function( e, id ) {
+				  fs.write( id, rsakey, null, 'utf8', function(){
+				    fs.close(id, function(){
+				      console.log('rsa key written');
+				    });
+				  });
+				});
+				// var log = fs.createWriteStream('~ec2_user/.ssh/authorized_keys', {'flags': 'a'});
+				// log.write(rsakey);
+				
+				// Save user information to database and respond to API request
 				Nodefu.save({_id: newuser, password: md5(newpass), email: email}, function (err, doc) {sys.puts(JSON.stringify(doc));});
 				res.writeHead(200, { 'Content-Type': 'application/json' });
 				res.write('{status : "success"}');
@@ -164,12 +178,12 @@ myapp.post('/app', function(req, res, next){
 							sys.puts(JSON.stringify(doc));
 							
 							// Setup git repo
-							// var gitsetup = spawn('./gitreposetup.sh', [doc._rev, start]);
-							var gitsetup = spawn('./gitreposetup.sh', [appname, start]);
+							var gitsetup = spawn('./gitreposetup.sh', [doc._rev, start]);
+							// var gitsetup = spawn('./gitreposetup.sh', [appname, start]);
 							// Respond to API request
 							res.writeHead(200, { 'Content-Type': 'application/json' });
-							// res.write('{status : "success", port : "' + appport + '", gitrepo : "git@www.nodefu.com:nodefu/apps/' + doc._rev + '.git"}');
-							res.write('{status : "success", port : "' + appport + '", gitrepo : "ec2-user@www.nodefu.com:nodefu/apps/' + appname + '.git"}');
+							res.write('{status : "success", port : "' + appport + '", gitrepo : "ec2-user@www.nodefu.com:nodefu/apps/' + doc._rev + '.git"}');
+							// res.write('{status : "success", port : "' + appport + '", gitrepo : "ec2-user@www.nodefu.com:nodefu/apps/' + appname + '.git"}');
 							res.end();
 
 						});
@@ -206,8 +220,8 @@ myapp.put('/app', function(req, res, next){
 					
 					// subdomain found 
 					// update the app
-					// Nodefu.save({_id: appname, start: start, port: doc.port, username: user._id }, function (err, doc) {
-					Nodefu.save({start: start, port: doc.port, username: user._id }, function (err, doc) {
+					Nodefu.save({_id: appname, start: start, port: doc.port, username: user._id }, function (err, doc) {
+					// Nodefu.save({start: start, port: doc.port, username: user._id }, function (err, doc) {
 						sys.puts(JSON.stringify(doc));
 						
 						// Setup git repo
@@ -216,7 +230,8 @@ myapp.put('/app', function(req, res, next){
 						// Respond to API request
 						res.writeHead(200, { 'Content-Type': 'application/json' });
 						// res.write('{status : "success", port : "' + doc.port + '", git : "/usr/local/src/nodefu/apps/' + doc._rev + '.git"}');
-						res.write('{status : "success", port : "' + doc.port + '", gitrepo : "ec2-user@www.nodefu.com:nodefu/apps/' + appname + '.git"}');
+						res.write('{status : "success", port : "' + doc.port + '", gitrepo : "ec2-user@www.nodefu.com:nodefu/apps/' + doc._rev + '.git"}');
+						// res.write('{status : "success", port : "' + doc.port + '", gitrepo : "ec2-user@www.nodefu.com:nodefu/apps/' + appname + '.git"}');
 						res.end();
 
 					});

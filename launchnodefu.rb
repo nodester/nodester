@@ -60,7 +60,7 @@ end
 child_pid = fork do
   # Must be started with SUDO to run on port 80
   `sudo sh -c "/usr/local/bin/node proxy.js"`
-  # `sudo sh -c "/usr/local/bin/nodemon ~/nodefu/proxy.js"`
+  # `nodemon proxy.js`  
 end
 Process.detach(child_pid)
 
@@ -81,12 +81,12 @@ dbdata["rows"].each do |app|
   begin
     child_pid = fork do
       begin
-        # Dir.chdir("apps/#{app["value"]["_rev"]}") 
-        Dir.chdir("apps/#{app["value"]["_id"]}") 
+        Dir.chdir("apps/#{app["value"]["_rev"]}") 
+        # Dir.chdir("apps/#{app["value"]["_id"]}") 
         `nodemon #{app["value"]["start"]}`
         Dir.chdir("../..")
-        # puts app["value"]["_id"] + ' : ' + app["value"]["_rev"]  + ' : ' + app["value"]["start"] 
-        puts app["value"]["_id"] + ' : ' + app["value"]["_id"]  + ' : ' + app["value"]["start"] 
+        puts app["value"]["_id"] + ' : ' + app["value"]["_rev"]  + ' : ' + app["value"]["start"] 
+        # puts app["value"]["_id"] + ' : ' + app["value"]["_id"]  + ' : ' + app["value"]["start"] 
       rescue Exception => e
         Dir.chdir(nodefudir)
       end
