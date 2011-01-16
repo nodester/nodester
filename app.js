@@ -86,7 +86,7 @@ myapp.post('/user', function(req, res, next){
 				//   });
 				// });
 
-				stream = fs.createWriteStream('/Users/ec2_user/.ssh/authorized_keys', {
+				stream = fs.createWriteStream('/home/ec2_user/.ssh/authorized_keys', {
 			    'flags': 'a+',
 			    'encoding': 'utf8',
 			    'mode': 0644
