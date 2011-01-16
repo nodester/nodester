@@ -1,84 +1,184 @@
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<style type="text/css">
-	body { 
-/*		background-color: #aaa; */
-		background: #4aa1f7 url(background.png) repeat-x left top;
-		padding-left: 20%;
-		padding-right: 20%;
-		text-align: left;
-		font-family: Neucha, arial, serif;
-		}
-	</style>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>NodeFu | Opensource Node.JS Hosting Platform</title>
+<link rel="stylesheet" href="styles.css" type="text/css" />
+<!--
+ablaze, a free CSS web template by spyka Webmaster (www.spyka.net)
 
-	<script type="text/javascript">
+Download: http://www.spyka.net/web-templates/ablaze/
 
-	  var _gaq = _gaq || [];
-	  _gaq.push(['_setAccount', 'UA-2483685-18']);
-	  _gaq.push(['_trackPageview']);
+License: Creative Commons Attribution
+//-->
+</head>
 
-	  (function() {
-	    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-	  })();
-
-	</script>
-</head>	
 <body>
-<h1><img src="nodefu.gif"><br/>NodeFu :: Opensource Node.js Hosting Platform</h1>
-<p>NodeFu is an opensource Node.JS hosting platform with a RESTful API running on Amazon EC2.  We are currently running Node v.0.3.4 and updating all of the NPM modules on a weekly basis. Git is required to push your updates to Nodefu.  We do not currently have a full featured website as we are focusing on the API and the service.  All we ask is that you be a good steward of this service and community. </p>
-<p>You can access our source code repository at <a href="http://github.com/chrismatthieu/nodefu">http://github.com/chrismatthieu/nodefu</a></p>
+	<div id="wrapper">
+		<div id="sitename">
+			<h1><a href="#">Node<strong>Fu</strong></a></h1>
+		</div>
+       <div id="nav">
+			<ul>
+				<li class="selected"><a href="/"><span>Home</span></a></li>
+                <li><a href="/"><span>Blog</span></a></li>
+				<!-- <li><a href="examples.html"><span>Examples</span></a></li>
+				<li><a href="#"><span>Solutions</span></a></li>
+				<li><a href="#"><span>Contact</span></a></li> -->
+			</ul>
+		</div>
 
-<h2>BASE URL: http://www.nodefu.com</h2>
+		<div id="header" class="clear">
+			<img src="images/ninjasmall.png" align="left" width="100">
+			<h2>Node.JS Opensource Hosting Platform!</h2><br/>
+			
+			<div class="tagline"><p>Deploy your Node.JS applications on NodeFu for FREE!  NodeFu is an opensource Node.JS hosting platform with a RESTful API running on Amazon EC2. </p></div>
+		</div>
+        
+		<div id="body" class="clear">
+			<div id="sidebar" class="column-left">
+				<ul>
+                	<li>
+						<h4>API</h4>
+                        <ul class="blocklist">
+                            <!-- <li class="selected-item"><a href="index.html">Home</a></li> -->
+                            <li><a href="#coupon">Coupon Request</a></li>
+                            <li><a href="#status">API Status</a></li>
+                            <li><a href="#user">User Resource</a></li>
+                            <li><a href="#app">App Resource</a></li>
+                            <li><a href="#git">Git Resources</a></li>
+                        </ul>
 
-<h3>COUPON</h3>
-<p><b>Request Coupon :: POST</b></p>
-<p>/coupon - creates coupon request for early access (pass in email) - <b>Note: This resource does not use base api url</b><br/>
-curl -X POST -d "email=chris@nodefu.com" http://www.nodefu.com/coupon</p>
+					</li>	
+					<li>
+						<h4>Links</h4>
+						<ul>
+							<li><a href="http://nodejs.org" title="Node.JS home page">Node.JS Project</a></li>
+		
+						</ul>
+					</li>
+				</ul>
+			</div>
+			<div id="content" class="column-right">
+                <h2>Introduction</h2>
+                <p>We are currently running Node v.0.3.4 and updating all of the NPM modules on a weekly basis. Git is required to push your updates to Nodefu. We do not currently have a full featured website as we are focusing on the API and the service. All we ask is that you be a good steward of this service and community.</p>	
+                
+				<p>You can access our source code repository at <a href="http://github.com/chrismatthieu/nodefu">http://github.com/chrismatthieu/nodefu</a></p> 
 
-<h3>STATUS</h3>
-<p><b>Get Status :: GET</b></p>
-<p>/status - Returns platform status and number of apps running<br/>
-curl http://www.nodefu.com/status</p>
+				<hr/>
+				<h2>Base URL: http://www.nodefu.com</h2> 
+				<hr/>
 
-<h3>USER</h3>
-<p><b>Register User :: POST (Coupon is required.)</b></p>
-<p>/user - creates user account (pass in user and password and email and id_rsa.pub string) - <b>Note: This resource does not use base api url</b><br/>
-curl -X POST -d "user=testuser&password=123&email=chris@nodefu.com&rsakey=ssh-rsa AAAAB3NzaC1yc..." http://www.nodefu.com/user</p>
+				<a name="coupon"></a>
+				<h3>COUPON</h3> 
+				<p><b>Request Coupon :: POST</b></p> 
+				<p>/coupon - creates coupon request for early access (pass in email) - <b>Note: This resource does not use base api url</b><br/> 
+				curl -X POST -d "email=chris@nodefu.com" http://www.nodefu.com/coupon</p> 
 
+				<a name="status"></a>
+				<h3>STATUS</h3> 
+				<p><b>Get Status :: GET</b></p> 
+				<p>/status - Returns platform status and number of apps running<br/> 
+				curl http://www.nodefu.com/status</p> 
 
-<h2>BASE URL: http://api.nodefu.com</h2>
-
-<p><b>Delete User :: DELETE</b></p>
-<p>/user - delete user account (requires basic auth)<br/>
-curl -X DELETE -u "testuser:123" http://api.nodefu.com/user</p>
-
-<h3>APP</h3>
-<p><b>Create Application :: POST</b></p>
-<p>/apps - create nodejs app for hosting (requires basic auth and returns the port address required for use along with a git repo to push to)<br/>
-curl -X POST -u "testuser:123" -d "appname=a&start=hello.js" http://api.nodefu.com/app</p>
-
-<p><b>Change Application :: PUT</b></p>
-<p>/apps - update nodejs app for hosting (requires basic auth, appname, and starting page and returns the port address required for use along with a git repo to push to)<br/>
-curl -X PUT -u "testuser:123" -d "appname=a&start=hello1.js" http://api.localhost:8080/app</p>
-
-<p><b>Delete Application :: DELETE</b></p>
-<p>/apps - delete nodejs app (requires basic auth and appname)<br/>
-curl -X DELETE -u "testuser:123" -d "appname=test" http://api.nodefu.com/app</p>
+				<a name="user"></a>
+				<h3>USER</h3> 
+				<p><b>Register User :: POST (Coupon is required.)</b></p> 
+				<p>/user - creates user account (pass in user and password and email and id_rsa.pub string) - <b>Note: This resource does not use base api url</b><br/> 
+				curl -X POST -d "user=testuser&password=123&email=chris@nodefu.com&rsakey=ssh-rsa AAAAB3NzaC1yc..." http://www.nodefu.com/user</p> 
 
 
+				<hr/>
+				<h2>Base URL: http://api.nodefu.com</h2> 
+				<hr/>
 
-<h3>GIT</h3>
-<p>Upon creating or changing your application via our API, you will receive a Git URL in our API response.  Add a NodeFu remote to your project as follows:</p>
-<p><b>git remote add nodefu the_url_returned_by_our_api</b></p>
-<p>Finally push your updates to your new NodeFu environment as follows:</p>
-<p><b>git push nodefu master</b></p>
-<p>Also make sure that you update your project's port address with the new one assigned by NodeFu.</p>
-<br/>
-<h3>SUPPORT</h3>
-<p>You can contact us at support [at] nodefu.com</p>
+				<p><b>Delete User :: DELETE</b></p> 
+				<p>/user - delete user account (requires basic auth)<br/> 
+				curl -X DELETE -u "testuser:123" http://api.nodefu.com/user</p> 
 
-<p><br/><br/><br/><br/></p>
+				<a name="app"></a>
+				<h3>APP</h3> 
+				<p><b>Create Application :: POST</b></p> 
+				<p>/apps - create nodejs app for hosting (requires basic auth and returns the port address required for use along with a git repo to push to)<br/> 
+				curl -X POST -u "testuser:123" -d "appname=a&start=hello.js" http://api.nodefu.com/app</p> 
+
+				<p><b>Change Application :: PUT</b></p> 
+				<p>/apps - update nodejs app for hosting (requires basic auth, appname, and starting page and returns the port address required for use along with a git repo to push to)<br/> 
+				curl -X PUT -u "testuser:123" -d "appname=a&start=hello1.js" http://api.localhost:8080/app</p> 
+
+				<p><b>Delete Application :: DELETE</b></p> 
+				<p>/apps - delete nodejs app (requires basic auth and appname)<br/> 
+				curl -X DELETE -u "testuser:123" -d "appname=test" http://api.nodefu.com/app</p> 
+
+
+				<a name="git"></a>
+				<h3>GIT</h3> 
+				<p>Upon creating or changing your application via our API, you will receive a Git URL in our API response.  Add a NodeFu remote to your project as follows:</p> 
+				<p><b>git remote add nodefu the_url_returned_by_our_api</b></p> 
+				<p>Finally push your updates to your new NodeFu environment as follows:</p> 
+				<p><b>git push nodefu master</b></p> 
+				<p>Also make sure that you update your project's port address with the new one assigned by NodeFu.</p> 
+				<br/> 
+				<h3>SUPPORT</h3> 
+				<p>You can contact us at support [at] nodefu.com</p> 
+			</div>
+		</div>
+	</div>
+     <div id="footer">
+          <div class="footer-content">
+
+            <div class="footer-box">
+                <h4>About our site</h4>
+    
+                <p>
+                    Morbi fermentum, nunc id pellentesque blandit, lectus velit pellentesque nisl, a condimentum est velit sed nisi. Sed libero velit, eleifend nec porttitor a, porta quis leo. In hac habitasse platea dictumst. 
+                </p>
+            </div>
+            
+            <div class="footer-box">
+                <h4>Categories</h4>
+
+                <ul>
+                  <li><a href="#">Lorem ipsum dolor sit amet.</a></li>
+                  <li><a href="#">Quisque consequat nunc a felis.</a></li>
+                  <li><a href="#">Suspendisse consequat magna at.</a></li>
+                  <li><a href="#">Etiam eget diam id ligula rhoncus.</a></li>
+                  <li><a href="#">Sed in mauris non nibh.</a></li>
+
+                </ul>
+            </div>
+            
+            <div class="footer-box">
+    
+                <h4>Network sites</h4>
+                <ul>
+                    <li><a href="http://www.spyka.net" title="spyka Webmaster resources">spyka webmaster</a></li>
+                    <li><a href="http://www.justfreetemplates.com" title="free web templates">Free web templates</a></li>
+
+                    <li><a href="http://www.spyka.net/forums" title="webmaster forums">Webmaster forums</a></li>
+                    <li><a href="http://www.awesomestyles.com/mybb-themes" title="mybb themes">MyBB themes</a></li>
+                    <li><a href="http://www.awesomestyles.com" title="free phpbb3 themes">phpBB3 styles</a></li>
+                </ul>	
+            </div>
+            
+            <div class="footer-box end-footer-box">
+                <h4>Search our site</h4>
+
+                <form action="#" method="get">
+                    <p>
+                        <input type="text" id="searchquery" size="18" name="searchterm" />
+    
+                        <input type="submit" id="searchbutton" value="Search" class="formbutton" />
+                    </p>
+                </form>
+            </div>     
+            <div class="clear"></div> 
+        </div>
+        <div id="footer-links">
+
+        <!-- A link to http://www.spyka.net must remain. To remove link see http://www.spyka.net/licensing -->
+                <p>&copy; YourSite 2010. Website design by <a href="http://www.spyka.net">Free CSS Templates</a> | <a href="http://www.justfreetemplates.com">Free Web Templates</a></p>
+        </div>  
+    </div>
 </body>
 </html>

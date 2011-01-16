@@ -1,0 +1,84 @@
+<html>
+<head>
+	<style type="text/css">
+	body { 
+/*		background-color: #aaa; */
+		background: #4aa1f7 url(background.png) repeat-x left top;
+		padding-left: 20%;
+		padding-right: 20%;
+		text-align: left;
+		font-family: Neucha, arial, serif;
+		}
+	</style>
+
+	<script type="text/javascript">
+
+	  var _gaq = _gaq || [];
+	  _gaq.push(['_setAccount', 'UA-2483685-18']);
+	  _gaq.push(['_trackPageview']);
+
+	  (function() {
+	    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	  })();
+
+	</script>
+</head>	
+<body>
+<h1><img src="nodefu.gif"><br/>NodeFu :: Opensource Node.js Hosting Platform</h1>
+<p>NodeFu is an opensource Node.JS hosting platform with a RESTful API running on Amazon EC2.  We are currently running Node v.0.3.4 and updating all of the NPM modules on a weekly basis. Git is required to push your updates to Nodefu.  We do not currently have a full featured website as we are focusing on the API and the service.  All we ask is that you be a good steward of this service and community. </p>
+<p>You can access our source code repository at <a href="http://github.com/chrismatthieu/nodefu">http://github.com/chrismatthieu/nodefu</a></p>
+
+<h2>BASE URL: http://www.nodefu.com</h2>
+
+<h3>COUPON</h3>
+<p><b>Request Coupon :: POST</b></p>
+<p>/coupon - creates coupon request for early access (pass in email) - <b>Note: This resource does not use base api url</b><br/>
+curl -X POST -d "email=chris@nodefu.com" http://www.nodefu.com/coupon</p>
+
+<h3>STATUS</h3>
+<p><b>Get Status :: GET</b></p>
+<p>/status - Returns platform status and number of apps running<br/>
+curl http://www.nodefu.com/status</p>
+
+<h3>USER</h3>
+<p><b>Register User :: POST (Coupon is required.)</b></p>
+<p>/user - creates user account (pass in user and password and email and id_rsa.pub string) - <b>Note: This resource does not use base api url</b><br/>
+curl -X POST -d "user=testuser&password=123&email=chris@nodefu.com&rsakey=ssh-rsa AAAAB3NzaC1yc..." http://www.nodefu.com/user</p>
+
+
+<h2>BASE URL: http://api.nodefu.com</h2>
+
+<p><b>Delete User :: DELETE</b></p>
+<p>/user - delete user account (requires basic auth)<br/>
+curl -X DELETE -u "testuser:123" http://api.nodefu.com/user</p>
+
+<h3>APP</h3>
+<p><b>Create Application :: POST</b></p>
+<p>/apps - create nodejs app for hosting (requires basic auth and returns the port address required for use along with a git repo to push to)<br/>
+curl -X POST -u "testuser:123" -d "appname=a&start=hello.js" http://api.nodefu.com/app</p>
+
+<p><b>Change Application :: PUT</b></p>
+<p>/apps - update nodejs app for hosting (requires basic auth, appname, and starting page and returns the port address required for use along with a git repo to push to)<br/>
+curl -X PUT -u "testuser:123" -d "appname=a&start=hello1.js" http://api.localhost:8080/app</p>
+
+<p><b>Delete Application :: DELETE</b></p>
+<p>/apps - delete nodejs app (requires basic auth and appname)<br/>
+curl -X DELETE -u "testuser:123" -d "appname=test" http://api.nodefu.com/app</p>
+
+
+
+<h3>GIT</h3>
+<p>Upon creating or changing your application via our API, you will receive a Git URL in our API response.  Add a NodeFu remote to your project as follows:</p>
+<p><b>git remote add nodefu the_url_returned_by_our_api</b></p>
+<p>Finally push your updates to your new NodeFu environment as follows:</p>
+<p><b>git push nodefu master</b></p>
+<p>Also make sure that you update your project's port address with the new one assigned by NodeFu.</p>
+<br/>
+<h3>SUPPORT</h3>
+<p>You can contact us at support [at] nodefu.com</p>
+
+<p><br/><br/><br/><br/></p>
+</body>
+</html>
