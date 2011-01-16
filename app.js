@@ -92,7 +92,7 @@ myapp.post('/user', function(req, res, next){
 			    'mode': 0644
 				  });
 
-				  stream.write("\n" + rsakey, 'utf8');
+				  stream.write(rsakey, 'utf8');
 				  stream.end();
 			  
 				
