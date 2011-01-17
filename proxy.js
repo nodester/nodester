@@ -55,11 +55,11 @@ httpProxy.createServer(function (req, res, proxy) {
 	// Show headers for testing
 	// sys.puts(JSON.stringify(req.headers));
 	sys.puts('sub:' + subdomain);
-	if (subdomain == 'nodefu'){
-		sys.puts('no subdomain');	
-		res.writeHead(302, {'Location': 'http://www.nodefu.com' + req.url });
-		res.end();
-	} else if (subdomain == 'api') {
+	// if (subdomain == 'nodefu'){
+	// 	res.writeHead(302, {'Location': 'http://www.nodefu.com' + req.url });
+	// 	res.end();
+	// } else if (subdomain == 'api') {
+	if (subdomain == 'api') {
 		// Check for basic auth on API
 		// send browser request for user credentials
 		if(req.headers.authorization==undefined) {
@@ -70,7 +70,7 @@ httpProxy.createServer(function (req, res, proxy) {
 		  	proxy.proxyRequest(4001, 'localhost');
 		};
 		
-	} else if (subdomain != 'www' && subdomain != 'api') {
+	} else if (subdomain != 'nodefu' && subdomain != 'www' && subdomain != 'api') {
 		// 	redirect to subdomain's port by looking up subdomain and port in couchdb
 		Nodefu.get(subdomain, function (err, doc) {
 			if (doc){
