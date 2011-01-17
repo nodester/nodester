@@ -17,7 +17,7 @@ var exec = require('child_process').exec;
 // exec('forever start app.js');
 
 var spawn = require('child_process').spawn;
-// var app = spawn('node', ['app.js']);
+var app = spawn('node', ['app.js']);
 
 // var forever = require('forever');
 
