@@ -17,7 +17,7 @@ var exec = require('child_process').exec;
 // exec('forever start app.js');
 
 var spawn = require('child_process').spawn;
-// var app = spawn('node', ['app.js']);
+var app = spawn('node', ['app.js']);
 
 // var forever = require('forever');
 
@@ -81,7 +81,7 @@ httpProxy.createServer(function (req, res, proxy) {
 		proxy.proxyRequest(4001, 'localhost');	  
 	};
 	
-}).listen(80); // Use port 80 in production
+}).listen(8080); // Use port 80 in production
 sys.puts('NodeFu started on port 80');
 
 process.on('uncaughtException', function (err) {
