@@ -17,7 +17,7 @@ var exec = require('child_process').exec;
 // exec('forever start app.js');
 
 var spawn = require('child_process').spawn;
-// var app = spawn('node', ['app.js']);
+var app = spawn('node', ['app.js']);
 
 // var forever = require('forever');
 
@@ -53,7 +53,7 @@ httpProxy.createServer(function (req, res, proxy) {
 	var subdomain = hostname.substring(0,hostname.indexOf("."));
 	
 	// Show headers for testing
-	sys.puts(JSON.stringify(req.headers));
+	sys.puts(JSON.stringify(req.headers));	
 	
 	if (subdomain == 'api') {
 		// if (req.url != '/user' && req.method != 'POST') {
@@ -68,7 +68,7 @@ httpProxy.createServer(function (req, res, proxy) {
 			};
 		// };
 		
-	} else if (subdomain && subdomain != 'www' && subdomain != 'api') {
+	} else if (subdomain != '' && subdomain != 'www' && subdomain != 'api') {
 		// 	redirect to subdomain's port by looking up subdomain and port in couchdb
 		Nodefu.get(subdomain, function (err, doc) {
 			if (doc){
@@ -81,7 +81,7 @@ httpProxy.createServer(function (req, res, proxy) {
 		proxy.proxyRequest(4001, 'localhost');	  
 	};
 	
-}).listen(80); // Use port 80 in production
+}).listen(8080); // Use port 80 in production
 sys.puts('NodeFu started on port 80');
 
 process.on('uncaughtException', function (err) {
