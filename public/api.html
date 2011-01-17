@@ -23,7 +23,7 @@ License: Creative Commons Attribution
 		<h3>Did you get your coupon code? - <a href="#" onclick="tb_remove()">No?</a></p></h3>
 		<fieldset>
 
-			<form action="http://www.nodefu.com/user" method="post">
+			<form action="http://nodefu.com/user" method="post">
 				<p><label for="name">Coupon:</label>
 				<input type="password" name="coupon" id="coupon" value="" /><br />		
 				<label for="name">Username:</label>
@@ -92,23 +92,23 @@ License: Creative Commons Attribution
 				<a name="coupon"></a>
 				<h3>COUPON</h3> 
 				<p><b>Request Coupon :: POST</b>
-				<br/>Base URL: http://www.nodefu.com</p> 
+				<br/>Base URL: http://nodefu.com</p> 
 				<code>/coupon - creates coupon request for early access (pass in email)<br/><br/> 
-				curl -X POST -d "email=your_address@gmail.com" http://www.nodefu.com/coupon</code> 
+				curl -X POST -d "email=your_address@gmail.com" http://nodefu.com/coupon</code> 
 
 				<a name="status"></a>
 				<h3>STATUS</h3> 
 				<p><b>Get Status :: GET</b>
-				<br/>Base URL: http://www.nodefu.com</p> 
+				<br/>Base URL: http://nodefu.com</p> 
 				<code>/status - Returns platform status and number of apps running<br/><br/>
-				curl http://www.nodefu.com/status</code> 
+				curl http://nodefu.com/status</code> 
 
 				<a name="user"></a>
 				<h3>USER</h3> 
 				<p><b>Register User :: POST (Coupon is required.)</b>
-				<br/>Base URL: http://www.nodefu.com</p> 
+				<br/>Base URL: http://nodefu.com</p> 
 				<code>/user - creates user account (pass in user and password and email and id_rsa.pub string) <br/><br/> 
-				curl -X POST -d "user=testuser&password=123&email=chris@nodefu.com&rsakey=ssh-rsa AAAAB3NzaC1yc..." http://www.nodefu.com/user</code> 
+				curl -X POST -d "user=testuser&password=123&email=chris@nodefu.com&rsakey=ssh-rsa AAAAB3NzaC1yc..." http://nodefu.com/user</code> 
 
 
 				<p><b>Delete User :: DELETE</b>
