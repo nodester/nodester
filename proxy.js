@@ -55,7 +55,7 @@ httpProxy.createServer(function (req, res, proxy) {
 	// Show headers for testing
 	// sys.puts(JSON.stringify(req.headers));
 	sys.puts('sub:' + subdomain);
-	if (subdomain == ''){
+	if (subdomain == 'nodefu'){
 		sys.puts('no subdomain');	
 		res.writeHead(302, {'Location': 'http://www.nodefu.com' + req.url });
 		res.end();
