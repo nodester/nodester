@@ -53,24 +53,22 @@ httpProxy.createServer(function (req, res, proxy) {
 	var subdomain = hostname.substring(0,hostname.indexOf("."));
 	
 	// Show headers for testing
-	sys.puts(JSON.stringify(req.headers));	
-	
+	// sys.puts(JSON.stringify(req.headers));
+	sys.puts('sub:' + subdomain);
 	if (subdomain == ''){
-		res.writeHead(302, {
-		  'Location': 'http://www.nodefu.com' + req.url });
+		sys.puts('no subdomain');	
+		res.writeHead(302, {'Location': 'http://www.nodefu.com' + req.url });
 		res.end();
 	} else if (subdomain == 'api') {
-		// if (req.url != '/user' && req.method != 'POST') {
-			// Check for basic auth on API
-			// send browser request for user credentials
-			if(req.headers.authorization==undefined) {
-			  	res.writeHead(401, {'Content-Type': 'text/plain', 'WWW-Authenticate': 'Basic'});
-				res.end('password?\n');
-			} else {
-				// Redirect to Nodefu's home page if no credentials are provided
-			  	proxy.proxyRequest(4001, 'localhost');
-			};
-		// };
+		// Check for basic auth on API
+		// send browser request for user credentials
+		if(req.headers.authorization==undefined) {
+		  	res.writeHead(401, {'Content-Type': 'text/plain', 'WWW-Authenticate': 'Basic'});
+			res.end('password?\n');
+		} else {
+			// Redirect to Nodefu's home page if no credentials are provided
+		  	proxy.proxyRequest(4001, 'localhost');
+		};
 		
 	} else if (subdomain != 'www' && subdomain != 'api') {
 		// 	redirect to subdomain's port by looking up subdomain and port in couchdb
