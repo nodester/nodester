@@ -55,7 +55,11 @@ httpProxy.createServer(function (req, res, proxy) {
 	// Show headers for testing
 	sys.puts(JSON.stringify(req.headers));	
 	
-	if (subdomain == 'api') {
+	if (subdomain == ''){
+		res.writeHead(302, {
+		  'Location': 'http://www.nodefu.com' + req.url });
+		res.end();
+	} else if (subdomain == 'api') {
 		// if (req.url != '/user' && req.method != 'POST') {
 			// Check for basic auth on API
 			// send browser request for user credentials
@@ -68,7 +72,7 @@ httpProxy.createServer(function (req, res, proxy) {
 			};
 		// };
 		
-	} else if (subdomain != '' && subdomain != 'www' && subdomain != 'api') {
+	} else if (subdomain != 'www' && subdomain != 'api') {
 		// 	redirect to subdomain's port by looking up subdomain and port in couchdb
 		Nodefu.get(subdomain, function (err, doc) {
 			if (doc){
