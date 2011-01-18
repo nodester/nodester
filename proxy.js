@@ -66,7 +66,7 @@ httpProxy.createServer(function (req, res, proxy) {
 		  	proxy.proxyRequest(4001, 'localhost');
 		};
 		
-	} else if (subdomain != 'nodefu' && subdomain != 'www' && subdomain != 'api') {
+	} else if (subdomain != '' && subdomain != 'nodefu' && subdomain != 'www' && subdomain != 'api') {
 		// 	redirect to subdomain's port by looking up subdomain and port in couchdb
 		Nodefu.get(subdomain, function (err, doc) {
 			if (doc){
