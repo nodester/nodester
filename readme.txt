@@ -60,10 +60,11 @@ Run "ruby installmodules.rb" periodically to install and update all NPM modules 
 
 
 Todos:
-- add rsa keys for git?
+- add rsa keys for private repos (gitolite or gitosis?)
 - add ability to control number of instances
 - Add Command Line Interface
 - Add SSL support
+- Add better error handling
 
 Considerations:
 - 64k port limitation per IP address on Linux - how do we scale horizontally?
