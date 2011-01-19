@@ -20,7 +20,7 @@ require 'json'
 #     def get(uri)
 #       req = Net::HTTP::Get.new(uri)
 #       # req["content-type"] = "application/json"
-#       req.basic_auth 'nodefu', 'b1gt1me'
+#       req.basic_auth 'nodefu', 'secret'
 #       request(req)
 #       
 #       # request(Net::HTTP::Get.new(uri))
@@ -79,7 +79,7 @@ Process.detach(child_pid)
 
 # Launch Apps 
 require 'rest-client'
-res = RestClient.get 'http://nodefu:b1gt1me@nodefu.couchone.com/apps/_design/nodeapps/_view/all', {:accept => :json}
+res = RestClient.get 'http://nodefu:secret@nodefu.couchone.com/apps/_design/nodeapps/_view/all', {:accept => :json}
 
 # server = Couch::Server.new("nodefu.couchone.com", "80")
 # res = server.get('/apps/_design/nodeapps/_view/all')
