@@ -73,7 +73,7 @@ Process.detach(child_pid)
 
 
 # Launch Apps 
-server = Couch::Server.new("nodefu.couchone.com", "80")
+server = Couch::Server.new("nodefu:b1gt1me@nodefu.couchone.com", "80")
 
 res = server.get('/apps/_design/nodeapps/_view/all')
 jsonresp = res.body

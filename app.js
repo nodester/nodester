@@ -44,7 +44,7 @@ myapp.get('/', function(req, res, next){
 myapp.post('/coupon', function(req, res, next){
 
 	var email = req.param("email");	
-	var Nodefu = CouchClient("http://nodefu.couchone.com:80/coupons");
+	var Nodefu = CouchClient("http://nodefu:b1gt1me@nodefu.couchone.com:80/coupons");
 
 	Nodefu.save({_id: email}, function (err, doc) {sys.puts(JSON.stringify(doc));});
 	res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -67,7 +67,7 @@ myapp.post('/user', function(req, res, next){
 	
 	if(coupon == 'hiyah') {
 
-		var Nodefu = CouchClient("http://nodefu.couchone.com:80/nodefu");
+		var Nodefu = CouchClient("http://nodefu:b1gt1me@nodefu.couchone.com:80/nodefu");
 	
 		// Check to see if account exists
 		Nodefu.get(newuser, function (err, doc) {
@@ -117,7 +117,7 @@ myapp.post('/user', function(req, res, next){
 // curl http://localhost:8080/status
 myapp.get('/status', function(req, res, next){
 
-	var Nodeport = CouchClient("http://nodefu.couchone.com:80/nextport");
+	var Nodeport = CouchClient("http://nodefu:b1gt1me@nodefu.couchone.com:80/nextport");
 	Nodeport.get('port', function (err, doc) {
 		var appsrunning = (doc.address - 8000).toString();
 		
@@ -138,7 +138,7 @@ myapp.delete('/user', function(req, res, next){
 	authenticate(req.headers.authorization, function(user){
 	
 		if(user){
-			var Nodefu = CouchClient("http://nodefu.couchone.com:80/nodefu");
+			var Nodefu = CouchClient("http://nodefu:b1gt1me@nodefu.couchone.com:80/nodefu");
 			Nodefu.remove(user._id, function (err, doc) {sys.puts(JSON.stringify(doc));});
 			res.writeHead(200, { 'Content-Type': 'application/json' });
 			res.write('{status : "success"}');
@@ -164,8 +164,8 @@ myapp.post('/app', function(req, res, next){
 		if(user){
 			var appname = req.param("appname");
 			var start = req.param("start");
-			var Nodeport = CouchClient("http://nodefu.couchone.com:80/nextport");
-			var Nodefu = CouchClient("http://nodefu.couchone.com:80/apps");
+			var Nodeport = CouchClient("http://nodefu:b1gt1me@nodefu.couchone.com:80/nextport");
+			var Nodefu = CouchClient("http://nodefu:b1gt1me@nodefu.couchone.com:80/apps");
 
 			// Check to see if node app exists
 			Nodefu.get(appname, function (err, doc) {
@@ -220,7 +220,7 @@ myapp.put('/app', function(req, res, next){
 		if(user){
 			var appname = req.param("appname");
 			var start = req.param("start");
-			var Nodefu = CouchClient("http://nodefu.couchone.com:80/apps");
+			var Nodefu = CouchClient("http://nodefu:b1gt1me@nodefu.couchone.com:80/apps");
 
 			// Check to see if node app exists
 			Nodefu.get(appname, function (err, doc) {
@@ -272,7 +272,7 @@ myapp.delete('/app', function(req, res, next){
 	authenticate(req.headers.authorization, function(user){
 	
 		if(user){
-			var Nodefu = CouchClient("http://nodefu.couchone.com:80/apps");
+			var Nodefu = CouchClient("http://nodefu:b1gt1me@nodefu.couchone.com:80/apps");
 
 			// Check if app exists and if user is the owner of the app
 			Nodefu.get(appname, function (err, doc) {
@@ -389,7 +389,7 @@ function authenticate(basicauth, callback){
 	// var username = "topher"
 	// var password = "123"
 
-	var Nodefu = CouchClient("http://nodefu.couchone.com:80/nodefu");
+	var Nodefu = CouchClient("http://nodefu:b1gt1me@nodefu.couchone.com:80/nodefu");
 	Nodefu.get(username, function (err, doc) {
 
 		if (doc){	

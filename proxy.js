@@ -21,7 +21,7 @@ var spawn = require('child_process').spawn;
 
 // var forever = require('forever');
 
-var Nodefu = CouchClient("http://nodefu.couchone.com:80/apps");
+var Nodefu = CouchClient("http://nodefu:b1gt1me@nodefu.couchone.com:80/apps");
 
 // Launch all nodefu hosted apps
 // spawn('ruby', ['launchapps.rb']);
