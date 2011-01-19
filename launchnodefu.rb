@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require 'rubygems'
+require 'json'
 # require 'net/http'
-# require 'json'
 # 
 # # Couch DB Commands
 # module Couch
