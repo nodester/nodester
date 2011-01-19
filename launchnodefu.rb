@@ -1,56 +1,61 @@
 #!/usr/bin/env ruby
 require 'rubygems'
-require 'net/http'
-require 'json'
-
-# Couch DB Commands
-module Couch
-
-  class Server
-    def initialize(host, port, options = nil)
-      @host = host
-      @port = port
-      @options = options
-    end
-
-    def delete(uri)
-      request(Net::HTTP::Delete.new(uri))
-    end
-
-    def get(uri)
-      request(Net::HTTP::Get.new(uri))
-    end
-
-    def put(uri, json)
-      req = Net::HTTP::Put.new(uri)
-      req["content-type"] = "application/json"
-      req.body = json
-      request(req)
-    end
-
-    def post(uri, json)
-      req = Net::HTTP::Post.new(uri)
-      req["content-type"] = "application/json"
-      req.body = json
-      request(req)
-    end
-
-    def request(req)
-      res = Net::HTTP.start(@host, @port) { |http|http.request(req) }
-      unless res.kind_of?(Net::HTTPSuccess)
-        handle_error(req, res)
-      end
-      res
-    end
-
-    private
-
-    def handle_error(req, res)
-      e = RuntimeError.new("#{res.code}:#{res.message}\nMETHOD:#{req.method}\nURI:#{req.path}\n#{res.body}")
-      raise e
-    end
-  end
-end
+# require 'net/http'
+# require 'json'
+# 
+# # Couch DB Commands
+# module Couch
+# 
+#   class Server
+#     def initialize(host, port, options = nil)
+#       @host = host
+#       @port = port
+#       @options = options
+#     end
+# 
+#     def delete(uri)
+#       request(Net::HTTP::Delete.new(uri))
+#     end
+# 
+#     def get(uri)
+#       req = Net::HTTP::Get.new(uri)
+#       # req["content-type"] = "application/json"
+#       req.basic_auth 'nodefu', 'b1gt1me'
+#       request(req)
+#       
+#       # request(Net::HTTP::Get.new(uri))
+#     end
+# 
+#     def put(uri, json)
+#       req = Net::HTTP::Put.new(uri)
+#       req["content-type"] = "application/json"
+#       req.body = json
+#       request(req)
+#     end
+# 
+#     def post(uri, json)
+#       req = Net::HTTP::Post.new(uri)
+#       req["content-type"] = "application/json"
+#       req.body = json
+#       request(req)
+#     end
+# 
+#     def request(req)
+#       res = Net::HTTP.start(@host, @port) { |http|http.request(req)}
+#       unless res.kind_of?(Net::HTTPSuccess)
+#         handle_error(req, res)
+#       end
+#       res
+#     end
+# 
+#     private
+# 
+#     def handle_error(req, res)
+#       e = RuntimeError.new("#{res.code}:#{res.message}\nMETHOD:#{req.method}\nURI:#{req.path}\n#{res.body}")
+#       raise e
+#     end
+#   end
+# end
 
 # Kill all node processes
 # `killall node`
@@ -73,9 +78,12 @@ Process.detach(child_pid)
 
 
 # Launch Apps 
-server = Couch::Server.new("nodefu:b1gt1me@nodefu.couchone.com", "80")
+require 'rest-client'
+res = RestClient.get 'http://nodefu:b1gt1me@nodefu.couchone.com/apps/_design/nodeapps/_view/all', {:accept => :json}
 
-res = server.get('/apps/_design/nodeapps/_view/all')
+# server = Couch::Server.new("nodefu.couchone.com", "80")
+# res = server.get('/apps/_design/nodeapps/_view/all')
+
 jsonresp = res.body
 dbdata = JSON.parse(jsonresp)
 nodefudir = Dir.pwd
