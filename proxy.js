@@ -9,7 +9,13 @@ var httpProxy = require('http-proxy'),
 	url = require('url'),
 	sys = require('sys');
 
+var request = require('request');
+var h = {accept:'application/json', 'content-type':'application/json'};
+	
+
 var CouchClient = require('couch-client');
+var Nodefu = CouchClient("http://nodefu:b1gt1me@nodefu.couchone.com:80/apps");
+
 // var nodemon = require('nodemon');
 
 // startup app.js API (use Forever in Production)
@@ -21,7 +27,6 @@ var spawn = require('child_process').spawn;
 
 // var forever = require('forever');
 
-var Nodefu = CouchClient("http://nodefu:b1gt1me@nodefu.couchone.com:80/apps");
 
 // Launch all nodefu hosted apps
 // spawn('ruby', ['launchapps.rb']);
@@ -68,11 +73,20 @@ httpProxy.createServer(function (req, res, proxy) {
 		
 	} else if (subdomain != '' && subdomain != 'nodefu' && subdomain != 'www' && subdomain != 'api') {
 		// 	redirect to subdomain's port by looking up subdomain and port in couchdb
-		Nodefu.get(subdomain, function (err, doc) {
-			if (doc){
-				proxy.proxyRequest(doc.port, 'localhost');
+		// Nodefu.get(subdomain, function (err, doc) {
+		// 	if (doc){
+		// 		// proxy.proxyRequest(doc.port, 'localhost');
+		// 		sys.puts(JSON.stringify(doc));
+		// 	}
+		// });
+
+		request({uri:'http://nodefu:b1gt1me@nodefu.couchone.com:80/apps/' + subdomain, method:'GET', headers:h}, function (err, response, body) {
+			if (response){
+				var myObject = JSON.parse(body);
+				proxy.proxyRequest(myObject.port, 'localhost');
 			}
 		});
+
 		
 	} else {
 		// redirect to Nodefu's home page
