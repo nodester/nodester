@@ -60,7 +60,7 @@ httpProxy.createServer(function (req, res, proxy) {
 	// Show headers for testing
 	sys.puts(JSON.stringify(req.headers));
 
-	if (hostname.indexOf("nodefu")) {
+	if (hostname.indexOf("nodefu") != -1) {
 		res.writeHead(301, {'Content-Type': 'text/plain', 'Location': 'http://nodester.com'});
 		res.end();
 	  	
