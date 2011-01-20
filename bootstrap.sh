@@ -98,8 +98,8 @@ mkdir /etc/chef
 chown root:root /etc/chef
 
 cd /tmp 
-wget http://nodejs.org/dist/node-v0.3.5.tar.gz
-tar -zxvf node-v0.3.5.tar.gz
+wget http://nodejs.org/dist/node-v0.3.4.tar.gz
+tar -zxvf node-v0.3.4.tar.gz
 cd node* 
 ./configure
 make

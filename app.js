@@ -55,7 +55,7 @@ myapp.post('/coupon', function(req, res, next){
 	});	
 
 	res.writeHead(200, { 'Content-Type': 'application/json' });
-	res.write('{status : "success - bow to your sensei"}');
+	res.write('{status : "success - you are now in our queue for an upcoming invite!"}');
 	res.end();
 
 });
