@@ -60,7 +60,11 @@ httpProxy.createServer(function (req, res, proxy) {
 	// Show headers for testing
 	sys.puts(JSON.stringify(req.headers));
 
-	if (subdomain == 'api') {
+	if (hostname.indexOf("nodefu")) {
+		res.writeHead(301, {'Content-Type': 'text/plain', 'Location': 'http://nodester.com'});
+		res.end();
+	  	
+	} else if (subdomain == 'api') {
 		// Check for basic auth on API
 		// send browser request for user credentials
 		if(req.headers.authorization==undefined) {
