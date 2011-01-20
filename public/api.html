@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title>NodeFu | Open Source Node.JS Hosting Platform</title>
+<title>Nodester | Open Source Node.JS Hosting Platform</title>
 <link rel="stylesheet" href="styles.css" type="text/css" />
 <!--
 ablaze, a free CSS web template by spyka Webmaster (www.spyka.net)
@@ -36,7 +36,7 @@ License: Creative Commons Attribution
 		<h3>Did you get your coupon code? - <a href="#" onclick="tb_remove()">No?</a></p></h3>
 		<fieldset>
 
-			<form action="http://nodefu.com/user" method="post">
+			<form action="http://nodester.com/user" method="post">
 				<p><label for="name">Coupon:</label>
 				<input type="password" name="coupon" id="coupon" value="" /><br />		
 				<label for="name">Username:</label>
@@ -58,7 +58,7 @@ License: Creative Commons Attribution
 	
 	<div id="wrapper">
 		<div id="sitename">
-			<h1><a href="/">Node<strong>Fu</strong></a></h1>
+			<h1><a href="/"> Node<strong>ster</strong></a></h1>
 		</div>
        <div id="nav">
 			<ul>
@@ -112,66 +112,66 @@ License: Creative Commons Attribution
 			</div>
 			<div id="content" class="column-right">
                 <h2>REST API</h2>
-                <p>We do not currently have a full featured website as we are focusing on the API and the service. We are currently running Node v.0.3.4 and updating all NPM modules on a weekly basis. Git is required to push your updates to NodeFu. All we ask is that you be a good steward of our service and community.</p>	
+                <p>We do not currently have a full featured website as we are focusing on the API and the service. We are currently running Node v.0.3.4 and updating all NPM modules on a weekly basis. Git is required to push your updates to Nodester. All we ask is that you be a good steward of our service and community.</p>	
                 
 				<a name="couponapi"></a>
 				<h3>COUPON</h3> 
 				<p><b>Request Coupon :: POST</b>
-				<br/>Base URL: http://nodefu.com</p> 
+				<br/>Base URL: http://nodester.com</p> 
 				<code>/coupon - creates coupon request for early access (pass in email)<br/><br/> 
-				curl -X POST -d "email=your_address@gmail.com" http://nodefu.com/coupon</code> 
+				curl -X POST -d "email=your_address@gmail.com" http://nodester.com/coupon</code> 
 
 				<a name="status"></a>
 				<h3>STATUS</h3> 
 				<p><b>Get Status :: GET</b>
-				<br/>Base URL: http://nodefu.com</p> 
+				<br/>Base URL: http://nodester.com</p> 
 				<code>/status - Returns platform status and number of apps running<br/><br/>
-				curl http://nodefu.com/status</code> 
+				curl http://nodester.com/status</code> 
 
 				<a name="userapi"></a>
 				<h3>USER</h3> 
 				<p><b>Register User :: POST (Coupon is required.)</b>
-				<br/>Base URL: http://nodefu.com</p> 
+				<br/>Base URL: http://nodester.com</p> 
 				<code>/user - creates user account (pass in user and password and email and id_rsa.pub string) <br/><br/> 
-				curl -X POST -d "user=testuser&password=123&email=chris@nodefu.com&rsakey=ssh-rsa AAAAB3NzaC1yc..." http://nodefu.com/user</code> 
+				curl -X POST -d "user=testuser&password=123&email=chris@nodester.com&rsakey=ssh-rsa AAAAB3NzaC1yc..." http://nodester.com/user</code> 
 
 
 				<p><b>Delete User :: DELETE</b>
-				<br/>Base URL: http://api.nodefu.com</p> 
+				<br/>Base URL: http://api.nodester.com</p> 
 				<code>/user - delete user account (requires basic auth)<br/> <br/>
-				curl -X DELETE -u "testuser:123" http://api.nodefu.com/user</code> 
+				curl -X DELETE -u "testuser:123" http://api.nodester.com/user</code> 
 
 				<a name="app"></a>
 				<h3>APP</h3> 
 				<p><b>Create Application :: POST</b>
-				<br/>Base URL: http://api.nodefu.com</p> 
+				<br/>Base URL: http://api.nodester.com</p> 
 				
 				<code>/apps - create nodejs app for hosting (requires basic auth and returns the port address required for use along with a git repo to push to)<br/><br/> 
-				curl -X POST -u "testuser:123" -d "appname=a&start=hello.js" http://api.nodefu.com/app</code> 
+				curl -X POST -u "testuser:123" -d "appname=a&start=hello.js" http://api.nodester.com/app</code> 
 
 				<p><b>Change Application :: PUT</b>
-					<br/>Base URL: http://api.nodefu.com</p> 
+					<br/>Base URL: http://api.nodester.com</p> 
 					 
 				<code>/apps - update nodejs app for hosting (requires basic auth, appname, and starting page and returns the port address required for use along with a git repo to push to)<br/><br/> 
 				curl -X PUT -u "testuser:123" -d "appname=a&start=hello1.js" http://api.localhost:8080/app</code> 
 
 				<p><b>Delete Application :: DELETE</b>
-					<br/>Base URL: http://api.nodefu.com</p> 
+					<br/>Base URL: http://api.nodester.com</p> 
 					 
 				<code>/apps - delete nodejs app (requires basic auth and appname)<br/> <br/>
-				curl -X DELETE -u "testuser:123" -d "appname=test" http://api.nodefu.com/app</code> 
+				curl -X DELETE -u "testuser:123" -d "appname=test" http://api.nodester.com/app</code> 
 
 
 				<a name="git"></a>
 				<h3>GIT</h3> 
 				<p>Deploying and updating your Node.js application is simple.</p>
-				<p><b>curl -X POST -u "testuser:123" -d "appname=myapp&start=hello.js" http://api.nodefu.com/app</b></p>
-				<p>Upon creating or changing your application via our API, you will receive a Git reop URL from our API response.  Add a NodeFu remote to your project as follows:</p> 
-				<p><b>git remote add nodefu the_url_returned_by_our_api</b></p> 
-				<p>Finally push your updates to your new NodeFu environment as follows:</p> 
-				<p><b>git push nodefu master</b></p> 
-				<p>Also make sure that you update your project's port address with the new one assigned by NodeFu.</p> 
-				<p><b>Visit your application via http://myapp.nodefu.com</b></p>
+				<p><b>curl -X POST -u "testuser:123" -d "appname=myapp&start=hello.js" http://api.nodester.com/app</b></p>
+				<p>Upon creating or changing your application via our API, you will receive a Git reop URL from our API response.  Add a Nodester remote to your project as follows:</p> 
+				<p><b>git remote add nodester the_url_returned_by_our_api</b></p> 
+				<p>Finally push your updates to your new Nodester environment as follows:</p> 
+				<p><b>git push nodester master</b></p> 
+				<p>Also make sure that you update your project's port address with the new one assigned by Nodester.</p> 
+				<p><b>Visit your application via http://myapp.nodester.com</b></p>
 				<br/> 
 
 				<p>&nbsp;</p>
@@ -187,7 +187,7 @@ License: Creative Commons Attribution
                 <h4>About Us</h4>
     
                 <p>
-                    We started this project because the "other" node.js hosting services were not sending out coupon invitations.  Now anyone can host node.js apps! You can access our source code repository at <a href="http://github.com/chrismatthieu/nodefu">http://github.com/chrismatthieu/nodefu</a>
+                    We started this project because the "other" node.js hosting services were not sending out coupon invitations.  Now anyone can host node.js apps! You can access our source code repository at <a href="http://github.com/nodester">http://github.com/nodester</a>
                 </p>
             </div>
             
@@ -230,5 +230,15 @@ License: Creative Commons Attribution
                 <p>Website design by <a href="http://www.spyka.net">Free CSS Templates</a> | <a href="http://www.justfreetemplates.com">Free Web Templates</a></p>
         </div>  
     </div>
+	<!-- twitter follow badge by go2web20 --> 
+	<script src='http://files.go2web20.net/twitterbadge/1.0/badge.js' type='text/javascript'></script><script type='text/javascript' charset='utf-8'><!--
+	tfb.account = 'nodesterjs';
+	tfb.label = 'follow-us';
+	tfb.color = '#35ccff';
+	tfb.side = 'r';
+	tfb.top = 275;
+	tfb.showbadge();
+	--></script> 
+	<!-- end of twitter follow badge -->
 </body>
 </html>

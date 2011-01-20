@@ -1,4 +1,4 @@
-NodeFu (http://nodefu.com) = Node.js Hosting Platform
+Nodester (http://nodester.com) = Node.js Hosting Platform
 
 This is an *experimental* service for managing hosted nodejs apps.  It consists of an API that allows developers to create and manage nodejs apps.  Node apps are assigned subdomains that proxy to ports with an assigned address.  Instances (dynos) are launched using Forever so that they run until you stop them or using Nodemon where they run until a file changes from a git update.
 
@@ -8,7 +8,7 @@ CouchDB instance or CouchOne account
 Git
 
 Get Started:
-ruby launchnodefu.rb 
+ruby launchnodester.rb 
 This small Ruby script launches proxy.js to start services and it will launch app.js 
 - proxy.js launches proxy server redirecting port 8080 traffic to appropriate node app
 - proxy launches app.js on port 4000 for creating and managing node apps
@@ -18,7 +18,7 @@ API Documentation:
 
 COUPON
 /coupon - creates coupon request for early access (pass in email) - <b>Note: This resource does not use base api url
-curl -X POST -d "email=chris@nodefu.com" http://localhost:8080/coupon
+curl -X POST -d "email=chris@nodester.com" http://localhost:8080/coupon
 
 STATUS
 /status - returns status of the platform and number of nodejs apps running
@@ -26,7 +26,7 @@ STATUS
 
 USER
 /user - creates user account (pass in user and password and email) - Note: This resource does not use the api subdomain
-curl -X POST -d "user=testuser&password=123&email=chris@nodefu.com" http://localhost:8080/user
+curl -X POST -d "user=testuser&password=123&email=chris@nodester.com" http://localhost:8080/user
 
 /user - delete user account (requires basic auth)
 curl -X DELETE -u "testuser:123" http://api.localhost:8080/user
@@ -71,8 +71,8 @@ Considerations:
 - sandbox node instances?
 
 - Push apps to local git repos
-git remote add nodefu /usr/local/src/nodefu/apps/7-46e95eaa00d2785e6c73e5a4fc25d88c.git
-git push nodefu master
+git remote add nodester /usr/local/src/nodester/apps/7-46e95eaa00d2785e6c73e5a4fc25d88c.git
+git push nodester master
 
 
 Contribute:

@@ -1,9 +1,9 @@
 /* 
 
-NodeFu opensource Node.js hosting service
+Nodester opensource Node.js hosting service
 Written by: @ChrisMatthieu
 
-http://nodefu.com
+http://nodester.com
 
 */
 
@@ -44,7 +44,7 @@ myapp.get('/', function(req, res, next){
 });
 
 // New coupon request
-// curl -X POST -d "email=chris@nodefu.com" http://localhost:8080/coupon
+// curl -X POST -d "email=chris@nodester.com" http://localhost:8080/coupon
 myapp.post('/coupon', function(req, res, next){
 
 	var email = req.param("email");	
@@ -62,7 +62,7 @@ myapp.post('/coupon', function(req, res, next){
 
 
 // New user account registration
-// curl -X POST -d "user=testuser&password=123&email=chris@nodefu.com&coupon=hiyah" http://localhost:8080/user
+// curl -X POST -d "user=testuser&password=123&email=chris@nodester.com&coupon=hiyah" http://localhost:8080/user
 // curl -X POST -d "user=me&password=123&coupon=hiyah" http://localhost:8080/user
 myapp.post('/user', function(req, res, next){
 
@@ -105,7 +105,7 @@ myapp.post('/user', function(req, res, next){
 				  stream.end();
 			  
 				
-				// Save user information to database and respond to API request
+				// Save user information to nodefu and respond to API request
 				// Nodefu.save({_id: newuser, password: md5(newpass), email: email}, function (err, doc) {sys.puts(JSON.stringify(doc));});
 				request({uri:'http://nodefu:glitter@nodefu.couchone.com:80/nodefu', method:'POST', body: JSON.stringify({_id: newuser, password: md5(newpass), email: email}), headers:h}, function (err, response, body) {
 				});	
@@ -235,8 +235,8 @@ myapp.post('/app', function(req, res, next){
 							// var gitsetup = spawn('./gitreposetup.sh', [appname, start]);
 							// Respond to API request
 							res.writeHead(200, { 'Content-Type': 'application/json' });
-							res.write('{status : "success", port : "' + appport + '", gitrepo : "ec2-user@nodefu.com:nodefu/apps/' + doc._rev + '.git"}');
-							// res.write('{status : "success", port : "' + appport + '", gitrepo : "ec2-user@www.nodefu.com:nodefu/apps/' + appname + '.git"}');
+							res.write('{status : "success", port : "' + appport + '", gitrepo : "ec2-user@nodester.com:nodester/apps/' + doc._rev + '.git"}');
+							// res.write('{status : "success", port : "' + appport + '", gitrepo : "ec2-user@www.nodester.com:nodester/apps/' + appname + '.git"}');
 							res.end();
 
 						});
@@ -290,9 +290,9 @@ myapp.put('/app', function(req, res, next){
 						
 						// Respond to API request
 						res.writeHead(200, { 'Content-Type': 'application/json' });
-						// res.write('{status : "success", port : "' + doc.port + '", git : "/usr/local/src/nodefu/apps/' + doc._rev + '.git"}');
-						res.write('{status : "success", port : "' + doc.port + '", gitrepo : "ec2-user@www.nodefu.com:nodefu/apps/' + doc._rev + '.git"}');
-						// res.write('{status : "success", port : "' + doc.port + '", gitrepo : "ec2-user@www.nodefu.com:nodefu/apps/' + appname + '.git"}');
+						// res.write('{status : "success", port : "' + doc.port + '", git : "/usr/local/src/nodester/apps/' + doc._rev + '.git"}');
+						res.write('{status : "success", port : "' + doc.port + '", gitrepo : "ec2-user@www.nodester.com:nodester/apps/' + doc._rev + '.git"}');
+						// res.write('{status : "success", port : "' + doc.port + '", gitrepo : "ec2-user@www.nodester.com:nodester/apps/' + appname + '.git"}');
 						res.end();
 
 					});
@@ -436,7 +436,7 @@ myapp.use(express.errorHandler({ showStack: true }));
 myapp.listen(4001); 
 // fugue.start(app, 4001, null, 1, {verbose : true}); // Start with Fugue
 
-console.log('NodeFu app started on port 4001');
+console.log('Nodester app started on port 4001');
 
 
 function authenticate(basicauth, callback){

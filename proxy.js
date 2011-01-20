@@ -1,6 +1,6 @@
 /*
 
-NodeFu - Nodejs hosting
+Nodester - Nodejs hosting
 This app runs on port 80 and forwards traffic to the appropriate node app 
 
 */
@@ -28,7 +28,7 @@ var spawn = require('child_process').spawn;
 // var forever = require('forever');
 
 
-// Launch all nodefu hosted apps
+// Launch all nodester hosted apps
 // spawn('ruby', ['launchapps.rb']);
 
 // NODEJS ISSUE WITH TOO MANY OPEN FILES
@@ -71,7 +71,7 @@ httpProxy.createServer(function (req, res, proxy) {
 		  	proxy.proxyRequest(4001, 'localhost');
 		};
 		
-	} else if (subdomain != '' && subdomain != 'nodefu' && subdomain != 'www' && subdomain != 'api') {
+	} else if (subdomain != '' && subdomain != 'nodester' && subdomain != 'www' && subdomain != 'api') {
 		// 	redirect to subdomain's port by looking up subdomain and port in couchdb
 		// Nodefu.get(subdomain, function (err, doc) {
 		// 	if (doc){
@@ -94,7 +94,7 @@ httpProxy.createServer(function (req, res, proxy) {
 	};
 	
 }).listen(80); // Use port 80 in production
-sys.puts('NodeFu started on port 80');
+sys.puts('Nodester started on port 80');
 
 process.on('uncaughtException', function (err) {
     console.log(err);

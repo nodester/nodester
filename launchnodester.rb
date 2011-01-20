@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-# Run this app to stop and restart all NodeFu jobs
+# Run this app to stop and restart all Nodester jobs
 
 require 'rubygems'
 require 'json'
@@ -10,7 +10,7 @@ require 'json'
 `sudo sh -c "killall node"`
 
 
-# Launch NodeFu
+# Launch Nodester
 child_pid = fork do
   # Must be started with SUDO to run on port 80
   `sudo sh -c "/usr/local/bin/node proxy.js"`
@@ -34,7 +34,7 @@ res = RestClient.get 'http://nodefu:glitter@nodefu.couchone.com/apps/_design/nod
 
 jsonresp = res.body
 dbdata = JSON.parse(jsonresp)
-nodefudir = Dir.pwd
+nodesterdir = Dir.pwd
 dbdata["rows"].each do |app|
   begin
     child_pid = fork do
@@ -46,18 +46,18 @@ dbdata["rows"].each do |app|
         puts app["value"]["_id"] + ' : ' + app["value"]["_rev"]  + ' : ' + app["value"]["start"] 
         # puts app["value"]["_id"] + ' : ' + app["value"]["_id"]  + ' : ' + app["value"]["start"] 
       rescue Exception => e
-        Dir.chdir(nodefudir)
+        Dir.chdir(nodesterdir)
       end
     end
     Process.detach(child_pid)
   rescue Exception => e
-    Dir.chdir(nodefudir)
+    Dir.chdir(nodesterdir)
   end
   
   
 end
 
-puts "NodeFu launched - HiYah!"
+puts "Nodester launched - HiYah!"
 
 exit
 # res = server.put("/imsms/phonosdk", '{ "jid":"' + jid.to_s + '", "_rev":"' + dbdata["_rev"].to_s + '" }')
