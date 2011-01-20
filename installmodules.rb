@@ -1,4 +1,7 @@
 #!/usr/bin/env ruby
+
+# Replace with `npm ls | awk '{print $1}' | xargs npm install`
+
 require 'rubygems'
 require 'json'
 require 'net/http'
@@ -16,7 +19,9 @@ table = method_table.get_table
 table = JSON.parse(table)
 
 table.each do |i|
-  puts "nmp install #{i[0]}"
-  # system 'npm install #{i[0]}' rescue nil
-  `npm install #{i[0]}` rescue nil
+  if i[0].downcase != "uninstall"
+    puts "nmp install #{i[0]}"
+    # system 'npm install #{i[0]}' rescue nil
+    `npm install #{i[0]}` rescue nil
+  end
 end

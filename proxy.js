@@ -14,7 +14,7 @@ var h = {accept:'application/json', 'content-type':'application/json'};
 	
 
 var CouchClient = require('couch-client');
-var Nodefu = CouchClient("http://nodefu:secret@nodefu.couchone.com:80/apps");
+var Nodefu = CouchClient("http://nodefu:glitter@nodefu.couchone.com:80/apps");
 
 // var nodemon = require('nodemon');
 
@@ -80,7 +80,7 @@ httpProxy.createServer(function (req, res, proxy) {
 		// 	}
 		// });
 
-		request({uri:'http://nodefu:secret@nodefu.couchone.com:80/apps/' + subdomain, method:'GET', headers:h}, function (err, response, body) {
+		request({uri:'http://nodefu:glitter@nodefu.couchone.com:80/apps/' + subdomain, method:'GET', headers:h}, function (err, response, body) {
 			if (response){
 				var myObject = JSON.parse(body);
 				proxy.proxyRequest(myObject.port, 'localhost');
