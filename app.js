@@ -1,128 +1,36 @@
 /* 
 
 Nodester opensource Node.js hosting service
-Written by: @ChrisMatthieu
 
+Written by: @ChrisMatthieu & @DanBUK
 http://nodester.com
 
 */
 
-// var fugue = require('fugue');
 var express = require('express');
 var url = require('url');
 var base64_decode = require('base64').decode;
 var crypto = require('crypto');
-var myapp = express.createServer();
 var sys = require('sys');
 var CouchClient = require('couch-client');
 var spawn = require('child_process').spawn;
+var exec = require('child_process').exec;
 var fs = require('fs');
 
-var request = require('request');
-var h = {accept:'application/json', 'content-type':'application/json'};
+var config = require("./config");
+var couch_loc = "http://" + config.opt.couch_user + ":" + config.opt.couch_pass + "@" + config.opt.couch_host + ":" + config.opt.couch_port + "/" + config.opt.couch_prefix + "_";
 
-
-var valuser
-
+var myapp = express.createServer();
 
 myapp.configure(function(){
-	myapp.use(express.bodyDecoder()); // needed to process post data
-	myapp.use(express.staticProvider(__dirname + '/public')); // needed to process static pages
+  myapp.use(express.bodyDecoder());
+  myapp.use(express.staticProvider(__dirname + '/public'));
 });
 
-// Fake DB items - TODO: Implement CouchDB or Mongo
-// var items = [
-//     { userid: '1', subdomain: 'a', port: '8001' }
-//   , { userid: '2', subdomain: 'b', port: '8002' }
-//   , { userid: '3', subdomain: 'c', port: '8003' }
-// ];	
-	
 // Routes
 // Homepage
 myapp.get('/', function(req, res, next){
-	res.render('index.html');
-});
-
-// New coupon request
-// curl -X POST -d "email=chris@nodester.com" http://localhost:8080/coupon
-myapp.post('/coupon', function(req, res, next){
-
-	var email = req.param("email");	
-	// var Nodefu = CouchClient("http://nodefu:glitter@nodefu.couchone.com:80/coupons");
-	// Nodefu.save({_id: email}, function (err, doc) {sys.puts(JSON.stringify(doc));});
-
-	request({uri:'http://nodefu:glitter@nodefu.couchone.com:80/coupons', method:'POST', body: JSON.stringify({_id: email}), headers:h}, function (err, response, body) {
-	});	
-
-	res.writeHead(200, { 'Content-Type': 'application/json' });
-	res.write('{status : "success - you are now in our queue for an upcoming invite!"}');
-	res.end();
-
-});
-
-
-// New user account registration
-// curl -X POST -d "user=testuser&password=123&email=chris@nodester.com&coupon=hiyah" http://localhost:8080/user
-// curl -X POST -d "user=me&password=123&coupon=hiyah" http://localhost:8080/user
-myapp.post('/user', function(req, res, next){
-
-	var newuser = req.param("user");
-	var newpass = req.param("password");
-	var email = req.param("email");
-	var coupon = req.param("coupon");
-	var rsakey = req.param("rsakey");	
-	
-	if(coupon == 'hiyah' || coupon == 'ryahrox') {
-
-		// var Nodefu = CouchClient("http://nodefu:glitter@nodefu.couchone.com:80/nodefu");
-	
-		// Check to see if account exists
-		// Nodefu.get(newuser, function (err, doc) {
-		request({uri:'http://nodefu:glitter@nodefu.couchone.com:80/nodefu/' + newuser, method:'GET', headers:h}, function (err, response, body) {
-			var myObject = JSON.parse(body);
-			if (myObject._id){
-				// account already registered
-				res.writeHead(400, { 'Content-Type': 'application/json' });
-				res.write('{status : "failure - account exists"}');
-				res.end();
-			} else {
-				// Added RSA Key to Authorized_keys for Git access
-				// fs.open('~ec2_user/.ssh/authorized_keys', 'a', 666, function( e, id ) {
-				//   fs.write( id, rsakey, null, 'utf8', function(){
-				//     fs.close(id, function(){
-				//       console.log('rsa key written');
-				//     });
-				//   });
-				// });
-
-				stream = fs.createWriteStream('/home/ec2-user/.ssh/authorized_keys', {
-			    'flags': 'a+',
-			    'encoding': 'utf8',
-			    'mode': 0644
-				  });
-
-				  stream.write(rsakey, 'utf8');
-				  stream.end();
-			  
-				
-				// Save user information to nodefu and respond to API request
-				// Nodefu.save({_id: newuser, password: md5(newpass), email: email}, function (err, doc) {sys.puts(JSON.stringify(doc));});
-				request({uri:'http://nodefu:glitter@nodefu.couchone.com:80/nodefu', method:'POST', body: JSON.stringify({_id: newuser, password: md5(newpass), email: email}), headers:h}, function (err, response, body) {
-				});	
-				
-				
-				res.writeHead(200, { 'Content-Type': 'application/json' });
-				res.write('{status : "success"}');
-				res.end();
-			}
-		});
-
-	} else {
-		res.writeHead(500, { 'Content-Type': 'application/json' });
-		res.write('{status : "failure - invalid coupon"}');
-		res.end();
-	};
-
+  res.render('index.html');
 });
 
 // Status API
@@ -130,235 +38,293 @@ myapp.post('/user', function(req, res, next){
 // curl http://localhost:8080/status
 myapp.get('/status', function(req, res, next){
 
-	// var Nodeport = CouchClient("http://nodefu:glitter@nodefu.couchone.com:80/nextport");
-	// Nodeport.get('port', function (err, doc) {
-	// 	var appsrunning = (doc.address - 8000).toString();
-	// 
-	// 	res.writeHead(200, { 'Content-Type': 'application/json' });
-	// 	res.write('{status : "up", appsrunning : "' +  appsrunning + '"}');
-	//   	res.end();
-	// });
-	// 
-	
-	request({uri:'http://nodefu:glitter@nodefu.couchone.com:80/nextport/port', method:'GET', headers:h}, function (err, response, body) {
-		if (response){
-			var myObject = JSON.parse(body);
-			var appsrunning = (myObject.address - 8000).toString();
-			res.writeHead(200, { 'Content-Type': 'application/json' });
-			res.write('{status : "up", appsrunning : "' +  appsrunning + '"}');
-		  	res.end();
-		};
-	});
+  var Nodeport = CouchClient(couch_loc + "nextport");
+  Nodeport.get('port', function (err, doc) {
+    try {
+      var appsrunning = (doc.address - 8000).toString();
+     } catch (e) {
+       var appsrunning = "0";
+     }
+    
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.write('{status : "up", appsrunning : "' +  appsrunning + '"}\n');
+    res.end();
+  });
+});
+
+// New coupon request
+// curl -X POST -d "email=dan@bejes.us" http://localhost:8080/coupon
+myapp.post('/coupon', function(req, res, next) {
+
+  var email = req.param("email");  
+  var Nodefu = CouchClient(couch_loc + "coupons");
+
+  Nodefu.save({_id: email}, function (err, doc) {sys.puts(JSON.stringify(doc));});
+  res.writeHead(200, { 'Content-Type': 'application/json' });
+  res.write('{status : "success - bow to your sensei"}\n');
+  res.end();
 
 });
 
+
+// New user account registration
+// curl -X POST -d "user=testuser&password=123&email=chris@nodefu.com&coupon=hiyah" http://localhost:8080/user
+// curl -X POST -d "user=me&password=123&coupon=hiyah" http://localhost:8080/user
+myapp.post('/user', function(req, res, next){
+
+  var newuser = req.param("user");
+  var newpass = req.param("password");
+  var email = req.param("email");
+  var coupon = req.param("coupon");
+  var rsakey = req.param("rsakey");  
+  
+  if(coupon == config.opt.coupon_code) {
+
+    var Nodefu = CouchClient(couch_loc + "nodefu");
+
+    // Check to see if account exists
+    Nodefu.get(newuser, function (err, doc) {
+      if (doc){
+        // account already registered
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.write('{status : "failure - account exists"}\n');
+        res.end();
+      } else {
+    
+        stream = fs.createWriteStream(config.opt.home_dir + '/.ssh/authorized_keys', {
+          'flags': 'a+',
+          'encoding': 'utf8',
+          'mode': 0644
+          });
+
+          stream.write('command="/usr/local/bin/git-shell-enforce-directory ' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + newuser + '",no-port-forwarding,no-X11-forwarding,no-agent-forwarding,no-pty ' + rsakey, 'utf8');
+          stream.end();
+        
+        // Save user information to database and respond to API request
+        Nodefu.save({_id: newuser, password: md5(newpass), email: email}, function (err, doc) {sys.puts(JSON.stringify(doc));});
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.write('{status : "success"}\n');
+        res.end();
+      }
+    });
+
+  } else {
+    res.writeHead(500, { 'Content-Type': 'application/json' });
+    res.write('{status : "failure - invalid coupon"}\n');
+    res.end();
+  };
+
+});
 
 // api.localhost requires basic auth to access this section
 
 // Delete your user account 
 // curl -X DELETE -u "testuser:123" http://api.localhost:8080/user
-myapp.delete('/user', function(req, res, next){
-
-	var user
-	authenticate(req.headers.authorization, function(user){
-	
-		if(user){
-			// var Nodefu = CouchClient("http://nodefu:glitter@nodefu.couchone.com:80/nodefu");
-			// Nodefu.remove(user._id, function (err, doc) {sys.puts(JSON.stringify(doc));});
-			request({uri:'http://nodefu:glitter@nodefu.couchone.com:80/nodefu/' + user._id + '?rev=' +  user._rev, method:'DELETE', headers:h}, function (err, response, body) {
-			});	
-
-			res.writeHead(200, { 'Content-Type': 'application/json' });
-			res.write('{status : "success"}');
-		  	res.end();
-		} else {
-			// basic auth didn't match account
-			res.writeHead(400, { 'Content-Type': 'application/json' });
-			res.write('{status : "failure - authentication"}');
-		  	res.end();
-		};
-
-	
-	});
+myapp.delete('/user', function(req, res, next) {
+  var user
+  authenticate(req.headers.authorization, res, function(user) {
+    if(user){
+      // need to delete all users apps
+      // and stop all the users apps
+      var Nodefu = CouchClient(couch_loc + "nodefu");
+      Nodefu.remove(user._id, function (err, doc) {sys.puts(JSON.stringify(doc));});
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.write('{status : "success"}\n');
+      res.end();
+    };
+  });
 });
 
 // Create node app 
 // curl -X POST -u "testuser:123" -d "appname=test&start=hello.js" http://api.localhost:8080/apps
-myapp.post('/app', function(req, res, next){
+myapp.post('/app', function(req, res, next) {
+  var user
+  authenticate(req.headers.authorization, res, function(user) {
+    if(user) {
+      var appname = req.param("appname");
+      var start = req.param("start");
+      var Nodeport = CouchClient(couch_loc + "nextport");
+      var Nodefu = CouchClient(couch_loc + "apps");
 
-	var user
-	authenticate(req.headers.authorization, function(user){
-	
-		if(user){
-			var appname = req.param("appname");
-			var start = req.param("start");
-			var Nodeport = CouchClient("http://nodefu.couchone.com:80/nextport");
-			// var Nodefu = CouchClient("http://nodefu:glitter@nodefu.couchone.com:80/apps");
-
-
-			// Check to see if node app exists
-			// Nodefu.get(appname, function (err, doc) {
-			request({uri:'http://nodefu:glitter@nodefu.couchone.com:80/apps/' + appname, method:'GET', headers:h}, function (err, response, body) {
-				var myObject = JSON.parse(body);
-				if (myObject._id){
-			
-				// if (doc){
-					// subdomain already exists
-					res.writeHead(400, { 'Content-Type': 'application/json' });
-					res.write('{status : "failure - appname exists"}');
-					res.end();
-				} else {
-					// subdomain available - get next available port address
-					Nodeport.get('port', function (err, doc) {
-					// request({uri:'http://nodefu:glitter@nodefu.couchone.com:80/nextport/port', method:'GET', headers:h}, function (err, response, body) {
-					// 	var doc = JSON.parse(body);
-					// 	sys.puts(JSON.stringify(doc));
-						
-						var appport = doc.address;
-						// increment next port address
-						Nodeport.save({_id: "port", address: appport + 1}, function (err, doc) {sys.puts(JSON.stringify(doc));});
-						// request({uri:'http://nodefu:glitter@nodefu.couchone.com:80/nextport/port?rev=' + doc._rev, method:'PUT', body: JSON.stringify({_id: "port", address: appport + 1}), headers:h}, function (err, response, body) {
-						// 	sys.puts(response);
-						// 	sys.puts(body);
-						// });	
-					
-					
-						// Create the app
-						// Nodefu.save({_id: appname, start: start, port: appport, username: user._id }, function (err, doc) {
-						request({uri:'http://nodefu:glitter@nodefu.couchone.com:80/apps', method:'POST', body: JSON.stringify({_id: appname, start: start, port: appport, username: user._id}), headers:h}, function (err, response, body) {
-					
-					
-							sys.puts(JSON.stringify(doc));
-							
-							// Setup git repo
-							var gitsetup = spawn('./gitreposetup.sh', [doc._rev, start]);
-							// var gitsetup = spawn('./gitreposetup.sh', [appname, start]);
-							// Respond to API request
-							res.writeHead(200, { 'Content-Type': 'application/json' });
-							res.write('{status : "success", port : "' + appport + '", gitrepo : "ec2-user@nodester.com:nodester/apps/' + doc._rev + '.git"}');
-							// res.write('{status : "success", port : "' + appport + '", gitrepo : "ec2-user@www.nodester.com:nodester/apps/' + appname + '.git"}');
-							res.end();
-
-						});
-					
-					});
-				};
-			});
-
-		} else {
-			// basic auth didn't match account
-			res.writeHead(400, { 'Content-Type': 'application/json' });
-			res.write('{status : "failure - authentication"}');
-		  	res.end();
-		};
-	
-	});
+      // Check to see if node app exists
+      Nodefu.get(appname, function (err, doc) {
+        if (doc){
+          // subdomain already exists
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.write('{status : "failure - appname exists"}\n');
+          res.end();
+        } else {
+          // subdomain available - get next available port address
+          Nodeport.get('port', function (err, doc) {
+            if (typeof doc == 'undefined') {
+              var appport = 8000;
+            } else {
+              var appport = doc.address
+            }
+            // increment next port address
+            Nodeport.save({_id: "port", address: appport + 1}, function (err, doc) {
+              // Need error checking here
+              var repo_id = doc._rev;
+              sys.inspect('repo_id: ' + repo_id);
+          
+              // Create the app
+              Nodefu.save({_id: appname, start: start, port: appport, username: user._id, repo_id: repo_id, running: false, pid: 'unknown' }, function (err, doc) {
+                sys.puts(JSON.stringify(doc));
+              
+                // Setup git repo
+                var gitsetup = spawn(config.opt.app_dir + '/scripts/gitreposetup.sh', [config.opt.app_dir, config.opt.home_dir + '/' + config.opt.hosted_apps_subdir, user._id, repo_id, start]);
+                // Respond to API request
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.write('{status : "success", port : "' + appport + '", gitrepo : "' + config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.hosted_apps_subdir + '/' + doc.username + '/' + doc.repo_id + '.git", start: "' + start + '", running: false, pid: "unknown"}\n');
+                res.end();
+              });
+            });
+          });
+        };
+      });
+    };
+  });
 });
 
-// Update node app 
+// Update node app
+// start=hello.js - To update the initial run script
+// running=true - To Start the app
+// running=false - To Stop the app
 // curl -X PUT -u "testuser:123" -d "appname=test&start=hello.js" http://api.localhost:8080/apps
+// curl -X PUT -u "testuser:123" -d "appname=test&running=true" http://api.localhost:8080/apps
 myapp.put('/app', function(req, res, next){
 
-	var user
-	authenticate(req.headers.authorization, function(user){
-	
-		if(user){
-			var appname = req.param("appname");
-			var start = req.param("start");
-			// var Nodefu = CouchClient("http://nodefu:glitter@nodefu.couchone.com:80/apps");
+  var user
+  authenticate(req.headers.authorization, res, function(user){
+  
+    if(user){
+      var appname = req.param("appname");
+      var start = req.param("start");
+      var running = req.param("running");
+      var Nodefu = CouchClient(couch_loc + "apps");
 
-			// Check to see if node app exists
-			// Nodefu.get(appname, function (err, doc) {
-			request({uri:'http://nodefu:glitter@nodefu.couchone.com:80/apps/' + appname, method:'GET', headers:h}, function (err, response, body) {
-				var doc = JSON.parse(body);
-				if (doc._id){
-			
-				// if (doc){
-					
-					// subdomain found 
-					// update the app
-					// Nodefu.save({start: start, port: doc.port, username: user._id }, function (err, doc) {
-					// Nodefu.save({_id: appname, start: start, port: doc.port, username: user._id }, function (err, doc) {
-					request({uri:'http://nodefu:glitter@nodefu.couchone.com:80/apps/' + appname + '?rev=' + doc._rev, method:'PUT', body: JSON.stringify({_id: appname, start: start, port: doc.port, username: user._id}), headers:h}, function (err, response, body) {
-						
-						// sys.puts(JSON.stringify(response));
-						sys.puts(response);
-						sys.puts(body);
-						
-						// Setup git repo
-						// var gitsetup = spawn('./gitreposetup.sh', [doc._rev]);
-						
-						// Respond to API request
-						res.writeHead(200, { 'Content-Type': 'application/json' });
-						// res.write('{status : "success", port : "' + doc.port + '", git : "/usr/local/src/nodester/apps/' + doc._rev + '.git"}');
-						res.write('{status : "success", port : "' + doc.port + '", gitrepo : "ec2-user@www.nodester.com:nodester/apps/' + doc._rev + '.git"}');
-						// res.write('{status : "success", port : "' + doc.port + '", gitrepo : "ec2-user@www.nodester.com:nodester/apps/' + appname + '.git"}');
-						res.end();
+      // Check to see if node app exists
+      Nodefu.get(appname, function (err, doc) {
+        if (doc){
+          // subdomain found
+          if (doc.username == user._id) {
+            if (running == 'true') {
+              // start the app
+              if (doc.running == 'true') {
+                // Error already running
+                res_error(res, 408, "failure - application already running.");
+              } else {
+                var app_home = config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + doc.username + '/' + doc.repo_id;
+                fs.readFile(config.opt.app_dir + '/app-nodemon-ignore', function (err, data) {
+                  if (err) {
+                    res_error(res, 500, "failure - couldn't reade app-nodemon-ignore");
+                  } else {
+                    fs.writeFile(app_home + '/nodemon-ignore', data, function (err) {
+                      if (err) {
+                        res_error(res, 500, "failure - couldn't write app nodemon-ignore");
+                      } else {
+                        sys.puts("cmd: " + cmd);
+                        // var cmd = config.opt.app_dir + '/deps/nodemon/nodemon ' + app_home + '/.app.pid ' + app_home + '/' + doc.start;
+                        var cmd = config.opt.app_dir + '/scripts/launch_app.sh ' + config.opt.app_dir + ' ' + app_home + ' ' + doc.start;
+                        var child = exec(cmd, function (error, stdout, stderr) {});
+                      }
+                    });
+                  }
+                });
+              }
+            } else if (running == 'false') {
+              // stop the app
+              if (doc.running == 'false') {
+                // Error already running
+                res_error(res, 408, "failure - application already stopped.");
+              } else {
+                // Stop the app
+                // PID should be pushed back into CouchDB from nodemon-demon and defo no a sync operation oO
+                fs.readFile(config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + doc.username + '/' + doc.repo_id + '/.app.pid', function (err, data) {
+                  if (err) {
+                    // No PID?
+                  } else {
+                    try {
+                      process.kill(parseInt(data));
+                    } catch (e) {
+                      sys.puts(sys.inspect(e));
+                    }
+                  }
+                });
+                fs.readFile(config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + doc.username + '/' + doc.repo_id + '/.app.pid.2', function (err, data) {
+                  if (err) {
+                    // No PID?
+                  } else {
+                    try {
+                      process.kill(parseInt(data));
+                    } catch (e) {
+                      sys.puts(sys.inspect(e));
+                    }
+                  }
+                });
+ 
+              }
+            } else {
+              running = doc.running;
+            }
+            if (typeof start == 'undefined') {
+              start = doc.start;
+            }
+            // update the app
+            Nodefu.save({_id: appname, start: start, port: doc.port, username: user._id, repo_id: doc.repo_id, running: running, pid: 'unknown' }, function (err, doc) {
+              sys.puts(JSON.stringify(doc));
+              
+              // Respond to API request
+              res.writeHead(200, { 'Content-Type': 'application/json' });
+              res.write('{status : "success", port : "' + doc.port + '", gitrepo : "' + config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.hosted_apps_subdir + '/' + doc.username + '/' + doc.repo_id + '.git", start: "' + start + '", running: ' + doc.running + ', pid: ' + doc.pid + '}\n');
+              res.end();
+ 
+            });
+          } else {
+            res_error(res, 400, "failure - authentication");
+          }
+        } else {
+          // subdomain not found
+          res_error(res, 404, "failure - appname not found");
+        };
+      });
 
-					});
-				
-				} else {
-					
-					// subdomain not found
-					res.writeHead(404, { 'Content-Type': 'application/json' });
-					res.write('{status : "failure - appname not found"}');
-					res.end();
-				};
-			});
-
-		} else {
-			// basic auth didn't match account
-			res.writeHead(400, { 'Content-Type': 'application/json' });
-			res.write('{status : "failure - authentication"}');
-		  	res.end();
-		};
-	
-	});
+    };
+  
+  });
 });
+
 
 // Delete your nodejs app 
 // curl -X DELETE -u "testuser:123" -d "appname=test" http://api.localhost:8080/apps
 myapp.delete('/app', function(req, res, next){
 
-	var user
-	var appname = req.param("appname");
-	authenticate(req.headers.authorization, function(user){
-	
-		if(user){
-			// var Nodefu = CouchClient("http://nodefu:glitter@nodefu.couchone.com:80/apps");
+  var user
+  var appname = req.param("appname");
+  authenticate(req.headers.authorization, res, function(user){
+  
+    if(user){
+      var Nodefu = CouchClient(couch_loc + "apps");
 
-			// Check if app exists and if user is the owner of the app
-			// Nodefu.get(appname, function (err, doc) {
-			request({uri:'http://nodefu:glitter@nodefu.couchone.com:80/apps/' + appname, method:'GET', headers:h}, function (err, response, body) {
-				var doc = JSON.parse(body);
-			
-				if (doc && doc.username == valuser){
-					// Nodefu.remove(appname, function (err, doc) {sys.puts(JSON.stringify(doc));});
-					request({uri:'http://nodefu:glitter@nodefu.couchone.com:80/apps/' + appname + '?rev=' +  doc._rev, method:'DELETE', headers:h}, function (err, response, body) {
-					});	
-				
-					res.writeHead(200, { 'Content-Type': 'application/json' });
-					res.write('{status : "success"}');
-				  	res.end();
-					
-				} else {
-					// subdomain doesn't exist or you don't own it
-					res.writeHead(400, { 'Content-Type': 'application/json' });
-					res.write('{status : "failure - bad appname"}');
-					res.end();
-				};
-			
-			});
-			
-		} else {
-			// basic auth didn't match account
-			res.writeHead(400, { 'Content-Type': 'application/json' });
-			res.write('{status : "failure - authentication"}');
-		  	res.end();
-		};
-
-	
-	});
+      // Check if app exists and if user is the owner of the app
+      Nodefu.get(appname, function (err, doc) {
+        if (doc && doc.username == user._id){
+          Nodefu.remove(appname, function (err, doc) {sys.puts(JSON.stringify(doc));});
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.write('{status : "success"}\n');
+            res.end();
+          
+        } else {
+          // subdomain doesn't exist or you don't own it
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.write('{status : "failure - bad appname"}\n');
+          res.end();
+        };
+      
+      });
+      
+    };  
+  });
 });
 
 // // Status API
@@ -366,35 +332,35 @@ myapp.delete('/app', function(req, res, next){
 // // curl -u "testuser:123" http://api.localhost:8080/status
 // myapp.get('/status', function(req, res, next){
 // 
-// 	var user
-// 	authenticate(req.headers.authorization, function(user){
-// 	
-// 		if(user){
-// 			
-// 			var Nodeport = CouchClient("http://nodefu.couchone.com:80/nextport");
-// 			Nodeport.get('port', function (err, doc) {
-// 				var appsrunning = (doc.address - 8000).toString();
-// 				
-// 				res.writeHead(200, { 'Content-Type': 'application/json' });
-// 				res.write('{status : "up", appsrunning : "' +  appsrunning + '"}');
-// 			  	res.end();
-// 			});
-// 			
-// 		} else {
-// 			// basic auth didn't match account
-// 			res.writeHead(400, { 'Content-Type': 'application/json' });
-// 			res.write('{status : "failure - authentication"}');
-// 		  	res.end();
-// 		};
-// 	});
+//   var user
+//   authenticate(req.headers.authorization, function(user){
+//   
+//     if(user){
+//       
+//       var Nodeport = CouchClient(couch_loc + "nextport");
+//       Nodeport.get('port', function (err, doc) {
+//         var appsrunning = (doc.address - 8000).toString();
+//         
+//         res.writeHead(200, { 'Content-Type': 'application/json' });
+//         res.write('{status : "up", appsrunning : "' +  appsrunning + '"}');
+//           res.end();
+//       });
+//       
+//     } else {
+//       // basic auth didn't match account
+//       res.writeHead(400, { 'Content-Type': 'application/json' });
+//       res.write('{status : "failure - authentication"}');
+//         res.end();
+//     };
+//   });
 // });
 
 
 // myapp.get('/list/:id.:format?', function(req, res, next){
-// 	
-// 	// sys.puts(base64_decode(req.headers.authorization.substring(req.headers.authorization.indexOf(" ") + 1 )));
-// 	// sys.puts(req.headers.authorization);
-// 		
+//   
+//   // sys.puts(base64_decode(req.headers.authorization.substring(req.headers.authorization.indexOf(" ") + 1 )));
+//   // sys.puts(req.headers.authorization);
+//     
 //   var id = req.params.id
 //     , format = req.params.format
 //     , item = items[id];
@@ -422,7 +388,7 @@ myapp.delete('/app', function(req, res, next){
 //         res.send('<h1>' + item.subdomain + '</h1>');
 //     }
 //   } else {
-// 			
+//       
 //     // We could simply pass route control and potentially 404
 //     // by calling next(), or pass an exception like below.
 //     next(new Error('item ' + id + ' does not exist'));
@@ -432,69 +398,41 @@ myapp.delete('/app', function(req, res, next){
 // Middleware
 
 myapp.use(express.errorHandler({ showStack: true }));
-
 myapp.listen(4001); 
-// fugue.start(app, 4001, null, 1, {verbose : true}); // Start with Fugue
+console.log('NodeFu app started on port 4001');
 
-console.log('Nodester app started on port 4001');
+function authenticate(basicauth, res, callback){
+  
+  var creds = base64_decode(basicauth.substring(basicauth.indexOf(" ") + 1 ));
+  var username = creds.substring(0,creds.indexOf(":"));
+  var password = creds.substring(creds.indexOf(":")+1);
 
+  var Nodefu = CouchClient(couch_loc + "nodefu");
+  Nodefu.get(username, function (err, doc) {
+    if(doc && doc._id == username && doc.password == md5(password)){
+      callback(doc);
+      return;
+    };
 
-function authenticate(basicauth, callback){
-	
-	var creds = base64_decode(basicauth.substring(basicauth.indexOf(" ") + 1 ));
-	var username = creds.substring(0,creds.indexOf(":"));
-	var password = creds.substring(creds.indexOf(":")+1);
-
-	// var username = "topher"
-	// var password = "123"
-
-	// var Nodefu = CouchClient("http://nodefu:glitter@nodefu.couchone.com:80/nodefu");
-	// Nodefu.get(username, function (err, doc) {
-	request({uri:'http://nodefu:glitter@nodefu.couchone.com:80/nodefu/' + username, method:'GET', headers:h}, function (err, response, body) {
-		var doc = JSON.parse(body);
-		if (doc._id){
-
-		// if (doc){	
-			if(doc._id == username && doc.password == md5(password)){
-				valuser = username;
-				// return true;
-				callback(doc);
-				return;
-			} else {
-				// return false;
-				callback(null);
-				return;
-			};
-		} else {
-			callback(null);
-			return;
-		};
-	
-	});
-
+    // basic auth didn't match account
+    res.writeHead(400, { 'Content-Type': 'application/json' });
+    res.write('{status : "failure - authentication"}\n');
+    res.end();
+  });
 };
+
+var res_error = function (res, code, message) {
+  res.writeHead(code, { 'Content-Type': 'application/json' });
+  res.write('{status : "' + message + '"}\n');
+  res.end();
+};
+
+
 
 function md5(str) {
   return crypto.createHash('md5').update(str).digest('hex');
 }
 
-process.on('uncaughtException', function (err) {
-    console.log(err);
-});
-
-
-// var forever = require('forever');
-// 
-// var child = new (forever.Forever)('helloserver.js', {
-//   max: 3,
-//   silent: true,
-//   options: []
-// });
-// 
-// child.on('exit', this.callback);
-// child.start();
-
-// var exec = require('child_process').exec;
-// exec('forever start /usr/local/src/itemapps/helloserver.js');
-// exec('forever start /usr/local/src/itemapps/helloserver2.js');
-
+// process.on('uncaughtException', function (err) {
+//    console.log("uncaughtException" + err);
+//});
