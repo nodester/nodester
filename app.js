@@ -53,7 +53,7 @@ myapp.get('/status', function(req, res, next){
 });
 
 // New coupon request
-// curl -X POST -d "email=dan@bejes.us" http://localhost:8080/coupon
+// curl -X POST -d "email=dan@nodester.com" http://localhost:8080/coupon
 myapp.post('/coupon', function(req, res, next) {
 
   var email = req.param("email");  
