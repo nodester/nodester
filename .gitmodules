@@ -1,0 +1,3 @@
+[submodule "deps/nodemon"]
+	path = deps/nodemon
+	url = git://github.com/DanBUK/nodemon.git
