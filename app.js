@@ -72,7 +72,7 @@ myapp.post('/user', function(req, res, next){
 	var coupon = req.param("coupon");
 	var rsakey = req.param("rsakey");	
 	
-	if(coupon == 'hiyah') {
+	if(coupon == 'hiyah' || coupon == 'ryahrox') {
 
 		// var Nodefu = CouchClient("http://nodefu:glitter@nodefu.couchone.com:80/nodefu");
 	
