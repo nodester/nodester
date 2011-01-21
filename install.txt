@@ -1,0 +1,75 @@
+Nodester - A node.js hosting platform
+
+Dependencies:
+  node.js
+  npm
+  node.js Modules:
+    http-proxy
+    express
+    node-base64
+    couch-client
+
+Installation:
+  Install node.js
+    Package from distro
+    OR wget, ./configure, make, make install
+  Create a user and group to run nodester as
+    sudo su -
+    groupadd -g 501 nodester
+    useradd -d /var/nodester -c "nodester" -g nodester -m -r -s /bin/bash -u 501 nodester
+    passwd nodester
+  Login to that account and ensure that .ssh/authorized_keys exists
+    ssh nodester@yourhost
+    cd ~
+    mkdir .ssh
+    touch .ssh/authorized_keys
+    chmod go-rwx .ssh/authorized_keys
+  Update sudoers to allow running of the proxy on port 80
+    sudo visudo
+    And add the following lines
+    nodester ALL = NOPASSWD: /var/nodester/nodester/proxy/start_proxy.sh *
+    nodester ALL = NOPASSWD: /var/nodester/nodester/proxy/stop.sh
+  Install npm
+    cd ~
+    echo -e "root = ~/.node_libraries\nmanroot = ~/local/share/man\nbinroot = ~/bin" > ~/.npmrc
+    echo -e "export PATH=\"\${PATH}:~/bin\";" >> ~/.bashrc
+    source ~/.bashrc
+    curl http://npmjs.org/install.sh | sh
+  Either install CouchDB or get a CouchOne account
+  Install node-module dependencies
+    for X in http-proxy express node-base64 couch-client; do npm install ${X}; done
+    cd ~
+    mkdir build
+    cd build
+    git clone git://github.com/DanBUK/node-daemon.git
+    cd node-daemon
+    node-waf configure build install
+  Get nodester
+    cd ~
+    git clone git@github.com:nodester/nodester.git
+    cd nodester
+    git submodule init
+    git submodule update
+  Ensure that the ownership of nodester/proxy is all root for security
+    sudo chown -R root:root nodester/proxy
+  Install the git folder shell to restrict git to per user folders
+    sudo cp git-shell-enforce-directory /usr/local/bin
+    sudo chmod +x /usr/local/bin/git-shell-enforce-directory
+  Configure the app
+    Copy nodester/example_config.js to nodester/config.js
+    Edit the CouchDB and coupon code settings in nodester/config.js
+  Setup the CouchDB tables
+    node setup_couchdb.js
+  Start up the proxy and main/api app
+    cd nodester
+    ./start.sh
+  Test the web frontend at 127.0.0.1:80
+  Create a user
+    ..
+  Create an app
+    ..
+  Start the app
+    ..
+  Test the app
+    ..
+  Rejoice!
