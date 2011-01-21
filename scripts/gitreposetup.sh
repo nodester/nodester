@@ -2,19 +2,20 @@
 # script to create git repo for node subdomain 
 # _rev is passed into the script as a parameter
 
-if [ ! -d "apps" ]
-then
-mkdir apps
-fi
+BASEDIR=${1};
+APPDIR=${2};
+APPUSERNAME=${3};
+REV=${4};
+START=${5};
 
-mkdir apps/$1.git
-cd apps/$1.git
-git init --bare
-cp ../../gitrepoclone.sh hooks/post-receive
-chmod +x hooks/post-receive
+if [ ! -d "${APPDIR}" ]; then
+  mkdir -p ${APPDIR};
+fi;
 
-git clone . ../$1/
-cd ../$1
+mkdir -p ${APPDIR}/${APPUSERNAME}/${REV}.git;
+cd ${APPDIR}/${APPUSERNAME}/${REV}.git;
+git init --bare;
+cp ${BASEDIR}/scripts/gitrepoclone.sh hooks/post-receive;
+chmod +x hooks/post-receive;
 
-nodemon $2
-
+git clone . ../${REV}/;
