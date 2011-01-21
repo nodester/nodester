@@ -1,1 +1,11 @@
-
+.bash_history
+apps/*
+*.swp
+.ssh/*
+.viminfo
+proxy/*
+tmp/*
+bin/
+*.app.pid
+*.app.pid.2
+.git
