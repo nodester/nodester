@@ -282,6 +282,7 @@ myapp.put('/app', function(req, res, next){
               
               // Respond to API request
               res.writeHead(200, { 'Content-Type': 'application/json' });
+              res.write('{cmd: "' + cmd + '"}\n');
               res.write('{status : "success", port : "' + doc.port + '", gitrepo : "' + config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.hosted_apps_subdir + '/' + doc.username + '/' + doc.repo_id + '.git", start: "' + start + '", running: ' + doc.running + ', pid: ' + doc.pid + '}\n');
               res.end();
  
