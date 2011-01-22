@@ -32,30 +32,30 @@ License: Creative Commons Attribution
 </head>
 
 <body class="small-header">
-	<div id="hiddenModalContent" style="display:none"> 
+	<div id="hiddenModalContent" style="display:none">
 		<h3>Did you get your coupon code? - <a href="#" onclick="tb_remove()">No?</a></p></h3>
 		<fieldset>
 
 			<form action="http://nodester.com/user" method="post">
 				<p><label for="name">Coupon:</label>
-				<input type="password" name="coupon" id="coupon" value="" /><br />		
+				<input type="password" name="coupon" id="coupon" value="" /><br />
 				<label for="name">Username:</label>
-				<input type="text" name="user" id="user" value="" /><br />		
+				<input type="text" name="user" id="user" value="" /><br />
 				<label for="name">Password:</label>
-				<input type="password" name="password" id="password" value="" /><br />		
+				<input type="password" name="password" id="password" value="" /><br />
 				<label for="email">Email:</label>
 				<input type="text" name="email" id="email" value="" /><br />
 				<label for="rsakey">Public RSA Key:<br/>
 					(Copy & Paste RSA key from command line by typing:<br/>"cat ~/.ssh/id_rsa.pub | pbcopy")
-					</label>	
+					</label>
 				<textarea cols="60" rows="8" name="rsakey" id="rsakey"></textarea><br />
 				<input type="submit" name="send" class="formbutton" value="Send" />
 			</form>
 
 		</fieldset>
-	 
+
 	</div>
-	
+
 	<div id="wrapper">
 		<div id="sitename">
 			<h1><a href="/"> Node<strong>ster</strong></a></h1>
@@ -70,7 +70,7 @@ License: Creative Commons Attribution
 		</div>
 
 		<div id="header" class="clear">
-			
+
 			<!-- <img src="images/warriors.gif" align="left"> -->
 			<h2><center>Node.js Open Source Hosting Platform!</center></h2><br/>
 		</div>
@@ -88,7 +88,7 @@ License: Creative Commons Attribution
                             <li><a href="#git">Git Resources</a></li>
                         </ul>
 
-					</li>	
+					</li>
 					<li>
 						<h4>Technology</h4>
 						<ul>
@@ -104,79 +104,85 @@ License: Creative Commons Attribution
 							<li><a href="https://github.com/visionmedia/express" title="Express">Express</a></li>
 							<li><a href="https://github.com/pkrumins/node-base64" title="Node Base64">Node Base64</a></li>
 							<li><a href="http://jquery.com/" title="jQuery">jQuery</a></li>
-		
-		
+
+
 						</ul>
 					</li>
 				</ul>
 			</div>
 			<div id="content" class="column-right">
                 <h2>REST API</h2>
-                <p>We do not currently have a full featured website as we are focusing on the API and the service. We are currently running Node v.0.3.4 and updating all NPM modules on a weekly basis. Git is required to push your updates to Nodester. All we ask is that you be a good steward of our service and community.</p>	
-                
+                <p>We do not currently have a full featured website as we are focusing on the API and the service. We are currently running Node v.0.3.4 and updating all NPM modules on a weekly basis. Git is required to push your updates to Nodester. All we ask is that you be a good steward of our service and community.</p>
+
 				<a name="couponapi"></a>
-				<h3>COUPON</h3> 
+				<h3>COUPON</h3>
 				<p><b>Request Coupon :: POST</b>
-				<br/>Base URL: http://nodester.com</p> 
-				<code>/coupon - creates coupon request for early access (pass in email)<br/><br/> 
-				curl -X POST -d "email=your_address@gmail.com" http://nodester.com/coupon</code> 
+				<br/>Base URL: http://nodester.com</p>
+				<code>/coupon - creates coupon request for early access (pass in email)<br/><br/>
+				curl -X POST -d "email=your_address@gmail.com" http://nodester.com/coupon</code>
 
 				<a name="status"></a>
-				<h3>STATUS</h3> 
+				<h3>STATUS</h3>
 				<p><b>Get Status :: GET</b>
-				<br/>Base URL: http://nodester.com</p> 
+				<br/>Base URL: http://nodester.com</p>
 				<code>/status - Returns platform status and number of apps running<br/><br/>
-				curl http://nodester.com/status</code> 
+				curl http://nodester.com/status</code>
 
 				<a name="userapi"></a>
-				<h3>USER</h3> 
+				<h3>USER</h3>
 				<p><b>Register User :: POST (Coupon is required.)</b>
-				<br/>Base URL: http://nodester.com</p> 
-				<code>/user - creates user account (pass in user and password and email and id_rsa.pub string) <br/><br/> 
-				curl -X POST -d "user=testuser&password=123&email=chris@nodester.com&rsakey=ssh-rsa AAAAB3NzaC1yc..." http://nodester.com/user</code> 
+				<br/>Base URL: http://nodester.com</p>
+				<code>/user - creates user account (pass in user and password and email and id_rsa.pub string) <br/><br/>
+				curl -X POST -d "user=testuser&password=123&email=chris@nodester.com&rsakey=ssh-rsa AAAAB3NzaC1yc..." http://nodester.com/user</code>
 
 
 				<p><b>Delete User :: DELETE</b>
-				<br/>Base URL: http://api.nodester.com</p> 
+				<br/>Base URL: http://api.nodester.com</p>
 				<code>/user - delete user account (requires basic auth)<br/> <br/>
-				curl -X DELETE -u "testuser:123" http://api.nodester.com/user</code> 
+				curl -X DELETE -u "testuser:123" http://api.nodester.com/user</code>
 
 				<a name="app"></a>
-				<h3>APP</h3> 
+				<h3>APP</h3>
 				<p><b>Create Application :: POST</b>
-				<br/>Base URL: http://api.nodester.com</p> 
-				
-				<code>/apps - create nodejs app for hosting (requires basic auth and returns the port address required for use along with a git repo to push to)<br/><br/> 
-				curl -X POST -u "testuser:123" -d "appname=a&start=hello.js" http://api.nodester.com/app</code> 
+				<br/>Base URL: http://api.nodester.com</p>
+
+				<code>/apps - create nodejs app for hosting (requires basic auth and returns the port address required for use along with a git repo to push to)<br/><br/>
+				curl -X POST -u "testuser:123" -d "appname=a&start=hello.js" http://api.nodester.com/app</code>
 
 				<p><b>Change Application :: PUT</b>
-					<br/>Base URL: http://api.nodester.com</p> 
-					 
-				<code>/apps - update nodejs app for hosting (requires basic auth, appname, and starting page and returns the port address required for use along with a git repo to push to)<br/><br/> 
-				curl -X PUT -u "testuser:123" -d "appname=a&start=hello1.js" http://api.localhost:8080/app</code> 
+					<br/>Base URL: http://api.nodester.com</p>
+
+				<code>/apps - update nodejs app for hosting (requires basic auth, appname, and starting page and returns the port address required for use along with a git repo to push to)<br/><br/>
+				curl -X PUT -u "testuser:123" -d "appname=a&start=hello1.js" http://api.localhost:8080/app</code>
 
 				<p><b>Delete Application :: DELETE</b>
-					<br/>Base URL: http://api.nodester.com</p> 
-					 
+					<br/>Base URL: http://api.nodester.com</p>
+
 				<code>/apps - delete nodejs app (requires basic auth and appname)<br/> <br/>
-				curl -X DELETE -u "testuser:123" -d "appname=test" http://api.nodester.com/app</code> 
+				curl -X DELETE -u "testuser:123" -d "appname=test" http://api.nodester.com/app</code>
+
+				<p><b>Application Information :: GET</b>
+					<br/>Base URL: http://api.nodester.com</p>
+
+				<code>/app/<appname> - get nodejs app info (requires basic auth and appname)<br/> <br/>
+				curl -u "testuser:123"  http://api.nodester.com/app/appname</code>
 
 
 				<a name="git"></a>
-				<h3>GIT</h3> 
+				<h3>GIT</h3>
 				<p>Deploying and updating your Node.js application is simple.</p>
 				<p><b>curl -X POST -u "testuser:123" -d "appname=myapp&start=hello.js" http://api.nodester.com/app</b></p>
-				<p>Upon creating or changing your application via our API, you will receive a Git reop URL from our API response.  Add a Nodester remote to your project as follows:</p> 
-				<p><b>git remote add nodester the_url_returned_by_our_api</b></p> 
-				<p>Finally push your updates to your new Nodester environment as follows:</p> 
-				<p><b>git push nodester master</b></p> 
-				<p>Also make sure that you update your project's port address with the new one assigned by Nodester.</p> 
+				<p>Upon creating or changing your application via our API, you will receive a Git reop URL from our API response.  Add a Nodester remote to your project as follows:</p>
+				<p><b>git remote add nodester the_url_returned_by_our_api</b></p>
+				<p>Finally push your updates to your new Nodester environment as follows:</p>
+				<p><b>git push nodester master</b></p>
+				<p>Also make sure that you update your project's port address with the new one assigned by Nodester.</p>
 				<p><b>Visit your application via http://myapp.nodester.com</b></p>
-				<br/> 
+				<br/>
 
 				<p>&nbsp;</p>
-				
-				
+
+
 			</div>
 		</div>
 	</div>
@@ -185,12 +191,12 @@ License: Creative Commons Attribution
 
             <div class="footer-box">
                 <h4>About Us</h4>
-    
+
                 <p>
                     We started this project because the "other" node.js hosting services were not sending out coupon invitations.  Now anyone can host node.js apps! You can access our source code repository at <a href="http://github.com/nodester">http://github.com/nodester</a>
                 </p>
             </div>
-            
+
             <div class="footer-box">
                 <h4>Contributors Wanted</h4>
 
@@ -198,9 +204,9 @@ License: Creative Commons Attribution
 					Please help contribute to our project!
                 </p>
             </div>
-            
+
             <div class="footer-box">
-    
+
                 <h4>Node.js News</h4>
                 <ul>
                   <!-- <li><a href="#">Lorem ipsum dolor sit amet.</a></li>
@@ -208,29 +214,29 @@ License: Creative Commons Attribution
                   <li><a href="#">Suspendisse consequat magna at.</a></li>
                   <li><a href="#">Etiam eget diam id ligula rhoncus.</a></li>
                   <li><a href="#">Sed in mauris non nibh.</a></li> -->
-                </ul>	
+                </ul>
             </div>
-            
+
             <div class="footer-box end-footer-box">
                 <h4>Search our site</h4>
 
                 <form action="#" method="get">
                     <p>
                         <input type="text" id="searchquery" size="18" name="searchterm" />
-    
+
                         <input type="submit" id="searchbutton" value="Search" class="formbutton" />
                     </p>
                 </form>
-            </div>     
-            <div class="clear"></div> 
+            </div>
+            <div class="clear"></div>
         </div>
         <div id="footer-links">
 
         <!-- A link to http://www.spyka.net must remain. To remove link see http://www.spyka.net/licensing -->
                 <p>Website design by <a href="http://www.spyka.net">Free CSS Templates</a> | <a href="http://www.justfreetemplates.com">Free Web Templates</a></p>
-        </div>  
+        </div>
     </div>
-	<!-- twitter follow badge by go2web20 --> 
+	<!-- twitter follow badge by go2web20 -->
 	<script src='http://files.go2web20.net/twitterbadge/1.0/badge.js' type='text/javascript'></script><script type='text/javascript' charset='utf-8'><!--
 	tfb.account = 'nodesterjs';
 	tfb.label = 'follow-us';
@@ -238,7 +244,7 @@ License: Creative Commons Attribution
 	tfb.side = 'r';
 	tfb.top = 275;
 	tfb.showbadge();
-	--></script> 
+	--></script>
 	<!-- end of twitter follow badge -->
 </body>
 </html>

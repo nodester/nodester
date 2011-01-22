@@ -327,6 +327,36 @@ myapp.delete('/app', function(req, res, next){
   });
 });
 
+// Application info
+// http://chris:123@api.localhost:8080/app/<appname>
+// curl -u "testuser:123" http://api.localhost:8080/app/<appname>
+myapp.get('/app/:id', function(req, res, next){
+
+  var user
+  authenticate(req.headers.authorization, res, function(user){
+
+    if(user){
+      var Nodefu = CouchClient(couch_loc + "apps");
+      Nodefu.get(req.params.id, function (err, doc) {
+				if (doc && doc.username == user._id){
+					res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.write('{status : "success", port : "' + doc.port + '", gitrepo : "' + config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.hosted_apps_subdir + '/' + doc.username + '/' + doc.repo_id + '.git", start: "' + doc.start + '", running: ' + doc.running + ', pid: ' + doc.pid + '}\n');
+				  res.end();
+			  } else {
+          res.writeHead(404, { 'Content-Type': 'application/json' });
+					res.write('{status : "failure - appname not found"}');
+          res.end();
+			  }
+		  });
+    } else {
+      // basic auth didn't match account
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.write('{status : "failure - authentication"}');
+        res.end();
+    };
+  });
+});
+
 // // Status API
 // // http://chris:123@api.localhost:8080/status 
 // // curl -u "testuser:123" http://api.localhost:8080/status
