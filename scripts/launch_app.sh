@@ -1,8 +1,9 @@
 #!/bin/bash
 BASEDIR=${1};
-APPDIR=${2};
-START=${3};
+USERDIR=${2};
+APPDIR=${3};
+START=${4};
 
 cd ${APPDIR};
-echo "/usr/bin/node ${BASEDIR}/deps/nodemon/nodemon ${APPDIR}/.app.pid ${APPDIR}/${START}";
-exec /usr/bin/node ${BASEDIR}/deps/nodemon/nodemon ${APPDIR}/.app.pid ${APPDIR}/${START};
+echo "/usr/bin/node ${BASEDIR}/deps/nodemon/nodemon ${USERDIR} ${APPDIR}/.app.pid ${APPDIR}/${START}";
+exec /usr/bin/node ${BASEDIR}/deps/nodemon/nodemon ${USERDIR} ${APPDIR}/.app.pid ${APPDIR}/${START};
