@@ -212,6 +212,7 @@ myapp.put('/app', function(req, res, next){
       Nodefu.get(appname, function (err, doc) {
         if (doc){
           // subdomain found
+          var cmd = "";
           if (doc.username == user._id) {
             if (running == 'true') {
               // start the app
@@ -231,7 +232,7 @@ myapp.put('/app', function(req, res, next){
                       } else {
                         sys.puts("cmd: " + cmd);
                         // var cmd = config.opt.app_dir + '/deps/nodemon/nodemon ' + app_home + '/.app.pid ' + app_home + '/' + doc.start;
-                        var cmd = "sudo " + config.opt.app_dir + '/scripts/launch_app.sh ' + config.opt.app_dir + ' ' + app_user_home + ' ' + app_home + ' ' + doc.start;
+                        cmd = "sudo " + config.opt.app_dir + '/scripts/launch_app.sh ' + config.opt.app_dir + ' ' + app_user_home + ' ' + app_home + ' ' + doc.start;
                         var child = exec(cmd, function (error, stdout, stderr) {});
                       }
                     });
@@ -239,7 +240,7 @@ myapp.put('/app', function(req, res, next){
                 });
               }
             } else if (running == 'false') {
-              var cmd = "stopping...";
+              cmd = "stopping...";
               // stop the app
               if (doc.running == 'false') {
                 // Error already running
@@ -272,7 +273,7 @@ myapp.put('/app', function(req, res, next){
  
               }
             } else {
-              var cmd = "blank";
+              cmd = "blank";
               running = doc.running;
             }
             if (typeof start == 'undefined') {
