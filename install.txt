@@ -29,6 +29,7 @@ Installation:
     And add the following lines
     nodester ALL = NOPASSWD: /var/nodester/nodester/proxy/start_proxy.sh *
     nodester ALL = NOPASSWD: /var/nodester/nodester/proxy/stop.sh
+    nodester ALL = NOPASSWD: /var/nodester/nodester/scripts/launch_app.sh *
   Install npm
     cd ~
     echo -e "root = ~/.node_libraries\nmanroot = ~/local/share/man\nbinroot = ~/bin" > ~/.npmrc

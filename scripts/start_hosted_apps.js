@@ -36,7 +36,7 @@ var start_running_apps = function (apps_arr) {
     if (doc.running == 'true') {
       var app_user_home = config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + doc.username;
       var app_home = app_user_home + '/' + doc.repo_id;
-      var cmd = config.opt.app_dir + '/scripts/launch_app.sh ' + config.opt.app_dir + ' ' + app_user_home + ' ' + app_home + ' ' + doc.start;
+      var cmd = "sudo " + config.opt.app_dir + '/scripts/launch_app.sh ' + config.opt.app_dir + ' ' + app_user_home + ' ' + app_home + ' ' + doc.start;
       var child = exec(cmd, function (error, stdout, stderr) {});
     }
   }

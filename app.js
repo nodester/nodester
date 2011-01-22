@@ -231,7 +231,7 @@ myapp.put('/app', function(req, res, next){
                       } else {
                         sys.puts("cmd: " + cmd);
                         // var cmd = config.opt.app_dir + '/deps/nodemon/nodemon ' + app_home + '/.app.pid ' + app_home + '/' + doc.start;
-                        var cmd = config.opt.app_dir + '/scripts/launch_app.sh ' + config.opt.app_dir + ' ' + app_user_home + ' ' + app_home + ' ' + doc.start;
+                        var cmd = "sudo " + config.opt.app_dir + '/scripts/launch_app.sh ' + config.opt.app_dir + ' ' + app_user_home + ' ' + app_home + ' ' + doc.start;
                         var child = exec(cmd, function (error, stdout, stderr) {});
                       }
                     });
