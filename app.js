@@ -221,7 +221,7 @@ myapp.put('/app', function(req, res, next){
                 res_error(res, 408, "failure - application already running.");
               } else {
                 var app_user_home = config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + doc.username;
-                var app_home = app_user_home + '/' + doc.repo_id;
+                // var app_home = app_user_home + '/' + doc.repo_id;
                 fs.readFile(config.opt.app_dir + '/app-nodemon-ignore', function (err, data) {
                   if (err) {
                     res_error(res, 500, "failure - couldn't reade app-nodemon-ignore");
@@ -232,7 +232,7 @@ myapp.put('/app', function(req, res, next){
                       } else {
                         sys.puts("cmd: " + cmd);
                         // var cmd = config.opt.app_dir + '/deps/nodemon/nodemon ' + app_home + '/.app.pid ' + app_home + '/' + doc.start;
-                        cmd = "sudo " + config.opt.app_dir + '/scripts/launch_app.sh ' + config.opt.app_dir + ' ' + app_user_home + ' ' + app_home + ' ' + doc.start;
+                        cmd = "sudo " + config.opt.app_dir + '/scripts/launch_app.sh ' + config.opt.app_dir + ' ' + app_user_home + ' ' + doc.repo_id + ' ' + doc.start;
                         var child = exec(cmd, function (error, stdout, stderr) {});
                       }
                     });
