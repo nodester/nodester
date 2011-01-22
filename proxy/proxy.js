@@ -17,7 +17,10 @@ var Nodefu = CouchClient(couch_loc + "apps");
 httpProxy.createServer(function (req, res, proxy) {  
   var hostname = req.headers.host;
   var subdomain = hostname.substring(0,hostname.indexOf("."));
-  if (hostname == config.opt.api_dom) {
+  	if (hostname.indexOf("nodefu") != -1) {
+		res.writeHead(301, {'Content-Type': 'text/plain', 'Location': 'http://nodester.com'});
+		res.end();
+	} else if (hostname == config.opt.api_dom) {
     // API Domain
     if(req.headers.authorization == undefined) {
       res.writeHead(401, {'Content-Type': 'text/plain', 'WWW-Authenticate': 'Basic'});
