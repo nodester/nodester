@@ -132,7 +132,7 @@ License: Creative Commons Attribution
 				<h3>USER</h3>
 				<p><b>Register User :: POST (Coupon is required.)</b>
 				<br/>Base URL: http://nodester.com</p>
-				<code>/user - creates user account (pass in user and password and email and id_rsa.pub string) <br/><br/>
+				<code>/user - creates user account (pass in user and password and email and id_rsa.pub string) <i>Ensure that all + in the ssh key are substituted for their %2B counter parts, else your key will break.</i><br/><br/>
 				curl -X POST -d "user=testuser&password=123&email=chris@nodester.com&rsakey=ssh-rsa AAAAB3NzaC1yc..." http://nodester.com/user</code>
 
 
@@ -153,7 +153,10 @@ License: Creative Commons Attribution
 					<br/>Base URL: http://api.nodester.com</p>
 
 				<code>/apps - update nodejs app for hosting (requires basic auth, appname, and starting page and returns the port address required for use along with a git repo to push to)<br/><br/>
-				curl -X PUT -u "testuser:123" -d "appname=a&start=hello1.js" http://api.localhost:8080/app</code>
+				curl -X PUT -u "testuser:123" -d "appname=a&start=hello1.js" http://api.nodester.com/app</code>
+				
+				<code>/apps - start and stop your hosted nodejs app (requires basic auth, appname, and running=true|false and returns the port address required for use along with a git repo to push to)<br/><br/>
+				curl -X PUT -u "testuser:123" -d "appname=a&running=true" http://api.nodester.com/app/code>
 
 				<p><b>Delete Application :: DELETE</b>
 					<br/>Base URL: http://api.nodester.com</p>
