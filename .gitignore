@@ -1,1 +1,4 @@
-apps/
+.app.pid
+.app.pid.2
+config.js
+proxy/.monitor
