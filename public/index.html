@@ -135,8 +135,10 @@ License: Creative Commons Attribution
 					<li> curl -X POST -u "testuser:123" -d "appname=myapp&start=hello.js" http://api.nodester.com/app</li>
 					<li> git remote add nodester the_url_returned_by_our_api</li>
 					<li> git push nodester master</li>
+					<li> curl -X POST -u "testuser:123" -d "appname=myapp&running=true" http://api.nodester.com/app</li>
 				</ol>
 				<code><b>Visit your app at http://myapp.nodester.com</b></code>
+				<i>Don't worry you only need to start the application once, the next time you push it will automatically pick up the changes. You can always stop it as well.</i>
 			</div>
 		</div>
 	</div>
