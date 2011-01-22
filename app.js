@@ -239,6 +239,7 @@ myapp.put('/app', function(req, res, next){
                 });
               }
             } else if (running == 'false') {
+              var cmd = "stopping...";
               // stop the app
               if (doc.running == 'false') {
                 // Error already running
@@ -271,6 +272,7 @@ myapp.put('/app', function(req, res, next){
  
               }
             } else {
+              var cmd = "blank";
               running = doc.running;
             }
             if (typeof start == 'undefined') {
