@@ -221,7 +221,7 @@ myapp.put('/app', function(req, res, next){
                 res_error(res, 408, "failure - application already running.");
               } else {
                 var app_user_home = config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + doc.username;
-                // var app_home = app_user_home + '/' + doc.repo_id;
+                var app_home = app_user_home + '/' + doc.repo_id;
                 fs.readFile(config.opt.app_dir + '/app-nodemon-ignore', function (err, data) {
                   if (err) {
                     res_error(res, 500, "failure - couldn't reade app-nodemon-ignore");
