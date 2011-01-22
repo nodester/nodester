@@ -230,7 +230,7 @@ myapp.put('/app', function(req, res, next){
                       if (err) {
                         res_error(res, 500, "failure - couldn't write app nodemon-ignore");
                       } else {
-                        sys.puts("cmd: " + cmd);
+                        // sys.puts("cmd: " + cmd);
                         // var cmd = config.opt.app_dir + '/deps/nodemon/nodemon ' + app_home + '/.app.pid ' + app_home + '/' + doc.start;
                         cmd = "sudo " + config.opt.app_dir + '/scripts/launch_app.sh ' + config.opt.app_dir + ' ' + app_user_home + ' ' + doc.repo_id + ' ' + doc.start;
                         var child = exec(cmd, function (error, stdout, stderr) {});
