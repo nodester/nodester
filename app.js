@@ -90,21 +90,26 @@ myapp.post('/user', function(req, res, next){
         res.write('{status : "failure - account exists"}\n');
         res.end();
       } else {
-    
-        stream = fs.createWriteStream(config.opt.home_dir + '/.ssh/authorized_keys', {
-          'flags': 'a+',
-          'encoding': 'utf8',
-          'mode': 0644
+        if (typeof rsakey == 'undefined') {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.write('{status : "failure - rsakey is invalid"}\n');
+          res.end();
+        } else {
+          stream = fs.createWriteStream(config.opt.home_dir + '/.ssh/authorized_keys', {
+            'flags': 'a+',
+            'encoding': 'utf8',
+            'mode': 0644
           });
 
           stream.write('command="/usr/local/bin/git-shell-enforce-directory ' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + newuser + '",no-port-forwarding,no-X11-forwarding,no-agent-forwarding,no-pty ' + rsakey, 'utf8');
           stream.end();
         
-        // Save user information to database and respond to API request
-        Nodefu.save({_id: newuser, password: md5(newpass), email: email}, function (err, doc) {sys.puts(JSON.stringify(doc));});
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.write('{status : "success"}\n');
-        res.end();
+          // Save user information to database and respond to API request
+          Nodefu.save({_id: newuser, password: md5(newpass), email: email}, function (err, doc) {sys.puts(JSON.stringify(doc));});
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.write('{status : "success"}\n');
+          res.end();
+        }
       }
     });
 
