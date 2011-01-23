@@ -2,10 +2,14 @@
 var sys = require('sys');
 var http = require('http');
 var config = require('../config');
+var base64_encode = require('base64').encode;
 
 var create_couchdb_table = function (port, hostname, tablename, callback) {
   var co = http.createClient(port, hostname);
-  var req = co.request('PUT', '/' + tablename, {host: hostname});
+  var req = co.request('PUT', '/' + tablename, {
+    host: hostname,
+    'Authorization': "Basic " + base64_encode(new Buffer(config.opt.couch_user + ":" + (config.opt.couch_pass || "")))
+  });
   var rtv = false;
   req.end();
   req.on('response', function (resp) {
