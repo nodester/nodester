@@ -407,8 +407,8 @@ var authenticate_app = function (auth_infos, appname, res, callback) {
 */
 
 myapp.use(express.errorHandler({ showStack: true }));
-myapp.listen(4002); 
-console.log('Nodester app started on port 4002');
+myapp.listen(4001); 
+console.log('Nodester app started on port 4001');
 
 function authenticate(basicauth, res, callback){
   
