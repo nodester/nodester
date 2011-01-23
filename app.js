@@ -12,13 +12,17 @@ var url = require('url');
 var base64_decode = require('base64').decode;
 var crypto = require('crypto');
 var sys = require('sys');
-var CouchClient = require('couch-client');
 var spawn = require('child_process').spawn;
 var exec = require('child_process').exec;
 var fs = require('fs');
 
+var CouchClient = require('couch-client');
+// Couchone with authentication isn't working for me - using request instead of couchclient
+var request = require('request');
+var h = {accept:'application/json', 'content-type':'application/json'};
+
 var config = require("./config");
-var couch_loc = "http://" + config.opt.couch_user + ":" + config.opt.couch_pass + "@" + config.opt.couch_host + ":" + config.opt.couch_port + "/" + config.opt.couch_prefix + "_";
+var couch_loc = "http://" + config.opt.couch_user + ":" + config.opt.couch_pass + "@" + config.opt.couch_host + ":" + config.opt.couch_port + "/"; // + config.opt.couch_prefix + "_";
 
 var myapp = express.createServer();
 
@@ -38,8 +42,10 @@ myapp.get('/', function(req, res, next){
 // curl http://localhost:8080/status
 myapp.get('/status', function(req, res, next){
 
-  var Nodeport = CouchClient(couch_loc + "nextport");
-  Nodeport.get('port', function (err, doc) {
+  // var Nodeport = CouchClient(couch_loc + "nextport");
+  // Nodeport.get('port', function (err, doc) {
+  request({uri:couch_loc + 'nextport/port', method:'GET', headers:h}, function (err, response, body) {
+	var doc = JSON.parse(body);
     try {
       var appsrunning = (doc.address - 8000).toString();
      } catch (e) {
@@ -57,11 +63,14 @@ myapp.get('/status', function(req, res, next){
 myapp.post('/coupon', function(req, res, next) {
 
   var email = req.param("email");  
-  var Nodefu = CouchClient(couch_loc + "coupons");
+  // var Nodefu = CouchClient(couch_loc + "coupons");
+  // Nodefu.save({_id: email}, function (err, doc) {sys.puts(JSON.stringify(doc));});
 
-  Nodefu.save({_id: email}, function (err, doc) {sys.puts(JSON.stringify(doc));});
+  request({uri:couch_loc + "coupons", method:'POST', body: JSON.stringify({_id: email}), headers:h}, function (err, response, body) {
+	});	
+
   res.writeHead(200, { 'Content-Type': 'application/json' });
-  res.write('{status : "success - bow to your sensei"}\n');
+  res.write('{status : "success - you are now in queue to receive an invite on our next batch!"}\n');
   res.end();
 
 });
@@ -80,11 +89,15 @@ myapp.post('/user', function(req, res, next){
   
   if(coupon == config.opt.coupon_code) {
 
-    var Nodefu = CouchClient(couch_loc + "nodefu");
+    // var Nodefu = CouchClient(couch_loc + "nodefu");
+    // 
+    // // Check to see if account exists
+    // Nodefu.get(newuser, function (err, doc) {
+    //   if (doc){
 
-    // Check to see if account exists
-    Nodefu.get(newuser, function (err, doc) {
-      if (doc){
+	request({uri:couch_loc + 'nodefu' + newuser, method:'GET', headers:h}, function (err, response, body) {
+	var doc = JSON.parse(body);
+	if (doc._id){
         // account already registered
         res.writeHead(400, { 'Content-Type': 'application/json' });
         res.write('{status : "failure - account exists"}\n');
@@ -105,7 +118,10 @@ myapp.post('/user', function(req, res, next){
           stream.end();
         
           // Save user information to database and respond to API request
-          Nodefu.save({_id: newuser, password: md5(newpass), email: email}, function (err, doc) {sys.puts(JSON.stringify(doc));});
+          // Nodefu.save({_id: newuser, password: md5(newpass), email: email}, function (err, doc) {sys.puts(JSON.stringify(doc));});
+		request({uri:couch_loc + 'nodefu', method:'POST', body: JSON.stringify({_id: newuser, password: md5(newpass), email: email}), headers:h}, function (err, response, body) {
+		});	
+
           res.writeHead(200, { 'Content-Type': 'application/json' });
           res.write('{status : "success"}\n');
           res.end();
@@ -131,8 +147,12 @@ myapp.delete('/user', function(req, res, next) {
     if(user){
       // need to delete all users apps
       // and stop all the users apps
-      var Nodefu = CouchClient(couch_loc + "nodefu");
-      Nodefu.remove(user._id, function (err, doc) {sys.puts(JSON.stringify(doc));});
+      // var Nodefu = CouchClient(couch_loc + "nodefu");
+      // Nodefu.remove(user._id, function (err, doc) {sys.puts(JSON.stringify(doc));});
+
+	request({uri:couch_loc + 'nodefu/' + user._id + '?rev=' +  user._rev, method:'DELETE', headers:h}, function (err, response, body) {
+	});	
+
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.write('{status : "success"}\n');
       res.end();
@@ -148,33 +168,47 @@ myapp.post('/app', function(req, res, next) {
     if(user) {
       var appname = req.param("appname");
       var start = req.param("start");
-      var Nodeport = CouchClient(couch_loc + "nextport");
-      var Nodefu = CouchClient(couch_loc + "apps");
+      // var Nodeport = CouchClient(couch_loc + "nextport");
+      // var Nodefu = CouchClient(couch_loc + "apps");
+      // 
+      // // Check to see if node app exists
+      // Nodefu.get(appname, function (err, doc) {
+      //   if (doc){
 
-      // Check to see if node app exists
-      Nodefu.get(appname, function (err, doc) {
-        if (doc){
+	  request({uri:couch_loc + 'apps/' + appname, method:'GET', headers:h}, function (err, response, body) {
+		var myObject = JSON.parse(body);
+		if (myObject._id){
+
           // subdomain already exists
           res.writeHead(400, { 'Content-Type': 'application/json' });
           res.write('{status : "failure - appname exists"}\n');
           res.end();
         } else {
           // subdomain available - get next available port address
-          Nodeport.get('port', function (err, doc) {
+          // Nodeport.get('port', function (err, doc) {
+		  request({uri:couch_loc + 'nextport/port', method:'GET', headers:h}, function (err, response, body) {
+			var doc = JSON.parse(body);
+
             if (typeof doc == 'undefined') {
               var appport = 8000;
             } else {
               var appport = doc.address
             }
             // increment next port address
-            Nodeport.save({_id: "port", address: appport + 1}, function (err, doc) {
+            // Nodeport.save({_id: "port", address: appport + 1}, function (err, doc) {
+			request({uri:couch_loc + 'nextport/port', method:'PUT', body: JSON.stringify({_id: "port", address: appport + 1, _rev: doc._rev}), headers:h}, function (err, response, body) {
+			  var doc = JSON.parse(body);
+			
               // Need error checking here
               var repo_id = doc._rev;
               sys.inspect('repo_id: ' + repo_id);
           
               // Create the app
-              Nodefu.save({_id: appname, start: start, port: appport, username: user._id, repo_id: repo_id, running: false, pid: 'unknown' }, function (err, doc) {
-                sys.puts(JSON.stringify(doc));
+              // Nodefu.save({_id: appname, start: start, port: appport, username: user._id, repo_id: repo_id, running: false, pid: 'unknown' }, function (err, doc) {
+				request({uri:couch_loc + 'apps', method:'POST', body: JSON.stringify({_id: appname, start: start, port: appport, username: user._id, repo_id: repo_id, running: false, pid: 'unknown' }), headers:h}, function (err, response, body) {
+				var doc = JSON.parse(body);
+                
+				sys.puts(JSON.stringify(doc));
               
                 // Setup git repo
                 var gitsetup = spawn(config.opt.app_dir + '/scripts/gitreposetup.sh', [config.opt.app_dir, config.opt.home_dir + '/' + config.opt.hosted_apps_subdir, user._id, repo_id, start]);
@@ -206,11 +240,16 @@ myapp.put('/app', function(req, res, next){
       var appname = req.param("appname");
       var start = req.param("start");
       var running = req.param("running");
-      var Nodefu = CouchClient(couch_loc + "apps");
+      // var Nodefu = CouchClient(couch_loc + "apps");
+      // 
+      // // Check to see if node app exists
+      // Nodefu.get(appname, function (err, doc) {
+       // if (doc){
 
-      // Check to see if node app exists
-      Nodefu.get(appname, function (err, doc) {
-        if (doc){
+	  request({uri:couch_loc + 'apps/' + appname, method:'GET', headers:h}, function (err, response, body) {
+		var doc = JSON.parse(body);
+		if (doc._id){
+
           // subdomain found
           if (doc.username == user._id) {
             if (running == 'true') {
@@ -276,7 +315,10 @@ myapp.put('/app', function(req, res, next){
               start = doc.start;
             }
             // update the app
-            Nodefu.save({_id: appname, start: start, port: doc.port, username: user._id, repo_id: doc.repo_id, running: running, pid: 'unknown' }, function (err, doc) {
+            // Nodefu.save({_id: appname, start: start, port: doc.port, username: user._id, repo_id: doc.repo_id, running: running, pid: 'unknown' }, function (err, doc) {
+
+			request({uri:couch_loc + 'apps/' + appname, method:'PUT', body: JSON.stringify({_id: appname, _rev: doc._rev, start: start, port: doc.port, username: user._id, repo_id: doc.repo_id, running: running, pid: 'unknown' }), headers:h}, function (err, response, body) {
+
               sys.puts(JSON.stringify(doc));
               
               // Respond to API request
@@ -309,12 +351,19 @@ myapp.delete('/app', function(req, res, next){
   authenticate(req.headers.authorization, res, function(user){
   
     if(user){
-      var Nodefu = CouchClient(couch_loc + "apps");
+      // var Nodefu = CouchClient(couch_loc + "apps");
+      // 
+      // // Check if app exists and if user is the owner of the app
+      // Nodefu.get(appname, function (err, doc) {
+		request({uri:couch_loc + 'apps/' + appname, method:'GET', headers:h}, function (err, response, body) {
+		var doc = JSON.parse(body);
 
-      // Check if app exists and if user is the owner of the app
-      Nodefu.get(appname, function (err, doc) {
         if (doc && doc.username == user._id){
-          Nodefu.remove(appname, function (err, doc) {sys.puts(JSON.stringify(doc));});
+          // Nodefu.remove(appname, function (err, doc) {sys.puts(JSON.stringify(doc));});
+			request({uri:couch_loc + 'apps/' + appname + '?rev=' +  doc._rev, method:'DELETE', headers:h}, function (err, response, body) {
+			});	
+
+
           res.writeHead(200, { 'Content-Type': 'application/json' });
           res.write('{status : "success"}\n');
             res.end();
@@ -341,10 +390,13 @@ myapp.get('/app/:id', function(req, res, next){
   authenticate(req.headers.authorization, res, function(user){
 
     if(user){
-      var Nodefu = CouchClient(couch_loc + "apps");
-      Nodefu.get(req.params.id, function (err, doc) {
-				if (doc && doc.username == user._id){
-					res.writeHead(200, { 'Content-Type': 'application/json' });
+      // var Nodefu = CouchClient(couch_loc + "apps");
+      // Nodefu.get(req.params.id, function (err, doc) {
+		request({uri:couch_loc + 'apps/' + req.params.id, method:'GET', headers:h}, function (err, response, body) {
+		var doc = JSON.parse(body);
+
+		if (doc && doc.username == user._id){
+			res.writeHead(200, { 'Content-Type': 'application/json' });
           res.write('{status : "success", port : "' + doc.port + '", gitrepo : "' + config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.hosted_apps_subdir + '/' + doc.username + '/' + doc.repo_id + '.git", start: "' + doc.start + '", running: ' + doc.running + ', pid: ' + doc.pid + '}\n');
 				  res.end();
 			  } else {
@@ -362,79 +414,10 @@ myapp.get('/app/:id', function(req, res, next){
   });
 });
 
-// // Status API
-// // http://chris:123@api.localhost:8080/status 
-// // curl -u "testuser:123" http://api.localhost:8080/status
-// myapp.get('/status', function(req, res, next){
-// 
-//   var user
-//   authenticate(req.headers.authorization, function(user){
-//   
-//     if(user){
-//       
-//       var Nodeport = CouchClient(couch_loc + "nextport");
-//       Nodeport.get('port', function (err, doc) {
-//         var appsrunning = (doc.address - 8000).toString();
-//         
-//         res.writeHead(200, { 'Content-Type': 'application/json' });
-//         res.write('{status : "up", appsrunning : "' +  appsrunning + '"}');
-//           res.end();
-//       });
-//       
-//     } else {
-//       // basic auth didn't match account
-//       res.writeHead(400, { 'Content-Type': 'application/json' });
-//       res.write('{status : "failure - authentication"}');
-//         res.end();
-//     };
-//   });
-// });
-
-
-// myapp.get('/list/:id.:format?', function(req, res, next){
-//   
-//   // sys.puts(base64_decode(req.headers.authorization.substring(req.headers.authorization.indexOf(" ") + 1 )));
-//   // sys.puts(req.headers.authorization);
-//     
-//   var id = req.params.id
-//     , format = req.params.format
-//     , item = items[id];
-//   // Ensure item exists
-//   if (item) {
-//     // Serve the format
-//     switch (format) {
-//       case 'json':
-//         // Detects json
-//         res.send(item);
-//         break;
-//       case 'xml':
-//         // Set contentType as xml then sends
-//         // the string
-//         var xml = ''
-//           + '<items>'
-//           + '<item>' + item.subdomain + '</item>'
-//           + '</items>';
-//         res.contentType('.xml');
-//         res.send(xml);
-//         break;
-//       case 'html':
-//       default:
-//         // By default send some hmtl
-//         res.send('<h1>' + item.subdomain + '</h1>');
-//     }
-//   } else {
-//       
-//     // We could simply pass route control and potentially 404
-//     // by calling next(), or pass an exception like below.
-//     next(new Error('item ' + id + ' does not exist'));
-//   }
-// });
-
-// Middleware
 
 myapp.use(express.errorHandler({ showStack: true }));
 myapp.listen(4001); 
-console.log('NodeFu app started on port 4001');
+console.log('Nodester app started on port 4001');
 
 function authenticate(basicauth, res, callback){
   
@@ -442,8 +425,11 @@ function authenticate(basicauth, res, callback){
   var username = creds.substring(0,creds.indexOf(":"));
   var password = creds.substring(creds.indexOf(":")+1);
 
-  var Nodefu = CouchClient(couch_loc + "nodefu");
-  Nodefu.get(username, function (err, doc) {
+  // var Nodefu = CouchClient(couch_loc + "nodefu");
+  // Nodefu.get(username, function (err, doc) {
+	request({uri:couch_loc + 'nodefu/' + username, method:'GET', headers:h}, function (err, response, body) {
+	var doc = JSON.parse(body);
+
     if(doc && doc._id == username && doc.password == md5(password)){
       callback(doc);
       return;
@@ -468,6 +454,6 @@ function md5(str) {
   return crypto.createHash('md5').update(str).digest('hex');
 }
 
-// process.on('uncaughtException', function (err) {
-//    console.log("uncaughtException" + err);
-//});
+process.on('uncaughtException', function (err) {
+   console.log("uncaughtException" + err);
+});

@@ -7,7 +7,7 @@ var exec = require('child_process').exec;
 var couch_http = http.createClient(config.opt.couch_port, config.opt.couch_host);
 var request = couch_http.request(
   'GET',
-  '/' + config.opt.couch_prefix + '_' + 'apps' + '/_design/nodeapps/_view/all',
+  '/apps' + '/_design/nodeapps/_view/all',
   {
     'host': config.opt.couch_host,
     'Authorization': "Basic " + base64_encode(new Buffer(config.opt.couch_user + ":" + (config.opt.couch_pass || "")))
