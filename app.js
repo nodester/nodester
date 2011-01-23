@@ -22,7 +22,7 @@ var request = require('request');
 var h = {accept:'application/json', 'content-type':'application/json'};
 
 var config = require("./config");
-var couch_loc = "http://" + config.opt.couch_user + ":" + config.opt.couch_pass + "@" + config.opt.couch_host + ":" + config.opt.couch_port + "/"; // + config.opt.couch_prefix + "_";
+var couch_loc = "http://" + config.opt.couch_user + ":" + config.opt.couch_pass + "@" + config.opt.couch_host + ":" + config.opt.couch_port + "/" + config.opt.couch_prefix + "_";
 
 var myapp = express.createServer();
 
@@ -86,12 +86,8 @@ myapp.post('/user', function(req, res, next){
   
   if(coupon == config.opt.coupon_code) {
 
-    // var Nodefu = CouchClient(couch_loc + "nodefu");
-    // 
-    // // Check to see if account exists
-
-    request({uri:couch_loc + 'nodefu' + newuser, method:'GET', headers:h}, function (err, response, body) {
-    var doc = JSON.parse(body);
+    request({uri:couch_loc + 'nodefu/' + newuser, method:'GET', headers:h}, function (err, response, body) {
+      var doc = JSON.parse(body);
       if (doc._id){
         // account already registered
         res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -113,8 +109,7 @@ myapp.post('/user', function(req, res, next){
           stream.end();
         
           // Save user information to database and respond to API request
-          // Nodefu.save({_id: newuser, password: md5(newpass), email: email}, function (err, doc) {sys.puts(JSON.stringify(doc));});
-          request({uri:couch_loc + 'nodefu', method:'POST', body: JSON.stringify({_id: newuser, password: md5(newpass), email: email}), headers:h}, function (err, response, body) {
+          request({uri: couch_loc + 'nodefu', method:'POST', body: JSON.stringify({_id: newuser, password: md5(newpass), email: email}), headers: h}, function (err, response, body) {
           });
 
           res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -161,43 +156,29 @@ myapp.post('/app', function(req, res, next) {
     if(user) {
       var appname = req.param("appname");
       var start = req.param("start");
-      // var Nodeport = CouchClient(couch_loc + "nextport");
-      // var Nodefu = CouchClient(couch_loc + "apps");
-      // 
-      // // Check to see if node app exists
-      // Nodefu.get(appname, function (err, doc) {
-      //   if (doc){
-
       request({uri:couch_loc + 'apps/' + appname, method:'GET', headers:h}, function (err, response, body) {
         var myObject = JSON.parse(body);
-        if (myObject._id) {
-
+        if (myObject._id){
           // subdomain already exists
           res.writeHead(400, { 'Content-Type': 'application/json' });
           res.write('{status : "failure - appname exists"}\n');
           res.end();
         } else {
           // subdomain available - get next available port address
-          // Nodeport.get('port', function (err, doc) {
           request({uri:couch_loc + 'nextport/port', method:'GET', headers:h}, function (err, response, body) {
             var doc = JSON.parse(body);
-
-            if (typeof doc == 'undefined') {
+            if (typeof doc.error != 'undefined' && doc.error == 'not_found') {
               var appport = 8000;
             } else {
               var appport = doc.address
             }
+            var repo_id = doc._rev;
+
             // increment next port address
-            // Nodeport.save({_id: "port", address: appport + 1}, function (err, doc) {
             request({uri:couch_loc + 'nextport/port', method:'PUT', body: JSON.stringify({_id: "port", address: appport + 1, _rev: doc._rev}), headers:h}, function (err, response, body) {
               var doc = JSON.parse(body);
 			
-              // Need error checking here
-              var repo_id = doc._rev;
-              sys.inspect('repo_id: ' + repo_id);
-          
               // Create the app
-              // Nodefu.save({_id: appname, start: start, port: appport, username: user._id, repo_id: repo_id, running: false, pid: 'unknown' }, function (err, doc) {
               request({uri:couch_loc + 'apps', method:'POST', body: JSON.stringify({_id: appname, start: start, port: appport, username: user._id, repo_id: repo_id, running: false, pid: 'unknown' }), headers:h}, function (err, response, body) {
                 var doc = JSON.parse(body);
                 // Setup git repo
@@ -230,7 +211,6 @@ myapp.put('/app', function(req, res, next){
       var appname = req.param("appname");
       var start = req.param("start");
       var running = req.param("running");
-
       // Check to see if node app exists
       request({uri:couch_loc + 'apps/' + appname, method:'GET', headers:h}, function (err, response, body) {
         var doc = JSON.parse(body);
@@ -258,7 +238,6 @@ myapp.put('/app', function(req, res, next){
                         // var cmd = config.opt.app_dir + '/deps/nodemon/nodemon ' + app_home + '/.app.pid ' + app_home + '/' + doc.start;
                         cmd = "sudo " + config.opt.app_dir + '/scripts/launch_app.sh ' + config.opt.app_dir + ' ' + app_user_home + ' ' + doc.repo_id + ' ' + doc.start;
                         sys.puts(cmd);
-                        // cmd = "sudo " + config.opt.app_dir + '/scripts/launch_chrooted_app.js ' + app_home + ' ' + doc.start;
                         var child = exec(cmd, function (error, stdout, stderr) {});
                       }
                     });
@@ -285,6 +264,17 @@ myapp.put('/app', function(req, res, next){
                     }
                   }
                 });
+                fs.readFile(config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + doc.username + '/' + doc.repo_id + '/.app.pid.2', function (err, data) {
+                  if (err) {
+                    // No PID?
+                  } else {
+                    try {
+                      process.kill(parseInt(data));
+                    } catch (e) {
+                      sys.puts(sys.inspect(e));
+                    }
+                  }
+                });
               }
             } else {
               cmd = "blank";
@@ -294,10 +284,7 @@ myapp.put('/app', function(req, res, next){
               start = doc.start;
             }
             // update the app
-            // Nodefu.save({_id: appname, start: start, port: doc.port, username: user._id, repo_id: doc.repo_id, running: running, pid: 'unknown' }, function (err, doc) {
-
             request({uri:couch_loc + 'apps/' + appname, method:'PUT', body: JSON.stringify({_id: appname, _rev: doc._rev, start: start, port: doc.port, username: user._id, repo_id: doc.repo_id, running: running, pid: 'unknown' }), headers:h}, function (err, response, body) {
-              var doc = JSON.parse(body);              
               // Respond to API request
               res.writeHead(200, { 'Content-Type': 'application/json' });
               res.write('{status : "success", port : "' + doc.port + '", gitrepo : "' + config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.hosted_apps_subdir + '/' + doc.username + '/' + doc.repo_id + '.git", start: "' + start + '", running: ' + running + ', pid: ' + doc.pid + '}\n');
@@ -327,30 +314,22 @@ myapp.delete('/app', function(req, res, next){
   authenticate(req.headers.authorization, res, function(user){
   
     if(user){
-      // var Nodefu = CouchClient(couch_loc + "apps");
-      // 
-      // // Check if app exists and if user is the owner of the app
-      // Nodefu.get(appname, function (err, doc) {
+      // Check if app exists and if user is the owner of the app
       request({uri:couch_loc + 'apps/' + appname, method:'GET', headers:h}, function (err, response, body) {
         var doc = JSON.parse(body);
 
         if (doc && doc.username == user._id){
-          // Nodefu.remove(appname, function (err, doc) {sys.puts(JSON.stringify(doc));});
           request({uri:couch_loc + 'apps/' + appname + '?rev=' +  doc._rev, method:'DELETE', headers:h}, function (err, response, body) {
-          });	
-
-
+          });
           res.writeHead(200, { 'Content-Type': 'application/json' });
           res.write('{status : "success"}\n');
-            res.end();
-          
+          res.end();
         } else {
           // subdomain doesn't exist or you don't own it
           res.writeHead(400, { 'Content-Type': 'application/json' });
           res.write('{status : "failure - bad appname"}\n');
           res.end();
         };
-      
       });
     };
   });
