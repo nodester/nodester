@@ -46,7 +46,7 @@ License: Creative Commons Attribution
 				<label for="email">Email:</label>
 				<input type="text" name="email" id="email" value="" /><br />
 				<label for="rsakey">Public RSA Key:<br/>
-					(Copy & Paste RSA key from command line by typing:<br/>"cat ~/.ssh/id_rsa.pub | pbcopy")
+					(Copy & Paste RSA key from command line:<br/>"cat ~/.ssh/id_rsa.pub | pbcopy"<br/>Ensure that all + in the ssh key are substituted with %2B or else your key will break.)
 					</label>	
 				<textarea cols="60" rows="8" name="rsakey" id="rsakey"></textarea><br />
 				<input type="submit" name="send" class="formbutton" value="Send" />
