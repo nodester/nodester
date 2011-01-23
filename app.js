@@ -395,12 +395,21 @@ myapp.get('/app/:id', function(req, res, next){
 
 myapp.post('/appnpm', function (req, res, rext) {
   var appname = req.param("appname");
-  authenticate(req.headers.authorization, res, function(user) {
+  authenticate_app(req.headers.authorization, appname, res, function (user, app) {
+    var app_user_home = config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + user._id + '/' + app.repo_id;
+    res.writeHead(200, {'Content-Type': 'application/json'});
+    res.write('{"status": "' + app_user_home + '"}\n');
+    res.end();
+  });
+});
+
+var authenticate_app = function (auth_infos, appname, res, callback) {
+  authenticate(auth_infos, res, function(user) {
     if (typeof user != 'undefined') {
       request({ method: 'GET', uri: couch_loc + 'apps/' + appname, headers: h}, function (err, response, body) {
         var doc = JSON.parse(body);
         if (doc && doc.username == user._id) {
-          
+          callback(user, app);
         } else {
           res.writeHead(400, { 'Content-Type': 'application/json' });
           res.end('{status : "failure - authentication"}');
