@@ -54,7 +54,7 @@ Installation:
   Ensure that the ownership of nodester/proxy is all root for security
     sudo chown -R root:root nodester/proxy
   Install the git folder shell to restrict git to per user folders
-    sudo cp git-shell-enforce-directory /usr/local/bin
+    sudo cp scripts/git-shell-enforce-directory /usr/local/bin
     sudo chmod +x /usr/local/bin/git-shell-enforce-directory
   Configure the app
     Copy nodester/example_config.js to nodester/config.js
