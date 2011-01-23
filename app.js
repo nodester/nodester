@@ -63,11 +63,8 @@ myapp.get('/status', function(req, res, next){
 myapp.post('/coupon', function(req, res, next) {
 
   var email = req.param("email");  
-  // var Nodefu = CouchClient(couch_loc + "coupons");
-  // Nodefu.save({_id: email}, function (err, doc) {sys.puts(JSON.stringify(doc));});
-
   request({uri:couch_loc + "coupons", method:'POST', body: JSON.stringify({_id: email}), headers:h}, function (err, response, body) {
-	});	
+  });
 
   res.writeHead(200, { 'Content-Type': 'application/json' });
   res.write('{status : "success - you are now in queue to receive an invite on our next batch!"}\n');
@@ -92,12 +89,10 @@ myapp.post('/user', function(req, res, next){
     // var Nodefu = CouchClient(couch_loc + "nodefu");
     // 
     // // Check to see if account exists
-    // Nodefu.get(newuser, function (err, doc) {
-    //   if (doc){
 
-	request({uri:couch_loc + 'nodefu' + newuser, method:'GET', headers:h}, function (err, response, body) {
-	var doc = JSON.parse(body);
-	if (doc._id){
+    request({uri:couch_loc + 'nodefu' + newuser, method:'GET', headers:h}, function (err, response, body) {
+    var doc = JSON.parse(body);
+      if (doc._id){
         // account already registered
         res.writeHead(400, { 'Content-Type': 'application/json' });
         res.write('{status : "failure - account exists"}\n');
@@ -119,8 +114,8 @@ myapp.post('/user', function(req, res, next){
         
           // Save user information to database and respond to API request
           // Nodefu.save({_id: newuser, password: md5(newpass), email: email}, function (err, doc) {sys.puts(JSON.stringify(doc));});
-		request({uri:couch_loc + 'nodefu', method:'POST', body: JSON.stringify({_id: newuser, password: md5(newpass), email: email}), headers:h}, function (err, response, body) {
-		});	
+          request({uri:couch_loc + 'nodefu', method:'POST', body: JSON.stringify({_id: newuser, password: md5(newpass), email: email}), headers:h}, function (err, response, body) {
+          });
 
           res.writeHead(200, { 'Content-Type': 'application/json' });
           res.write('{status : "success"}\n');
@@ -147,11 +142,9 @@ myapp.delete('/user', function(req, res, next) {
     if(user){
       // need to delete all users apps
       // and stop all the users apps
-      // var Nodefu = CouchClient(couch_loc + "nodefu");
-      // Nodefu.remove(user._id, function (err, doc) {sys.puts(JSON.stringify(doc));});
 
-	request({uri:couch_loc + 'nodefu/' + user._id + '?rev=' +  user._rev, method:'DELETE', headers:h}, function (err, response, body) {
-	});	
+      request({uri:couch_loc + 'nodefu/' + user._id + '?rev=' +  user._rev, method:'DELETE', headers:h}, function (err, response, body) {
+      });
 
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.write('{status : "success"}\n');
@@ -175,9 +168,9 @@ myapp.post('/app', function(req, res, next) {
       // Nodefu.get(appname, function (err, doc) {
       //   if (doc){
 
-	  request({uri:couch_loc + 'apps/' + appname, method:'GET', headers:h}, function (err, response, body) {
-		var myObject = JSON.parse(body);
-		if (myObject._id){
+      request({uri:couch_loc + 'apps/' + appname, method:'GET', headers:h}, function (err, response, body) {
+        var myObject = JSON.parse(body);
+        if (myObject._id) {
 
           // subdomain already exists
           res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -186,38 +179,32 @@ myapp.post('/app', function(req, res, next) {
         } else {
           // subdomain available - get next available port address
           // Nodeport.get('port', function (err, doc) {
-		  request({uri:couch_loc + 'nextport/port', method:'GET', headers:h}, function (err, response, body) {
-			var doc = JSON.parse(body);
+          request({uri:couch_loc + 'nextport/port', method:'GET', headers:h}, function (err, response, body) {
+            var doc = JSON.parse(body);
 
             if (typeof doc == 'undefined') {
               var appport = 8000;
             } else {
               var appport = doc.address
             }
-
-			var repo_id = doc._rev;
-
             // increment next port address
             // Nodeport.save({_id: "port", address: appport + 1}, function (err, doc) {
-			request({uri:couch_loc + 'nextport/port', method:'PUT', body: JSON.stringify({_id: "port", address: appport + 1, _rev: doc._rev}), headers:h}, function (err, response, body) {
-			  var doc = JSON.parse(body);
+            request({uri:couch_loc + 'nextport/port', method:'PUT', body: JSON.stringify({_id: "port", address: appport + 1, _rev: doc._rev}), headers:h}, function (err, response, body) {
+              var doc = JSON.parse(body);
 			
               // Need error checking here
-              // var repo_id = doc._rev;
-              // sys.inspect('repo_id: ' + repo_id);
+              var repo_id = doc._rev;
+              sys.inspect('repo_id: ' + repo_id);
           
               // Create the app
               // Nodefu.save({_id: appname, start: start, port: appport, username: user._id, repo_id: repo_id, running: false, pid: 'unknown' }, function (err, doc) {
-				request({uri:couch_loc + 'apps', method:'POST', body: JSON.stringify({_id: appname, start: start, port: appport, username: user._id, repo_id: repo_id, running: false, pid: 'unknown' }), headers:h}, function (err, response, body) {
-				var doc = JSON.parse(body);
-                
-				sys.puts(JSON.stringify(doc));
-              
+              request({uri:couch_loc + 'apps', method:'POST', body: JSON.stringify({_id: appname, start: start, port: appport, username: user._id, repo_id: repo_id, running: false, pid: 'unknown' }), headers:h}, function (err, response, body) {
+                var doc = JSON.parse(body);
                 // Setup git repo
                 var gitsetup = spawn(config.opt.app_dir + '/scripts/gitreposetup.sh', [config.opt.app_dir, config.opt.home_dir + '/' + config.opt.hosted_apps_subdir, user._id, repo_id, start]);
                 // Respond to API request
                 res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.write('{status : "success", port : "' + appport + '", gitrepo : "' + config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.hosted_apps_subdir + '/' + user._id + '/' + repo_id + '.git", start: "' + start + '", running: false, pid: "unknown"}\n');
+                res.write('{status : "success", port : "' + appport + '", gitrepo : "' + config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.hosted_apps_subdir + '/' + doc.username + '/' + doc.repo_id + '.git", start: "' + start + '", running: false, pid: "unknown"}\n');
                 res.end();
               });
             });
@@ -243,16 +230,11 @@ myapp.put('/app', function(req, res, next){
       var appname = req.param("appname");
       var start = req.param("start");
       var running = req.param("running");
-      // var Nodefu = CouchClient(couch_loc + "apps");
-      // 
-      // // Check to see if node app exists
-      // Nodefu.get(appname, function (err, doc) {
-       // if (doc){
 
-	  request({uri:couch_loc + 'apps/' + appname, method:'GET', headers:h}, function (err, response, body) {
-		var doc = JSON.parse(body);
-		if (doc._id){
-
+      // Check to see if node app exists
+      request({uri:couch_loc + 'apps/' + appname, method:'GET', headers:h}, function (err, response, body) {
+        var doc = JSON.parse(body);
+        if (doc._id){
           // subdomain found
           var cmd = "";
           if (doc.username == user._id) {
@@ -275,7 +257,8 @@ myapp.put('/app', function(req, res, next){
                         // sys.puts("cmd: " + cmd);
                         // var cmd = config.opt.app_dir + '/deps/nodemon/nodemon ' + app_home + '/.app.pid ' + app_home + '/' + doc.start;
                         cmd = "sudo " + config.opt.app_dir + '/scripts/launch_app.sh ' + config.opt.app_dir + ' ' + app_user_home + ' ' + doc.repo_id + ' ' + doc.start;
-						sys.puts(cmd);
+                        sys.puts(cmd);
+                        // cmd = "sudo " + config.opt.app_dir + '/scripts/launch_chrooted_app.js ' + app_home + ' ' + doc.start;
                         var child = exec(cmd, function (error, stdout, stderr) {});
                       }
                     });
@@ -302,18 +285,6 @@ myapp.put('/app', function(req, res, next){
                     }
                   }
                 });
-                fs.readFile(config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + doc.username + '/' + doc.repo_id + '/.app.pid.2', function (err, data) {
-                  if (err) {
-                    // No PID?
-                  } else {
-                    try {
-                      process.kill(parseInt(data));
-                    } catch (e) {
-                      sys.puts(sys.inspect(e));
-                    }
-                  }
-                });
- 
               }
             } else {
               cmd = "blank";
@@ -325,16 +296,12 @@ myapp.put('/app', function(req, res, next){
             // update the app
             // Nodefu.save({_id: appname, start: start, port: doc.port, username: user._id, repo_id: doc.repo_id, running: running, pid: 'unknown' }, function (err, doc) {
 
-			request({uri:couch_loc + 'apps/' + appname, method:'PUT', body: JSON.stringify({_id: appname, _rev: doc._rev, start: start, port: doc.port, username: user._id, repo_id: doc.repo_id, running: running, pid: 'unknown' }), headers:h}, function (err, response, body) {
-
-              sys.puts(JSON.stringify(doc));
-              
+            request({uri:couch_loc + 'apps/' + appname, method:'PUT', body: JSON.stringify({_id: appname, _rev: doc._rev, start: start, port: doc.port, username: user._id, repo_id: doc.repo_id, running: running, pid: 'unknown' }), headers:h}, function (err, response, body) {
+              var doc = JSON.parse(body);              
               // Respond to API request
               res.writeHead(200, { 'Content-Type': 'application/json' });
-              res.write('{cmd: "' + cmd + '"}\n');
               res.write('{status : "success", port : "' + doc.port + '", gitrepo : "' + config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.hosted_apps_subdir + '/' + doc.username + '/' + doc.repo_id + '.git", start: "' + start + '", running: ' + running + ', pid: ' + doc.pid + '}\n');
               res.end();
- 
             });
           } else {
             res_error(res, 400, "failure - authentication");
@@ -364,13 +331,13 @@ myapp.delete('/app', function(req, res, next){
       // 
       // // Check if app exists and if user is the owner of the app
       // Nodefu.get(appname, function (err, doc) {
-		request({uri:couch_loc + 'apps/' + appname, method:'GET', headers:h}, function (err, response, body) {
-		var doc = JSON.parse(body);
+      request({uri:couch_loc + 'apps/' + appname, method:'GET', headers:h}, function (err, response, body) {
+        var doc = JSON.parse(body);
 
         if (doc && doc.username == user._id){
           // Nodefu.remove(appname, function (err, doc) {sys.puts(JSON.stringify(doc));});
-			request({uri:couch_loc + 'apps/' + appname + '?rev=' +  doc._rev, method:'DELETE', headers:h}, function (err, response, body) {
-			});	
+          request({uri:couch_loc + 'apps/' + appname + '?rev=' +  doc._rev, method:'DELETE', headers:h}, function (err, response, body) {
+          });	
 
 
           res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -385,8 +352,7 @@ myapp.delete('/app', function(req, res, next){
         };
       
       });
-      
-    };  
+    };
   });
 });
 
@@ -401,11 +367,11 @@ myapp.get('/app/:id', function(req, res, next){
     if(user){
       // var Nodefu = CouchClient(couch_loc + "apps");
       // Nodefu.get(req.params.id, function (err, doc) {
-		request({uri:couch_loc + 'apps/' + req.params.id, method:'GET', headers:h}, function (err, response, body) {
-		var doc = JSON.parse(body);
+      request({uri:couch_loc + 'apps/' + req.params.id, method:'GET', headers:h}, function (err, response, body) {
+        var doc = JSON.parse(body);
 
-		if (doc && doc.username == user._id){
-			res.writeHead(200, { 'Content-Type': 'application/json' });
+        if (doc && doc.username == user._id){
+          res.writeHead(200, { 'Content-Type': 'application/json' });
           res.write('{status : "success", port : "' + doc.port + '", gitrepo : "' + config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.hosted_apps_subdir + '/' + doc.username + '/' + doc.repo_id + '.git", start: "' + doc.start + '", running: ' + doc.running + ', pid: ' + doc.pid + '}\n');
 				  res.end();
 			  } else {
@@ -418,15 +384,43 @@ myapp.get('/app/:id', function(req, res, next){
       // basic auth didn't match account
       res.writeHead(400, { 'Content-Type': 'application/json' });
       res.write('{status : "failure - authentication"}');
-        res.end();
+      res.end();
     };
   });
 });
 
+/*
+// APP NPM Handlers
+// http://user:pass@api.localhost:8080/appnpm
+
+myapp.post('/appnpm', function (req, res, rext) {
+  var appname = req.param("appname");
+  authenticate(req.headers.authorization, res, function(user) {
+    if (typeof user != 'undefined') {
+      request({ method: 'GET', uri: couch_loc + 'apps/' + appname, headers: h}, function (err, response, body) {
+        var doc = JSON.parse(body);
+        if (doc && doc.username == user._id) {
+          
+        } else {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end('{status : "failure - authentication"}');
+        }
+      });
+    } else {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end('{status : "failure - authentication"}');
+    }
+
+  } else {
+    res.writeHead(400, { 'Content-Type': 'application/json' });
+    res.end('{status : "failure - authentication"}');
+  }
+));
+*/
 
 myapp.use(express.errorHandler({ showStack: true }));
-myapp.listen(4001); 
-console.log('Nodester app started on port 4001');
+myapp.listen(4002); 
+console.log('Nodester app started on port 4002');
 
 function authenticate(basicauth, res, callback){
   
@@ -434,20 +428,18 @@ function authenticate(basicauth, res, callback){
   var username = creds.substring(0,creds.indexOf(":"));
   var password = creds.substring(creds.indexOf(":")+1);
 
-  // var Nodefu = CouchClient(couch_loc + "nodefu");
-  // Nodefu.get(username, function (err, doc) {
-	request({uri:couch_loc + 'nodefu/' + username, method:'GET', headers:h}, function (err, response, body) {
-	var doc = JSON.parse(body);
+  request({uri:couch_loc + 'nodefu/' + username, method:'GET', headers:h}, function (err, response, body) {
+    var doc = JSON.parse(body);
 
     if(doc && doc._id == username && doc.password == md5(password)){
       callback(doc);
       return;
-    };
-
-    // basic auth didn't match account
-    res.writeHead(400, { 'Content-Type': 'application/json' });
-    res.write('{status : "failure - authentication"}\n');
-    res.end();
+    } else {
+      // basic auth didn't match account
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.write('{status : "failure - authentication"}\n');
+      res.end();
+    }
   });
 };
 
