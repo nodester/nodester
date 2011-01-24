@@ -173,11 +173,9 @@ myapp.post('/app', function(req, res, next) {
               var appport = doc.address
             }
             var repo_id = doc._rev;
-
             // increment next port address
             request({uri:couch_loc + 'nextport/port', method:'PUT', body: JSON.stringify({_id: "port", address: appport + 1, _rev: doc._rev}), headers:h}, function (err, response, body) {
               var doc = JSON.parse(body);
-			
               // Create the app
               request({uri:couch_loc + 'apps', method:'POST', body: JSON.stringify({_id: appname, start: start, port: appport, username: user._id, repo_id: repo_id, running: false, pid: 'unknown' }), headers:h}, function (err, response, body) {
                 var doc = JSON.parse(body);
@@ -185,7 +183,7 @@ myapp.post('/app', function(req, res, next) {
                 var gitsetup = spawn(config.opt.app_dir + '/scripts/gitreposetup.sh', [config.opt.app_dir, config.opt.home_dir + '/' + config.opt.hosted_apps_subdir, user._id, repo_id, start]);
                 // Respond to API request
                 res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.write('{status : "success", port : "' + appport + '", gitrepo : "' + config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.hosted_apps_subdir + '/' + doc.username + '/' + doc.repo_id + '.git", start: "' + start + '", running: false, pid: "unknown"}\n');
+                res.write('{status : "success", port : "' + appport + '", gitrepo : "' + config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.hosted_apps_subdir + '/' + user._id  + '/' + repo_id + '.git", start: "' + start + '", running: false, pid: "unknown"}\n');
                 res.end();
               });
             });
