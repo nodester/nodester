@@ -15,6 +15,7 @@ var sys = require('sys');
 var spawn = require('child_process').spawn;
 var exec = require('child_process').exec;
 var fs = require('fs');
+var npmwrapper = require('npm-wrapper').npmwrapper;
 
 var request = require('request');
 var h = {accept: 'application/json', 'content-type': 'application/json'};
@@ -305,12 +306,36 @@ myapp.post('/test', function(req, res, next) {
 
 myapp.post('/appnpm', function(req, res, next) {
   var appname = req.param("appname");
+  var action = req.param("action");
+  var package = req.param("package");
   authenticate_app(req.headers.authorization, appname, res, function (user, app) {
-    var app_user_home = config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + user._id + '/' + app.repo_id;
+    var good_action = true;
+    switch (action) {
+      case "install":
+        break;
+      case "update":
+        break;
+      case "uninstall":
+        break;
+      default:
+        good_action = false;
+        break;
+    }
 
-    res.writeHead(200, {'Content-Type': 'application/json'});
-    res.write('{"status": "' + app_user_home + '"}\n');
-    res.end();
+    if(good_action === true) {
+      var app_user_home = config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + user._id + '/' + app.repo_id;
+      var n = new npmwrapper();
+      n.setup(app_user_home + '/.node_libraries', app_user_home + '/.npm_bin', app_user_home + '/.npm_man', action, package);
+      n.run(function (output) {
+        res.writeHead(200, {'Content-Type': 'application/json'});
+        res.write(JSON.stringify({status: 'finished', output: output}) + '\n');
+        res.end();
+      });
+    } else {
+      res.writeHead(400, {'Content-Type': 'application/json'});
+      res.write('{"status": "failure - invalid action parameter"}\n');
+      res.end();
+    }
   });
 });
 
