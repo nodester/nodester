@@ -9,14 +9,11 @@ var httpProxy = require('http-proxy'),
     url = require('url'),
     sys = require('sys');
 
-var CouchClient = require('couch-client');
-// Couchone with authentication isn't working for me - using request instead of couchclient
 var request = require('request');
 var h = {accept:'application/json', 'content-type':'application/json'};
 
 var config = require("../config");
-var couch_loc = "http://" + config.opt.couch_user + ":" + config.opt.couch_pass + "@" + config.opt.couch_host + ":" + config.opt.couch_port + "/"; // + config.opt.couch_prefix + "_";
-var Nodefu = CouchClient(couch_loc + "apps");
+var couch_loc = "http://" + config.opt.couch_user + ":" + config.opt.couch_pass + "@" + config.opt.couch_host + ":" + config.opt.couch_port + "/";// + config.opt.couch_prefix + "_";
 
 httpProxy.createServer(function (req, res, proxy) {  
   var hostname = req.headers.host;
@@ -33,11 +30,8 @@ httpProxy.createServer(function (req, res, proxy) {
       proxy.proxyRequest(4001, '127.0.0.1');
     };
   } else if (hostname != config.opt.tl_dom && subdomain != '' && subdomain != 'www' && hostname != '127.0.0.1') {
-    // Are we an APP?
-    // Nodefu.get(subdomain, function (err, doc) {
-	request({uri:couch_loc + 'apps/' + subdomain, method:'GET', headers:h}, function (err, response, body) {
-	var doc = JSON.parse(body);
-	
+    request({uri:couch_loc + 'apps/' + subdomain, method:'GET', headers:h}, function (err, response, body) {
+      var doc = JSON.parse(body);	
       if (doc) {
         if (doc.running == 'true') {
           proxy.proxyRequest(doc.port, '127.0.0.1');
