@@ -130,6 +130,7 @@ myapp.post('/user', function(req, res, next){
 // api.localhost requires basic auth to access this section
 // Edit your user account 
 // curl -X PUT -u "testuser:123" -d "password=test&rsakey=1234567" http://api.localhost:8080/user
+// rsakey is going to need more work. The old RSA key would be left in the file...
 myapp.put('/user', function(req, res, next) {
   var user
   var newpass = req.param("password");
@@ -139,28 +140,25 @@ myapp.put('/user', function(req, res, next) {
   authenticate(req.headers.authorization, res, function(user) {
     if(user){
       // and stop all the users apps
-		if (newpass) {
-			request({uri:couch_loc + 'nodefu/' + user._id, method:'PUT', body: JSON.stringify({_rev: user._rev, password: md5(newpass) }), headers:h}, function (err, response, body) {});
-		};
-		if (rsakey) {
-			
-          stream = fs.createWriteStream(config.opt.home_dir + '/.ssh/authorized_keys', {
-            'flags': 'a+',
-            'encoding': 'utf8',
-            'mode': 0644
-          });
+      if (newpass) {
+        request({uri:couch_loc + 'nodefu/' + user._id, method:'PUT', body: JSON.stringify({_rev: user._rev, password: md5(newpass) }), headers:h}, function (err, r
+      };
+      if (rsakey) {
+        stream = fs.createWriteStream(config.opt.home_dir + '/.ssh/authorized_keys', {
+          'flags': 'a+',
+          'encoding': 'utf8',
+          'mode': 0644
+        });
 
-          stream.write('command="/usr/local/bin/git-shell-enforce-directory ' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + user._id + '",no-port-forwarding,no-X11-forwarding,no-agent-forwarding,no-pty ' + rsakey + '\n', 'utf8');
-          stream.end();
-		};
-		
+        stream.write('command="/usr/local/bin/git-shell-enforce-directory ' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + user._id + '",no-port-forwarding
+        stream.end();
+      };
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.write('{status : "success"}\n');
       res.end();
     } else {
       res.writeHead(400, { 'Content-Type': 'application/json' });
       res.end('{status : "failure - authentication"}\n');
-
     };
   });
 });
@@ -180,12 +178,7 @@ myapp.delete('/user', function(req, res, next) {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.write('{status : "success"}\n');
       res.end();
-  } else {
-    res.writeHead(400, { 'Content-Type': 'application/json' });
-    res.end('{status : "failure - authentication"}\n');
-
-  };
-
+    };
   });
 });
 
@@ -220,7 +213,7 @@ myapp.post('/app', function(req, res, next) {
               // Create the app
               request({uri:couch_loc + 'apps', method:'POST', body: JSON.stringify({_id: appname, start: start, port: appport, username: user._id, repo_id: repo_id, running: false, pid: 'unknown' }), headers:h}, function (err, response, body) {
                 var doc = JSON.parse(body);
-                request({uri:couch_loc + 'repos', method:'PUT', body: JSON.stringify({_id: repo_id, appname: appname, username: user._id}), headers:h}, function (err, response, body) {
+                request({uri:couch_loc + 'repos', method:'POST', body: JSON.stringify({_id: repo_id, appname: appname, username: user._id}), headers:h}, function (err, response, body) {
                   // TODO - Error handling...
                 });
                 // Setup git repo
@@ -246,6 +239,7 @@ myapp.post('/app', function(req, res, next) {
 // curl -X PUT -u "testuser:123" -d "appname=test&running=true" http://api.localhost:8080/apps
 // curl -X PUT -u "testuser:123" -d "appname=test&running=false" http://api.localhost:8080/apps
 // curl -X PUT -u "testuser:123" -d "appname=test&running=restart" http://api.localhost:8080/apps
+// TODO - Fix this function, it's not doing callbacking properly so will return JSON in the wrong state!
 myapp.put('/app', function(req, res, next){
   var appname = req.param("appname");
   authenticate_app(req.headers.authorization, appname, res, function (user, app) {
@@ -314,13 +308,14 @@ var app_stop = function (repo_id, callback) {
     if (typeof doc.error != 'undefined' && doc.error == 'not_found') {
       callback(false);
     } else {
-      var app_home = config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + doc.username + '/' + doc.repo_id;
+      var app_home = config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + doc.username + '/' + doc._id;
       fs.readFile(app_home + '/.app.pid', function (err, data) {
         if (err) {
           callback(false);
         } else {
           try {
             process.kill(parseInt(data));
+            fs.unlink(app_home + '/.app.pid');
             callback(true);
           } catch (e) {
             callback(false);
@@ -339,13 +334,14 @@ var app_start = function (repo_id, callback) {
     } else {
       var user_home = config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + doc.username;
       var app_home = app_home + '/' + doc.repo_id;
-      request({ method: 'GET', uri: couch_loc + 'apps/' + appname, headers: h}, function (err, response, body) {
+      request({ method: 'GET', uri: couch_loc + 'apps/' + doc.appname, headers: h}, function (err, response, body) {
         var app = JSON.parse(body);
         if (typeof app.error != 'undefined' && app.error == 'not_found') {
           callback(false);
         } else {
           var cmd = "sudo " + config.opt.app_dir + '/scripts/launch_app.sh ' + config.opt.app_dir + ' ' + user_home + ' ' + app.repo_id + ' ' + app.start;
           var child = exec(cmd, function (error, stdout, stderr) {});
+          callback(true);
         }
       });
     }
@@ -376,16 +372,17 @@ myapp.get('/app_restart', function(req, res, next) {
   if (restart_key != config.opt.restart_key) {
     res.writeHead(403, {'Content-Type': 'text/plain'});
     res.end();
+  } else {
+    app_restart(repo_id, function(rv) {
+      if (rv == false) {
+        res.writeHead(200, {'Content-Type': 'text/plain'});
+        res.end('{"status": "failed to restart"}\n');
+      } else {
+        res.writeHead(200, {'Content-Type': 'text/plain'});
+        res.end('{"status": "restarted"}\n');
+      }
+    }, true);
   }
-  app_restart(repo_id, function(rv) {
-    if (rv == false) {
-      res.writeHead(200, {'Content-Type': 'text/plain'});
-      res.end('{"status": "failed to restart"}\n');
-    } else {
-      res.writeHead(200, {'Content-Type': 'text/plain'});
-      res.end('{"status": "restarted"}\n');
-    }
-  }, true);
 });
 
 
@@ -506,12 +503,10 @@ var res_error = function (res, code, message) {
   res.end();
 };
 
-
-
 function md5(str) {
   return crypto.createHash('md5').update(str).digest('hex');
 }
 
 process.on('uncaughtException', function (err) {
-   console.log("uncaughtException" + err);
+   console.log("uncaughtException" + sys.inspect(err));
 });
