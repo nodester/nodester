@@ -128,41 +128,6 @@ myapp.post('/user', function(req, res, next){
 });
 
 // api.localhost requires basic auth to access this section
-// Edit your user account 
-// curl -X PUT -u "testuser:123" -d "password=test&rsakey=1234567" http://api.localhost:8080/user
-// rsakey is going to need more work. The old RSA key would be left in the file...
-myapp.put('/user', function(req, res, next) {
-  var user
-  var newpass = req.param("password");
-  var rsakey = req.param("rsakey");  
-  
-
-  authenticate(req.headers.authorization, res, function(user) {
-    if(user){
-      // and stop all the users apps
-      if (newpass) {
-        request({uri:couch_loc + 'nodefu/' + user._id, method:'PUT', body: JSON.stringify({_rev: user._rev, password: md5(newpass) }), headers:h}, function (err, resp, body) {
-      });
-      };
-      if (rsakey) {
-        stream = fs.createWriteStream(config.opt.home_dir + '/.ssh/authorized_keys', {
-          'flags': 'a+',
-          'encoding': 'utf8',
-          'mode': 0644
-        });
-
-        stream.write('command="/usr/local/bin/git-shell-enforce-directory ' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + user._id + '",no-port-forwarding,no-X11-forwarding,no-agent-forwarding,no-pty ' + rsakey + '\n', 'utf8');
-        stream.end();
-      };
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.write('{status : "success"}\n');
-      res.end();
-    } else {
-      res.writeHead(400, { 'Content-Type': 'application/json' });
-      res.end('{status : "failure - authentication"}\n');
-    };
-  });
-});
 
 // Delete your user account 
 // curl -X DELETE -u "testuser:123" http://api.localhost:8080/user
@@ -221,7 +186,7 @@ myapp.post('/app', function(req, res, next) {
                 var gitsetup = spawn(config.opt.app_dir + '/scripts/gitreposetup.sh', [config.opt.app_dir, config.opt.home_dir + '/' + config.opt.hosted_apps_subdir, user._id, repo_id, start]);
                 // Respond to API request
                 res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.write('{status : "success", port : "' + appport + '", gitrepo : "' + config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.home_dir + config.opt.hosted_apps_subdir + '/' + user._id  + '/' + repo_id + '.git", start: "' + start + '", running: false, pid: "unknown"}\n');
+                res.write('{status : "success", port : "' + appport + '", gitrepo : "' + config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + user._id  + '/' + repo_id + '.git", start: "' + start + '", running: false, pid: "unknown"}\n');
                 res.end();
               });
             });
@@ -297,7 +262,7 @@ myapp.put('/app', function(req, res, next){
     request({uri:couch_loc + 'apps/' + appname, method:'PUT', body: JSON.stringify({_id: appname, _rev: app._rev, start: start, port: app.port, username: user._id, repo_id: app.repo_id, running: running, pid: 'unknown' }), headers: h}, function (err, response, body) {
       // Respond to API request
       res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.write('{status : "success", port : "' + app.port + '", gitrepo : "' + config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.home_dir + config.opt.hosted_apps_subdir + '/' + app.username + '/' + app.repo_id + '.git", start: "' + start + '", running: ' + running + ', pid: ' + app.pid + '}\n');
+      res.write('{status : "success", port : "' + app.port + '", gitrepo : "' + config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + app.username + '/' + app.repo_id + '.git", start: "' + start + '", running: ' + running + ', pid: ' + app.pid + '}\n');
       res.end();
     });
   });
@@ -408,7 +373,7 @@ myapp.get('/app/:appname', function(req, res, next){
   var appname = req.param("appname");
   authenticate_app(req.headers.authorization, appname, res, function (user, app) {
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.write('{status : "success", port : "' + app.port + '", gitrepo : "' + config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.home_dir + config.opt.hosted_apps_subdir + '/' + app.username + '/' + app.repo_id + '.git", start: "' + app.start + '", running: ' + app.running + ', pid: ' + app.pid + '}\n');
+    res.write('{status : "success", port : "' + app.port + '", gitrepo : "' + config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + app.username + '/' + app.repo_id + '.git", start: "' + app.start + '", running: ' + app.running + ', pid: ' + app.pid + '}\n');
     res.end();
   });
 });
