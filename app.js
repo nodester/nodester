@@ -141,7 +141,8 @@ myapp.put('/user', function(req, res, next) {
     if(user){
       // and stop all the users apps
       if (newpass) {
-        request({uri:couch_loc + 'nodefu/' + user._id, method:'PUT', body: JSON.stringify({_rev: user._rev, password: md5(newpass) }), headers:h}, function (err, r
+        request({uri:couch_loc + 'nodefu/' + user._id, method:'PUT', body: JSON.stringify({_rev: user._rev, password: md5(newpass) }), headers:h}, function (err, resp, body) {
+      });
       };
       if (rsakey) {
         stream = fs.createWriteStream(config.opt.home_dir + '/.ssh/authorized_keys', {
@@ -150,7 +151,7 @@ myapp.put('/user', function(req, res, next) {
           'mode': 0644
         });
 
-        stream.write('command="/usr/local/bin/git-shell-enforce-directory ' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + user._id + '",no-port-forwarding
+        stream.write('command="/usr/local/bin/git-shell-enforce-directory ' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + user._id + '",no-port-forwarding,no-X11-forwarding,no-agent-forwarding,no-pty ' + rsakey + '\n', 'utf8');
         stream.end();
       };
       res.writeHead(200, { 'Content-Type': 'application/json' });
