@@ -292,7 +292,47 @@ myapp.get('/app/:id', function(req, res, next){
     res.write('{status : "success", port : "' + app.port + '", gitrepo : "' + config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.hosted_apps_subdir + '/' + app.username + '/' + app.repo_id + '.git", start: "' + app.start + '", running: ' + app.running + ', pid: ' + app.pid + '}\n');
     res.end();
   });
+}); 
+
+// All Applications info
+// http://chris:123@api.localhost:8080/apps
+// curl -u "testuser:123" http://api.localhost:8080/apps
+myapp.get('/apps', function(req, res, next){
+
+  var user
+  authenticate(req.headers.authorization, res, function(user){
+
+    if(user){
+        request({ method: 'GET', uri: couch_loc + 'apps/' + '/_design/nodeapps/_view/all', headers: h}, function (err, response, body) {  
+        var docs = JSON.parse(body);
+				if (docs){
+					var apps = [];
+          for (i=0; i<docs.rows.length; i++) {
+            apps[i] =
+               {port: docs.rows[i].value.port
+                 , gitrepo: config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.hosted_apps_subdir + '/' + docs.rows[i].value.username + '/' + docs.rows[i].value.repo_id + '.git'
+                 , start: docs.rows[i].value.start
+                 , running: docs.rows[i].value.running
+                 , pid: docs.rows[i].value.pid };
+          }
+					res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.write(JSON.stringify(apps));
+				  res.end();
+			  } else {
+          res.writeHead(404, { 'Content-Type': 'application/json' });
+					res.write('{status : "failure - applications not found"}');
+          res.end();
+			  }
+		  });
+    } else {
+      // basic auth didn't match account
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.write('{status : "failure - authentication"}');
+        res.end();
+    };
+  });
 });
+
 
 // APP NPM Handlers
 // http://user:pass@api.localhost:8080/npm
