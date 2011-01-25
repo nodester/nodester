@@ -10,6 +10,7 @@ Dependencies:
     couch-client
     request
     npm-wrapper
+    daemon-tools
 
 Installation:
   Install node.js
@@ -40,13 +41,7 @@ Installation:
     curl http://npmjs.org/install.sh | sh
   Either install CouchDB or get a CouchOne account
   Install node-module dependencies
-    for X in http-proxy express node-base64 npm-wrapper request; do npm install ${X}; done
-    cd ~
-    mkdir build
-    cd build
-    git clone git://github.com/DanBUK/node-daemon.git
-    cd node-daemon
-    node-waf configure build install
+    for X in http-proxy express node-base64 npm-wrapper request daemon-tools; do npm install ${X}; done
   Get nodester
     cd ~
     git clone git@github.com:nodester/nodester.git
