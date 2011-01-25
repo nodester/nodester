@@ -4,6 +4,8 @@ USERDIR=${2};
 APPDIR=${3};
 START=${4};
 
-cd ${USERDIR};
-echo "/usr/local/bin/node ${BASEDIR}/deps/nodemon/nodemon ${USERDIR} ${APPDIR}/.app.pid ${APPDIR}/${START}";
-exec /usr/local/bin/node ${BASEDIR}/deps/nodemon/nodemon ${USERDIR} ${APPDIR}/.app.pid ${APPDIR}/${START};
+if [ -f ${BASEDIR}/scripts/launch_chrooted_app.js ]; then
+  exec /usr/bin/node ${BASEDIR}/scripts/launch_chrooted_app.js ${USERDIR}/${APPDIR} ${START};
+else;
+  exec /usr/local/bin/node ${BASEDIR}/deps/nodemon/nodemon ${USERDIR} ${APPDIR}/.app.pid ${APPDIR}/${START};
+fi;
