@@ -135,6 +135,10 @@ License: Creative Commons Attribution
 				<code>/user - creates user account (pass in user and password and email and id_rsa.pub string) <i>Ensure that all + in the ssh key are substituted for their %2B counter parts, else your key will break.</i><br/><br/>
 				curl -X POST -d "user=testuser&password=123&email=chris@nodester.com&rsakey=ssh-rsa AAAAB3NzaC1yc..." http://nodester.com/user</code>
 
+				<p><b>Update User :: PUT</b>
+				<br/>Base URL: http://api.nodester.com</p>
+				<code>/user - update user account (pass in password and/or rsakey)<br/> <br/>
+				curl -X PUT -u "testuser:123" -d "password=test&rsakey=1234567" http://api.nodester.com/user</code>
 
 				<p><b>Delete User :: DELETE</b>
 				<br/>Base URL: http://api.nodester.com</p>
