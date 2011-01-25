@@ -128,23 +128,46 @@ myapp.post('/user', function(req, res, next){
 });
 
 // api.localhost requires basic auth to access this section
+// Edit your user account 
+// curl -X PUT -u "testuser:123" -d "password=test&rsakey=1234567" http://api.localhost:8080/user
+myapp.put('/user', function(req, res, next) {
+  var user
+  var newpass = req.param("password");
+  var rsakey = req.param("rsakey");
+
+  authenticate(req.headers.authorization, res, function(user) {
+    if (newpass) {
+      request({uri:couch_loc + 'nodefu/' + user._id, method:'PUT', body: JSON.stringify({_rev: user._rev, password: md5(newpass) }), headers:h}, function (err, response, body) {});
+    };
+    if (rsakey) {
+      stream = fs.createWriteStream(config.opt.home_dir + '/.ssh/authorized_keys', {
+        'flags': 'a+',
+        'encoding': 'utf8',
+        'mode': 0644
+      });
+      stream.write('command="/usr/local/bin/git-shell-enforce-directory ' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + user._id + '",no-port-forwarding,no-X11-forwarding,no-agent-forwarding,no-pty ' + rsakey + '\n', 'utf8');
+      stream.end();
+    };
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.write('{status : "success"}\n');
+    res.end();
+  });
+});
 
 // Delete your user account 
 // curl -X DELETE -u "testuser:123" http://api.localhost:8080/user
 myapp.delete('/user', function(req, res, next) {
   var user
   authenticate(req.headers.authorization, res, function(user) {
-    if(user){
-      // need to delete all users apps
-      // and stop all the users apps
+    // need to delete all users apps
+    // and stop all the users apps
 
-      request({uri:couch_loc + 'nodefu/' + user._id + '?rev=' +  user._rev, method:'DELETE', headers:h}, function (err, response, body) {
-      });
+    request({uri:couch_loc + 'nodefu/' + user._id + '?rev=' +  user._rev, method:'DELETE', headers:h}, function (err, response, body) {
+    });
 
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.write('{status : "success"}\n');
-      res.end();
-    };
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.write('{status : "success"}\n');
+    res.end();
   });
 });
 
