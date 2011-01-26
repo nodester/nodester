@@ -14,5 +14,6 @@ exports.opt = {
   git_dom: 'testnodester.com',
   coupon_code: 'PlzCanIHazNodeJS',
   blocked_apps: ['www', 'api', 'support', 'dan'],
-  restart_key: 'KeepThisSecret'
+  restart_key: 'KeepThisSecret',
+  username: nodester
 };

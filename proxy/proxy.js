@@ -7,7 +7,8 @@ This app runs on port 80 and forwards traffic to the appropriate node app
 
 var httpProxy = require('http-proxy'),
     url = require('url'),
-    sys = require('sys');
+    sys = require('sys'),
+    daemontools = require('daemon-tools');
 
 var request = require('request');
 var h = {accept:'application/json', 'content-type':'application/json'};
@@ -53,6 +54,8 @@ httpProxy.createServer(function (req, res, proxy) {
   };
 }).listen(80);
 sys.puts('Nodester started on port 80');
+
+daemontools.setreuid_username(config.opt.username);
 
 process.on('uncaughtException', function (err) {
   console.log(err);
