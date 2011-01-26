@@ -3,6 +3,7 @@ Nodester - A node.js hosting platform
 Dependencies:
   node.js
   npm
+  curl
   node.js Modules:
     http-proxy
     express
