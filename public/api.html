@@ -182,11 +182,11 @@ License: Creative Commons Attribution
 				<a name="appnpm"></a>
 				<h3>APPNPM</h3>
 				<p><b>Install/Upgrade/Uninstall NPM Packages :: POST</b>
-				<br/>Base URL: http://api.bejes.us</p>
+				<br/>Base URL: http://api.nodester.com</p>
 				<code>/appnpm - Allows you to manage the NPM packages for an application.<br/>
-				curl -X POST  -u "testuser:123" -d "appname=a&action=install&package=express" http://api.bejes.us/appnpm<br/>
-				curl -X POST  -u "testuser:123" -d "appname=a&action=update&package=express" http://api.bejes.us/appnpm<br/>
-				curl -X POST  -u "testuser:123" -d "appname=a&action=uninstall&package=express" http://api.bejes.us/appnpm</code></p>
+				curl -X POST  -u "testuser:123" -d "appname=a&action=install&package=express" http://api.nodester.com/appnpm<br/>
+				curl -X POST  -u "testuser:123" -d "appname=a&action=update&package=express" http://api.nodester.com/appnpm<br/>
+				curl -X POST  -u "testuser:123" -d "appname=a&action=uninstall&package=express" http://api.nodester.com/appnpm</code></p>
 
 				<a name="git"></a>
 				<h3>GIT</h3>
@@ -198,7 +198,7 @@ License: Creative Commons Attribution
 				<p><b>git push nodester master</b></p>
 				<p>Also make sure that you update your project's port address with the new one assigned by Nodester.</p>
 				<p>Start your application.</p>
-				<p><b>curl -X POST -u "testuser:123" -d "appname=myapp&running=true" http://api.nodester.com/app</b></p>
+				<p><b>curl -X PUT -u "testuser:123" -d "appname=myapp&running=true" http://api.nodester.com/app</b></p>
 				<p><i>Don't worry you only need to start the application once, the next time you push it will automatically pick up the changes.</i></p>
 				<p><b>Visit your application via http://myapp.nodester.com</b></p>
 				<br/>
