@@ -56,7 +56,9 @@ Installation:
     sudo chmod +x /usr/local/bin/git-shell-enforce-directory
   Configure the app
     Copy nodester/example_config.js to nodester/config.js
-    Edit the CouchDB and coupon code settings in nodester/config.js
+    Edit the settings in nodester/config.js
+    Copy scripts/example_gitrepoclone.sh to scripts/gitrepoclone.sh
+    Update scripts/gitrepoclone.sh with the key you specified in config.js
   Setup the CouchDB tables
     node setup_couchdb.js
   Start up the proxy and main/api app
