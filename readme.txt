@@ -38,6 +38,14 @@ curl -X PUT -u "testuser:123" -d "appname=a&start=hello1.js" http://api.localhos
 /app - delete nodejs app (requires basic auth and appname)
 curl -X DELETE -u "testuser:123" -d "appname=test" http://api.localhost:8080/app
 
+/app - get nodejs app info (requires basic auth and appname)
+curl -u "testuser:123" http://api.localhost:8080/app/appname
+
+/apps - get all your apps info (requires basic auth)
+curl -u "testuser:123" http://api.localhost:8080/apps
+
+/appnpm - install, update and uninstall npm packages to your application
+curl -X POST -u "testuser:123" -d "appname=a&action=install&package=express" http://api.localhost:8080/appnpm
 
 Testing:
 Subdomains can be tested by editing /etc/hosts like this:
