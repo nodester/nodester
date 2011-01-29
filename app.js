@@ -44,16 +44,30 @@ myapp.get('/', function(req, res, next){
 // curl http://localhost:8080/status
 myapp.get('/status', function(req, res, next){
 
-  request({uri:couch_loc + 'nextport/port', method:'GET', headers:h}, function (err, response, body) {
-    var doc = JSON.parse(body);
-    try {
-      var appsrunning = (doc.address - 8000).toString();
-     } catch (e) {
-       var appsrunning = "0";
-     }
+   request({ method: 'GET', uri: couch_loc + 'apps/_design/nodeapps/_view/all', headers: h}, function (err, response, body) {  
+     var docs = JSON.parse(body);
+     if (docs) { // Maybe better error handling here
+     	var i;
+	 	var countrunning=0;
+     	for (i=0; i<docs.rows.length; i++) {
+			if (docs.rows[i].value.running == "true"){
+				countrunning++;
+			}
+		}
+	}
+
+
+  // request({uri:couch_loc + 'nextport/port', method:'GET', headers:h}, function (err, response, body) {
+  //   var doc = JSON.parse(body);
+  //   try {
+  //     var appsrunning = (doc.address - 8000).toString();
+  //    } catch (e) {
+  //      var appsrunning = "0";
+  //    }
     
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.write('{status : "up", appsrunning : "' +  appsrunning + '"}\n');
+    // res.write('{status : "up", appsrunning : "' +  appsrunning + '"}\n');
+    res.write('{status : "up", appshosted : "' + docs.rows.length.toString() + '", appsrunning : "' +  countrunning.toString() + '"}\n');
     res.end();
   });
 });
