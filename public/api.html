@@ -85,6 +85,7 @@ License: Creative Commons Attribution
                             <li><a href="#status">API Status</a></li>
                             <li><a href="#userapi">User Resource</a></li>
                             <li><a href="#app">App Resource</a></li>
+                            <li><a href="#appnpm">App NPM Resource</a></li>
                             <li><a href="#git">Git Resources</a></li>
                         </ul>
 
@@ -150,22 +151,22 @@ License: Creative Commons Attribution
 				<p><b>Create Application :: POST</b>
 				<br/>Base URL: http://api.nodester.com</p>
 
-				<code>/apps - create nodejs app for hosting (requires basic auth and returns the port address required for use along with a git repo to push to)<br/><br/>
+				<code>/app - create nodejs app for hosting (requires basic auth and returns the port address required for use along with a git repo to push to)<br/><br/>
 				curl -X POST -u "testuser:123" -d "appname=a&start=hello.js" http://api.nodester.com/app</code>
 
 				<p><b>Change Application :: PUT</b>
 					<br/>Base URL: http://api.nodester.com</p>
 
-				<code>/apps - update nodejs app for hosting (requires basic auth, appname, and starting page and returns the port address required for use along with a git repo to push to)<br/><br/>
+				<code>/app - update starting app name (requires basic auth, appname, and starting page and returns the port address required for use along with a git repo to push to and running status of the app)<br/><br/>
 				curl -X PUT -u "testuser:123" -d "appname=a&start=hello1.js" http://api.nodester.com/app</code>
-				
-				<code>/apps - start and stop your hosted nodejs app (requires basic auth, appname, and running=true|false and returns the port address required for use along with a git repo to push to)<br/><br/>
+				<p>- or - </p>
+				<code>/app - start and stop your hosted nodejs app (requires basic auth, appname, and running=true|false and returns the port address required for use along with a git repo to push to)<br/><br/>
 				curl -X PUT -u "testuser:123" -d "appname=a&running=true" http://api.nodester.com/app</code>
 
 				<p><b>Delete Application :: DELETE</b>
 					<br/>Base URL: http://api.nodester.com</p>
 
-				<code>/apps - delete nodejs app (requires basic auth and appname)<br/> <br/>
+				<code>/app - delete nodejs app (requires basic auth and appname)<br/> <br/>
 				curl -X DELETE -u "testuser:123" -d "appname=test" http://api.nodester.com/app</code>
 
 				<p><b>Application Information :: GET</b>
@@ -183,9 +184,9 @@ License: Creative Commons Attribution
 				<h3>APPNPM</h3>
 				<p><b>Install/Upgrade/Uninstall NPM Packages :: POST</b>
 				<br/>Base URL: http://api.nodester.com</p>
-				<code>/appnpm - Allows you to manage the NPM packages for an application.<br/>
-				curl -X POST  -u "testuser:123" -d "appname=a&action=install&package=express" http://api.nodester.com/appnpm<br/>
-				curl -X POST  -u "testuser:123" -d "appname=a&action=update&package=express" http://api.nodester.com/appnpm<br/>
+				<code>/appnpm - Allows you to manage the NPM packages for an application.<br/><br/>
+				curl -X POST  -u "testuser:123" -d "appname=a&action=install&package=express" http://api.nodester.com/appnpm<br/><br/>
+				curl -X POST  -u "testuser:123" -d "appname=a&action=update&package=express" http://api.nodester.com/appnpm<br/><br/>
 				curl -X POST  -u "testuser:123" -d "appname=a&action=uninstall&package=express" http://api.nodester.com/appnpm</code></p>
 
 				<a name="git"></a>
