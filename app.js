@@ -378,7 +378,7 @@ myapp.get('/app_restart', function(req, res, next) {
 // Delete your nodejs app 
 // curl -X DELETE -u "testuser:123" -d "appname=test" http://api.localhost:8080/apps
 myapp.delete('/app', function(req, res, next){
-  var appname = req.param("appname");
+  var appname = req.param("appname").toLowerCase();
   authenticate_app(req.headers.authorization, appname, res, function (user, app) {
     request({uri: couch_loc + 'apps/' + appname + '?rev=' + app._rev, method:'DELETE', headers: h}, function (err, response, body) {
       // Error checking oO
@@ -393,7 +393,7 @@ myapp.delete('/app', function(req, res, next){
 // http://chris:123@api.localhost:8080/app/<appname>
 // curl -u "testuser:123" http://api.localhost:8080/app/<appname>
 myapp.get('/app/:appname', function(req, res, next){
-  var appname = req.param("appname");
+  var appname = req.param("appname").toLowerCase();
   authenticate_app(req.headers.authorization, appname, res, function (user, app) {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.write('{status : "success", port : "' + app.port + '", gitrepo : "' + config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + app.username + '/' + app.repo_id + '.git", start: "' + app.start + '", running: ' + app.running + ', pid: ' + app.pid + '}\n');
@@ -406,19 +406,21 @@ myapp.get('/app/:appname', function(req, res, next){
 // curl -u "testuser:123" http://api.localhost:8080/apps
 myapp.get('/apps', function(req, res, next){
   authenticate(req.headers.authorization, res, function (user) {
-    request({ method: 'GET', uri: couch_loc + 'apps/' + '/_design/nodeapps/_view/all', headers: h}, function (err, response, body) {  
+    request({ method: 'GET', uri: couch_loc + 'apps/_design/nodeapps/_view/all', headers: h}, function (err, response, body) {  
       var docs = JSON.parse(body);
       if (docs) { // Maybe better error handling here
         var apps = [];
         var i;
         for (i=0; i<docs.rows.length; i++) {
-          apps[i] =
-            {port: docs.rows[i].value.port
-            , gitrepo: config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + docs.rows[i].value.username + '/' + docs.rows[i].value.repo_id + '.git'
-            , start: docs.rows[i].value.start
-            , running: docs.rows[i].value.running
-            , pid: docs.rows[i].value.pid };
-        }
+		  if (user._id == docs.rows[i].value.username){ // Only return apps for the user requesting
+	          apps[i] =
+	            {port: docs.rows[i].value.port
+	            , gitrepo: config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + docs.rows[i].value.username + '/' + docs.rows[i].value.repo_id + '.git'
+	            , start: docs.rows[i].value.start
+	            , running: docs.rows[i].value.running
+	            , pid: docs.rows[i].value.pid };
+	        }
+		}
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.write(JSON.stringify(apps));
         res.end();
@@ -441,7 +443,7 @@ myapp.post('/test', function(req, res, next) {
 });
 
 myapp.post('/appnpm', function(req, res, next) {
-  var appname = req.param("appname");
+  var appname = req.param("appname").toLowerCase();
   var action = req.param("action");
   var package = req.param("package");
   authenticate_app(req.headers.authorization, appname, res, function (user, app) {
