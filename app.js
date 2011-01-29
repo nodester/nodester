@@ -177,7 +177,7 @@ myapp.post('/app', function(req, res, next) {
   var user
   authenticate(req.headers.authorization, res, function(user) {
     if(user) {
-      var appname = req.param("appname");
+      var appname = req.param("appname").toLowerCase();
       var start = req.param("start");
       request({uri:couch_loc + 'apps/' + appname, method:'GET', headers:h}, function (err, response, body) {
         var myObject = JSON.parse(body);
@@ -230,7 +230,7 @@ myapp.post('/app', function(req, res, next) {
 // curl -X PUT -u "testuser:123" -d "appname=test&running=restart" http://api.localhost:8080/app
 // TODO - Fix this function, it's not doing callbacking properly so will return JSON in the wrong state!
 myapp.put('/app', function(req, res, next){
-  var appname = req.param("appname");
+  var appname = req.param("appname").toLowerCase();
   authenticate_app(req.headers.authorization, appname, res, function (user, app) {
     var start = req.param("start");
     var running = req.param("running");

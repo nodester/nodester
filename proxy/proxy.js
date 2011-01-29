@@ -21,7 +21,7 @@ if (config.opt.couch_prefix.length > 0) {
 
 httpProxy.createServer(function (req, res, proxy) {  
   var hostname = req.headers.host;
-  var subdomain = hostname.substring(0,hostname.indexOf("."));
+  var subdomain = hostname.toLowerCase().substring(0,hostname.indexOf("."));
   if (hostname.indexOf("nodefu") != -1) {
     res.writeHead(301, {'Content-Type': 'text/plain', 'Location': 'http://nodester.com'});
     res.end();
