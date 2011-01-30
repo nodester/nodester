@@ -55,7 +55,7 @@ httpProxy.createServer(function (req, res, proxy) {
 }).listen(80);
 sys.puts('Nodester started on port 80');
 
-daemontools.setreuid_username(config.opt.username);
+// daemontools.setreuid_username(config.opt.username);
 
 process.on('uncaughtException', function (err) {
   console.log(err);
