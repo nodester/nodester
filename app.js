@@ -42,32 +42,23 @@ myapp.get('/', function(req, res, next){
 // Status API
 // http://localhost:8080/status 
 // curl http://localhost:8080/status
-myapp.get('/status', function(req, res, next){
-
-   request({ method: 'GET', uri: couch_loc + 'apps/_design/nodeapps/_view/all', headers: h}, function (err, response, body) {  
-     var docs = JSON.parse(body);
-     if (docs) { // Maybe better error handling here
-     	var i;
-	 	var countrunning=0;
-     	for (i=0; i<docs.rows.length; i++) {
-			if (docs.rows[i].value.running == "true"){
-				countrunning++;
-			}
-		}
-	}
-
-
-  // request({uri:couch_loc + 'nextport/port', method:'GET', headers:h}, function (err, response, body) {
-  //   var doc = JSON.parse(body);
-  //   try {
-  //     var appsrunning = (doc.address - 8000).toString();
-  //    } catch (e) {
-  //      var appsrunning = "0";
-  //    }
-    
+myapp.get('/status', function(req, res, next) {
+  request({ method: 'GET', uri: couch_loc + 'apps/_design/nodeapps/_view/all', headers: h}, function (err, response, body) {
+    var docs = JSON.parse(body);
+    var hostedapps = 0;
+    var countrunning = 0;
+    if (docs) { // Maybe better error handling here
+      var i;
+      for (i=0; i<docs.rows.length; i++) {
+        if (docs.rows[i].value.running == "true"){
+          countrunning++;
+        }
+      }
+      hostedapps = docs.rows.length.toString();
+    }
+    countrunning = countrunning.toString();
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    // res.write('{status : "up", appsrunning : "' +  appsrunning + '"}\n');
-    res.write('{status : "up", appshosted : "' + docs.rows.length.toString() + '", appsrunning : "' +  countrunning.toString() + '"}\n');
+    res.write('{"status" : "up", "appshosted" : "' + hostedapps + '", "appsrunning" : "' + countrunning + '"}\n');
     res.end();
   });
 });
@@ -77,12 +68,17 @@ myapp.get('/status', function(req, res, next){
 myapp.post('/coupon', function(req, res, next) {
 
   var email = req.param("email");  
-  request({uri:couch_loc + "coupons", method:'POST', body: JSON.stringify({_id: email}), headers:h}, function (err, response, body) {
-  });
-
-  res.writeHead(200, { 'Content-Type': 'application/json' });
-  res.write('{status : "success - you are now in queue to receive an invite on our next batch!"}\n');
-  res.end();
+  if (typeof email != 'undefined') {
+    request({uri:couch_loc + "coupons", method:'POST', body: JSON.stringify({_id: email}), headers:h}, function (err, response, body) {
+    });
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.write(JSON.stringify({status: "success - you are now in queue to receive an invite on our next batch!"}) + "\n");
+    res.end();
+  } else {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.write(JSON.stringify({status: "failure - please try again shortly!"}) + "\n");
+    res.end();
+  }
 
 });
 
@@ -105,12 +101,12 @@ myapp.post('/user', function(req, res, next){
       if (doc._id){
         // account already registered
         res.writeHead(400, { 'Content-Type': 'application/json' });
-        res.write('{status : "failure - account exists"}\n');
+        res.write('{"status": "failure - account exists"}\n');
         res.end();
       } else {
         if (typeof rsakey == 'undefined') {
           res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.write('{status : "failure - rsakey is invalid"}\n');
+          res.write('{"status": "failure - rsakey is invalid"}\n');
           res.end();
         } else {
           stream = fs.createWriteStream(config.opt.home_dir + '/.ssh/authorized_keys', {
@@ -127,7 +123,7 @@ myapp.post('/user', function(req, res, next){
           });
 
           res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.write('{status : "success"}\n');
+          res.write('{"status": "success"}\n');
           res.end();
         }
       }
@@ -135,7 +131,7 @@ myapp.post('/user', function(req, res, next){
 
   } else {
     res.writeHead(500, { 'Content-Type': 'application/json' });
-    res.write('{status : "failure - invalid coupon"}\n');
+    res.write('{"status": "failure - invalid coupon"}\n');
     res.end();
   };
 
@@ -163,7 +159,7 @@ myapp.put('/user', function(req, res, next) {
       stream.end();
     };
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.write('{status : "success"}\n');
+    res.write('{"status" : "success"}\n');
     res.end();
   });
 });
@@ -180,7 +176,7 @@ myapp.delete('/user', function(req, res, next) {
     });
 
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.write('{status : "success"}\n');
+    res.write('{"status" : "success"}\n');
     res.end();
   });
 });
@@ -198,7 +194,7 @@ myapp.post('/app', function(req, res, next) {
         if (myObject._id){
           // subdomain already exists
           res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.write('{status : "failure - appname exists"}\n');
+          res.write('{"status" : "failure - appname exists"}\n');
           res.end();
         } else {
           // subdomain available - get next available port address
@@ -223,7 +219,8 @@ myapp.post('/app', function(req, res, next) {
                 var gitsetup = spawn(config.opt.app_dir + '/scripts/gitreposetup.sh', [config.opt.app_dir, config.opt.home_dir + '/' + config.opt.hosted_apps_subdir, user._id, repo_id, start]);
                 // Respond to API request
                 res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.write('{status : "success", port : "' + appport + '", gitrepo : "' + config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + user._id  + '/' + repo_id + '.git", start: "' + start + '", running: false, pid: "unknown"}\n');
+                // res.write('{"status" : "success", "port" : "' + appport + '", "gitrepo" : "' + config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + user._id  + '/' + repo_id + '.git", "start": "' + start + '", "running": false, "pid": "unknown"}\n');
+                res.write(JSON.stringify({status: "success", port: appport, gitrepo: config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + user._id + '/' + repo_id + '.git', start: start, running: false, pid: "unknown"}) + "\n");
                 res.end();
               });
             });
@@ -250,6 +247,9 @@ myapp.put('/app', function(req, res, next){
     var running = req.param("running");
     var app_user_home = config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + app.username;
     var app_home = app_user_home + '/' + app.repo_id;
+    if (typeof start == 'undefined') {
+      start = app.start;
+    }
     if (running == 'true') {
       // start the app
       if (app.running == 'true') {
@@ -262,6 +262,11 @@ myapp.put('/app', function(req, res, next){
           } else {
             running = 'true';
           }
+          request({uri:couch_loc + 'apps/' + appname, method:'PUT', body: JSON.stringify({_id: appname, _rev: app._rev, start: start, port: app.port, username: user._id, repo_id: app.repo_id, running: running, pid: 'unknown' }), headers: h}, function (err, response, body) {
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.write(JSON.stringify({status: "success", port: app.port, gitrepo: config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + app.username + '/' + app.repo_id + '.git', start: start, running: running, pid: app.pid}) + "\n");
+            res.end();
+          });
         });
       }
     } else if (running == 'false' || running == 'restart') {
@@ -275,6 +280,11 @@ myapp.put('/app', function(req, res, next){
         app_stop(app.repo_id, function (rv) {
           if (rv == false) {
             running = 'error-stopping';
+            request({uri:couch_loc + 'apps/' + appname, method:'PUT', body: JSON.stringify({_id: appname, _rev: app._rev, start: start, port: app.port, username: user._id, repo_id: app.repo_id, running: running, pid: 'unknown' }), headers: h}, function (err, response, body) {
+              res.writeHead(200, { 'Content-Type': 'application/json' });
+              res.write(JSON.stringify({status: "success", port: app.port, gitrepo: config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + app.username + '/' + app.repo_id + '.git', start: start, running: running, pid: app.pid}) + "\n");
+              res.end();
+            });
           } else {
             if (running == 'restart') {
               app_start(app.repo_id, function (rv) {
@@ -283,6 +293,17 @@ myapp.put('/app', function(req, res, next){
                 } else {
                   running = 'true';
                 }
+                request({uri:couch_loc + 'apps/' + appname, method:'PUT', body: JSON.stringify({_id: appname, _rev: app._rev, start: start, port: app.port, username: user._id, repo_id: app.repo_id, running: running, pid: 'unknown' }), headers: h}, function (err, response, body) {
+                  res.writeHead(200, { 'Content-Type': 'application/json' });
+                  res.write(JSON.stringify({status: "success", port: app.port, gitrepo: config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + app.username + '/' + app.repo_id + '.git', start: start, running: running, pid: app.pid}) + "\n");
+                  res.end();
+                });
+              });
+            } else {
+              request({uri:couch_loc + 'apps/' + appname, method:'PUT', body: JSON.stringify({_id: appname, _rev: app._rev, start: start, port: app.port, username: user._id, repo_id: app.repo_id, running: running, pid: 'unknown' }), headers: h}, function (err, response, body) {
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.write(JSON.stringify({status: "success", port: app.port, gitrepo: config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + app.username + '/' + app.repo_id + '.git', start: start, running: running, pid: app.pid}) + "\n");
+                res.end();
               });
             }
           }
@@ -291,17 +312,12 @@ myapp.put('/app', function(req, res, next){
     } else {
       cmd = "blank";
       running = app.running;
+      request({uri:couch_loc + 'apps/' + appname, method:'PUT', body: JSON.stringify({_id: appname, _rev: app._rev, start: start, port: app.port, username: user._id, repo_id: app.repo_id, running: running, pid: 'unknown' }), headers: h}, function (err, response, body) {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.write(JSON.stringify({status: "success", port: app.port, gitrepo: config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + app.username + '/' + app.repo_id + '.git', start: start, running: running, pid: app.pid}) + "\n");
+        res.end();
+      });
     }
-    if (typeof start == 'undefined') {
-      start = app.start;
-    }
-    // update the app
-    request({uri:couch_loc + 'apps/' + appname, method:'PUT', body: JSON.stringify({_id: appname, _rev: app._rev, start: start, port: app.port, username: user._id, repo_id: app.repo_id, running: running, pid: 'unknown' }), headers: h}, function (err, response, body) {
-      // Respond to API request
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.write('{status : "success", port : "' + app.port + '", gitrepo : "' + config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + app.username + '/' + app.repo_id + '.git", start: "' + start + '", running: ' + running + ', pid: ' + app.pid + '}\n');
-      res.end();
-    });
   });
 });
 
@@ -343,6 +359,7 @@ var app_start = function (repo_id, callback) {
           callback(false);
         } else {
           var cmd = "sudo " + config.opt.app_dir + '/scripts/launch_app.sh ' + config.opt.app_dir + ' ' + user_home + ' ' + app.repo_id + ' ' + app.start;
+          sys.puts(cmd);
           var child = exec(cmd, function (error, stdout, stderr) {});
           callback(true);
         }
@@ -398,7 +415,7 @@ myapp.delete('/app', function(req, res, next){
       // Error checking oO
     });
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.write('{status : "success"}\n');
+    res.write('{"status" : "success"}\n');
     res.end();
   });
 });
@@ -410,7 +427,8 @@ myapp.get('/app/:appname', function(req, res, next){
   var appname = req.param("appname").toLowerCase();
   authenticate_app(req.headers.authorization, appname, res, function (user, app) {
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.write('{status : "success", port : "' + app.port + '", gitrepo : "' + config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + app.username + '/' + app.repo_id + '.git", start: "' + app.start + '", running: ' + app.running + ', pid: ' + app.pid + '}\n');
+    // res.write('{"status" : "success", port : "' + app.port + '", gitrepo : "' + config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + app.username + '/' + app.repo_id + '.git", start: "' + app.start + '", running: ' + app.running + ', pid: ' + app.pid + '}\n');
+    res.write(JSON.stringify({status: "success", port: app.port, gitrepo: config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + app.username + '/' + app.repo_id + '.git', start: app.start, running: app.running, pid: app.pid}) + "\n");
     res.end();
   });
 }); 
@@ -420,27 +438,29 @@ myapp.get('/app/:appname', function(req, res, next){
 // curl -u "testuser:123" http://api.localhost:8080/apps
 myapp.get('/apps', function(req, res, next){
   authenticate(req.headers.authorization, res, function (user) {
-    request({ method: 'GET', uri: couch_loc + 'apps/_design/nodeapps/_view/all', headers: h}, function (err, response, body) {  
+    request({ method: 'GET', uri: couch_loc + 'apps/' + '/_design/nodeapps/_view/all', headers: h}, function (err, response, body) {  
       var docs = JSON.parse(body);
       if (docs) { // Maybe better error handling here
         var apps = [];
         var i;
         for (i=0; i<docs.rows.length; i++) {
-		  if (user._id == docs.rows[i].value.username){ // Only return apps for the user requesting
-	          apps[i] =
-	            {port: docs.rows[i].value.port
-	            , gitrepo: config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + docs.rows[i].value.username + '/' + docs.rows[i].value.repo_id + '.git'
-	            , start: docs.rows[i].value.start
-	            , running: docs.rows[i].value.running
-	            , pid: docs.rows[i].value.pid };
-	        }
-		}
+          if (user._id == docs.rows[i].value.username) {
+            apps.push({
+              name: docs.rows[i].id
+            , port: docs.rows[i].value.port
+            , gitrepo: config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + docs.rows[i].value.username + '/' + docs.rows[i].value.repo_id + '.git'
+            , start: docs.rows[i].value.start
+            , running: docs.rows[i].value.running
+            , pid: docs.rows[i].value.pid
+            });
+          }
+        }
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.write(JSON.stringify(apps));
         res.end();
       } else {
         res.writeHead(404, { 'Content-Type': 'application/json' });
-        res.write('{status : "failure - applications not found"}');
+        res.write('{"status" : "failure - applications not found"}');
         res.end();
       }
     });
@@ -476,11 +496,12 @@ myapp.post('/appnpm', function(req, res, next) {
 
     if(good_action === true) {
       var app_user_home = config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + user._id + '/' + app.repo_id;
+      sys.puts(action + " " + package + " into " + app_user_home);
       var n = new npmwrapper();
       n.setup(app_user_home + '/.node_libraries', app_user_home + '/.npm_bin', app_user_home + '/.npm_man', action, package);
       n.run(function (output) {
         res.writeHead(200, {'Content-Type': 'application/json'});
-        res.write(JSON.stringify({status: 'finished', output: output}) + '\n');
+        res.write(JSON.stringify({"status": 'success', output: output}) + '\n');
         res.end();
       });
     } else {
@@ -489,6 +510,26 @@ myapp.post('/appnpm', function(req, res, next) {
       res.end();
     }
   });
+});
+
+myapp.get('/unsent', function (req, res, next) {
+//  authenticate(req.headers.authorization, res, function(user) {
+//    if (user._id == 'dan') {
+      request({uri:couch_loc + 'coupons/_design/coupons/_view/unsent', method:'GET', headers:h}, function (err, response, body) {
+        var doc = JSON.parse(body);
+        var buff = "";
+        for(var i in doc.rows) {
+          // sys.puts(doc.rows[i].id);
+          buff += doc.rows[i].id + '\n';
+        }
+        res.writeHead(200, {'Content-Type': 'text/plain'});
+        res.end(buff);
+      });
+//    } else {
+//      res.writeHead(401, { 'Content-Type': 'application/json' });
+//      res.end('{"status" : "failure - authentication"}\n');
+//    }
+//  });
 });
 
 var authenticate_app = function (auth_infos, appname, res, callback) {
@@ -500,12 +541,12 @@ var authenticate_app = function (auth_infos, appname, res, callback) {
           callback(user, doc);
         } else {
           res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end('{status : "failure - app not found"}\n');
+          res.end('{"status" : "failure - app not found"}\n');
         }
       });
     } else {
       res.writeHead(400, { 'Content-Type': 'application/json' });
-      res.end('{status : "failure - authentication"}\n');
+      res.end('{"status" : "failure - authentication"}\n');
     }
   });
 };
@@ -515,6 +556,7 @@ myapp.listen(4001);
 console.log('Nodester app started on port 4001');
 
 function authenticate(basicauth, res, callback) {
+  if (typeof basicauth != 'undefined' && basicauth.length > 0) {
   var creds = base64_decode(basicauth.substring(basicauth.indexOf(" ") + 1 ));
   var username = creds.substring(0,creds.indexOf(":"));
   var password = creds.substring(creds.indexOf(":")+1);
@@ -527,15 +569,20 @@ function authenticate(basicauth, res, callback) {
     } else {
       // basic auth didn't match account
       res.writeHead(400, { 'Content-Type': 'application/json' });
-      res.write('{status : "failure - authentication"}\n');
+      res.write('{"status" : "failure - authentication"}\n');
       res.end();
     }
   });
+  } else {
+      res.writeHead(401, { 'Content-Type': 'application/json' });
+      res.write('{"status" : "failure - authentication"}\n');
+      res.end();
+  }
 };
 
 var res_error = function (res, code, message) {
   res.writeHead(code, { 'Content-Type': 'application/json' });
-  res.write('{status : "' + message + '"}\n');
+  res.write('{"status" : "' + message + '"}\n');
   res.end();
 };
 
