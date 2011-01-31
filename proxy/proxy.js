@@ -27,12 +27,7 @@ httpProxy.createServer(function (req, res, proxy) {
     res.end();
   } else if (hostname == config.opt.api_dom) {
     // API Domain
-    if(req.headers.authorization == undefined) {
-      res.writeHead(401, {'Content-Type': 'text/plain', 'WWW-Authenticate': 'Basic'});
-      res.end('password?\n');
-    } else {
-      proxy.proxyRequest(4001, '127.0.0.1');
-    };
+    proxy.proxyRequest(4001, '127.0.0.1');
   } else if (hostname != config.opt.tl_dom && subdomain != '' && subdomain != 'www' && hostname != '127.0.0.1') {
     request({uri:couch_loc + 'apps/' + subdomain, method:'GET', headers:h}, function (err, response, body) {
       var doc = JSON.parse(body);	
