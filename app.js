@@ -494,9 +494,20 @@ myapp.post('/appnpm', function(req, res, next) {
         break;
     }
 
+    (function(){
     if(good_action === true) {
       var app_user_home = config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + user._id + '/' + app.repo_id;
       sys.puts(action + " " + package + " into " + app_user_home);
+      var cmd = 'npm ' + action + ' ' + package + ' --root ' + app_user_home + '/.node_libraries --binroot ' + app_user_home + '/.npm_bin --manpath ' + app_user_home + '/.npm_man';
+      var pr = exec(cmd, function (err, stdout, stderr) {
+        var rtv = "stdout: " + stdout + "\nstderr: " + stderr;
+        res.writeHead(200, {'Content-Type': 'application/json'});
+        res.write(JSON.stringify({"status": 'success', output: rtv}) + '\n');
+        res.end();
+      });
+/*
+      Why oh why doesn't this work.. Still the code above is, so that's good for me!
+      var app_user_home = config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + user._id + '/' + app.repo_id;
       var n = new npmwrapper();
       n.setup(app_user_home + '/.node_libraries', app_user_home + '/.npm_bin', app_user_home + '/.npm_man', action, package);
       n.run(function (output) {
@@ -504,11 +515,13 @@ myapp.post('/appnpm', function(req, res, next) {
         res.write(JSON.stringify({"status": 'success', output: output}) + '\n');
         res.end();
       });
+*/
     } else {
       res.writeHead(400, {'Content-Type': 'application/json'});
       res.write('{"status": "failure - invalid action parameter"}\n');
       res.end();
     }
+    })();
   });
 });
 
