@@ -45,10 +45,12 @@ License: Creative Commons Attribution
 				<input type="password" name="password" id="password" value="" /><br />
 				<label for="email">Email:</label>
 				<input type="text" name="email" id="email" value="" /><br />
-				<label for="rsakey">Public RSA Key:<br/>
-					(Copy & Paste RSA key from command line:<br/>"cat ~/.ssh/id_rsa.pub | pbcopy"<br/>Ensure that all + in the ssh key are substituted with %2B or else your key will break.)
-					</label>
-				<textarea cols="60" rows="8" name="rsakey" id="rsakey"></textarea><br />
+				<label for="rsakey">Public RSA Key:</label>
+				<textarea cols="60" rows="8" name="rsakey" id="rsakey">
+Copy & Paste RSA key from command line: 
+"cat ~/.ssh/id_rsa.pub | pbcopy"
+					
+Ensure that all + in the ssh key are substituted with %2B or else your key will break.</textarea><br />
 				<input type="submit" name="send" class="formbutton" value="Send" />
 			</form>
 
@@ -86,6 +88,7 @@ License: Creative Commons Attribution
                             <li><a href="#userapi">User Resource</a></li>
                             <li><a href="#app">App Resource</a></li>
                             <li><a href="#appnpm">App NPM Resource</a></li>
+                            <li><a href="#clicommands">CLI Commands</a></li>
                             <li><a href="#git">Git Resources</a></li>
                         </ul>
 
@@ -113,7 +116,7 @@ License: Creative Commons Attribution
 			</div>
 			<div id="content" class="column-right">
                 <h2>REST API</h2>
-                <p>We do not currently have a full featured website as we are focusing on the API and the service. We are currently running Node v.0.3.7 and we support Node.JS sandboxing of your apps which means that you can install your own NPM modules using our APPNPM API! Git is required to push your updates to Nodester. All we ask is that you be a good steward of our service and community.</p>	
+                <p>We do not currently have a full featured website as we are focusing on the API and the service. We are currently running the "stable" version of Node v.0.2.6 and we support Node.JS sandboxing of your apps which means that you can install your own NPM modules using our APPNPM API! Git is required to push your updates to Nodester. All we ask is that you be a good steward of our service and community.</p>	
 
 				<a name="couponapi"></a>
 				<h3>COUPON</h3>
@@ -175,6 +178,7 @@ License: Creative Commons Attribution
 				<code>/app/<appname> - get nodejs app info (requires basic auth and appname)<br/> <br/>
 				curl -u "testuser:123"  http://api.nodester.com/app/appname</code>
 
+				<h3>APPS</h3>
 				<p><b>All Applications Information :: GET</b>
 				<br/>Base URL: http://api.nodester.com</p>
 				<code>/apps<appname> - get all nodejs app info(requires basic auth)<br/> <br/>
@@ -189,6 +193,33 @@ License: Creative Commons Attribution
 				curl -X POST  -u "testuser:123" -d "appname=a&action=update&package=express" http://api.nodester.com/appnpm<br/><br/>
 				curl -X POST  -u "testuser:123" -d "appname=a&action=uninstall&package=express" http://api.nodester.com/appnpm</code></p>
 
+				<a name="clicommands"></a>
+				<h3>CLI Commands</h3>
+				<p>You can install our Command Line Interface by running "npm install nodester-cli"</p>
+				<code>
+					nodester &lt;command&gt; &lt;param1&gt; &lt;param2&gt;<br/><br/>
+
+					Commands are:<br/>
+					nodester coupon &lt;email address&gt;<br/>
+					nodester user create &lt;username&gt; &lt;password&gt; &lt;email address&gt; &lt;file containing ssh public key&gt; &lt;coupon code&gt;<br/>
+					nodester user setup &lt;username&gt; &lt;password&gt;<br/><br/>
+
+					The commands below require you to have run 'user setup' before/<br/>
+					nodester user setpass &lt;new password&gt;<br/><br/>
+					You should run user setup after running setpass.<br/>
+					nodester user setkey &lt;file containing ssh public key&gt;<br/>
+					nodester apps list<br/>
+					nodester app create &lt;app-name&gt; &lt;initial js file&gt;<br/>
+					nodester app info &lt;app-name&gt;<br/>
+					nodester app start &lt;app-name&gt;<br/>
+					nodester app restart &lt;app-name&gt;<br/>
+					nodester app stop &lt;app-name&gt;<br/>
+					nodester appnpm install &lt;app-name&gt; &lt;package name&gt;<br/>
+					nodester appnpm upgrade &lt;app-name&gt; &lt;package name&gt;<br/>
+					nodester appnpm uninstall &lt;app-name&gt; &lt;package name&gt;<br/>
+					
+				</code>
+
 				<a name="git"></a>
 				<h3>GIT</h3>
 				<p>Deploying and updating your Node.js application is simple.</p>
@@ -200,7 +231,7 @@ License: Creative Commons Attribution
 				<p>Also make sure that you update your project's port address with the new one assigned by Nodester.</p>
 				<p>Start your application.</p>
 				<p><b>curl -X PUT -u "testuser:123" -d "appname=myapp&running=true" http://api.nodester.com/app</b></p>
-				<p><i>Don't worry you only need to start the application once, the next time you push it will automatically pick up the changes.</i></p>
+				<p><i>Don't worry :) You only need to start the application once. Subsequent git pushes will automatically pick up your changes and restart.</i></p>
 				<p><b>Visit your application via http://myapp.nodester.com</b></p>
 				<br/>
 
