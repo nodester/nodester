@@ -35,7 +35,7 @@ License: Creative Commons Attribution
 <body>
 	 
 	<div id="hiddenModalContent" style="display:none"> 
-		<h3>Did you get your coupon code? - <a href="#" onclick="tb_remove()">No?</a></p></h3>
+		<h3>Did you get your coupon code? <a href="#" onclick="tb_remove()">I wish!</a></p></h3>
 		<fieldset>
 
 			<form action="http://www.nodester.com/user" method="post">
@@ -47,10 +47,12 @@ License: Creative Commons Attribution
 				<input type="password" name="password" id="password" value="" /><br />		
 				<label for="email">Email:</label>
 				<input type="text" name="email" id="email" value="" /><br />
-				<label for="rsakey">Public RSA Key:<br/>
-					(Copy & Paste RSA key from command line:<br/>"cat ~/.ssh/id_rsa.pub | pbcopy"<br/>Ensure that all + in the ssh key are substituted with %2B or else your key will break.)
-					</label>	
-				<textarea cols="60" rows="8" name="rsakey" id="rsakey"></textarea><br />
+				<label for="rsakey">Public RSA Key:</label>
+				<textarea cols="60" rows="8" name="rsakey" id="rsakey">
+Copy & Paste RSA key from command line: 
+"cat ~/.ssh/id_rsa.pub | pbcopy"
+
+Ensure that all + in the ssh key are substituted with %2B or else your key will break.</textarea><br />
 				<input type="submit" name="send" class="formbutton" value="Send" />
 			</form>
 
@@ -97,6 +99,7 @@ License: Creative Commons Attribution
                             <li><a href="/api.html#userapi">User Resource</a></li>
                             <li><a href="/api.html#app">App Resource</a></li>
                             <li><a href="/api.html#appnpm">App NPM Resource</a></li>
+                            <li><a href="/api.html#clicommands">CLI Commands</a></li>
                             <li><a href="/api.html#git">Git Resources</a></li>
                         </ul>
 
@@ -124,28 +127,38 @@ License: Creative Commons Attribution
 			</div>
 			<div id="content" class="column-right"><br/>
                 <h2>Welcome to Nodester!</h2>
-                <p>We do not currently have a full featured website as we are focusing on the API and the service. We are currently running Node v.0.3.7 and we support Node.JS sandboxing of your apps which means that you can install your own NPM modules using our APPNPM API! Git is required to push your updates to Nodester. All we ask is that you be a good steward of our service and community.</p>	
+                <p>We do not currently have a full featured website as we are focusing on the API and the service. We are currently running the "stable" version of Node v.0.2.6 and we support Node.JS sandboxing of your apps which means that you can install your own NPM modules using our APPNPM API! Git is required to push your updates to Nodester. All we ask is that you be a good steward of our service and community.</p>	
 
 				<!-- <p><a href="#TB_inline?height=600&width=850&inlineId=hiddenVideoContent&modal=true" class="thickbox"><img src="/images/video.jpg"></a></p> -->
-
-                <h3>How do I sign-up? Request a coupon via cURL and get on our list!</h3>
-				<code>curl -X POST -d "email=your_address@gmail.com" http://nodester.com/coupon</code>
-
-				<h3>Deployment is Easy - Create, Git Push, & Run!</h3> 
-				<ol>
-					<li> curl -X POST -u "testuser:123" -d "appname=myapp&start=hello.js" http://api.nodester.com/app</li>
-					<li> git remote add nodester the_url_returned_by_our_api</li>
-					<li> git push nodester master</li>
-					<li> NPM modules? <br/>curl -X POST -u "testuser:123" -d "appname=myapp&action=install&package=express" http://api.nodester.com/appnpm</li>
-					<li> curl -X PUT -u "testuser:123" -d "appname=myapp&running=true" http://api.nodester.com/app</li>
-				</ol>
-				<code><b>Visit your app at http://myapp.nodester.com</b></code>
-				<p><i>Don't worry you only need to start the application once, the next time you push it will automatically pick up the changes. You can always stop it as well.</i></p>
+				
 				<h3>Check out our new Command Line Interface (CLI)!</h3>
 				<ol>
 				<li>npm install nodester-cli</li>
 				<li>type "nodester" to see a list of command uses</li>
 				</ol>
+
+                <h3>Request a coupon via CLI or cURL to get on our invite list!</h3>
+				<code>nodester coupon your_address@gmail.com</code>
+				<p>- OR -</p>				
+				<code>curl -X POST -d "email=your_address@gmail.com" http://nodester.com/coupon</code>
+
+				<h3>Deployment is Easy - Create, Git Push, & Run!</h3> 
+				<p>Remember to update your application's port address with the port address that we assign your application when you create it in step one.</p>
+				<code>
+					nodester app create myapp hello.js<br/><br/>
+					git remote add nodester the_url_returned_by_our_api and git push nodester master<br/><br/>
+					<b>NPM modules?</b> nodester appnpm install express<br/><br/>
+					nodester app start myapp
+				</code>
+				<p>- OR -</p>
+				<code>
+					curl -X POST -u "testuser:123" -d "appname=myapp&start=hello.js" http://api.nodester.com/app<br/><br/>
+					git remote add nodester the_url_returned_by_our_api <b>and</b> git push nodester master<br/><br/>
+					<b>NPM modules?</b> curl -X POST -u "testuser:123" -d "appname=myapp&action=install&package=express" http://api.nodester.com/appnpm<br/><br/>
+					curl -X PUT -u "testuser:123" -d "appname=myapp&running=true" http://api.nodester.com/app
+				</code>
+				<code><b>Visit your app at http://myapp.nodester.com</b></code>
+				<p><i>Don't worry :) You only need to start the application once. Subsequent git pushes will automatically pick up your changes and restart.</i></p>
 			</div>
 		</div>
 	</div>
