@@ -333,12 +333,12 @@ var app_stop = function (repo_id, callback) {
           callback(false);
         } else {
           try {
-            var p = parseInt(data);
+            var p = parseInt(data.toString());
             if (p > 0) {
               process.kill(parseInt(data));
               fs.unlink(app_home + '/.app.pid');
             } else {
-              console.log(sys.inspect(data));
+              console.log(sys.inspect(data.toString()));
             }
             callback(true);
           } catch (e) {
