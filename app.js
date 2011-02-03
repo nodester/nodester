@@ -16,8 +16,9 @@ var spawn = require('child_process').spawn;
 var exec = require('child_process').exec;
 var fs = require('fs');
 var npmwrapper = require('npm-wrapper').npmwrapper;
-
 var request = require('request');
+var lib = require("./lib");
+
 var h = {accept: 'application/json', 'content-type': 'application/json'};
 
 var config = require("./config");
@@ -527,6 +528,73 @@ myapp.post('/appnpm', function(req, res, next) {
       res.end();
     }
     })();
+  });
+});
+
+myapp.post('/appdomains', function(req, res, next) {
+  var appname = req.param("appname").toLowerCase();
+  var action = req.param("action");
+  var domain = req.param("domain");
+  authenticate_app(req.headers.authorization, appname, res, function (user, app) {
+    switch (action) {
+      case "add":
+        var gooddomain = lib.checkDomain(domain);
+        if (gooddomain === true) {
+          request({uri:couch_loc + 'aliasdomains/' + domain, method:'GET', headers:h}, function (err, response, body) {
+            var doc = JSON.parse(body);
+            if (doc._id){
+              res.writeHead(400, { 'Content-Type': 'application/json' });
+              res.write('{"status": "failure - domain already exists"}\n');
+              res.end();
+            } else {
+              request({uri:couch_loc + 'aliasdomains', method:'POST', body: JSON.stringify({_id: domain, appname: appname}), headers: h}, function (err, response, body) {
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.write('{"status": "success", "message": "Domain added."}\n');
+                res.end();
+              });
+            }
+          });
+        } else {
+          res.writeHead(400, {'Content-Type': 'application/json'});
+          res.write('{"status": "failure - ' + gooddomain + '"}\n');
+          res.end();
+        }
+        break;
+      case "delete":
+        var gooddomain = lib.checkDomain(domain);
+        if (gooddomain === true) {
+          request({uri:couch_loc + 'aliasdomains/' + domain, method:'GET', headers:h}, function (err, response, body) {
+            var doc = JSON.parse(body);
+            if (doc._id) {
+              if (doc.appname == appname) {
+                request({uri:couch_loc + 'aliasdomains/' + domain + '?rev=' + doc._rev, method:'DELETE', headers:h}, function (err, response, body) {
+                  res.writeHead(200, { 'Content-Type': 'application/json' });
+                  res.write('{"status": "success", "message": "Domain deleted."}\n');
+                  res.end();
+                });
+              } else {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.write('{"status": "failure - domain is not for this app."}\n');
+                res.end();
+              }
+            } else {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.write('{"status": "failure - domain not found."}\n');
+                res.end();
+            }
+          });
+        } else {
+          res.writeHead(400, {'Content-Type': 'application/json'});
+          res.write('{"status": "failure - ' + gooddomain + '"}\n');
+          res.end();
+        }
+        break;
+      default:
+        res.writeHead(400, {'Content-Type': 'application/json'});
+        res.write('{"status": "failure - invalid action parameter"}\n');
+        res.end();
+        break;
+    }
   });
 });
 
