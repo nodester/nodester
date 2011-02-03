@@ -2,3 +2,4 @@
 .app.pid.2
 config.js
 proxy/.monitor
+scripts/gitrepoclone.sh
