@@ -61,6 +61,7 @@ Installation:
     Update scripts/gitrepoclone.sh with the key you specified in config.js
   Setup the CouchDB tables
     node setup_couchdb.js
+    node migrate-views.js
   Start up the proxy and main/api app
     cd nodester
     ./start.sh
