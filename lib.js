@@ -1,3 +1,28 @@
+var config = require("./config");
+var couch_loc = "http://" + config.opt.couch_user + ":" + config.opt.couch_pass + "@" + config.opt.couch_host + ":" + config.opt.couch_port + "/";
+if (config.opt.couch_prefix.length > 0) {
+  couch_loc += config.opt.couch_prefix + "_";
+  exports.couch_prefix = config.opt.couch_prefix + "_";
+} else {
+  exports.couch_prefix = "";
+}
+exports.couch_loc = couch_loc;
+exports.h = {accept: 'application/json', 'content-type': 'application/json'};
+
+var couchdb_parse = function (err, body, cb) {
+  if (err != null) {
+    cb(err, null);
+  } else {
+    var doc = JSON.parse(body);
+    if (doc.hasOwnProperty('error')) {
+      cb(doc.error, doc);
+    } else {
+      cb(null, doc);
+    }
+  }
+};
+exports.couchdb_parse = couchdb_parse;
+
 function checkDomain(nname) {
   var arr = new Array(
     '.com','.net','.org','.biz','.coop','.info','.museum','.name',
