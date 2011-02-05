@@ -1,11 +1,11 @@
 #!/bin/bash
-BASEDIR=${1};
-USERDIR=${2};
-APPDIR=${3};
-START=${4};
+# '/scripts/launch_app.sh ' + config.opt.basedir + ' ' + config.opt.username + ' ' + app_home + ' ' + app.start + ' ' + app.port + ' ' + '127.0.0.1' + ' ' + doc.appname;
+BASEDIR="${1}";
+USERN="${2}";
+APPHOME="${3}";
+APPSTART="${4}";
+APPPORT="${5}";
+APPHOST="${6}";
+APPNAME="${7}";
 
-if [ -f ${BASEDIR}/scripts/launch_chrooted_app.js ]; then
-  exec /usr/local/bin/node ${BASEDIR}/scripts/launch_chrooted_app.js ${USERDIR}/${APPDIR} ${START};
-else
-  exec /usr/local/bin/node ${BASEDIR}/deps/nodemon/nodemon ${USERDIR} ${APPDIR}/.app.pid ${APPDIR}/${START};
-fi;
+exec /usr/local/bin/node ${BASEDIR}/scripts/launch_chrooted_app.js ${USERN} ${APPHOME} ${APPSTART} ${APPPORT} ${APPHOST} ${APPNAME};

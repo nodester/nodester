@@ -358,13 +358,13 @@ var app_start = function (repo_id, callback) {
       callback(false);
     } else {
       var user_home = config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + doc.username;
-      var app_home = app_home + '/' + doc.repo_id;
+      var app_home = user_home + '/' + repo_id;
       request({ method: 'GET', uri: couch_loc + 'apps/' + doc.appname, headers: h}, function (err, response, body) {
         var app = JSON.parse(body);
         if (typeof app.error != 'undefined' && app.error == 'not_found') {
           callback(false);
         } else {
-          var cmd = "sudo " + config.opt.app_dir + '/scripts/launch_app.sh ' + config.opt.app_dir + ' ' + user_home + ' ' + app.repo_id + ' ' + app.start;
+          var cmd = "sudo " + config.opt.app_dir + '/scripts/launch_app.sh ' + config.opt.app_dir + ' ' + config.opt.userid + ' ' + app_home + ' ' + app.start + ' ' + app.port + ' ' + '127.0.0.1' + ' ' + doc.appname; 
           sys.puts(cmd);
           var child = exec(cmd, function (error, stdout, stderr) {});
           callback(true);
@@ -597,6 +597,30 @@ myapp.post('/appdomains', function(req, res, next) {
     }
   });
 });
+
+
+myapp.get('/applogs/:appname', function(req, res, next) {
+  var appname = req.param("appname").toLowerCase();
+//  var num = parseInt(req.param("num"));
+  authenticate_app(req.headers.authorization, appname, res, function (user, app) {
+    var app_user_home = config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + user._id + '/' + app.repo_id;
+    fs.readFile(app_user_home + '/error.log', function (err, body) {
+      if (err) {
+        var code = 500;
+        var resp = {error: "Failed to read error log."};
+      } else {
+        var code = 200;
+        var lines = body.toString().split("\n");
+        lines = lines.slice(-100);
+        var resp = {success: true, lines: lines};
+      }
+      res.writeHead(code, {'Content-Type': 'application/json'});
+      res.write(JSON.stringify(resp) + '\n');
+      res.end();
+    });
+  });
+});
+
 
 myapp.get('/unsent', function (req, res, next) {
 //  authenticate(req.headers.authorization, res, function(user) {
