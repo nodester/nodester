@@ -12,6 +12,7 @@ Dependencies:
     request
     npm-wrapper
     daemon-tools
+    cradle
 
 Installation:
   Install node.js
@@ -44,7 +45,7 @@ Installation:
   Either install CouchDB or get a CouchOne account
 
   Install node-module dependencies
-    for X in http-proxy express node-base64 npm-wrapper request daemon-tools; do npm install ${X}; done
+    for X in http-proxy express node-base64 npm-wrapper request daemon-tools cradle; do npm install ${X}; done
   
   (Fix npm install issues)
   cd ~/.node_libraries
