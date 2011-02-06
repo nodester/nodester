@@ -24,7 +24,11 @@ var create_couchdb_table = function (port, hostname, tablename, callback) {
 
 for(var i in config.opt.couch_tables) {
   (function () {
-  var tabname = config.opt.couch_prefix + "_" + config.opt.couch_tables[i];
+  if (config.opt.couch_prefix.length > 0) {
+    var tabname = config.opt.couch_prefix + "_" + config.opt.couch_tables[i];
+  } else {
+    var tabname = config.opt.couch_tables[i];
+  }
   create_couchdb_table(config.opt.couch_port, config.opt.couch_host, tabname, function (success) {
     if (success) {
       sys.puts(tabname + " was created.");

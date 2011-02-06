@@ -41,8 +41,9 @@ var start_running_apps = function (apps_arr) {
   for(var i in apps_arr) {
     var doc = apps_arr[i].value;
     if (doc.running == 'true') {
-      var app_user_home = config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + doc.username;
-      var cmd = "sudo " + config.opt.app_dir + '/scripts/launch_app.sh ' + config.opt.app_dir + ' ' + app_user_home + ' ' + doc.repo_id + ' ' + doc.start;
+      var user_home = config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + doc.username;
+      var app_home = user_home + '/' + doc.repo_id;
+      var cmd = "sudo " + config.opt.app_dir + '/scripts/launch_app.sh ' + config.opt.app_dir + ' ' + config.opt.userid + ' ' + app_home + ' ' + doc.start + ' ' + doc.port + ' ' + '127.0.0.1' + ' ' + doc._id; 
       var child = exec(cmd, function (error, stdout, stderr) {});
     }
   }
