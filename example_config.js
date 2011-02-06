@@ -4,7 +4,7 @@ exports.opt = {
   couch_host: "127.0.0.1",
   couch_port: 5984,
   couch_prefix: 'test',
-  couch_tables: ['coupons', 'nodefu', 'nextport', 'apps', 'repos', 'aliasdomains']
+  couch_tables: ['coupons', 'nodefu', 'nextport', 'apps', 'repos', 'aliasdomains'],
   home_dir: '/var/nodester',
   app_dir: '/var/nodester/nodester',
   hosted_apps_subdir: 'hosted_apps', // This should be a subfolder of home_dir
