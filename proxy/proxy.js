@@ -19,13 +19,13 @@ if (config.opt.couch_prefix.length > 0) {
   couch_loc += config.opt.couch_prefix + "_";
 }
 
-httpProxy.createServer(function (req, res, proxy) {  
+var handle_incoming = function (req, res, proxy, websocket) {
   if (typeof req.headers.host != 'undefined') {
     var hostname = req.headers.host.toLowerCase();;
     var first_point = hostname.indexOf(".");
     var subdomain = hostname.substring(0, first_point);
     var restdom = hostname.substring(first_point + 1);
-    if (hostname.indexOf("nodefu") != -1) {
+    if (hostname.indexOf("nodefu") != -1 && websocket == false) {
       res.writeHead(301, {'Content-Type': 'text/plain', 'Location': 'http://nodester.com'});
       res.end();
     } else if (hostname == config.opt.api_dom) {
@@ -36,14 +36,26 @@ httpProxy.createServer(function (req, res, proxy) {
         var doc = JSON.parse(body);
         if (doc) {
           if (doc.running == 'true') {
-            proxy.proxyRequest(doc.port, '127.0.0.1');
+            if (typeof websocket != 'undefined' && websocket == true) {
+              proxy.proxyWebSocketRequest(doc.port, '127.0.0.1', req.headers.host);
+            } else {
+              proxy.proxyRequest(doc.port, '127.0.0.1');
+            }
           } else {
-            res.writeHead(503, {'Content-Type': 'text/plain'});
-            res.end('app is not running');
+            if (websocket == false) {
+              res.writeHead(503, {'Content-Type': 'text/plain'});
+              res.end('app is not running');
+            } else {
+              // Not sure here!
+            }
           }
         } else {
-          res.writeHead(503, {'Content-Type': 'text/plain'});
-          res.end('app does not exist');
+          if (websocket == false) {
+            res.writeHead(503, {'Content-Type': 'text/plain'});
+            res.end('app does not exist');
+          } else {
+            // Not sure here!
+          }
         }
       });
     } else {
@@ -55,17 +67,29 @@ httpProxy.createServer(function (req, res, proxy) {
             proxy.proxyRequest(4001, '127.0.0.1');
           } else if (typeof doc.appname != 'undefined') {
             request({uri:couch_loc + 'apps/' + doc.appname, method:'GET', headers:h}, function (err, response, body) {
-              var doc = JSON.parse(body);
+              var doc = JSON.parse(body);	
               if (doc) {
                 if (doc.running == 'true') {
-                  proxy.proxyRequest(doc.port, '127.0.0.1');
+                  if (typeof websocket != 'undefined' && websocket == true) {
+                    proxy.proxyWebSocketRequest(doc.port, '127.0.0.1', req.headers.host);
+                  } else {
+                    proxy.proxyRequest(doc.port, '127.0.0.1');
+                  }
                 } else {
-                  res.writeHead(503, {'Content-Type': 'text/plain'});
-                  res.end('app is not running');
+                  if (websocket == false) {
+                    res.writeHead(503, {'Content-Type': 'text/plain'});
+                    res.end('app is not running');
+                  } else {
+                    // Not sure here!
+                  }
                 }
               } else {
-                res.writeHead(503, {'Content-Type': 'text/plain'});
-                res.end('app does not exist');
+                if (websocket == false) {
+                  res.writeHead(503, {'Content-Type': 'text/plain'});
+                  res.end('app does not exist');
+                } else {
+                  // Not sure here!
+                }
               }
             });
           } else {
@@ -77,7 +101,16 @@ httpProxy.createServer(function (req, res, proxy) {
   } else {
     proxy.proxyRequest(4001, '127.0.0.1');
   }
-}).listen(80);
+};
+
+var prox = httpProxy.createServer(function (req, res, proxy) {
+  handle_incoming(req, res, proxy, false);
+});
+prox.addListener('upgrade', function (req, sock, head) {
+  var proxy = new httpProxy.HttpProxy(req, sock, head);
+  handle_incoming(req, undefined, proxy, true);
+});
+prox.listen(80);
 sys.puts('Nodester started on port 80');
 
 daemontools.setreuid_username(config.opt.username);
