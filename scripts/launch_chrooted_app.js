@@ -53,7 +53,11 @@ logger.setup(app_name, function (err) {
     , loaded: false
     , exited: false
     , children: []
-    }
+    },
+    clearInterval: clearInterval,
+    clearTimeout: clearTimeout,
+    setInterval: setInterval,
+    setTimeout: setTimeout
   };
 
   sandbox.process.pid = pid;
