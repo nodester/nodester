@@ -1,0 +1,4 @@
+Nodester Plans
+
+Multiple instances of backend node processes per app.
+Automatically spin up new hosts when current ones are getting loaded.
