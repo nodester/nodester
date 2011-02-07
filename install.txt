@@ -8,7 +8,6 @@ Dependencies:
     http-proxy
     express
     node-base64
-    couch-client
     request
     npm-wrapper
     daemon-tools
