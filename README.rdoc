@@ -71,12 +71,15 @@ Operations are as simple as nodester <command> <param1> <param2>.  Here is a lis
   nodester apps list
   nodester app create <app-name> <initial js file>
   nodester app info <app-name>
+  nodester app logs <app-name>
   nodester app start <app-name>
   nodester app restart <app-name>
   nodester app stop <app-name>
   nodester appnpm install <app-name> <package name>
   nodester appnpm upgrade <app-name> <package name>
   nodester appnpm uninstall <app-name> <package name>
+  nodester appdomain add <app-name> <domain-name>
+  nodester appdomain delete <app-name> <domain-name>
 
 == Testing Locally
 
@@ -93,9 +96,7 @@ save etc/hosts and flush DNS like this: sudo dscacheutil -flushcache
 
 We are always looking for areas to improve Nodester!  Here are a few of the big ideas on our list
 
-* Add ability to control number of instances
 * Add SSL support
-* Add logging
 * Setup public AMI running Nodester
 * Ability to start app with additional instances (dynos)
 
