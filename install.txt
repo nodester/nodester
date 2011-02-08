@@ -7,7 +7,7 @@ Dependencies:
   node.js Modules:
     http-proxy
     express
-    node-base64
+    # node-base64
     request
     npm-wrapper
     daemon-tools

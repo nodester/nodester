@@ -1,5 +1,5 @@
 var http = require('http');
-var base64_encode = require('base64').encode;
+// var base64_encode = require('base64').encode;
 var config = require("../config");
 var sys = require('sys');
 var exec = require('child_process').exec;
@@ -18,14 +18,28 @@ if (config.opt.couch_prefix.length > 0) {
   var cprefix = '';
 }
 
+// var req = couch_http.request(
+//   'GET',
+//   '/' + cprefix + 'apps' + '/_design/nodeapps/_view/all',
+//   {
+//     'host': config.opt.couch_host,
+//     'Authorization': "Basic " + base64_encode(new Buffer(config.opt.couch_user + ":" + (config.opt.couch_pass || "")))
+//   }
+// );
+
+// NATIVE BASE64 HANDLING
+var buff = new Buffer(config.opt.couch_user + ':' + config.opt.couch_pass, encoding='ascii');
+var dbcreds = buff.toString('base64')
 var req = couch_http.request(
   'GET',
   '/' + cprefix + 'apps' + '/_design/nodeapps/_view/all',
   {
     'host': config.opt.couch_host,
-    'Authorization': "Basic " + base64_encode(new Buffer(config.opt.couch_user + ":" + (config.opt.couch_pass || "")))
+    'Authorization': "Basic " + dbcreds || ""
   }
 );
+
+
 req.end();
 req.on('response', function (response) {
   var buff = '';
