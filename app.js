@@ -130,6 +130,14 @@ myapp.put('/user', authenticate, user.put);
 // curl -X DELETE -u "testuser:123" http://api.localhost:8080/user
 myapp.delete('/user', authenticate, user.delete);
 
+
+// All Applications info
+// http://chris:123@api.localhost:8080/apps
+// curl -u "testuser:123" http://api.localhost:8080/apps
+var apps = require('./lib/apps');
+myapp.get('/apps', authenticate, apps.get);
+
+
 /*{{{
 
 
@@ -399,40 +407,6 @@ myapp.get('/app/:appname', function(req, res, next){
     res.end();
   });
 }); 
-
-// All Applications info
-// http://chris:123@api.localhost:8080/apps
-// curl -u "testuser:123" http://api.localhost:8080/apps
-myapp.get('/apps', function(req, res, next){
-  authenticate(req.headers.authorization, res, function (user) {
-    request({ method: 'GET', uri: couch_loc + 'apps/' + '/_design/nodeapps/_view/all', headers: h}, function (err, response, body) {  
-      var docs = JSON.parse(body);
-      if (docs) { // Maybe better error handling here
-        var apps = [];
-        var i;
-        for (i=0; i<docs.rows.length; i++) {
-          if (user._id == docs.rows[i].value.username) {
-            apps.push({
-              name: docs.rows[i].id
-            , port: docs.rows[i].value.port
-            , gitrepo: config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + docs.rows[i].value.username + '/' + docs.rows[i].value.repo_id + '.git'
-            , start: docs.rows[i].value.start
-            , running: docs.rows[i].value.running
-            , pid: docs.rows[i].value.pid
-            });
-          }
-        }
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.write(JSON.stringify(apps));
-        res.end();
-      } else {
-        res.writeHead(404, { 'Content-Type': 'application/json' });
-        res.write('{"status" : "failure - applications not found"}');
-        res.end();
-      }
-    });
-  });
-});
 
 
 // APP NPM Handlers
