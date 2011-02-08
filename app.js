@@ -7,25 +7,86 @@ http://nodester.com
 
 */
 
-var express = require('express');
-var url = require('url');
-var crypto = require('crypto');
-var sys = require('sys');
-var spawn = require('child_process').spawn;
-var exec = require('child_process').exec;
-var fs = require('fs');
-var npmwrapper = require('npm-wrapper').npmwrapper;
-var request = require('request');
-var lib = require("./lib");
-var cradle = require('cradle');
+var express = require('express'),
+    url = require('url'),
+    crypto = require('crypto'),
+    sys = require('sys'),
+    spawn = require('child_process').spawn,
+    exec = require('child_process').exec,
+    fs = require('fs'),
+    npmwrapper = require('npm-wrapper').npmwrapper,
+    request = require('request'),
+    lib = require("./lib"),
+    cradle = require('cradle');
+    config = require("./lib/config");
 
-var h = {accept: 'application/json', 'content-type': 'application/json'};
 
-var config = require("./config");
-var couch_loc = "http://" + config.opt.couch_user + ":" + config.opt.couch_pass + "@" + config.opt.couch_host + ":" + config.opt.couch_port + "/";
-if (config.opt.couch_prefix.length > 0) {
-  couch_loc += config.opt.couch_prefix + "_";
+var res_error = function (res, code, message) {
+  res.writeHead(code, { 'Content-Type': 'application/json' });
+  res.write('{"status" : "' + message + '"}\n');
+  res.end();
+};
+
+var md5 = function(str) {
+  return crypto.createHash('md5').update(str).digest('hex');
 }
+
+/*
+process.on('uncaughtException', function (err) {
+   console.log("uncaughtException" + sys.inspect(err));
+});
+*/
+
+
+var authenticate = function(req, res, next) {
+    var basicauth = req.headers.authorization;
+
+    if (typeof basicauth != 'undefined' && basicauth.length > 0) {
+        var buff = new Buffer(basicauth.substring(basicauth.indexOf(" ") + 1 ), encoding='base64');
+        var creds = buff.toString('ascii')
+
+        var username = creds.substring(0,creds.indexOf(":"));
+        var password = creds.substring(creds.indexOf(":")+1);
+
+        request({uri: config.couch_loc + 'nodefu/' + username, method:'GET', headers: config.couch_headers }, function (err, response, body) {
+            var doc = JSON.parse(body);
+            if (doc && doc._id == username && doc.password == md5(password)) {
+                req.user = doc;
+                next();
+            } else {
+                // basic auth didn't match account
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.write('{"status" : "failure - authentication"}\n');
+                res.end();
+            }
+        });
+    } else {
+        res.writeHead(401, { 'Content-Type': 'application/json' });
+        res.write('{"status" : "failure - authentication"}\n');
+        res.end();
+    }
+};
+
+var authenticate_app = function(req, res, next) {
+    var appname = (req.body) ? req.body.toLowerCase() : '';
+
+    if (typeof req.user != 'undefined') {
+        request({ method: 'GET', uri: couch_loc + 'apps/' + appname, headers: h}, function (err, response, body) {
+            var doc = JSON.parse(body);
+            if (doc && doc.username == req.user._id) {
+                req.repo = doc;
+                next();
+            } else {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end('{"status" : "failure - app not found"}\n');
+            }
+        });
+    } else {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end('{"status" : "failure - authentication"}\n');
+    }
+};
+
 
 var myapp = express.createServer();
 
@@ -35,6 +96,8 @@ myapp.configure(function(){
 });
 
 // Routes
+
+
 // Homepage
 myapp.get('/', function(req, res, next){
   res.render('index.html');
@@ -43,144 +106,32 @@ myapp.get('/', function(req, res, next){
 // Status API
 // http://localhost:8080/status 
 // curl http://localhost:8080/status
-myapp.get('/status', function(req, res, next) {
-  request({ method: 'GET', uri: couch_loc + 'apps/_design/nodeapps/_view/all', headers: h}, function (err, response, body) {
-    var docs = JSON.parse(body);
-    var hostedapps = 0;
-    var countrunning = 0;
-    if (docs) { // Maybe better error handling here
-      var i;
-      for (i=0; i<docs.rows.length; i++) {
-        if (docs.rows[i].value.running == "true"){
-          countrunning++;
-        }
-      }
-      hostedapps = docs.rows.length.toString();
-    }
-    countrunning = countrunning.toString();
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.write('{"status" : "up", "appshosted" : "' + hostedapps + '", "appsrunning" : "' + countrunning + '"}\n');
-    res.end();
-  });
-});
+var status = require('./lib/status');
+myapp.get('/status', status.get);
 
 // New coupon request
 // curl -X POST -d "email=dan@nodester.com" http://localhost:8080/coupon
-myapp.post('/coupon', function(req, res, next) {
-
-  var email = req.param("email");  
-  if (typeof email != 'undefined') {
-    request({uri:couch_loc + "coupons", method:'POST', body: JSON.stringify({_id: email}), headers:h}, function (err, response, body) {
-    });
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.write(JSON.stringify({status: "success - you are now in queue to receive an invite on our next batch!"}) + "\n");
-    res.end();
-  } else {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.write(JSON.stringify({status: "failure - please try again shortly!"}) + "\n");
-    res.end();
-  }
-
-});
+var coupon = require('./lib/coupon');
+myapp.post('/coupon', coupon.post);
 
 
 // New user account registration
 // curl -X POST -d "user=testuser&password=123&email=chris@nodefu.com&coupon=hiyah" http://localhost:8080/user
 // curl -X POST -d "user=me&password=123&coupon=hiyah" http://localhost:8080/user
-myapp.post('/user', function(req, res, next){
-
-  var newuser = req.param("user");
-  var newpass = req.param("password");
-  var email = req.param("email");
-  var coupon = req.param("coupon");
-  var rsakey = req.param("rsakey");  
-  
-  if(coupon == config.opt.coupon_code) {
-
-    request({uri:couch_loc + 'nodefu/' + newuser, method:'GET', headers:h}, function (err, response, body) {
-      var doc = JSON.parse(body);
-      if (doc._id){
-        // account already registered
-        res.writeHead(400, { 'Content-Type': 'application/json' });
-        res.write('{"status": "failure - account exists"}\n');
-        res.end();
-      } else {
-        if (typeof rsakey == 'undefined') {
-          res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.write('{"status": "failure - rsakey is invalid"}\n');
-          res.end();
-        } else {
-          stream = fs.createWriteStream(config.opt.home_dir + '/.ssh/authorized_keys', {
-            'flags': 'a+',
-            'encoding': 'utf8',
-            'mode': 0644
-          });
-
-          stream.write('command="/usr/local/bin/git-shell-enforce-directory ' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + newuser + '",no-port-forwarding,no-X11-forwarding,no-agent-forwarding,no-pty ' + rsakey + '\n', 'utf8');
-          stream.end();
-        
-          // Save user information to database and respond to API request
-          request({uri: couch_loc + 'nodefu', method:'POST', body: JSON.stringify({_id: newuser, password: md5(newpass), email: email}), headers: h}, function (err, response, body) {
-          });
-
-          res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.write('{"status": "success"}\n');
-          res.end();
-        }
-      }
-    });
-
-  } else {
-    res.writeHead(500, { 'Content-Type': 'application/json' });
-    res.write('{"status": "failure - invalid coupon"}\n');
-    res.end();
-  };
-
-});
+var user = require('./lib/user');
+myapp.post('/user', user.post);
 
 // api.localhost requires basic auth to access this section
 // Edit your user account 
 // curl -X PUT -u "testuser:123" -d "password=test&rsakey=1234567" http://api.localhost:8080/user
-myapp.put('/user', function(req, res, next) {
-  var user
-  var newpass = req.param("password");
-  var rsakey = req.param("rsakey");
-
-  authenticate(req.headers.authorization, res, function(user) {
-    if (newpass) {
-      request({uri:couch_loc + 'nodefu/' + user._id, method:'PUT', body: JSON.stringify({_rev: user._rev, password: md5(newpass) }), headers:h}, function (err, response, body) {});
-    };
-    if (rsakey) {
-      stream = fs.createWriteStream(config.opt.home_dir + '/.ssh/authorized_keys', {
-        'flags': 'a+',
-        'encoding': 'utf8',
-        'mode': 0644
-      });
-      stream.write('command="/usr/local/bin/git-shell-enforce-directory ' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + user._id + '",no-port-forwarding,no-X11-forwarding,no-agent-forwarding,no-pty ' + rsakey + '\n', 'utf8');
-      stream.end();
-    };
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.write('{"status" : "success"}\n');
-    res.end();
-  });
-});
+myapp.put('/user', authenticate, user.put);
 
 // Delete your user account 
 // curl -X DELETE -u "testuser:123" http://api.localhost:8080/user
-myapp.delete('/user', function(req, res, next) {
-  var user
-  authenticate(req.headers.authorization, res, function(user) {
-    // need to delete all users apps
-    // and stop all the users apps
+myapp.delete('/user', authenticate, user.delete);
 
-    request({uri:couch_loc + 'nodefu/' + user._id + '?rev=' +  user._rev, method:'DELETE', headers:h}, function (err, response, body) {
-    });
+/*{{{
 
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.write('{"status" : "success"}\n');
-    res.end();
-  });
-});
 
 // Create node app 
 // curl -X POST -u "testuser:123" -d "appname=test&start=hello.js" http://api.localhost:8080/apps
@@ -531,7 +482,7 @@ myapp.post('/appnpm', function(req, res, next) {
         res.write(JSON.stringify({"status": 'success', output: output}) + '\n');
         res.end();
       });
-*/
+* /
     } else {
       res.writeHead(400, {'Content-Type': 'application/json'});
       res.write('{"status": "failure - invalid action parameter"}\n');
@@ -652,66 +603,10 @@ myapp.get('/unsent', function (req, res, next) {
 //  });
 });
 
-var authenticate_app = function (auth_infos, appname, res, callback) {
-  authenticate(auth_infos, res, function(user) {
-    if (typeof user != 'undefined') {
-      request({ method: 'GET', uri: couch_loc + 'apps/' + appname, headers: h}, function (err, response, body) {
-        var doc = JSON.parse(body);
-        if (doc && doc.username == user._id) {
-          callback(user, doc);
-        } else {
-          res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end('{"status" : "failure - app not found"}\n');
-        }
-      });
-    } else {
-      res.writeHead(400, { 'Content-Type': 'application/json' });
-      res.end('{"status" : "failure - authentication"}\n');
-    }
-  });
-};
+
+}}}*/
+
 
 myapp.use(express.errorHandler({ showStack: true }));
 myapp.listen(4001); 
 console.log('Nodester app started on port 4001');
-
-function authenticate(basicauth, res, callback) {
-  if (typeof basicauth != 'undefined' && basicauth.length > 0) {
-    var buff = new Buffer(basicauth.substring(basicauth.indexOf(" ") + 1 ), encoding='base64');
-    var creds = buff.toString('ascii')
-
-    var username = creds.substring(0,creds.indexOf(":"));
-    var password = creds.substring(creds.indexOf(":")+1);
-
-    request({uri:couch_loc + 'nodefu/' + username, method:'GET', headers:h}, function (err, response, body) {
-      var doc = JSON.parse(body);
-
-      if(doc && doc._id == username && doc.password == md5(password)){
-        callback(doc);
-      } else {
-        // basic auth didn't match account
-        res.writeHead(400, { 'Content-Type': 'application/json' });
-        res.write('{"status" : "failure - authentication"}\n');
-        res.end();
-      }
-    });
-  } else {
-      res.writeHead(401, { 'Content-Type': 'application/json' });
-      res.write('{"status" : "failure - authentication"}\n');
-      res.end();
-  }
-};
-
-var res_error = function (res, code, message) {
-  res.writeHead(code, { 'Content-Type': 'application/json' });
-  res.write('{"status" : "' + message + '"}\n');
-  res.end();
-};
-
-function md5(str) {
-  return crypto.createHash('md5').update(str).digest('hex');
-}
-
-process.on('uncaughtException', function (err) {
-   console.log("uncaughtException" + sys.inspect(err));
-});
