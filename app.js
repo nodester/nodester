@@ -9,7 +9,6 @@ http://nodester.com
 
 var express = require('express');
 var url = require('url');
-// var base64_decode = require('base64').decode;
 var crypto = require('crypto');
 var sys = require('sys');
 var spawn = require('child_process').spawn;
@@ -667,27 +666,24 @@ console.log('Nodester app started on port 4001');
 
 function authenticate(basicauth, res, callback) {
   if (typeof basicauth != 'undefined' && basicauth.length > 0) {
+    var buff = new Buffer(basicauth.substring(basicauth.indexOf(" ") + 1 ), encoding='base64');
+    var creds = buff.toString('ascii')
 
-  // var creds = base64_decode(basicauth.substring(basicauth.indexOf(" ") + 1 ));
-	// NATIVE BASE64 HANDLING
-	var buff = new Buffer(basicauth.substring(basicauth.indexOf(" ") + 1 ), encoding='base64');
-	var creds = buff.toString('ascii')
+    var username = creds.substring(0,creds.indexOf(":"));
+    var password = creds.substring(creds.indexOf(":")+1);
 
-  	var username = creds.substring(0,creds.indexOf(":"));
-  	var password = creds.substring(creds.indexOf(":")+1);
+    request({uri:couch_loc + 'nodefu/' + username, method:'GET', headers:h}, function (err, response, body) {
+      var doc = JSON.parse(body);
 
-  request({uri:couch_loc + 'nodefu/' + username, method:'GET', headers:h}, function (err, response, body) {
-    var doc = JSON.parse(body);
-
-    if(doc && doc._id == username && doc.password == md5(password)){
-      callback(doc);
-    } else {
-      // basic auth didn't match account
-      res.writeHead(400, { 'Content-Type': 'application/json' });
-      res.write('{"status" : "failure - authentication"}\n');
-      res.end();
-    }
-  });
+      if(doc && doc._id == username && doc.password == md5(password)){
+        callback(doc);
+      } else {
+        // basic auth didn't match account
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.write('{"status" : "failure - authentication"}\n');
+        res.end();
+      }
+    });
   } else {
       res.writeHead(401, { 'Content-Type': 'application/json' });
       res.write('{"status" : "failure - authentication"}\n');
