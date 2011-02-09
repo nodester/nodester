@@ -53,6 +53,9 @@ myapp.get('/status', status.get);
 var coupon = require('./lib/coupon');
 myapp.post('/coupon', coupon.post);
 
+// curl http://localhost:8080/unsent
+myapp.get('/unsent', coupon.unsent);
+
 
 // New user account registration
 // curl -X POST -d "user=testuser&password=123&email=chris@nodefu.com&coupon=hiyah" http://localhost:8080/user
@@ -106,15 +109,8 @@ myapp.put('/app', middle.authenticate, middle.authenticate_app, app.put);
 myapp.delete('/app', middle.authenticate, middle.authenticate_app, app.delete);
 
 /*{{{
-
-
 // APP NPM Handlers
 // http://user:pass@api.localhost:8080/npm
-
-myapp.post('/test', function(req, res, next) {
-  res.writeHead(200, {'Content-Type': 'text/plain'});
-  res.end('test\n');
-});
 
 myapp.post('/appnpm', function(req, res, next) {
   var appname = req.param("appname").toLowerCase();
@@ -256,25 +252,6 @@ myapp.get('/applogs/:appname', function(req, res, next) {
 });
 
 
-myapp.get('/unsent', function (req, res, next) {
-//  authenticate(req.headers.authorization, res, function(user) {
-//    if (user._id == 'dan') {
-      request({uri:couch_loc + 'coupons/_design/coupons/_view/unsent', method:'GET', headers:h}, function (err, response, body) {
-        var doc = JSON.parse(body);
-        var buff = "";
-        for(var i in doc.rows) {
-          // sys.puts(doc.rows[i].id);
-          buff += doc.rows[i].id + '\n';
-        }
-        res.writeHead(200, {'Content-Type': 'text/plain'});
-        res.end(buff);
-      });
-//    } else {
-//      res.writeHead(401, { 'Content-Type': 'application/json' });
-//      res.end('{"status" : "failure - authentication"}\n');
-//    }
-//  });
-});
 
 
 }}}*/
