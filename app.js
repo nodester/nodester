@@ -495,7 +495,7 @@ myapp.post('/test', function(req, res, next) {
 myapp.post('/appnpm', function(req, res, next) {
   var appname = req.param("appname").toLowerCase();
   var action = req.param("action");
-  var package = req.param("package");
+  var package = lib.escape_packages(req.param("package").toString());
   authenticate_app(req.headers.authorization, appname, res, function (user, app) {
     var good_action = true;
     switch (action) {
