@@ -9,22 +9,13 @@ http://nodester.com
 
 var express = require('express'),
     url = require('url'),
-    crypto = require('crypto'),
     sys = require('sys'),
-    spawn = require('child_process').spawn,
-    exec = require('child_process').exec,
-    fs = require('fs'),
-    npmwrapper = require('npm-wrapper').npmwrapper,
-    request = require('request'),
-    lib = require("./lib"),
     config = require("./lib/config"),
     middle = require('./lib/middle');
 
-/*
 process.on('uncaughtException', function (err) {
    console.log("uncaughtException" + sys.inspect(err));
 });
-*/
 
 var myapp = express.createServer();
 
@@ -35,8 +26,6 @@ myapp.configure(function(){
 });
 
 // Routes
-
-
 // Homepage
 myapp.get('/', function(req, res, next){
   res.render('index.html');
