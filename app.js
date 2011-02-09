@@ -9,7 +9,6 @@ http://nodester.com
 
 var express = require('express');
 var url = require('url');
-// var base64_decode = require('base64').decode;
 var crypto = require('crypto');
 var sys = require('sys');
 var spawn = require('child_process').spawn;
@@ -18,6 +17,7 @@ var fs = require('fs');
 var npmwrapper = require('npm-wrapper').npmwrapper;
 var request = require('request');
 var lib = require("./lib");
+var cradle = require('cradle');
 
 var h = {accept: 'application/json', 'content-type': 'application/json'};
 
@@ -244,81 +244,93 @@ myapp.post('/app', function(req, res, next) {
 myapp.put('/app', function(req, res, next){
   var appname = req.param("appname").toLowerCase();
   authenticate_app(req.headers.authorization, appname, res, function (user, app) {
-    var start = req.param("start");
-    var running = req.param("running");
-    var app_user_home = config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + app.username;
-    var app_home = app_user_home + '/' + app.repo_id;
-    if (typeof start == 'undefined') {
-      start = app.start;
-    }
-    if (running == 'true') {
-      // start the app
-      if (app.running == 'true') {
-        // Error already running
-        res_error(res, 408, "failure - application already running.");
-      } else {
-        app_start(app.repo_id, function (rv) {
-          if (rv == false) {
-            running = 'error-starting';
-          } else {
-            running = 'true';
-          }
-          request({uri:couch_loc + 'apps/' + appname, method:'PUT', body: JSON.stringify({_id: appname, _rev: app._rev, start: start, port: app.port, username: user._id, repo_id: app.repo_id, running: running, pid: 'unknown' }), headers: h}, function (err, response, body) {
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.write(JSON.stringify({status: "success", port: app.port, gitrepo: config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + app.username + '/' + app.repo_id + '.git', start: start, running: running, pid: app.pid}) + "\n");
-            res.end();
-          });
+    var crud = new cradle.Connection({
+      host: config.opt.couch_host,
+      port: config.opt.couch_port,
+      auth: {user: config.opt.couch_user, pass: config.opt.couch_pass},
+      options: {cache: true, raw: false}
+    });
+    var db = crud.database(lib.couch_prefix + 'apps');
+    db.get(appname, function (err, appdoc) {
+      console.log("err: " + err);
+      console.log("doc: " + appdoc);
+      var start = req.param("start");
+      var app_user_home = config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + appdoc.username;
+      var app_home = app_user_home + '/' + appdoc.repo_id;
+      var app_repo = config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + appdoc.username + '/' + appdoc.repo_id + '.git';
+      if (typeof start != 'undefined' && start.length > 0) {
+        db.merge(appname, {start: start}, function (err, resp) {
+          res.writeHead(201, { 'Content-Type': 'application/json' });
+          res.write(JSON.stringify({status: success, port: appdoc.port, gitrepo: app_repo, start: start, running: appdoc.running, pid: appdoc.pid}) + "\n");
+          res.end();
         });
-      }
-    } else if (running == 'false' || running == 'restart') {
-      cmd = "stopping...";
-      // stop the app
-      if (running == 'false' && app.running == 'false') {
-        // Error already stopped
-        res_error(res, 408, "failure - application already stopped.");
       } else {
-        // Stop or restart the app
-        app_stop(app.repo_id, function (rv) {
-          if (rv == false) {
-            running = 'error-stopping';
-            request({uri:couch_loc + 'apps/' + appname, method:'PUT', body: JSON.stringify({_id: appname, _rev: app._rev, start: start, port: app.port, username: user._id, repo_id: app.repo_id, running: running, pid: 'unknown' }), headers: h}, function (err, response, body) {
-              res.writeHead(200, { 'Content-Type': 'application/json' });
-              res.write(JSON.stringify({status: "success", port: app.port, gitrepo: config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + app.username + '/' + app.repo_id + '.git', start: start, running: running, pid: app.pid}) + "\n");
-              res.end();
-            });
-          } else {
-            if (running == 'restart') {
-              app_start(app.repo_id, function (rv) {
-                if (rv == false) {
-                  running = 'error-restarting';
+        var running = req.param("running");
+        switch (running) {
+          case "true":
+            if (appdoc.running == "true") {
+              res_error(res, 408, "failure - application already running.");
+            } else {
+              app_start(appdoc.repo_id, function (rv) {
+                if (rv == true) {
+                  var success = "success";
+                  var running = "true";
                 } else {
-                  running = 'true';
+                  var success = "false";
+                  var running = "failed-to-start";
                 }
-                request({uri:couch_loc + 'apps/' + appname, method:'PUT', body: JSON.stringify({_id: appname, _rev: app._rev, start: start, port: app.port, username: user._id, repo_id: app.repo_id, running: running, pid: 'unknown' }), headers: h}, function (err, response, body) {
+                db.merge(appname, {running: running}, function (err, resp) {
                   res.writeHead(200, { 'Content-Type': 'application/json' });
-                  res.write(JSON.stringify({status: "success", port: app.port, gitrepo: config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + app.username + '/' + app.repo_id + '.git', start: start, running: running, pid: app.pid}) + "\n");
+                  res.write(JSON.stringify({status: success, port: appdoc.port, gitrepo: app_repo, start: appdoc.start, running: running, pid: appdoc.pid}) + "\n");
                   res.end();
                 });
               });
-            } else {
-              request({uri:couch_loc + 'apps/' + appname, method:'PUT', body: JSON.stringify({_id: appname, _rev: app._rev, start: start, port: app.port, username: user._id, repo_id: app.repo_id, running: running, pid: 'unknown' }), headers: h}, function (err, response, body) {
+            }
+            break;
+          case "restart":
+            app_restart(app.repo_id, function (rv) {
+              if (rv == true) {
+                var success = "success";
+                var running = "true";
+              } else {
+                var success = "false";
+                var running = "failed-to-restart";
+              }
+              db.merge(appname, {running: running}, function (err, resp) {
                 res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.write(JSON.stringify({status: "success", port: app.port, gitrepo: config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + app.username + '/' + app.repo_id + '.git', start: start, running: running, pid: app.pid}) + "\n");
+                res.write(JSON.stringify({status: success, port: appdoc.port, gitrepo: app_repo, start: appdoc.start, running: running, pid: appdoc.pid}) + "\n");
                 res.end();
               });
+            });
+            break;
+          case "false":
+            if (app.running == 'false') {
+              res_error(res, 408, "failure - application already stopped.");
+            } else {
+              app_stop(app.repo_id, function (rv) {
+                if (rv == true) {
+                  var success = "success";
+                  var running = "false";
+                } else {
+                  var success = "false";
+                  var running = "failed-to-stop";
+                }
+                db.merge(appname, {running: running}, function (err, resp) {
+                  res.writeHead(200, { 'Content-Type': 'application/json' });
+                  res.write(JSON.stringify({status: success, port: appdoc.port, gitrepo: app_repo, start: appdoc.start, running: running, pid: appdoc.pid}) + "\n");
+                  res.end();
+                });
+              });
             }
-          }
-        });
+            break;
+          default:
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.write(JSON.stringify({status: "false", message: "Invalid action."}) + "\n");
+            res.end();
+            break;
+        }
       }
-    } else {
-      cmd = "blank";
-      running = app.running;
-      request({uri:couch_loc + 'apps/' + appname, method:'PUT', body: JSON.stringify({_id: appname, _rev: app._rev, start: start, port: app.port, username: user._id, repo_id: app.repo_id, running: running, pid: 'unknown' }), headers: h}, function (err, response, body) {
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.write(JSON.stringify({status: "success", port: app.port, gitrepo: config.opt.git_user + '@' + config.opt.git_dom + ':' + config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + app.username + '/' + app.repo_id + '.git', start: start, running: running, pid: app.pid}) + "\n");
-        res.end();
-      });
-    }
+    });
   });
 });
 
@@ -374,11 +386,9 @@ var app_start = function (repo_id, callback) {
   });
 };
 
-var app_restart = function (repo_id, callback, skip_stop_check) {
+var app_restart = function (repo_id, callback) {
   app_stop(repo_id, function (rv) {
-    if (rv == false && skip_stop_check != true) {
-      callback(false);
-    } else {
+    setTimeout(function () {
       app_start(repo_id, function (rv) {
         if (rv == false) {
           callback(false);
@@ -386,7 +396,7 @@ var app_restart = function (repo_id, callback, skip_stop_check) {
           callback(true);
         }
       });
-    }
+    }, 1000);
   });
 };
 
@@ -667,27 +677,24 @@ console.log('Nodester app started on port 4001');
 
 function authenticate(basicauth, res, callback) {
   if (typeof basicauth != 'undefined' && basicauth.length > 0) {
+    var buff = new Buffer(basicauth.substring(basicauth.indexOf(" ") + 1 ), encoding='base64');
+    var creds = buff.toString('ascii')
 
-  // var creds = base64_decode(basicauth.substring(basicauth.indexOf(" ") + 1 ));
-	// NATIVE BASE64 HANDLING
-	var buff = new Buffer(basicauth.substring(basicauth.indexOf(" ") + 1 ), encoding='base64');
-	var creds = buff.toString('ascii')
+    var username = creds.substring(0,creds.indexOf(":"));
+    var password = creds.substring(creds.indexOf(":")+1);
 
-  	var username = creds.substring(0,creds.indexOf(":"));
-  	var password = creds.substring(creds.indexOf(":")+1);
+    request({uri:couch_loc + 'nodefu/' + username, method:'GET', headers:h}, function (err, response, body) {
+      var doc = JSON.parse(body);
 
-  request({uri:couch_loc + 'nodefu/' + username, method:'GET', headers:h}, function (err, response, body) {
-    var doc = JSON.parse(body);
-
-    if(doc && doc._id == username && doc.password == md5(password)){
-      callback(doc);
-    } else {
-      // basic auth didn't match account
-      res.writeHead(400, { 'Content-Type': 'application/json' });
-      res.write('{"status" : "failure - authentication"}\n');
-      res.end();
-    }
-  });
+      if(doc && doc._id == username && doc.password == md5(password)){
+        callback(doc);
+      } else {
+        // basic auth didn't match account
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.write('{"status" : "failure - authentication"}\n');
+        res.end();
+      }
+    });
   } else {
       res.writeHead(401, { 'Content-Type': 'application/json' });
       res.write('{"status" : "failure - authentication"}\n');
