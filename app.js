@@ -108,6 +108,9 @@ myapp.put('/app', middle.authenticate, middle.authenticate_app, app.put);
 // curl -X DELETE -u "testuser:123" -d "appname=test" http://api.localhost:8080/apps
 myapp.delete('/app', middle.authenticate, middle.authenticate_app, app.delete);
 
+// curl -u "testuser:123" -d "appname=test" http://api.localhost:8080/applogs
+myapp.get('/applogs/:appname', middle.authenticate, middle.authenticate_app, app.logs);
+
 // APP NPM Handlers
 var npm = require('./lib/npm');
 // http://user:pass@api.localhost:8080/appnpm
@@ -184,27 +187,6 @@ myapp.post('/appdomains', function(req, res, next) {
 });
 
 
-myapp.get('/applogs/:appname', function(req, res, next) {
-  var appname = req.param("appname").toLowerCase();
-//  var num = parseInt(req.param("num"));
-  authenticate_app(req.headers.authorization, appname, res, function (user, app) {
-    var app_user_home = config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + user._id + '/' + app.repo_id;
-    fs.readFile(app_user_home + '/error.log', function (err, body) {
-      if (err) {
-        var code = 500;
-        var resp = {error: "Failed to read error log."};
-      } else {
-        var code = 200;
-        var lines = body.toString().split("\n");
-        lines = lines.slice(-100);
-        var resp = {success: true, lines: lines};
-      }
-      res.writeHead(code, {'Content-Type': 'application/json'});
-      res.write(JSON.stringify(resp) + '\n');
-      res.end();
-    });
-  });
-});
 
 
 
