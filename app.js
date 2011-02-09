@@ -43,50 +43,50 @@ myapp.get('/', function(req, res, next){
 });
 
 // Status API
-// http://localhost:8080/status 
-// curl http://localhost:8080/status
+// http://localhost:4001/status 
+// curl http://localhost:4001/status
 var status = require('./lib/status');
 myapp.get('/status', status.get);
 
 // New coupon request
-// curl -X POST -d "email=dan@nodester.com" http://localhost:8080/coupon
+// curl -X POST -d "email=dan@nodester.com" http://localhost:4001/coupon
 var coupon = require('./lib/coupon');
 myapp.post('/coupon', coupon.post);
 
-// curl http://localhost:8080/unsent
+// curl http://localhost:4001/unsent
 myapp.get('/unsent', coupon.unsent);
 
 
 // New user account registration
-// curl -X POST -d "user=testuser&password=123&email=chris@nodefu.com&coupon=hiyah" http://localhost:8080/user
-// curl -X POST -d "user=me&password=123&coupon=hiyah" http://localhost:8080/user
+// curl -X POST -d "user=testuser&password=123&email=chris@nodefu.com&coupon=hiyah" http://localhost:4001/user
+// curl -X POST -d "user=me&password=123&coupon=hiyah" http://localhost:4001/user
 var user = require('./lib/user');
 myapp.post('/user', user.post);
 
-// api.localhost requires basic auth to access this section
+// localhost requires basic auth to access this section
 // Edit your user account 
-// curl -X PUT -u "testuser:123" -d "password=test&rsakey=1234567" http://api.localhost:8080/user
+// curl -X PUT -u "testuser:123" -d "password=test&rsakey=1234567" http://localhost:4001/user
 myapp.put('/user', middle.authenticate, user.put);
 
 // Delete your user account 
-// curl -X DELETE -u "testuser:123" http://api.localhost:8080/user
+// curl -X DELETE -u "testuser:123" http://localhost:4001/user
 myapp.delete('/user', middle.authenticate, user.delete);
 
 // All Applications info
-// http://chris:123@api.localhost:8080/apps
-// curl -u "testuser:123" http://api.localhost:8080/apps
+// http://chris:123@localhost:4001/apps
+// curl -u "testuser:123" http://localhost:4001/apps
 var apps = require('./lib/apps');
 myapp.get('/apps', middle.authenticate, apps.get);
 
 
 var app = require('./lib/app');
 // Application info
-// http://chris:123@api.localhost:8080/app/<appname>
-// curl -u "testuser:123" http://api.localhost:8080/app/<appname>
+// http://chris:123@localhost:4001/app/<appname>
+// curl -u "testuser:123" http://localhost:4001/app/<appname>
 myapp.get('/app/:appname', middle.authenticate, middle.authenticate_app, app.get);
 
 // Create node app 
-// curl -X POST -u "testuser:123" -d "appname=test&start=hello.js" http://api.localhost:8080/apps
+// curl -X POST -u "testuser:123" -d "appname=test&start=hello.js" http://localhost:4001/apps
 myapp.post('/app', middle.authenticate, app.post);
 
 
@@ -97,101 +97,33 @@ myapp.get('/app_restart', app.app_restart);
 // start=hello.js - To update the initial run script
 // running=true - To Start the app
 // running=false - To Stop the app
-// curl -X PUT -u "testuser:123" -d "appname=test&start=hello.js" http://api.localhost:8080/app
-// curl -X PUT -u "testuser:123" -d "appname=test&running=true" http://api.localhost:8080/app
-// curl -X PUT -u "testuser:123" -d "appname=test&running=false" http://api.localhost:8080/app
-// curl -X PUT -u "testuser:123" -d "appname=test&running=restart" http://api.localhost:8080/app
+// curl -X PUT -u "testuser:123" -d "appname=test&start=hello.js" http://localhost:4001/app
+// curl -X PUT -u "testuser:123" -d "appname=test&running=true" http://localhost:4001/app
+// curl -X PUT -u "testuser:123" -d "appname=test&running=false" http://localhost:4001/app
+// curl -X PUT -u "testuser:123" -d "appname=test&running=restart" http://localhost:4001/app
 // TODO - Fix this function, it's not doing callbacking properly so will return JSON in the wrong state!
 myapp.put('/app', middle.authenticate, middle.authenticate_app, app.put);
 
 // Delete your nodejs app 
-// curl -X DELETE -u "testuser:123" -d "appname=test" http://api.localhost:8080/apps
+// curl -X DELETE -u "testuser:123" -d "appname=test" http://localhost:4001/apps
 myapp.delete('/app', middle.authenticate, middle.authenticate_app, app.delete);
 
-// curl -u "testuser:123" -d "appname=test" http://api.localhost:8080/applogs
+// curl -u "testuser:123" -d "appname=test" http://localhost:4001/applogs
 myapp.get('/applogs/:appname', middle.authenticate, middle.authenticate_app, app.logs);
 
 // APP NPM Handlers
 var npm = require('./lib/npm');
-// http://user:pass@api.localhost:8080/appnpm
-// http://user:pass@api.localhost:8080/npm
+// curl -X POST -u "testuser:123" -d "appname=test&package=express" http://localhost:4001/appnpm
+// curl -X POST -u "testuser:123" -d "appname=test&package=express" http://localhost:4001/npm
+// curl -X POST -u "testuser:123" -d "appname=test&package=express,express-extras,foo" http://localhost:4001/npm
 myapp.post('/appnpm', middle.authenticate, middle.authenticate_app, npm.post);
 myapp.post('/npm', middle.authenticate, middle.authenticate_app, npm.post);
 
-/*{{{
-myapp.post('/appdomains', function(req, res, next) {
-  var appname = req.param("appname").toLowerCase();
-  var action = req.param("action");
-  var domain = req.param("domain");
-  authenticate_app(req.headers.authorization, appname, res, function (user, app) {
-    switch (action) {
-      case "add":
-        var gooddomain = lib.checkDomain(domain);
-        if (gooddomain === true) {
-          request({uri:couch_loc + 'aliasdomains/' + domain, method:'GET', headers:h}, function (err, response, body) {
-            var doc = JSON.parse(body);
-            if (doc._id){
-              res.writeHead(400, { 'Content-Type': 'application/json' });
-              res.write('{"status": "failure - domain already exists"}\n');
-              res.end();
-            } else {
-              request({uri:couch_loc + 'aliasdomains', method:'POST', body: JSON.stringify({_id: domain, appname: appname}), headers: h}, function (err, response, body) {
-                res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.write('{"status": "success", "message": "Domain added."}\n');
-                res.end();
-              });
-            }
-          });
-        } else {
-          res.writeHead(400, {'Content-Type': 'application/json'});
-          res.write('{"status": "failure - ' + gooddomain + '"}\n');
-          res.end();
-        }
-        break;
-      case "delete":
-        var gooddomain = lib.checkDomain(domain);
-        if (gooddomain === true) {
-          request({uri:couch_loc + 'aliasdomains/' + domain, method:'GET', headers:h}, function (err, response, body) {
-            var doc = JSON.parse(body);
-            if (doc._id) {
-              if (doc.appname == appname) {
-                request({uri:couch_loc + 'aliasdomains/' + domain + '?rev=' + doc._rev, method:'DELETE', headers:h}, function (err, response, body) {
-                  res.writeHead(200, { 'Content-Type': 'application/json' });
-                  res.write('{"status": "success", "message": "Domain deleted."}\n');
-                  res.end();
-                });
-              } else {
-                res.writeHead(400, { 'Content-Type': 'application/json' });
-                res.write('{"status": "failure - domain is not for this app."}\n');
-                res.end();
-              }
-            } else {
-                res.writeHead(400, { 'Content-Type': 'application/json' });
-                res.write('{"status": "failure - domain not found."}\n');
-                res.end();
-            }
-          });
-        } else {
-          res.writeHead(400, {'Content-Type': 'application/json'});
-          res.write('{"status": "failure - ' + gooddomain + '"}\n');
-          res.end();
-        }
-        break;
-      default:
-        res.writeHead(400, {'Content-Type': 'application/json'});
-        res.write('{"status": "failure - invalid action parameter"}\n');
-        res.end();
-        break;
-    }
-  });
-});
-
-
-
-
-
-
-}}}*/
+//TODO this should be .post and .delete, there should be no action..
+// curl -X POST -u "testuser:123" -d "appname=test&domain=<domainname>&action=add" http://localhost:4001/npm
+// curl -X POST -u "testuser:123" -d "appname=test&domain=<domainname>&action=delete" http://localhost:4001/npm
+var domains = require('./lib/domains');
+myapp.post('/appdomains', middle.authenticate, middle.authenticate_app, domains.post);
 
 
 myapp.use(express.errorHandler({ showStack: true }));
