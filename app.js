@@ -108,59 +108,14 @@ myapp.put('/app', middle.authenticate, middle.authenticate_app, app.put);
 // curl -X DELETE -u "testuser:123" -d "appname=test" http://api.localhost:8080/apps
 myapp.delete('/app', middle.authenticate, middle.authenticate_app, app.delete);
 
-/*{{{
 // APP NPM Handlers
+var npm = require('./lib/npm');
+// http://user:pass@api.localhost:8080/appnpm
 // http://user:pass@api.localhost:8080/npm
+myapp.post('/appnpm', middle.authenticate, middle.authenticate_app, npm.post);
+myapp.post('/npm', middle.authenticate, middle.authenticate_app, npm.post);
 
-myapp.post('/appnpm', function(req, res, next) {
-  var appname = req.param("appname").toLowerCase();
-  var action = req.param("action");
-  var package = req.param("package");
-  authenticate_app(req.headers.authorization, appname, res, function (user, app) {
-    var good_action = true;
-    switch (action) {
-      case "install":
-        break;
-      case "update":
-        break;
-      case "uninstall":
-        break;
-      default:
-        good_action = false;
-        break;
-    }
-
-    (function(){
-    if(good_action === true) {
-      var app_user_home = config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + user._id + '/' + app.repo_id;
-      sys.puts(action + " " + package + " into " + app_user_home);
-      var cmd = 'npm ' + action + ' ' + package + ' --root ' + app_user_home + '/.node_libraries --binroot ' + app_user_home + '/.npm_bin --manpath ' + app_user_home + '/.npm_man';
-      var pr = exec(cmd, function (err, stdout, stderr) {
-        var rtv = "stdout: " + stdout + "\nstderr: " + stderr;
-        res.writeHead(200, {'Content-Type': 'application/json'});
-        res.write(JSON.stringify({"status": 'success', output: rtv}) + '\n');
-        res.end();
-      });
-/*
-      Why oh why doesn't this work.. Still the code above is, so that's good for me!
-      var app_user_home = config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + user._id + '/' + app.repo_id;
-      var n = new npmwrapper();
-      n.setup(app_user_home + '/.node_libraries', app_user_home + '/.npm_bin', app_user_home + '/.npm_man', action, package);
-      n.run(function (output) {
-        res.writeHead(200, {'Content-Type': 'application/json'});
-        res.write(JSON.stringify({"status": 'success', output: output}) + '\n');
-        res.end();
-      });
-* /
-    } else {
-      res.writeHead(400, {'Content-Type': 'application/json'});
-      res.write('{"status": "failure - invalid action parameter"}\n');
-      res.end();
-    }
-    })();
-  });
-});
-
+/*{{{
 myapp.post('/appdomains', function(req, res, next) {
   var appname = req.param("appname").toLowerCase();
   var action = req.param("action");
