@@ -5,7 +5,7 @@ var
   fs = require('fs'),
   sys = require('sys'),
   request = require('request'),
-  Logger = require('../classes/logger').logger
+  Logger = require('../lib/logger').logger
 ;
 
 require.paths.shift();
