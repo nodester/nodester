@@ -90,6 +90,6 @@ function checkDomain(nname) {
 exports.checkDomain = checkDomain;
 
 var escape_packages = function (str) {
-  return str.replace(/[^a-zA-Z0-9 \-_=<>@]+/g,'');
+  return str.replace(/[^a-zA-Z0-9 \.\-_=<>@]+/g,'');
 };
 exports.escape_packages = escape_packages;
