@@ -6,7 +6,7 @@ This app runs on port 80 and forwards traffic to the appropriate node app
 
 */
 
-var httpProxy = require('../lib/3rdparty/http-proxy'),
+var httpProxy = require('../lib/3rdparty/node-http-proxy'),
     https = require('https'),
     url = require('url'),
     sys = require('sys'),
