@@ -7,7 +7,6 @@ This app runs on port 80 and forwards traffic to the appropriate node app
 */
 
 var httpProxy = require('../lib/3rdparty/node-http-proxy'),
-    https = require('https'),
     url = require('url'),
     sys = require('sys'),
     fs = require('fs'),
@@ -27,6 +26,7 @@ lib.update_proxytable_map(function (err) {
       console.log('updateRoutes fired');
     });
     if (config.opt.enable_ssl === true) {
+      var https = require('https');
       var options = {
         ca: fs.readFileSync(config.opt.app_dir + '/' + config.opt.ssl_ca_file),
         key: fs.readFileSync(config.opt.app_dir + '/' + config.opt.ssl_key_file),
