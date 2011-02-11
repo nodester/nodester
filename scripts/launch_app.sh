@@ -7,5 +7,7 @@ APPSTART="${4}";
 APPPORT="${5}";
 APPHOST="${6}";
 APPNAME="${7}";
-
-exec /usr/local/bin/node ${BASEDIR}/scripts/launch_chrooted_app.js ${USERN} ${APPHOME} ${APPSTART} ${APPPORT} ${APPHOST} ${APPNAME};
+export HOME=/var/nodester;
+ID=$( id -u ${USERN} );
+echo $ID;
+exec /usr/bin/node ${BASEDIR}/scripts/launch_chrooted_app.js ${ID} ${APPHOME} ${APPSTART} ${APPPORT} ${APPHOST} ${APPNAME};

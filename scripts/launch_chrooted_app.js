@@ -28,7 +28,6 @@ logger.setup(app_name, function (err) {
 */
   daemontools.chroot(chroot_dir);
   var pid = daemontools.start(true);
-  // daemontools.setreuid_username(effective_user);
   daemontools.setreuid(effective_user);
   daemontools.lock("/.app.pid");
   fs.chmodSync("/.app.pid", 0666);
