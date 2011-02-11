@@ -42,7 +42,8 @@ lib.update_proxytable_map(function (err) {
     }
     var child = exec('id -u ' + config.opt.userid, function (err, stdout, stderr) {
       daemontools.setreuid(parseInt(stdout));
-    }
+      sys.puts('Switched to ' + config.opt.userid + '.');
+    });
     sys.puts('Nodester started on port 80');
   }
 });
