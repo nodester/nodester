@@ -1,5 +1,4 @@
 .bash_history
-apps/*
 *.swp
 .ssh/*
 .viminfo

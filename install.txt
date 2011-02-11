@@ -7,11 +7,11 @@ Dependencies:
   node.js Modules:
     http-proxy
     express
-    # node-base64
     request
     npm-wrapper
     daemon-tools
     cradle
+    nodemon
 
 Installation:
   Install node.js
@@ -44,14 +44,8 @@ Installation:
   Either install CouchDB or get a CouchOne account
 
   Install node-module dependencies
-    for X in http-proxy express node-base64 npm-wrapper request daemon-tools cradle; do npm install ${X}; done
+    for X in http-proxy express node-base64 npm-wrapper request daemon-tools cradle nodemon; do npm install ${X}; done
   
-  (Fix npm install issues)
-  cd ~/.node_libraries
-  cp .npm/node-base64/0.0.1/package/build/default/base64.node ./
-  cp .npm/daemon-tools/active/package/build/default/daemon-tools.node ./
-  cp .npm/daemon-tools/active/package/build/default/daemon-tools.node ./daemon.node
-
   Get nodester
     cd ~
     git clone git://github.com/nodester/nodester.git
