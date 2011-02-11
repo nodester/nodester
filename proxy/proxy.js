@@ -6,12 +6,12 @@ This app runs on port 80 and forwards traffic to the appropriate node app
 
 */
 
-var httpProxy = require('http-proxy'),
+var httpProxy = require('../lib/3rdparty/http-proxy'),
     https = require('https'),
     url = require('url'),
     sys = require('sys'),
     fs = require('fs'),
-    lib = require('../lib'),
+    lib = require('../lib/lib'),
     daemontools = require('daemon-tools')
     config = require('../config')
 ;

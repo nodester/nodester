@@ -5,7 +5,8 @@ Dependencies:
   npm
   curl
   node.js Modules:
-    http-proxy
+    # http-proxy -- Included in libs/3rdparty due to changes at are not in upstream yet
+    pool
     express
     request
     npm-wrapper
@@ -44,7 +45,7 @@ Installation:
   Either install CouchDB or get a CouchOne account
 
   Install node-module dependencies
-    for X in http-proxy express node-base64 npm-wrapper request daemon-tools cradle nodemon; do npm install ${X}; done
+    for X in pool express npm-wrapper request daemon-tools cradle nodemon; do npm install ${X}; done
   
   Get nodester
     cd ~
