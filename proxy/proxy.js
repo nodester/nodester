@@ -12,7 +12,8 @@ var httpProxy = require('../lib/3rdparty/http-proxy'),
     sys = require('sys'),
     fs = require('fs'),
     lib = require('../lib/lib'),
-    daemontools = require('daemon-tools')
+    daemontools = require('daemon-tools'),
+    exec = require('child_process').exec,
     config = require('../config')
 ;
 
@@ -20,8 +21,7 @@ lib.update_proxytable_map(function (err) {
   if (err) {
     console.log("err: " + JSON.stringify(err));
   } else {
-    // var proxy = httpProxy.createServer({router: config.opt.proxy_table_file});
-    var proxy = httpProxy.createServer({router: config.opt.proxy_table_file, silent: false, hostname_only: true});
+    var proxy = httpProxy.createServer({router: config.opt.proxy_table_file, silent: true, hostname_only: true});
     proxy.listen(80);
     proxy.addListener('updateRoutes', function () {
       console.log('updateRoutes fired');
@@ -40,7 +40,9 @@ lib.update_proxytable_map(function (err) {
       httpSsl.listen(443);
       sys.puts('Nodester started on port 443');
     }
-    daemontools.setreuid_username(config.opt.userid);
+    var child = exec('id -u ' + config.opt.userid, function (err, stdout, stderr) {
+      daemontools.setreuid(parseInt(stdout));
+    }
     sys.puts('Nodester started on port 80');
   }
 });
