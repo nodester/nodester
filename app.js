@@ -10,7 +10,7 @@ http://nodester.com
 var express = require('express'),
     url = require('url'),
     sys = require('sys'),
-    config = require("./lib/config"),
+    config = require("./config"),
     middle = require('./lib/middle');
 
 process.on('uncaughtException', function (err) {
@@ -21,7 +21,7 @@ var myapp = express.createServer();
 
 myapp.configure(function(){
   myapp.use(express.bodyDecoder());
-  myapp.use(express.staticProvider(__dirname + '/public'));
+  myapp.use(express.staticProvider(config.opt.public_html_dir));
   myapp.use(middle.error());
 });
 
