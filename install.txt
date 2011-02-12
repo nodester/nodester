@@ -1,7 +1,7 @@
 Nodester - A node.js hosting platform
 
 Dependencies:
-  node.js (Latest stable version 0.2.6)
+  node.js (Latest stable version 0.4.0)
   npm
   curl
   node.js Modules:
@@ -51,8 +51,6 @@ Installation:
     cd ~
     git clone git://github.com/nodester/nodester.git
     cd nodester
-    git submodule init
-    git submodule update
 
   (Need to do these steps as the non-nodester user)
   Ensure that the ownership of nodester/proxy is all root for security
