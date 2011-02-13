@@ -10,4 +10,5 @@ APPNAME="${7}";
 export HOME=/var/nodester;
 ID=$( id -u ${USERN} );
 echo $ID;
-exec /usr/bin/node ${BASEDIR}/scripts/launch_chrooted_app.js ${ID} ${APPHOME} ${APPSTART} ${APPPORT} ${APPHOST} ${APPNAME};
+node=`which node`
+exec ${node} ${BASEDIR}/scripts/launch_chrooted_app.js ${ID} ${APPHOME} ${APPSTART} ${APPPORT} ${APPHOST} ${APPNAME};
