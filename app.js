@@ -10,7 +10,7 @@ http://nodester.com
 var express = require('express'),
     url = require('url'),
     sys = require('sys'),
-    config = require("./config"),
+    config = require('./config'),
     middle = require('./lib/middle');
 
 process.on('uncaughtException', function (err) {
