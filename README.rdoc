@@ -1,6 +1,8 @@
-= Nodester (http://nodester.com) = Open Source Node.JS Hosting Platform with a RESTful API and CLI
+= Nodester is an Open Source Node.JS Hosting Platform with a RESTful API and CLI
 
 Nodester is a free and open source Node.JS hosting platform and service for managing multi-tenant hosted NodeJS apps.  It consists of an RESTful API that allows developers to create and manage NodeJS apps online as well as a command line interface to simply steps instead of using cURL.  NodeJS apps names are assigned as subdomains that proxy to ports with an assigned addresses.  Git is used to push updates to Nodester and instances (dynos) are launched using post-receive hooks so that they run until you stop them.
+
+Give our platform a spin at http://nodester.com
 
 == Installing Nodester on Amazon EC2, Rackspace, GoGrid, or your own datacenter services
 
@@ -96,7 +98,6 @@ save etc/hosts and flush DNS like this: sudo dscacheutil -flushcache
 
 We are always looking for areas to improve Nodester!  Here are a few of the big ideas on our list
 
-* Add SSL support
 * Setup public AMI running Nodester
 * Ability to start app with additional instances (dynos)
 
