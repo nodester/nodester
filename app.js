@@ -113,6 +113,7 @@ myapp.post('/npm', middle.authenticate, middle.authenticate_app, npm.post);
 // curl -X POST -u "testuser:123" -d "appname=test&domain=<domainname>&action=delete" http://localhost:4001/npm
 var domains = require('./lib/domains');
 myapp.post('/appdomains', middle.authenticate, middle.authenticate_app, domains.post);
+myapp.get('/appdomains', middle.authenticate, domains.get);
 
 
 myapp.use(express.errorHandler({ showStack: true }));
