@@ -14,7 +14,7 @@ var express = require('express'),
     middle = require('./lib/middle');
 
 process.on('uncaughtException', function (err) {
-   console.log("uncaughtException" + sys.inspect(err));
+   console.log(err.stack);
 });
 
 var myapp = express.createServer();
