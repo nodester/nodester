@@ -2,4 +2,8 @@
 
 cd `dirname $0`
 
-node ../scripts/start_hosted_apps.js restart
+./node-config.js
+wait
+source ./.nodester.config
+
+node $APPDIR/scripts/start_hosted_apps.js restart "$@"

@@ -6,6 +6,7 @@ var exec = require('child_process').exec;
 require('colors');
 
 var action = process.argv[2];
+var all = process.argv[3] || false;
 var past = '';
 
 switch (action) {
@@ -89,7 +90,7 @@ var next = function() {
 var start_running_apps = function (apps_arr) {
     for(var i in apps_arr) {
         var doc = apps_arr[i].value;
-        if (doc.running == 'true') {
+        if (doc.running == 'true' || all) {
             count++;
             apps.push(doc);
         }
