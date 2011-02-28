@@ -14,7 +14,7 @@ source ./.nodester.config
 export HOME=$HOME_DIR;
 export PATH="/usr/local/bin:${PATH}";
 
-APPDIR=$APP_DIR
+APPDIR=$APP_DIR/proxy
 
 FHOME=$HOME/forever-proxy/
 
