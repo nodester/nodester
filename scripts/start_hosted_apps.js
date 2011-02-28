@@ -1,6 +1,5 @@
 var http = require('http');
 var config = require("../config");
-var sys = require('sys');
 var exec = require('child_process').exec;
 
 require('colors');
