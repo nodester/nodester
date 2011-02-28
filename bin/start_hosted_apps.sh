@@ -6,4 +6,4 @@ cd `dirname $0`
 wait
 source ./.nodester.config
 
-node $APPDIR/scripts/start_hosted_apps.js start "$@"
+node $APP_DIR/scripts/start_hosted_apps.js start "$@"
