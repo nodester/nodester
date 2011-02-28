@@ -6,17 +6,21 @@ var exec = require('child_process').exec;
 require('colors');
 
 var action = process.argv[2];
+var past = '';
 
 switch (action) {
     case 'start':
         verb = 'Starting'.green;
+        past = 'started';
         break;
     case 'stop':
         verb = 'Stopping'.red.bold;
+        past = 'stopped';
         break;
     default:
         action = 'restart';
         verb = 'Restarting'.yellow;
+        past = 'restarted';
         break;
 }
 
@@ -67,13 +71,29 @@ request.on('response', function (response) {
   });
 });
 
-var start_running_apps = function (apps_arr) {
-  for(var i in apps_arr) {
-    var doc = apps_arr[i].value;
-    if (doc.running == 'true') {
+var apps = [], count = 0;
+
+var next = function() {
+    if (apps.length) {
+        var doc = apps.pop();
         console.log(verb + ': [' + (doc.username + '/' + doc.repo_id + '/' + doc.start + ':' + doc.port).blue + ']');
-        var cmd = 'curl "http:/'+'/127.0.0.1:4001/app_' + action + '?repo_id=' + doc.repo_id + '&restart_key=' + config.opt.restart_key + '"  >/dev/null 2>&1 &';
-        var child = exec(cmd, function (error, stdout, stderr) {});
+        var cmd = 'curl "http:/'+'/127.0.0.1:4001/app_' + action + '?repo_id=' + doc.repo_id + '&restart_key=' + config.opt.restart_key + '"  >/dev/null 2>&1';
+        var child = exec(cmd, function (error, stdout, stderr) {
+            next();
+        });
+    } else {
+        console.log(('All ' + count + ' apps ' + past).bold);
     }
-  }
+}
+
+var start_running_apps = function (apps_arr) {
+    for(var i in apps_arr) {
+        var doc = apps_arr[i].value;
+        if (doc.running == 'true') {
+            count++;
+            apps.push(doc);
+        }
+    }
+    console.log(verb + ' ' + count + ' apps..');
+    next();
 };
