@@ -5,12 +5,16 @@ if [ "$USER" != "root" ]; then
     exit
 fi
 
+cd `dirname $0`
 
-export HOME=/var/nodester;
+./node-config.js
+wait
+source ./.nodester.config
+
+export HOME=$HOME_DIR;
 export PATH="/usr/local/bin:${PATH}";
 
-APPDIR=$HOME/nodester/proxy
-
+APPDIR=$APP_DIR
 
 FHOME=$HOME/forever-proxy/
 
@@ -28,5 +32,4 @@ if [ -f $FHOME/logs/forever.log ]; then
 fi
 
 ulimit -n 99999;
-echo "forever start -l forever.log -o app-out.log -e app-err.log -d $APPDIR -p $FHOME proxy.js"
 forever start -l logs/forever.log -o $FHOME/logs/proxy-out.log -e $FHOME/logs/proxy-err.log -d $APPDIR -p $FHOME proxy.js
