@@ -1,0 +1,16 @@
+#!/bin/bash
+
+export HOME=/var/nodester;
+export PATH="/usr/local/bin:${PATH}";
+
+APPDIR=$HOME/nodester;
+
+
+FHOME=$HOME/forever-proxy
+
+
+if [ "$@" = ""]; then
+    forever list -p $FHOME
+else
+    forever "$@" -p $FHOME
+fi

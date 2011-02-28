@@ -1,8 +1,24 @@
 var http = require('http');
-// var base64_encode = require('base64').encode;
 var config = require("../config");
 var sys = require('sys');
 var exec = require('child_process').exec;
+
+require('colors');
+
+var action = process.argv[2];
+
+switch (action) {
+    case 'start':
+        verb = 'Starting'.green;
+        break;
+    case 'stop':
+        verb = 'Stopping'.red.bold;
+        break;
+    default:
+        action = 'restart';
+        verb = 'Restarting'.yellow;
+        break;
+}
 
 var couch_http = http.createClient(config.opt.couch_port, config.opt.couch_host);
 if (config.opt.couch_prefix.length > 0) {
@@ -55,10 +71,9 @@ var start_running_apps = function (apps_arr) {
   for(var i in apps_arr) {
     var doc = apps_arr[i].value;
     if (doc.running == 'true') {
-      var user_home = config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + doc.username;
-      var app_home = user_home + '/' + doc.repo_id;
-      var cmd = "sudo " + config.opt.app_dir + '/scripts/launch_app.sh ' + config.opt.app_dir + ' ' + config.opt.userid + ' ' + app_home + ' ' + doc.start + ' ' + doc.port + ' ' + '127.0.0.1' + ' ' + doc._id; 
-      var child = exec(cmd, function (error, stdout, stderr) {});
+        console.log(verb + ': [' + (doc.username + '/' + doc.repo_id + '/' + doc.start + ':' + doc.port).blue + ']');
+        var cmd = 'curl "http:/'+'/127.0.0.1:4001/app_' + action + '?repo_id=' + doc.repo_id + '&restart_key=' + config.opt.restart_key + '"  >/dev/null 2>&1 &';
+        var child = exec(cmd, function (error, stdout, stderr) {});
     }
   }
 };

@@ -1,24 +1,29 @@
 #!/usr/bin/env node
-var 
-  daemontools = require('daemon-tools'),
-  Script = process.binding('evals').Script,
-  fs = require('fs'),
-  util = require('util'),
-  Module = require('module')
-;
+var fs = require('fs'),
+    path = require('path'),
+    util = require('util'),
+    Script = process.binding('evals').Script,
+    Module = require('module');
 
 require.paths.shift();
 require.paths.shift();
+
+var config = JSON.parse(fs.readFileSync(path.join('.nodester', 'config.json'), encoding='utf8'));
+
+console.log(config);
+
+//These 3 lines ensure that we get the daemon-tools setup by the nodester user and not the
+// one available to root, since we are sudoed at this point
+require.paths.unshift(path.join(config.appdir, '../', '.node_libraries'));
 require.paths.unshift('/.node_libraries');
-process.argv.shift();
-process.argv.shift();
+var daemontools = require('daemon-tools');
 
-var effective_user = process.argv.shift();
-var chroot_dir = process.argv.shift();
-var exec_script = process.argv.shift();
-var app_port = parseInt(process.argv.shift());
-var app_host = process.argv.shift();
-var app_name = process.argv.shift();
+var effective_user = config.userid;
+var chroot_dir = config.apphome;
+var exec_script = config.start;
+var app_port = parseInt(config.port);
+var app_host = config.ip;
+var app_name = config.name;
 
 daemontools.chroot(chroot_dir);
 var pid = daemontools.start(true);
@@ -27,7 +32,7 @@ daemontools.lock("/.app.pid");
 fs.chmodSync("/.app.pid", 0666);
 var error_log_fd = fs.openSync('/error.log', 'w');
 process.on('uncaughtException', function (err) {
-  fs.write(error_log_fd, util.inspect(err));
+  fs.write(error_log_fd, err.stack);
 });
 daemontools.closeIO();
 
@@ -72,13 +77,15 @@ sandbox.process.on('uncaughtException', function (err) {
 });
 
 fs.readFile(exec_script, function (err, script_src) {
-  console.log('readFile');
-  if (err) {
-    console.log(err);
-    process.exit(1);
-  } else {
-    Script.runInNewContext(
-      script_src, sandbox, exec_script
-    );
-  }
+    try {
+      process.setuid(501);
+    } catch (err) {
+        console.log(err.stack);
+    }
+    if (err) {
+        console.log(err.stack);
+        process.exit(1);
+    } else {
+        Script.runInNewContext(script_src, sandbox, exec_script);
+    }
 });
