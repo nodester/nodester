@@ -95,6 +95,10 @@ var start_running_apps = function (apps_arr) {
             apps.push(doc);
         }
     }
-    console.log(verb + ' ' + count + ' apps..');
+    if (all) {
+        console.log(verb + ' ALL (' + count + ') apps..');
+    } else {
+        console.log(verb + ' ' + count + ' apps..');
+    }
     next();
 };
