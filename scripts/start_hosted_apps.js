@@ -78,7 +78,7 @@ var next = function() {
     if (apps.length) {
         var doc = apps.pop();
         console.log(verb + ': [' + (doc.username + '/' + doc.repo_id + '/' + doc.start + ':' + doc.port).blue + ']');
-        var cmd = 'curl "http:/'+'/127.0.0.1:4001/app_' + action + '?repo_id=' + doc.repo_id + '&restart_key=' + config.opt.restart_key + '"  >/dev/null 2>&1';
+        var cmd = 'curl "http:/'+'/127.0.0.1:4001/app_' + action + '?repo_id=' + doc.repo_id + '&restart_key=' + config.opt.restart_key + '"';
         var child = exec(cmd, function (error, stdout, stderr) {
             next();
         });
