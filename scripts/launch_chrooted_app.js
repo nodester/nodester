@@ -78,7 +78,7 @@ sandbox.process.on('uncaughtException', function (err) {
 
 fs.readFile(exec_script, function (err, script_src) {
     try {
-      process.setuid(501);
+      process.setuid(effective_user);
     } catch (err) {
         console.log(err.stack);
     }
