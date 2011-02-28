@@ -81,6 +81,8 @@ myapp.post('/app', middle.authenticate, app.post);
 
 // App backend restart handler
 myapp.get('/app_restart', app.app_restart);
+myapp.get('/app_start', app.app_start);
+myapp.get('/app_stop', app.app_stop);
 
 // Update node app
 // start=hello.js - To update the initial run script
