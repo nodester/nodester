@@ -74,9 +74,9 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
     var _resolve = require.resolve;
     sandbox.require = function(f) {
         if (f.indexOf('./') === 0) {
-            console.log('Nodester fixing require path', f); 
+            //console.log('Nodester fixing require path', f); 
             f = f.substring(1);
-            console.log('Nodester fixed require path', f); 
+            //console.log('Nodester fixed require path', f); 
         }   
         return _require.call(this, f); 
     };
@@ -86,9 +86,9 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
     }   
     sandbox.require.resolve = function(f) {
         if (f.indexOf('./') === 0) {
-            console.log('Nodester fixing require path', f); 
+            //console.log('Nodester fixing require path', f); 
             f = f.substring(1);
-            console.log('Nodester fixed require path', f); 
+            //console.log('Nodester fixed require path', f); 
         }   
         return _resolve.call(this, f); 
     };   
@@ -131,7 +131,7 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
         try {
             //Just to make sure the process is owned by the right users (overkill)
             process.setuid(config.userid);
-            console.log('Final user check (overkill)', process.getuid());
+            //console.log('Final user check (overkill)', process.getuid());
         } catch (err) {
             console.log(err.stack);
         }
@@ -139,7 +139,7 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
             console.log(err.stack);
             process.exit(1);
         } else {
-            console.log('Running script in new context');
+            console.log('Nodester wrapped script starting, ' new Date());
             Script.runInNewContext(script_src, sandbox, config.start);
         }
     });
