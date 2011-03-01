@@ -82,13 +82,18 @@ var next = function() {
         util.print(verb + ': [' + (doc.username + '/' + doc.repo_id + '/' + doc.start + ':' + doc.port).blue + ']');
         var cmd = 'curl "http:/'+'/127.0.0.1:4001/app_' + action + '?repo_id=' + doc.repo_id + '&restart_key=' + config.opt.restart_key + '"';
         var child = exec(cmd, function (error, stdout, stderr) {
-            var data = JSON.parse(stdout);
-            if (data.status.indexOf('failed') > -1) {
-                f++;
+            if (stdout) {
+                var data = JSON.parse(stdout);
+                if (data.status.indexOf('failed') > -1) {
+                    f++;
+                } else {
+                    g++;
+                }
+                util.print(' [' + ((data.status.indexOf('failed') > -1) ? bad.red.bold : good.bold.green) + ']\n');
             } else {
                 g++;
+                util.print(' [' + '!!'.yellow.bold + ']\n');
             }
-            util.print(' (' + ((data.status.indexOf('failed') > -1) ? bad.red.bold : good.bold.green) + ')\n');
             next();
         });
     } else {
