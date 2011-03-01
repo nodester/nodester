@@ -33,3 +33,5 @@ fi
 
 ulimit -n 99999;
 forever start -l logs/forever.log -o $FHOME/logs/proxy-out.log -e $FHOME/logs/proxy-err.log -d $APPDIR -p $FHOME proxy.js
+wait
+forever list -p $FHOME proxy.js
