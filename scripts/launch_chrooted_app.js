@@ -39,6 +39,7 @@ var error_log_fd = fs.openSync('/error.log', 'w');
 process.on('uncaughtException', function (err) {
   fs.write(error_log_fd, err.stack);
 });
+//This fails on AWS, not sure why???
 daemontools.closeIO();
 
 var sandbox = {

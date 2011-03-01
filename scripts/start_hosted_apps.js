@@ -1,5 +1,6 @@
 var http = require('http');
 var config = require("../config");
+var util = require('util');
 var exec = require('child_process').exec;
 
 require('colors');
@@ -71,18 +72,31 @@ request.on('response', function (response) {
   });
 });
 
-var apps = [], count = 0;
+var apps = [], count = 0, g = 0, f = 0,
+    good = "✔", bad = "✖";
+
 
 var next = function() {
     if (apps.length) {
         var doc = apps.pop();
-        console.log(verb + ': [' + (doc.username + '/' + doc.repo_id + '/' + doc.start + ':' + doc.port).blue + ']');
+        util.print(verb + ': [' + (doc.username + '/' + doc.repo_id + '/' + doc.start + ':' + doc.port).blue + ']');
         var cmd = 'curl "http:/'+'/127.0.0.1:4001/app_' + action + '?repo_id=' + doc.repo_id + '&restart_key=' + config.opt.restart_key + '"';
         var child = exec(cmd, function (error, stdout, stderr) {
+            var data = JSON.parse(stdout);
+            if (data.status.indexOf('failed') > -1) {
+                f++;
+            } else {
+                g++;
+            }
+            util.print(' (' + ((data.status.indexOf('failed') > -1) ? bad.red.bold : good.bold.green) + ')\n');
             next();
         });
     } else {
         console.log(('All ' + count + ' apps ' + past).bold);
+        console.log(g + ' apps ' + past + ' successfully');
+        if (f) {
+            console.log((f + ' apps failed to ' + action).red.bold);
+        }
     }
 }
 
@@ -101,3 +115,4 @@ var start_running_apps = function (apps_arr) {
     }
     next();
 };
+
