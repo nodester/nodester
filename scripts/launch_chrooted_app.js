@@ -27,7 +27,12 @@ var app_name = config.name;
 
 daemontools.chroot(chroot_dir);
 var pid = daemontools.start(true);
-daemontools.setreuid(effective_user);
+//Catches if effective_user is a username not a uid
+if (parseInt(effective_user) == effective_user) {
+    daemontools.setreuid(parseInt(effective_user, 10));
+} else {
+    daemontools.setreuid_username(effective_user);
+}
 daemontools.lock("/.app.pid");
 fs.chmodSync("/.app.pid", 0666);
 var error_log_fd = fs.openSync('/error.log', 'w');
