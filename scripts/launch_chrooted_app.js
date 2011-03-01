@@ -139,7 +139,7 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
             console.log(err.stack);
             process.exit(1);
         } else {
-            console.log('Nodester wrapped script starting, ' new Date());
+            console.log('Nodester wrapped script starting (' + process.pid + ') at ', new Date());
             Script.runInNewContext(script_src, sandbox, config.start);
         }
     });
