@@ -5,36 +5,28 @@ var fs = require('fs'),
     Script = process.binding('evals').Script,
     Module = require('module');
 
-require.paths.shift();
-require.paths.shift();
-
 var config = JSON.parse(fs.readFileSync(path.join('.nodester', 'config.json'), encoding='utf8'));
 
 console.log(config);
 
-//These 3 lines ensure that we get the daemon-tools setup by the nodester user and not the
+//These 3 lines ensure that we get the daemon setup by the nodester user and not the
 // one available to root, since we are sudoed at this point
 require.paths.unshift(path.join(config.appdir, '../', '.node_libraries'));
-require.paths.unshift('/.node_libraries');
-var daemontools = require('daemon');
+var daemon = require('daemon');
 
-var effective_user = config.userid;
-var chroot_dir = config.apphome;
-var exec_script = config.start;
 var app_port = parseInt(config.port);
 var app_host = config.ip;
-var app_name = config.name;
 
-console.log('chroot: ', chroot_dir);
-daemontools.chroot(chroot_dir);
+console.log('chroot: ', config.apphome);
+daemon.chroot(config.apphome);
 console.log('Starting Daemon');
-daemontools.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodester', 'pids', 'app.pid'), function(err, pid) {
+daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodester', 'pids', 'app.pid'), function(err, pid) {
 	if (err) {
 		console.log(err.stack);
 	}
 	console.log('Inside Daemon: ', pid);
-	console.log('Changing to user: ', effective_user);
-	daemontools.setreuid(effective_user);
+	console.log('Changing to user: ', config.userid);
+	daemon.setreuid(config.userid);
     console.log('User Changed: ', process.getuid());
     
     //Setup the errorlog
@@ -50,7 +42,7 @@ daemontools.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.
         require: require,
         console: console,
         module: {},
-        __filename: exec_script,
+        __filename: config.start,
         __dirname: "/",
         clearInterval: clearInterval,
         clearTimeout: clearTimeout,
@@ -60,12 +52,12 @@ daemontools.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.
 
     sandbox.module = new Module();
     sandbox.module.id = '.';
-    sandbox.module.filename = '/' + exec_script;
+    sandbox.module.filename = '/' + config.start;
     sandbox.module.paths = ['/'];
 
     sandbox.process.pid = pid;
     sandbox.process.installPrefix = '/';
-    sandbox.process.ARGV = ['node', exec_script];
+    sandbox.process.ARGV = ['node', config.start];
     sandbox.process.argv = sandbox.process.ARGV;
     sandbox.process.env = sandbox.process.ENV = {
       'app_port': app_port,
@@ -78,7 +70,7 @@ daemontools.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.
     };
     sandbox.require.main = sandbox.module;
     sandbox.require.cache = {};
-    sandbox.require.cache['/' + exec_script] = sandbox.module;
+    sandbox.require.cache['/' + config.start] = sandbox.module;
     sandbox.require.paths = ['/.node_libraries'];
 
     //Simple HTTP sandbox to make sure that http listens on the assigned port.
@@ -109,10 +101,11 @@ daemontools.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.
         fs.write(error_log_fd, util.inspect(err));
     });
 
-    fs.readFile(exec_script, function (err, script_src) {
+    fs.readFile(config.start, function (err, script_src) {
         try {
             //Just to make sure the process is owned by the right users (overkill)
-            process.setuid(effective_user);
+            process.setuid(config.userid);
+            console.log('Final user check (overkill)', process.getuid());
         } catch (err) {
             console.log(err.stack);
         }
@@ -120,7 +113,8 @@ daemontools.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.
             console.log(err.stack);
             process.exit(1);
         } else {
-            Script.runInNewContext(script_src, sandbox, exec_script);
+            console.log('Running script in new context');
+            Script.runInNewContext(script_src, sandbox, config.start);
         }
     });
 //End Daemon
