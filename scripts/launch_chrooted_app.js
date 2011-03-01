@@ -68,6 +68,32 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
     sandbox.process.stdout.write = sandbox.console.warn = sandbox.console.error = function (args) {
       fs.write(error_log_fd, args.toString());
     };
+    
+    //this should make require('./lib/foo'); work properly
+    var _require = require;
+    var _resolve = require.resolve;
+    sandbox.require = function(f) {
+        if (f.indexOf('./') === 0) {
+            console.log('Nodester fixing require path', f); 
+            f = f.substring(1);
+            console.log('Nodester fixed require path', f); 
+        }   
+        return _require.call(this, f); 
+    };
+
+    for (var i in _require) {
+        sandbox.require[i] = _require[i];
+    }   
+    sandbox.require.resolve = function(f) {
+        if (f.indexOf('./') === 0) {
+            console.log('Nodester fixing require path', f); 
+            f = f.substring(1);
+            console.log('Nodester fixed require path', f); 
+        }   
+        return _resolve.call(this, f); 
+    };   
+
+
     sandbox.require.main = sandbox.module;
     sandbox.require.cache = {};
     sandbox.require.cache['/' + config.start] = sandbox.module;
