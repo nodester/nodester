@@ -80,8 +80,9 @@ console.log = function() {}; //Commenting this out so the debugging from ../lib/
 
 var next = function() {
     if (apps.length) {
+        var len = apps.length;
         var doc = apps.pop();
-        util.print(verb + ': [' + (doc.username + '/' + doc.repo_id + '/' + doc.start + ':' + doc.port).blue + ']');
+        util.print(verb + ' (' + len + '): [' + (doc.username + '/' + doc.repo_id + '/' + doc.start + ':' + doc.port).blue + ']');
         var method = 'app_' + action;
         app[method]({
             query: {
