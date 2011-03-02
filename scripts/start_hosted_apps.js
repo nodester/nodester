@@ -58,8 +58,8 @@ request.end();
 request.on('response', function (response) {
   var buff = '';
   if (response.statusCode != 200) {
-    console.log(response.statusCode);
-    console.log('Error: Cannot query CouchDB');
+    util.log(response.statusCode);
+    util.log('Error: Cannot query CouchDB');
     process.exit(1);
   }
   response.setEncoding('utf8');
@@ -75,32 +75,41 @@ request.on('response', function (response) {
 var apps = [], count = 0, g = 0, f = 0,
     good = "✔", bad = "✖";
 
+console.log = function() {}; //Commenting this out so the debugging from ../lib/app doesn't display
 
 var next = function() {
     if (apps.length) {
         var doc = apps.pop();
         util.print(verb + ': [' + (doc.username + '/' + doc.repo_id + '/' + doc.start + ':' + doc.port).blue + ']');
-        var cmd = 'curl "http:/'+'/127.0.0.1:4001/app_' + action + '?repo_id=' + doc.repo_id + '&restart_key=' + config.opt.restart_key + '"';
-        var child = exec(cmd, function (error, stdout, stderr) {
-            if (stdout) {
-                var data = JSON.parse(stdout);
-                if (data.status.indexOf('failed') > -1) {
-                    f++;
+        var method = 'app_' + action;
+        app[method]({
+            query: {
+                repo_id: doc.repo_id,
+                restart_key: config.opt.restart_key
+            }
+        }, {
+            send: function(data) {
+                if (data instanceof Object) {
+                    if (data.status.indexOf('failed') > -1) {
+                        f++;
+                    } else {
+                        g++;
+                    }
+                    util.print(' [' + ((data.status.indexOf('failed') > -1) ? bad.red.bold : good.bold.green) + ']\n');
                 } else {
                     g++;
+                    util.print(' [' + '!!'.yellow.bold + ']\n');
                 }
-                util.print(' [' + ((data.status.indexOf('failed') > -1) ? bad.red.bold : good.bold.green) + ']\n');
-            } else {
-                g++;
-                util.print(' [' + '!!'.yellow.bold + ']\n');
+                //Let the process fire up and daemonize before starting the next one
+                setTimeout(next, 500);
             }
-            next();
         });
+        
     } else {
-        console.log(('All ' + count + ' apps ' + past).bold);
-        console.log(g + ' apps ' + past + ' successfully');
+        util.log(('All ' + count + ' apps ' + past).bold);
+        util.log(g + ' apps ' + past + ' successfully');
         if (f) {
-            console.log((f + ' apps failed to ' + action).red.bold);
+            util.log((f + ' apps failed to ' + action).red.bold);
         }
     }
 }
@@ -114,9 +123,9 @@ var start_running_apps = function (apps_arr) {
         }
     }
     if (all) {
-        console.log(verb + ' ALL (' + count + ') apps..');
+        util.log(verb + ' ALL (' + count + ') apps..');
     } else {
-        console.log(verb + ' ' + count + ' apps..');
+        util.log(verb + ' ' + count + ' apps..');
     }
     next();
 };
