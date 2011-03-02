@@ -9,11 +9,16 @@ This app runs on port 80 and forwards traffic to the appropriate node app
 var httpProxy = require('../lib/3rdparty/node-http-proxy'),
     url = require('url'),
     fs = require('fs'),
+    path = require('path'),
     lib = require('../lib/lib'),
-    daemontools = require('daemon-tools'),
     exec = require('child_process').exec,
     config = require('../config')
 ;
+
+require.paths.unshift(path.join(config.app_dir, '../', '.node_libraries'));
+
+var daemon = require('daemon');
+
 
 lib.update_proxytable_map(function (err) {
   if (err) {
@@ -40,8 +45,8 @@ lib.update_proxytable_map(function (err) {
       console.log('Nodester started on port 443');
     }
     var child = exec('id -u ' + config.opt.userid, function (err, stdout, stderr) {
-      daemontools.setreuid(parseInt(stdout));
-      console.log('Switched to ' + config.opt.userid + '.');
+        daemon.setreuid(parseInt(stdout));
+        console.log('Switched to ' + process.getuid() + '.');
     });
     console.log('Nodester started on port 80');
   }

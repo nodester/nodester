@@ -25,6 +25,6 @@ fi
 
 
 wait
-forever start -l logs/forever.log -o $FHOME/logs/app-out.log -e $FHOME/logs/app-err.log -d $APPDIR -p $FHOME app.js
+forever start -m 10 -l logs/forever.log -o $FHOME/logs/app-out.log -e $FHOME/logs/app-err.log -d $APPDIR -p $FHOME app.js
 wait
 forever list -p $FHOME app.js

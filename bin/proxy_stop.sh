@@ -12,7 +12,7 @@ wait
 source ./.nodester.config
 
 export HOME=$HOME_DIR;
-export PATH="/usr/local/bin:${PATH}";
+export PATH="/usr/local/bin:${HOME}/bin:${PATH}";
 
 APPDIR=$APP_DIR
 
