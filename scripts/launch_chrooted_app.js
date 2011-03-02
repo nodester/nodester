@@ -36,6 +36,14 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
 	process.on('uncaughtException', function (err) {
 	    fs.write(error_log_fd, err.stack);
 	});
+    
+    var etc = path.join(chroot_dir, 'etc');
+    //create /etc inside the chroot
+    if (!path.existsSync(etc)) {
+        fs.mkdirSync(etc, 0777);
+    }
+    //Update resolve.conf with Googles DNS servers..
+    fs.writeFileSync(path.join(etc, 'resolv.conf'), 'nameserver 8.8.8.8\nnameserver 8.8.4.4', , encoding='utf8');
 
     //Setup the main sandbox..
     var sandbox = {
