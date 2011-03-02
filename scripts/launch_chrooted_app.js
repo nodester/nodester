@@ -89,7 +89,11 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
             var h = _create.apply(this, arguments);
             var _listen = h.listen;
             h.listen = function(port) {
-                console.log('[ERROR] You asked to listen on port', port, ' but nodester will use port', app_port, 'instead..');
+                if (port !== app_port) {
+                    console.log('[ERROR] You asked to listen on port', port, 'but nodester will use port', app_port, 'instead..');
+                } else {
+                    console.log('[INFO] Nodester listening on port:', app_port);
+                }
                 _listen.call(h, app_port);
             };
             return h;
