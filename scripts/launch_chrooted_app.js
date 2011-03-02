@@ -37,13 +37,15 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
 	    fs.write(error_log_fd, err.stack);
 	});
     
-    var etc = path.join(chroot_dir, 'etc');
+    var etc = path.join('/', 'etc');
     //create /etc inside the chroot
+    console.log('Checking for /etc');
     if (!path.existsSync(etc)) {
+        console.log('/etc does not exist. Creating..');
         fs.mkdirSync(etc, 0777);
     }
-    //Update resolve.conf with Googles DNS servers..
-    fs.writeFileSync(path.join(etc, 'resolv.conf'), 'nameserver 8.8.8.8\nnameserver 8.8.4.4', , encoding='utf8');
+    console.log('Update /etc/resolve.conf with Googles DNS servers..');
+    fs.writeFileSync(path.join(etc, 'resolv.conf'), 'nameserver 8.8.8.8\nnameserver 8.8.4.4\n', encoding='utf8');
 
     //Setup the main sandbox..
     var sandbox = {
