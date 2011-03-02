@@ -1,13 +1,14 @@
-var http = require('http');
-var config = require("../config");
-var util = require('util');
-var exec = require('child_process').exec;
+var http = require('http'),
+    config = require("../config"),
+    util = require('util'),
+    exec = require('child_process').exec,
+    app = require('../lib/app');
 
 require('colors');
 
-var action = process.argv[2];
-var all = process.argv[3] || false;
-var past = '';
+var action = process.argv[2],
+    all = process.argv[3] || false,
+    past = '';
 
 switch (action) {
     case 'start':
