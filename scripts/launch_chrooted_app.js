@@ -71,18 +71,36 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
       fs.write(error_log_fd, args.toString());
     };
     
-    //this should make require('./lib/foo'); work properly
     var _require = require;
     var _resolve = require.resolve;
+    //this should make require('./lib/foo'); work properly
     sandbox.require = function(f) {
         if (f.indexOf('./') === 0) {
             //console.log('Nodester fixing require path', f); 
             f = f.substring(1);
             //console.log('Nodester fixed require path', f); 
         }   
-        return _require.call(this, f); 
+        /**
+        * Simple HTTP sandbox to make sure that http listens on the assigned port.
+        * May also need to handle the net module too..
+        * THIS IS A HACK, this "sandboxing" will fail if a user "require"'s a module in a submodule.
+        */
+        var createServer = function() {
+            var h = _create.apply(this, arguments);
+            var _listen = h.listen;
+            h.listen = function(port) {
+                console.log('[ERROR] You asked to listen on port', port, ' but nodester will use port', app_port, 'instead..');
+                _listen.call(h, app_port);
+            };
+            return h;
+        };
+        var m = _require.call(_require, f);
+        if (m.createServer) { //Too aggressive??
+            var _create = m.createServer;
+            m.createServer = createServer;
+        }
+        return m;
     };
-
     for (var i in _require) {
         sandbox.require[i] = _require[i];
     }   
@@ -100,30 +118,6 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
     sandbox.require.cache = {};
     sandbox.require.cache['/' + config.start] = sandbox.module;
     sandbox.require.paths = ['/.node_libraries'];
-
-    //Simple HTTP sandbox to make sure that http listens on the assigned port.
-    //May also need to handle the net module too..
-    var _http = require('http');
-    var _create = _http.createServer;
-    _http.createServer = function() {
-        var h = _create.apply(this, arguments);
-        var _listen = h.listen;
-        h.listen = function(port) {
-            console.log('[ERROR] You asked to listen on port', port, ' but nodester will use port', app_port, 'instead..');
-            _listen.call(h, app_port);
-        };
-        return h;
-    };
-
-    sandbox.require.cache['http'] = {
-        id: 'http',
-        filename: 'override_http_module',
-        loaded: false,
-        exited: false,
-        children: [],
-        exports: _http
-    };
-
 
     sandbox.process.on('uncaughtException', function (err) {
         fs.write(error_log_fd, util.inspect(err));
