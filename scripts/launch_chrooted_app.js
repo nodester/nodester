@@ -12,6 +12,7 @@ console.log(config);
 //These 3 lines ensure that we get the daemon setup by the nodester user and not the
 // one available to root, since we are sudoed at this point
 require.paths.unshift(path.join(config.appdir, '../', '.node_libraries'));
+require.paths.unshift('/.node_libraries');
 var daemon = require('daemon');
 
 var app_port = parseInt(config.port);
