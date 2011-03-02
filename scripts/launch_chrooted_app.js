@@ -27,7 +27,8 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
 	}
 	console.log('Inside Daemon: ', pid);
 	console.log('Changing to user: ', config.userid);
-	daemon.setreuid(config.userid);
+	//daemon.setreuid(config.userid);
+    process.setuid(config.userid);
     console.log('User Changed: ', process.getuid());
     
     //Setup the errorlog
