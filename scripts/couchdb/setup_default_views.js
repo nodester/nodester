@@ -93,7 +93,7 @@ request({
             uri: couch_loc + 'nextport/port',
             method:'PUT',
             headers: h,
-            body: JSON.stringify({ address: 7999 })
+            body: JSON.stringify({ address: 8000 })
         }, function (err, response, body) {
             var body = JSON.parse(body);
             if (body.ok) {
