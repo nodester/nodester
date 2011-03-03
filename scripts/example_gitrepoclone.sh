@@ -17,18 +17,16 @@ else
 fi
 
 hook=./.git/hooks/post-receive
-echo "Checking $hook"
-if [ -d "$hook" ]; then
-    echo "Removing $hook"
+if [ -f "$hook" ]; then
     rm $hook
 fi
 
-echo "cd $OLD_PWD"
 cd $OLD_PWD
 
 echo "Attempting to restart your app: ${gitdir}"
 curl "http://127.0.0.1:4001/app_restart?repo_id=${gitdir}&restart_key=${SECRETKEY}" >/dev/null 2>&1 &
 echo "App restarted.."
 echo ""
+echo "  \m/ Nodester out \m/"
+echo ""
 exit 0;
-
