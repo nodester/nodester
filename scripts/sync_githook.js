@@ -36,7 +36,7 @@ dirs.forEach(function(v) {
         }
     } 
 });
-util.print((' (' + dirs.length + ')').yellow + ' [done]\n'.white);
+util.print((' (' + repos.length + ')').yellow + ' [done]\n'.white);
 util.print('Processing git commit hooks'.magenta);
 copy();
 
