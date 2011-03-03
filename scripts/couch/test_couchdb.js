@@ -1,8 +1,6 @@
-
 var sys = require('sys');
 var http = require('http');
-var config = require('../config');
-var base64_encode = require('base64').encode;
+var config = require('../../config');
 var request = require('request');
 
 var h = {accept: 'application/json', 'content-type': 'application/json'};
