@@ -53,5 +53,5 @@ lib.update_proxytable_map(function (err) {
 });
 
 process.on('uncaughtException', function (err) {
-  console.log(err);
+  console.log(err.stack);
 });
