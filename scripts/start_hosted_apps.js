@@ -7,8 +7,17 @@ var http = require('http'),
 require('colors');
 
 var action = process.argv[2],
-    all = process.argv[3] || false,
+    all = false,
+    this_repo = false,
     past = '';
+
+
+if (process.argv[3] && process.argv[3].toLowerCase() === 'all') {
+    all = true;
+} else if (process.argv[3]) {
+    all = false;
+    this_repo = process.argv[3];
+}
 
 switch (action) {
     case 'start':
@@ -119,9 +128,16 @@ var next = function() {
 var start_running_apps = function (apps_arr) {
     for(var i in apps_arr) {
         var doc = apps_arr[i].value;
-        if (doc.running == 'true' || all) {
-            count++;
-            apps.push(doc);
+        if (this_repo) {
+            if (doc.repo_id == this_repo) {
+                count++;
+                apps.push(doc);
+            }
+        } else {
+            if (doc.running == 'true' || all) {
+                count++;
+                apps.push(doc);
+            }
         }
     }
     if (all) {
