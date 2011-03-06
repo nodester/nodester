@@ -1,0 +1,43 @@
+#!/usr/bin/env node
+
+var exec = require('child_process').exec;
+var cmd = "ps aux | awk '/launch_chroot/ && !/awk/ {print $3,$4,$2,$5,$6,$10,$13}' | sort -r | head -n 20";
+
+require('colors');
+
+var top = function() {
+    console.log('cpu\tmem\tvsz\trss\tpid\ttime\tapp'.magenta.bold);
+
+    exec(cmd, function(err, stdout) {
+        var data = stdout.split('\n');
+        //console.log(stdout);
+        data.forEach(function(l) {
+            var line = l.split(' ');
+            if (line[1]) {
+                for (var i = 2; i < 6; i++) {
+                    line[i] = line[i].white;
+                }
+
+                if (parseFloat(line[0]) > 1) {
+                    line[0] = line[0].red.bold;
+                } else {
+                    line[0] = line[0].white;
+                }
+                if (parseFloat(line[1]) > 1) {
+                    line[1] = line[1].red.bold;
+                } else {
+                    line[1] = line[1].white;
+                }
+                
+                var tmp = line[6].split(':');
+                line[6] = ('[' + tmp[0] + ']:').blue + tmp[1].yellow;
+
+                console.log(line.join('\t'));
+            }
+        });
+    });
+};
+
+
+top();
+setInterval(top, 2000);
