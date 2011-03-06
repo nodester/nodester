@@ -21,6 +21,12 @@ if [ -f "$hook" ]; then
     rm $hook
 fi
 
+if [ -f ./.gitmodules ]; then
+    echo "Found git submodules, updating them now..."
+    git submodule init;
+    git submodule update;
+fi
+
 cd $OLD_PWD
 
 echo "Attempting to restart your app: ${gitdir}"
