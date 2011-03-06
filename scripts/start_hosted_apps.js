@@ -1,8 +1,30 @@
-var http = require('http');
-// var base64_encode = require('base64').encode;
-var config = require("../config");
-var sys = require('sys');
-var exec = require('child_process').exec;
+var http = require('http'),
+    config = require("../config"),
+    util = require('util'),
+    exec = require('child_process').exec,
+    app = require('../lib/app');
+
+require('colors');
+
+var action = process.argv[2],
+    all = process.argv[3] || false,
+    past = '';
+
+switch (action) {
+    case 'start':
+        verb = 'Starting'.green;
+        past = 'started';
+        break;
+    case 'stop':
+        verb = 'Stopping'.red.bold;
+        past = 'stopped';
+        break;
+    default:
+        action = 'restart';
+        verb = 'Restarting'.yellow;
+        past = 'restarted';
+        break;
+}
 
 var couch_http = http.createClient(config.opt.couch_port, config.opt.couch_host);
 if (config.opt.couch_prefix.length > 0) {
@@ -37,8 +59,8 @@ request.end();
 request.on('response', function (response) {
   var buff = '';
   if (response.statusCode != 200) {
-    console.log(response.statusCode);
-    console.log('Error: Cannot query CouchDB');
+    util.log(response.statusCode);
+    util.log('Error: Cannot query CouchDB');
     process.exit(1);
   }
   response.setEncoding('utf8');
@@ -51,14 +73,62 @@ request.on('response', function (response) {
   });
 });
 
-var start_running_apps = function (apps_arr) {
-  for(var i in apps_arr) {
-    var doc = apps_arr[i].value;
-    if (doc.running == 'true') {
-      var user_home = config.opt.home_dir + '/' + config.opt.hosted_apps_subdir + '/' + doc.username;
-      var app_home = user_home + '/' + doc.repo_id;
-      var cmd = "sudo " + config.opt.app_dir + '/scripts/launch_app.sh ' + config.opt.app_dir + ' ' + config.opt.userid + ' ' + app_home + ' ' + doc.start + ' ' + doc.port + ' ' + '127.0.0.1' + ' ' + doc._id; 
-      var child = exec(cmd, function (error, stdout, stderr) {});
+var apps = [], count = 0, g = 0, f = 0,
+    good = "✔", bad = "✖";
+
+console.log = function() {}; //Commenting this out so the debugging from ../lib/app doesn't display
+
+var next = function() {
+    if (apps.length) {
+        var len = apps.length;
+        var doc = apps.pop();
+        util.print(verb + ' (' + len + '): [' + (doc.username + '/' + doc.repo_id + '/' + doc.start + ':' + doc.port).blue + ']');
+        var method = 'app_' + action;
+        app[method]({
+            query: {
+                repo_id: doc.repo_id,
+                restart_key: config.opt.restart_key
+            }
+        }, {
+            send: function(data) {
+                if (data instanceof Object) {
+                    if (data.status.indexOf('failed') > -1) {
+                        f++;
+                    } else {
+                        g++;
+                    }
+                    util.print(' [' + ((data.status.indexOf('failed') > -1) ? bad.red.bold : good.bold.green) + ']\n');
+                } else {
+                    g++;
+                    util.print(' [' + '!!'.yellow.bold + ']\n');
+                }
+                //Let the process fire up and daemonize before starting the next one
+                setTimeout(next, 500);
+            }
+        });
+        
+    } else {
+        util.log(('All ' + count + ' apps ' + past).bold);
+        util.log(g + ' apps ' + past + ' successfully');
+        if (f) {
+            util.log((f + ' apps failed to ' + action).red.bold);
+        }
     }
-  }
+}
+
+var start_running_apps = function (apps_arr) {
+    for(var i in apps_arr) {
+        var doc = apps_arr[i].value;
+        if (doc.running == 'true' || all) {
+            count++;
+            apps.push(doc);
+        }
+    }
+    if (all) {
+        util.log(verb + ' ALL (' + count + ') apps..');
+    } else {
+        util.log(verb + ' ' + count + ' apps..');
+    }
+    next();
 };
+

@@ -10,12 +10,12 @@ Dependencies:
     express
     request
     npm-wrapper
-    daemon-tools
+    daemon
+    forever
     cradle
-    nodemon
 
 Installation:
-  Install node.js
+  Install node.js (0.4.x recommended)
     Package from distro
     OR wget, ./configure, make, make install
   Create a user and group to run nodester as
@@ -40,12 +40,36 @@ Installation:
     echo -e "root = ~/.node_libraries\nmanroot = ~/local/share/man\nbinroot = ~/bin" > ~/.npmrc
     echo -e "export PATH=\"\${PATH}:~/bin\";" >> ~/.bashrc
     source ~/.bashrc
-    curl http://npmjs.org/install.sh | sh
+
+    ##This part is a hack to use the old npm with the new node until
+    ##  certain packages can catch up and be installed with npm@0.3.x
+
+    mkdir ~/src
+    cd src
+    git clone git://github.com/isaacs/npm.git ./npm
+    cd npm
+    git checkout origin/0.2
+    make dev
+    
+    ##Fetch 0.2.6 version of node for npm
+    cd ~/src
+    sudo mkdir -p /usr/local/n/versions/
+    wget http://nodejs.org/dist/node-v0.2.6.tar.gz
+    tar -vzxr node-v0.2.6.tar.gz
+    cd node-v0.2.6
+    ./configure --prefix=/usr/local/n/versions/0.2.6
+    make
+    sudo make install
+
+    cd ~/bin
+    cp npm\@0.2.18 nodester-npm
+    vim nodester-npm
+        "Replace '#!/usr/bin/env node' with '#!/usr/local/n/versions/0.2.6/bin/node'
 
   Either install CouchDB or get a CouchOne account
 
   Install node-module dependencies
-    for X in pool express npm-wrapper request daemon-tools cradle nodemon; do npm install ${X}; done
+    for X in pool express npm-wrapper request daemon forever cradle; do npm install ${X}; done
   
   Get nodester
     cd ~
@@ -68,11 +92,13 @@ Installation:
     Copy scripts/example_gitrepoclone.sh to scripts/gitrepoclone.sh
     Update scripts/gitrepoclone.sh with the key you specified in config.js
   Setup the CouchDB tables
-    node setup_couchdb.js
-    node migrate-views.js
+    cd ./nodester/scripts/couchdb
+        ./create_all_couchdb_tables.js
+        ./setup_default_views.js
   Start up the proxy and main/api app
     cd nodester
-    ./start.sh
+    ./bin/app_start.sh
+    sudo ./bin/proxy_start.sh
   Test the web frontend at 127.0.0.1:80
   Create a user
     ..

@@ -87,6 +87,7 @@ Copy & Paste RSA key from command line:
                             <li><a href="#userapi">User Resource</a></li>
                             <li><a href="#app">App Resource</a></li>
                             <li><a href="#appnpm">App NPM Resource</a></li>
+                            <li><a href="#appdomains">App Domains Resource</a></li>
                             <li><a href="#clicommands">CLI Commands</a></li>
                             <li><a href="#git">Git Resources</a></li>
                         </ul>
@@ -105,7 +106,6 @@ Copy & Paste RSA key from command line:
 							<li><a href="https://github.com/remy/nodemon" title="Nodemon">Nodemon</a></li>
 							<li><a href="https://github.com/creationix/couch-client" title="Couch Client">Couch Client</a></li>
 							<li><a href="https://github.com/visionmedia/express" title="Express">Express</a></li>
-							<!-- <li><a href="https://github.com/pkrumins/node-base64" title="Node Base64">Node Base64</a></li> -->
 							<li><a href="http://jquery.com/" title="jQuery">jQuery</a></li>
 
 
@@ -193,6 +193,27 @@ Copy & Paste RSA key from command line:
 				curl -X POST  -u "testuser:123" -d "appname=a&action=update&package=express" http://api.nodester.com/appnpm<br/><br/>
 				curl -X POST  -u "testuser:123" -d "appname=a&action=uninstall&package=express" http://api.nodester.com/appnpm</code></p>
 
+				<a name="appdomains"></a>
+				<h3>APPDOMAINS - Add DNS A Record for 50.16.203.53</h3>
+				<p><b>Create Application Domain :: POST</b>
+				<br/>Base URL: http://api.nodester.com</p>
+
+				<code>/appdomains - create app domain for hosting example.com (requires basic auth)<br/><br/>
+				curl -X POST -u "testuser:123" -d "appname=test&domain=example.com" http://api.nodester.com/appdomains</code>
+
+				<p><b>Delete Application Domain :: DELETE</b>
+					<br/>Base URL: http://api.nodester.com</p>
+
+				<code>/appdomains - delete app domain for hosting example.com (requires basic auth)<br/> <br/>
+				curl -X DELETE -u "testuser:123" -d "appname=test&domain=example.com" http://api.nodester.com/appdomains</code>
+
+				<p><b>Application Domain Information :: GET</b>
+					<br/>Base URL: http://api.nodester.com</p>
+
+				<code>/appdomains - get list of your domains (requires basic auth)<br/> <br/>
+				curl -u "testuser:123"  http://api.nodester.com/appdomains</code>
+
+
 				<a name="clicommands"></a>
 				<h3>CLI Commands</h3>
 				<p>You can install our Command Line Interface by running "npm install nodester-cli"</p>
@@ -220,6 +241,7 @@ Copy & Paste RSA key from command line:
 					nodester appnpm uninstall &lt;app-name&gt; &lt;package name&gt;<br/>
 					nodester appdomain add  &lt;app-name&gt;  &lt;domain-name&gt;<br/>
 					nodester appdomain delete &lt;app-name&gt;  &lt;domain-name&gt;<br/>
+					nodester appdomains<br/>
 					
 					
 				</code>

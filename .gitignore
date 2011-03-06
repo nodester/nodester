@@ -4,3 +4,4 @@ config.js
 proxy/.monitor
 scripts/gitrepoclone.sh
 ssl/*
+bin/.nodester.config
