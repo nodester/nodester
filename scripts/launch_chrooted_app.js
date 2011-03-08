@@ -5,6 +5,12 @@ var fs = require('fs'),
     Script = process.binding('evals').Script,
     Module = require('module');
 
+//This "preps" the chroot with SSL support
+var c = process.binding('crypto').Connection;
+var crypto = require('crypto');
+var creds = crypto.createCredentials();
+
+
 var config = JSON.parse(fs.readFileSync(path.join('.nodester', 'config.json'), encoding='utf8'));
 
 console.log(config);
