@@ -53,6 +53,7 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
     console.log('Update /etc/resolve.conf with Googles DNS servers..');
     fs.writeFileSync(path.join(etc, 'resolv.conf'), 'nameserver 8.8.8.8\nnameserver 8.8.4.4\n', encoding='utf8');
 
+    console.log('Setting up sandbox..');
     //Setup the main sandbox..
     var sandbox = {
         global: {},
@@ -87,6 +88,8 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
       fs.write(error_log_fd, args.toString());
     };
     
+    console.log('Munging require paths..');
+
     var _require = require;
     var _resolve = require.resolve;
     //this should make require('./lib/foo'); work properly
@@ -143,7 +146,11 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
     sandbox.process.on('uncaughtException', function (err) {
         fs.write(error_log_fd, util.inspect(err));
     });
-
+    
+    console.log('Globallizing Buffer');
+    sandbox.Buffer = Buffer;
+    
+    console.log('Reading file...');
     fs.readFile(config.start, function (err, script_src) {
         try {
             //Just to make sure the process is owned by the right users (overkill)
