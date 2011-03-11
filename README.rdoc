@@ -106,6 +106,7 @@ Feel free to suggest improvements at https://github.com/nodester/nodester/issues
 == Core Team Members
 
 @ChrisMatthieu (http://twitter.com/chrismatthieu)
+@DavGlass (http://twitter.com/davglass)
 @DanBUK (http://twitter.com/danbuk)
 @Marcosvm (http://twitter.com/marcosvm)
 
