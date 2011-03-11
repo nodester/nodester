@@ -113,11 +113,11 @@ var npm = require('./lib/npm');
 myapp.post('/appnpm', middle.authenticate, middle.authenticate_app, npm.post);
 myapp.post('/npm', middle.authenticate, middle.authenticate_app, npm.post);
 
-//TODO this should be .post and .delete, there should be no action..
-// curl -X POST -u "testuser:123" -d "appname=test&domain=<domainname>&action=add" http://localhost:4001/appdomains
-// curl -X POST -u "testuser:123" -d "appname=test&domain=<domainname>&action=delete" http://localhost:4001/appdomains
+// curl -X POST -u "testuser:123" -d "appname=test&domain=<domainname>" http://localhost:4001/appdomains
+// curl -X DELETE -u "testuser:123" -d "appname=test&domain=<domainname>" http://localhost:4001/appdomains
 var domains = require('./lib/domains');
 myapp.post('/appdomains', middle.authenticate, middle.authenticate_app, domains.post);
+myapp.delete('/appdomains', middle.authenticate, middle.authenticate_app, domains.delete);
 myapp.get('/appdomains', middle.authenticate, domains.get);
 
 
