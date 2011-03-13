@@ -15,7 +15,7 @@ fi;
 mkdir -p ${APPDIR}/${APPUSERNAME}/${REV}.git;
 cd ${APPDIR}/${APPUSERNAME}/${REV}.git;
 git init --bare;
-cp ${BASEDIR}/scripts/gitrepoclone.sh hooks/post-receive;
-chmod +x hooks/post-receive;
+ln -s ${BASEDIR}/scripts/gitrepoclone.sh hooks/post-receive;
+# chmod +x hooks/post-receive;
 
 git clone . ../${REV}/;
