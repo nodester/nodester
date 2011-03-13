@@ -21,6 +21,11 @@ body.slider-header {
 	padding:0;
 }
 
+#ribbon {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 2; }
 
 /** element defaults **/
 table {
