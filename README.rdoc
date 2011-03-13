@@ -110,8 +110,5 @@ Feel free to suggest improvements at https://github.com/nodester/nodester/issues
 @DanBUK (http://twitter.com/danbuk)
 @Marcosvm (http://twitter.com/marcosvm)
 
-If this project inspires you, please feel free to help out by forking this project and sending me pull requests!
-
-==License
-
-Apache 2 - Have fun! :)
+If this project inspires you, please feel free to help out by forking this project and sending us pull requests!
+http://github.com/nodester
