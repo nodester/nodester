@@ -33,9 +33,13 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
 	}
 	console.log('Inside Daemon: ', pid);
 	console.log('Changing to user: ', config.userid);
-	//daemon.setreuid(config.userid);
-    process.setuid(config.userid);
-    console.log('User Changed: ', process.getuid());
+    try {
+        //daemon.setreuid(config.userid);
+        process.setuid(config.userid);
+        console.log('User Changed: ', process.getuid());
+    } catch (e) {
+        console.log('User Change FAILED');
+    }
     
     //Setup the errorlog
 	var error_log_fd = fs.openSync('/error.log', 'w');
@@ -156,8 +160,8 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
             //Just to make sure the process is owned by the right users (overkill)
             process.setuid(config.userid);
             //console.log('Final user check (overkill)', process.getuid());
-        } catch (err) {
-            console.log(err.stack);
+        } catch (e2) {
+            console.log('Final User Change Failed.');
         }
         if (err) {
             console.log(err.stack);
