@@ -98,11 +98,35 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
     var _resolve = require.resolve;
     //this should make require('./lib/foo'); work properly
     sandbox.require = function(f) {
+        sandbox.require.paths.forEach(function(v, k) {
+            if (v.indexOf('./') === 0) {
+                 sandbox.require.paths[k] = v.substring(1);
+            }   
+        }); 
         if (f.indexOf('./') === 0) {
-            //console.log('Nodester fixing require path', f); 
-            f = f.substring(1);
-            //console.log('Nodester fixed require path', f); 
-        }   
+            try {
+                _require.call(_require, f); 
+            } catch (e) {
+                    f = f.substring(1);
+            }   
+        }
+        //This is to support require.paths.push('./lib'); require('foo.js');
+        try {
+            _require.call(_require, f); 
+        } catch (e) {
+            var m;
+            sandbox.require.paths.forEach(function(v, k) {
+                 if (m) {
+                      return;
+                 }   
+                 try {
+                        m = _require.call( _require, path.join(v, f));
+                        f = path.join(v, f); 
+                 } catch (e) {
+                 }   
+            }); 
+        } 
+
         /**
         * Simple HTTP sandbox to make sure that http listens on the assigned port.
         * May also need to handle the net module too..
