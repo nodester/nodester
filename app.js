@@ -20,8 +20,8 @@ process.on('uncaughtException', function (err) {
 var myapp = express.createServer();
 
 myapp.configure(function(){
-  myapp.use(express.bodyDecoder());
-  myapp.use(express.staticProvider(config.opt.public_html_dir));
+  myapp.use(express.bodyParser());
+  myapp.use(express.static(config.opt.public_html_dir));
   myapp.use(middle.error());
 });
 
