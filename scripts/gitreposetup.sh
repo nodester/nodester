@@ -7,7 +7,8 @@ APPDIR=${2};
 APPUSERNAME=${3};
 REV=${4};
 START=${5};
-UID=${6};
+#This was UID which is a readonly variable.. Duh..
+NODESTER_UID=${6};
 
 if [ ! -d "${APPDIR}" ]; then
   mkdir -p ${APPDIR};
@@ -21,7 +22,9 @@ chmod +x hooks/post-receive;
 
 git clone . ../${REV}/;
 wait
+
 cd ../
-chown -R $UID ${REV}
-wait
-chown -R $UID ${REV}.git
+echo "Changing Perms"
+echo "$PWD"
+echo "chown -R $NODESTER_UID ${REV}*"
+chown -R $NODESTER_UID:$NODESTER_UID ${REV}*
