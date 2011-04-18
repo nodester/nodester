@@ -35,7 +35,7 @@ License: Creative Commons Attribution
 <body>
 	<a href="http://github.com/nodester"><img id="ribbon" src="images/forkme_right_white_ffffff.png" /></a>
 	<div id="hiddenModalContent" style="display:none"> 
-		<h3>Did you get your coupon code? <a href="#" onclick="tb_remove()">I wish!</a></p></h3>
+		<h3>Did you get your coupon code? <a href="#" onclick="tb_remove()"> Nope, still waiting...</a></p></h3>
 		<fieldset>
 
 			<form action="/user" method="post">
@@ -44,7 +44,8 @@ License: Creative Commons Attribution
 				<label for="name">Username:</label>
 				<input type="text" name="user" id="user" value="" /><br />		
 				<label for="name">Password:</label>
-				<input type="password" name="password" id="password" value="" /><br />		
+				<input type="password" name="password" id="password" value="" /> (only alphanumeric allowed)<br />	
+				<span id="passwordError" style="display:none"><span style="color:red">Password is limited to alphanumerics - no symbols allowed.</span><br/></span>	
 				<label for="email">Email:</label>
 				<input type="text" name="email" id="email" value="" /><br />
 				<label for="rsakey">Public RSA Key:</label>
@@ -53,7 +54,27 @@ Copy & Paste RSA key from command line:
 "cat ~/.ssh/id_rsa.pub | pbcopy"</textarea><br />
 				<input type="submit" name="send" class="formbutton" value="Send" />
 			</form>
+			<script>
+				$(function() {
+				    $('form').submit( function() {
+				        return validatePass( $('#password'), true, $('#passwordError') );
+				    });
 
+				    $('#password').blur( function() {
+				        validatePass( $(this), true, $('#passwordError') );
+				    });
+
+				    function validatePass(tb,required,msg) {
+				        var $tb = $(tb);
+						if ($tb.val().match(/[~!@#$%^&*()_+=-]/) != null) {
+				           $(msg).show();
+				           return false;
+				        }
+				        $(msg).hide();
+				        return true;
+				    }
+				});
+				</script>
 		</fieldset>
 	 
 	</div>

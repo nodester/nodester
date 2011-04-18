@@ -36,25 +36,46 @@ License: Creative Commons Attribution
 	
 	<div id="hiddenModalContent" style="display:none">
 		<h3>Did you get your coupon code? <a href="#" onclick="tb_remove()">I wish!</a></p></h3>
-		<fieldset>
+				<fieldset>
 
-			<form action="/user" method="post">
-				<p><label for="name">Coupon:</label>
-				<input type="password" name="coupon" id="coupon" value="" /><br />
-				<label for="name">Username:</label>
-				<input type="text" name="user" id="user" value="" /><br />
-				<label for="name">Password:</label>
-				<input type="password" name="password" id="password" value="" /><br />
-				<label for="email">Email:</label>
-				<input type="text" name="email" id="email" value="" /><br />
-				<label for="rsakey">Public RSA Key:</label>
-				<textarea cols="60" rows="8" name="rsakey" id="rsakey">
-Copy & Paste RSA key from command line: 
-"cat ~/.ssh/id_rsa.pub | pbcopy"</textarea><br />
-				<input type="submit" name="send" class="formbutton" value="Send" />
-			</form>
+					<form action="/user" method="post">
+						<p><label for="name">Coupon:</label>
+						<input type="password" name="coupon" id="coupon" value="" /><br />		
+						<label for="name">Username:</label>
+						<input type="text" name="user" id="user" value="" /><br />		
+						<label for="name">Password:</label>
+						<input type="password" name="password" id="password" value="" /> (only alphanumeric allowed)<br />	
+						<span id="passwordError" style="display:none"><span style="color:red">Password is limited to alphanumerics - no symbols allowed.</span><br/></span>	
+						<label for="email">Email:</label>
+						<input type="text" name="email" id="email" value="" /><br />
+						<label for="rsakey">Public RSA Key:</label>
+						<textarea cols="60" rows="8" name="rsakey" id="rsakey">
+		Copy & Paste RSA key from command line: 
+		"cat ~/.ssh/id_rsa.pub | pbcopy"</textarea><br />
+						<input type="submit" name="send" class="formbutton" value="Send" />
+					</form>
+					<script>
+						$(function() {
+						    $('form').submit( function() {
+						        return validatePass( $('#password'), true, $('#passwordError') );
+						    });
 
-		</fieldset>
+						    $('#password').blur( function() {
+						        validatePass( $(this), true, $('#passwordError') );
+						    });
+
+						    function validatePass(tb,required,msg) {
+						        var $tb = $(tb);
+								if ($tb.val().match(/[~!@#$%^&*()_+=-]/) != null) {
+						           $(msg).show();
+						           return false;
+						        }
+						        $(msg).hide();
+						        return true;
+						    }
+						});
+						</script>
+				</fieldset>
 
 	</div>
 
@@ -138,7 +159,7 @@ Copy & Paste RSA key from command line:
 				<p><b>Register User :: POST (Coupon is required.)</b>
 				<br/>Base URL: http://nodester.com</p>
 				<code>/user - creates user account (pass in user and password and email and id_rsa.pub string) <i>Ensure that all + in the ssh key are substituted for their %2B counter parts, else your key will break. Run this on your command line to copy your RSA string and swap out the plus signs: "cat ~/.ssh/id_rsa.pub | sed s/'+'/'%2B'/g | pbcopy"</i><br/><br/>
-				curl -X POST -d "user=testuser&password=123&email=chris@nodester.com&rsakey=ssh-rsa AAAAB3NzaC1yc..." http://nodester.com/user</code>
+				curl -X POST -d "coupon=mycoupon&user=testuser&password=123&email=chris@nodester.com&rsakey=ssh-rsa AAAAB3NzaC1yc..." http://nodester.com/user</code>
 
 				<p><b>Update User :: PUT</b>
 				<br/>Base URL: http://api.nodester.com</p>
