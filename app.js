@@ -105,6 +105,18 @@ myapp.delete('/gitreset', middle.authenticate, middle.authenticate_app, app.gitr
 // curl -u "testuser:123" -d "appname=test" http://localhost:4001/applogs
 myapp.get('/applogs/:appname', middle.authenticate, middle.authenticate_app, app.logs);
 
+// Retrieve information about or update a node app's ENV variables
+// This fulfills all four RESTful verbs.
+// GET will retrieve the list of all keys.
+// PUT will either create or update.
+// DELETE will delete the key if it exists.
+// curl -u GET -u "testuser:123" -d "appname=test" http://localhost:4001/env
+// curl -u PUT -u "testuser:123" -d "appname=test&key=NODE_ENV&value=production" http://localhost:4001/env
+// curl -u DELETE -u "testuser:123" -d "appname=test&key=NODE_ENV" http://localhost:4001/env
+myapp.get('/env', middle.authenticate, middle.authenticate_app, app.env_get);
+myapp.put('/env', middle.authenticate, middle.authenticate_app, app.env_put);
+myapp.delete('/env', middle.authenticate, middle.authenticate_app, app.env_delete);
+
 // APP NPM Handlers
 var npm = require('./lib/npm');
 // curl -X POST -u "testuser:123" -d "appname=test&package=express" http://localhost:4001/appnpm
