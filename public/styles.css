@@ -5,11 +5,11 @@ body {
 	font-family:Verdana, Geneva, sans-serif;
 	font-size:12px;
 	color:#333;
-	background:#fff url('images/body-bg.png') repeat-x;
+	background:#fff url('images/body-bg-black.png') repeat-x;
 }
 
 body.small-header {
-	background:#fff url('images/body-bg-small.png') repeat-x;
+	background:#fff url('images/body-bg-small-black.png') repeat-x;
 }
 
 body.slider-header {
@@ -235,7 +235,7 @@ div#header {
 }
 
 div#header h2 {
-	color:#ffffff;
+	color:yellow;
 	padding-bottom:0;
 	font-weight:normal;
 	font-family:Arial Rounded MT Bold, Arial,Helvetica,sans-serif;
