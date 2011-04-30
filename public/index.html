@@ -119,6 +119,7 @@ Copy & Paste RSA key from command line:
                             <li><a href="/api.html#status">API Status</a></li>
                             <li><a href="/api.html#userapi">User Resource</a></li>
                             <li><a href="/api.html#app">App Resource</a></li>
+                            <li><a href="/api.html#env">Env Resource</a></li>
                             <li><a href="/api.html#appnpm">NPM Resource</a></li>
                             <li><a href="/api.html#appdomains">App Domains Resource</a></li>
                             <li><a href="/api.html#clicommands">CLI Commands</a></li>
@@ -168,14 +169,14 @@ Copy & Paste RSA key from command line:
 				<code>
 					nodester app create myapp hello.js<br/><br/>
 					git remote add nodester the_url_returned_by_our_api and git push nodester master<br/><br/>
-					<b>NPM modules?</b> nodester appnpm install express<br/><br/>
+					<b>NPM modules?</b> nodester npm install express<br/><br/>
 					nodester app start myapp
 				</code>
 				<p>- OR -</p>
 				<code>
 					curl -X POST -u "testuser:123" -d "appname=myapp&start=hello.js" http://api.nodester.com/app<br/><br/>
 					git remote add nodester the_url_returned_by_our_api <b>and</b> git push nodester master<br/><br/>
-					<b>NPM modules?</b> curl -X POST -u "testuser:123" -d "appname=myapp&action=install&package=express" http://api.nodester.com/appnpm<br/><br/>
+					<b>NPM modules?</b> curl -X POST -u "testuser:123" -d "appname=myapp&action=install&package=express" http://api.nodester.com/npm<br/><br/>
 					curl -X PUT -u "testuser:123" -d "appname=myapp&running=true" http://api.nodester.com/app
 				</code>
 				<code><b>Visit your app at http://myapp.nodester.com</b></code>
