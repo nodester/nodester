@@ -31,6 +31,18 @@ myapp.get('/', function(req, res, next){
   res.render('index.html');
 });
 
+myapp.get('/api', function(req, res, next){
+  res.redirect('/api.html');
+});
+
+myapp.get('/admin', function(req, res, next){
+  res.redirect('http://admin.nodester.com');
+});
+
+myapp.get('/irc', function(req, res, next){
+  res.redirect('http://irc.nodester.com');
+});
+
 // Status API
 // http://localhost:4001/status 
 // curl http://localhost:4001/status
