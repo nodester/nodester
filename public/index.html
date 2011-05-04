@@ -166,14 +166,20 @@ Copy & Paste RSA key from command line:
 				<code>curl -X POST -d "email=your_address@gmail.com" http://nodester.com/coupon</code>
 
 				<h3>Deployment is Easy - Create, Git Push, & Run!</h3> 
-				<p>Remember to update your application's port address with the port address that we assign your application when you create it in step one.</p>
+				<p>Create and deploy a hello world Node.JS app in <b>less than 2 minutes</b>!  The two commands below creates an app on Nodester, creates a Node.JS hello world app as server.js in a myapp directory, sets up a local git repo, pushes it to Nodester as origin, and starts your Node.JS app on Nodester making it immediately available at myapp.nodester.com!</p>
 				<code>
-					nodester app create myapp hello.js<br/><br/>
+					nodester app create myapp<br/><br/>
+					nodester app init myapp<br/><br/>
+				</code>
+				<p>- OR if you have an existing app -</p>
+				<code>
+					nodester app create myapp<br/><br/>
+					nodester app info myapp<br/><br/>
 					git remote add nodester the_url_returned_by_our_api and git push nodester master<br/><br/>
-					<b>NPM modules?</b> nodester npm install express<br/><br/>
+					<b>NPM modules?</b> nodester npm install myapp express socket.io etc<br/><br/>
 					nodester app start myapp
 				</code>
-				<p>- OR -</p>
+				<p>- OR use our REST API-</p>
 				<code>
 					curl -X POST -u "testuser:123" -d "appname=myapp&start=hello.js" http://api.nodester.com/app<br/><br/>
 					git remote add nodester the_url_returned_by_our_api <b>and</b> git push nodester master<br/><br/>
