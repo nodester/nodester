@@ -1,0 +1,8 @@
+#!/bin/bash
+
+cd /var/cloudnode/nodester
+bin/app_start.sh
+sleep 3
+sudo bin/proxy_start.sh
+sleep 3
+bin/start_hosted_apps.sh all
