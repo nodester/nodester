@@ -38,7 +38,14 @@ lib.update_proxytable_map(function (err) {
       };
       var httpSsl = https.createServer(options, function (req, res) {
         var proxy = new httpProxy.HttpProxy(req, res);
-        proxy.proxyRequest(4001, "127.0.0.1", req, res);
+	console.log('Secure request: ' + req.headers.host + ', url: ' + req.url); 
+        if (req.headers.host == 'cloudno.de' &&
+	  (req.url.indexOf('/lead') == 0 ||
+	   req.url.indexOf('/login') == 0 || req.url == '/')) {
+          proxy.proxyRequest(80, "81.169.133.153", req, res);
+        } else {
+          proxy.proxyRequest(4001, "127.0.0.1", req, res);
+	}
       });
       httpSsl.setMaxListeners(1000);
       httpSsl.listen(443);

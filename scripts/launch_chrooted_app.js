@@ -19,6 +19,7 @@ console.log(config);
 // one available to root, since we are sudoed at this point
 require.paths.unshift(path.join(config.appdir, '../', '.node_libraries'));
 require.paths.unshift('/.node_libraries');
+console.log('require paths: ', require.paths);
 var daemon = require('daemon');
 
 var app_port = parseInt(config.port);
@@ -53,6 +54,22 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
     console.log('Update /etc/resolve.conf with Googles DNS servers..');
     fs.writeFileSync(path.join(etc, 'resolv.conf'), 'nameserver 8.8.8.8\nnameserver 8.8.4.4\n', encoding='utf8');
 
+    // create /tmp inside the chroot
+    var tmp = path.join('/', 'tmp');
+    console.log('Checking for /tmp');
+    if (!path.existsSync(tmp)) {
+        console.log('/tmp does not exist. Creating..');
+        fs.mkdirSync(tmp, 0777);
+    }
+    
+    // create /mnt inside the chroot
+    var mnt = path.join('/', 'mnt');
+    console.log('Checking for /mnt');
+    if (!path.existsSync(mnt)) {
+        console.log('/mnt does not exist. Creating..');
+        fs.mkdirSync(mnt, 0777);
+    }
+    
     console.log('Setting up sandbox..');
     //Setup the main sandbox..
     var sandbox = {
@@ -110,9 +127,9 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
             h.listen = function(port) {
                 port = parseInt(port, 10);
                 if (port !== app_port) {
-                    console.log('[ERROR] You asked to listen on port', port, 'but nodester will use port', app_port, 'instead..');
+                    console.log('[ERROR] You asked to listen on port', port, 'but cloudnode will use port', app_port, 'instead..');
                 } else {
-                    console.log('[INFO] Nodester listening on port:', app_port);
+                    console.log('[INFO] Cloudnode listening on port:', app_port);
                 }
                 _listen.call(h, app_port);
             };
@@ -169,4 +186,28 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
     });
 //End Daemon
 });
+
+
+function daemonize(out, lock, callback) {
+  //
+  // If we only get one argument assume it's an fd and
+  // simply return with the pid from binding.daemonize(fd);
+  //
+  if (arguments.length === 1) {
+    return binding.daemonize(out);
+  }
+
+  fs.open(out, 'w+', 0666, function (err, fd) {
+    if (err) return callback(err);
+
+    try {
+      var pid = daemon.start(fd);
+      daemon.lock(lock);
+      callback(null, pid);
+    }
+    catch (ex) {
+      callback(ex);
+    }
+  });
+};
 
