@@ -17,7 +17,7 @@ process.on('uncaughtException', function (err) {
    console.log(err.stack);
 });
 
-var myapp = express.createServer();
+var myapp = module.exports = express.createServer();
 
 myapp.configure(function(){
   myapp.use(express.bodyParser());
@@ -146,5 +146,8 @@ myapp.get('/appdomains', middle.authenticate, domains.get);
 
 
 myapp.use(express.errorHandler({ showStack: true }));
-myapp.listen(4001); 
-console.log('Nodester app started on port 4001');
+// so expresso can test the app
+if (!module.parent) {
+  myapp.listen(4001);
+  console.log('Nodester app started on port 4001');
+}

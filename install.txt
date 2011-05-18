@@ -69,7 +69,8 @@ Installation:
   Either install CouchDB or get a CouchOne account
 
   Install node-module dependencies
-    for X in pool express npm-wrapper request daemon forever cradle; do npm install ${X}; done
+    for X in pool express npm-wrapper request daemon forever cradle
+colors; do npm install ${X}; done
   
   Get nodester
     cd ~
