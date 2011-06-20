@@ -1,0 +1,7 @@
+{ "name" : "control",
+  "description" : "Scripted asynchronous control of remote machines in parallel via ssh",
+  "version" : "0.1.9",
+  "author" : "Thomas Smith <node@thomassmith.com>",
+  "main" : "./lib",
+  "engines" : { "node" : ">=0.1.99" }
+}
