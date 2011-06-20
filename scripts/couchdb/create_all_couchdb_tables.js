@@ -1,29 +1,25 @@
 #!/usr/bin/env node
 
-var http = require('http'),
+var cradle = require('cradle'),
     config = require('../../config');
 
-var Colored = require('colored');
-Colored.extendString();
+var Cols = require('coloured');
+Cols.extendString();
 
-
-var create_couchdb_table = function (port, hostname, tablename, callback) {
-    var co = http.createClient(port, hostname);
-    var req = co.request('PUT', '/' + tablename, {
-        host: hostname,
-        'Authorization': "Basic " + (new Buffer(config.opt.couch_user + ":" + (config.opt.couch_pass || ""))).toString('base64')
-    });
-    var rtv = false;
-    req.end();
-    req.on('response', function (resp) {
-        switch (resp.statusCode) {
-            case 201:
-                rtv = true;
-                break;
-        }
-        callback(rtv);
-    });
+var c_opts = {
+  cache: false,
+  raw: false
 };
+if (config.opt.couch_user.length > 0 && config.opt.couch_pass.length > 0) {
+  c_opts['auth'] = {username: config.opt.couch_user, password: config.opt.couch_pass};
+}
+var proto = 'http';
+if (config.opt.couch_port == 443) {
+  c_opts['secure'] = true;
+  proto = 'https';
+}
+
+var conn = new(cradle.Connection)(proto + '://' + config.opt.couch_host, 5984, c_opts);
 
 for(var i in config.opt.couch_tables) {
     var tabname = config.opt.couch_tables[i];
@@ -31,12 +27,14 @@ for(var i in config.opt.couch_tables) {
         var tabname = config.opt.couch_prefix + "_" + tabname;
     }
     (function (table_name) {
-        create_couchdb_table(config.opt.couch_port, config.opt.couch_host, table_name, function (success) {
-            if (success) {
-                console.log((table_name + " was created.").yellow);
-            } else {
-                console.log((table_name + " failed to be created.").red.bold);
-            }
-        });
+      var db = conn.database(table_name);
+      db.create(function (err, res) {
+        if (err) {
+          console.error(('Failed to create ' + table_name + '.').red().bold());
+          console.error('  ' + err.reason.red());
+        } else {
+          console.log(('Created ' + table_name + '.').yellow());
+        }
+      });
     })(tabname);
 }
