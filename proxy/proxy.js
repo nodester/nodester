@@ -23,6 +23,24 @@ var daemon = require('daemon');
 
 var proxy = new httpProxy.HttpProxy();
 var proxymap = {};
+var proxy_refresh_timer = null;
+
+var queue_proxy_map_refresh = function () {
+  if (proxy_refresh_timer != null) {
+    proxy_refresh_timer = setTimeout(function () {
+      load_proxymap(config.opt.proxy_table_file, function (err, res) {
+        if (err) {
+          console.error('failed to load proxymap: %s', err.toString());
+        }
+        proxy_refresh_timer = null;
+      });
+    }, 10 * 1000);
+  }
+};
+
+fs.watchFile(config.opt.proxy_table_file, function (oldts, newts) {
+  queue_proxy_map_refresh();
+});
 
 var load_proxymap = function (fname, cb) {
   fs.readFile(fname, function (err, data) {
@@ -108,6 +126,7 @@ lib.update_proxytable_map(function (err) {
   if (err) {
     console.log("err: " + JSON.stringify(err));
   } else {
+    queue_proxy_map_refresh();
     var http_server = http.createServer(handle_http_request);
     http_server.on('upgrade', handle_upgrade_request);
     http_server.listen(80);
