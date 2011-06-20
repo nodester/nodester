@@ -3,7 +3,8 @@
 var http = require('http'),
     config = require('../../config');
 
-require('colors');
+var Colored = require('colored');
+Colored.extendString();
 
 
 var create_couchdb_table = function (port, hostname, tablename, callback) {
