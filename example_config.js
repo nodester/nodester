@@ -1,7 +1,7 @@
 exports.opt = {
   couch_user: 'nodester',
   couch_pass: 'password',
-  couch_host: "127.0.0.1",
+  couch_host: '127.0.0.1',
   couch_port: 5984,
   couch_prefix: 'nodester',
   couch_tables: ['coupons', 'nodefu', 'nextport', 'apps', 'repos', 'aliasdomains'],
@@ -17,9 +17,9 @@ exports.opt = {
   coupon_code: 'CouponCode',
   blocked_apps: ['www', 'api'],
   restart_key: 'KeepThisSecret',
-  userid: "nodester",
+  userid: 'nodester',
   enable_ssl: false, // Currently SSL forward to the app/api, when I have a wildcard cert to test, then all apps can have SSL.
-  ssl_ca_file: "",
-  ssl_cert_file: "",
-  ssl_key_file: ""
+  ssl_ca_file: '',
+  ssl_cert_file: '',
+  ssl_key_file: ''
 };
