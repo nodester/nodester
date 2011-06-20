@@ -13,6 +13,7 @@ Dependencies:
     daemon
     forever
     cradle
+    colored
 
 Installation:
   Install node.js (0.4.x recommended)
@@ -69,7 +70,7 @@ Installation:
   Either install CouchDB or get a CouchOne account
 
   Install node-module dependencies
-    for X in pool express npm-wrapper request daemon forever cradle; do npm install ${X}; done
+    for X in pool express npm-wrapper request daemon forever cradle colored; do npm install ${X}; done
   
   Get nodester
     cd ~
@@ -92,9 +93,9 @@ Installation:
     Copy scripts/example_gitrepoclone.sh to scripts/gitrepoclone.sh
     Update scripts/gitrepoclone.sh with the key you specified in config.js
   Setup the CouchDB tables
-    cd ./nodester/scripts/couchdb
+    cd ./nodester/scripts/couchdb/create_all_couchdb_tables.js
         ./create_all_couchdb_tables.js
-        ./setup_default_views.js
+        ./nodester/scripts/couchdb/setup_default_views.js
   Start up the proxy and main/api app
     cd nodester
     ./bin/app_start.sh
