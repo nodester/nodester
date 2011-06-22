@@ -18,6 +18,7 @@ exports.opt = {
   blocked_apps: ['www', 'api'],
   restart_key: 'KeepThisSecret',
   userid: 'nodester',
+  app_uid: 100,
   enable_ssl: false, // Currently SSL forward to the app/api, when I have a wildcard cert to test, then all apps can have SSL.
   ssl_ca_file: '',
   ssl_cert_file: '',
