@@ -9,6 +9,7 @@ This app runs on port 80 and forwards traffic to the appropriate node app
 var httpProxy = require('http-proxy'),
     http = require('http'),
     https = require('http'),
+    net = require('net'),
     url = require('url'),
     fs = require('fs'),
     path = require('path'),
