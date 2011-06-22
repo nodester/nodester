@@ -23,9 +23,9 @@ else
   git clone . ${appdir};
   cd ${appdir};
 fi
-
-find ${appdir} -type d -exec chmod 777 {} \;
-find ${appdir} -type f -exec chmod 666 {} \;
+#  -path ${appdir}/node_modules -prune -path ${appdir}/.nodester -prune -path ${appdir}/error.log -prune -path ${appdir}/etc -prune
+find ${appdir} -type d -exec chmod 777 {} \; >/dev/null 2>&1;
+find ${appdir} -type f -exec chmod 666 {} \; >/dev/null 2>&1;
 
 hook=./.git/hooks/post-receive
 if [ -f "$hook" ]; then
