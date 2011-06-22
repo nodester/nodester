@@ -110,6 +110,7 @@ add_c(host_base, 'echo "' + app_username + ' ALL = NOPASSWD: ' + app_homedir + '
 add_c(host_base, 'echo "' + app_username + ' ALL = NOPASSWD: ' + app_homedir + '/nodester/scripts/launch_chrooted_app.js *" >> /tmp/my_file_1', '', false);
 add_c(host_base, 'echo "' + app_username + ' ALL = NOPASSWD: ' + app_homedir + '/nodester/scripts/update_authkeys.js *" >> /tmp/my_file_1', '', false);
 add_c(host_base, 'echo "' + app_username + ' ALL = NOPASSWD: ' + app_homedir + '/nodester/scripts/create_user_dir.js *" >> /tmp/my_file_1', '', false);
+add_c(host_base, 'echo "' + app_username + ' ALL = NOPASSWD: ' + app_homedir + '/nodester/scripts/gitreposetup.sh *" >> /tmp/my_file_1', '', false);
 add_c(host_base, 'sudo cp /tmp/my_file_1 /etc/sudoers', '', false);
 add_c(host_base, 'rm -f /tmp/my_file_1', '', false);
 add_c(host_base, 'sudo chown root:root /etc/sudoers', '', false);

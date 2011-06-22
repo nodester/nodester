@@ -9,6 +9,7 @@ REV=${4};
 START=${5};
 #This was UID which is a readonly variable.. Duh..
 NODESTER_UID=${6};
+GIT_UID=${6};
 
 if [ ! -d "${APPDIR}" ]; then
   mkdir -p ${APPDIR};
@@ -27,4 +28,5 @@ cd ../
 echo "Changing Perms"
 echo "$PWD"
 echo "chown -R $NODESTER_UID ${REV}*"
-chown -R $NODESTER_UID:$NODESTER_UID ${REV}*
+chown -R $NODESTER_UID:$NODESTER_UID ${REV}
+chown -R $GIT_UID:$NODESTER_UID ${REV}.git
