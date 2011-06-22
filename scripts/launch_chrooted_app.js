@@ -33,7 +33,7 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
   var error_log_fd = fs.openSync('/error.log', 'w');
   var log = function (obj) {
     console.log(arguments);
-    fs.write(error_log_fd, arguments[0]);
+    fs.write(error_log_fd, arguments[0] + '\n');
   };
 	if (err) {
 		log(err.stack);
@@ -184,7 +184,7 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
     sandbox.require.main = sandbox.module;
     sandbox.require.cache = {};
     sandbox.require.cache['/' + config.start] = sandbox.module;
-    sandbox.require.paths = ['/.node_libraries'];
+    sandbox.require.paths = ['/node_modules','/.node_libraries'];
 
     sandbox.process.on('uncaughtException', function (err) {
         fs.write(error_log_fd, util.inspect(err));
