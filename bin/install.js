@@ -108,6 +108,7 @@ add_c(host_base, 'sudo chown ' + username + ' /tmp/my_file_1', '', false);
 add_c(host_base, 'echo "' + app_username + ' ALL = NOPASSWD: ' + app_homedir + '/nodester/bin/proxy_stop.sh" >> /tmp/my_file_1', '', false);
 add_c(host_base, 'echo "' + app_username + ' ALL = NOPASSWD: ' + app_homedir + '/nodester/bin/proxy_start.sh" >> /tmp/my_file_1', '', false);
 add_c(host_base, 'echo "' + app_username + ' ALL = NOPASSWD: ' + app_homedir + '/nodester/scripts/launch_chrooted_app.js *" >> /tmp/my_file_1', '', false);
+add_c(host_base, 'echo "' + app_username + ' ALL = NOPASSWD: ' + app_homedir + '/nodester/scripts/update_authkeys.js *" >> /tmp/my_file_1', '', false);
 add_c(host_base, 'sudo cp /tmp/my_file_1 /etc/sudoers', '', false);
 add_c(host_base, 'rm -f /tmp/my_file_1', '', false);
 add_c(host_base, 'sudo chown root:root /etc/sudoers', '', false);
