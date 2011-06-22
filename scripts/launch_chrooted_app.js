@@ -28,36 +28,39 @@ console.log('chroot: ', config.apphome);
 daemon.chroot(config.apphome);
 console.log('Starting Daemon');
 daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodester', 'pids', 'app.pid'), function(err, pid) {
+  var error_log_fd = fs.openSync('/error.log', 'w');
+  var log = function (obj) {
+    console.log(arguments);
+    fs.write(error_log_fd, arguments[0]);
+  };
 	if (err) {
-		console.log(err.stack);
+		log(err.stack);
 	}
-	console.log('Inside Daemon: ', pid);
-	console.log('Changing to user: ', config.userid);
+	log('Inside Daemon: ' + pid);
+	log('Changing to user: ' + config.userid);
     try {
         daemon.setreuid(config.userid);
-        // process.setuid(config.userid);
-        console.log('User Changed: ', process.getuid());
+        log('User Changed: ' + process.getuid());
     } catch (e) {
-        console.log('User Change FAILED');
+        log('User Change FAILED');
     }
     
     //Setup the errorlog
-	var error_log_fd = fs.openSync('/error.log', 'w');
 	process.on('uncaughtException', function (err) {
 	    fs.write(error_log_fd, err.stack);
 	});
     
     var etc = path.join('/', 'etc');
     //create /etc inside the chroot
-    console.log('Checking for /etc');
+    log('Checking for /etc');
     if (!path.existsSync(etc)) {
-        console.log('/etc does not exist. Creating..');
+        log('/etc does not exist. Creating..');
         fs.mkdirSync(etc, 0777);
     }
-    console.log('Update /etc/resolve.conf with Googles DNS servers..');
+    log('Update /etc/resolve.conf with Googles DNS servers..');
     fs.writeFileSync(path.join(etc, 'resolv.conf'), 'nameserver 8.8.8.8\nnameserver 8.8.4.4\n', encoding='utf8');
 
-    console.log('Setting up sandbox..');
+    log('Setting up sandbox..');
     //Setup the main sandbox..
     var sandbox = {
         global: {},
