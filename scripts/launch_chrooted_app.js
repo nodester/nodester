@@ -21,11 +21,13 @@ require.paths.unshift(path.join(config.appdir, '../', '.node_libraries'));
 require.paths.unshift('/.node_libraries');
 var daemon = require('daemon');
 
+
 var app_port = parseInt(config.port);
 var app_host = config.ip;
 
 console.log('chroot: ', config.apphome);
 daemon.chroot(config.apphome);
+require.paths.unshift('/node_modules');
 console.log('Starting Daemon');
 daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodester', 'pids', 'app.pid'), function(err, pid) {
   var error_log_fd = fs.openSync('/error.log', 'w');
