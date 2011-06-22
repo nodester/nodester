@@ -6,9 +6,9 @@ var util = require('util');
 var ins = util.inspect;
 
 var args = process.argv; args.shift(); args.shift();
-if (args.length < 12) {
+if (args.length < 13) {
   console.error('Invalid usage!');
-  console.log('install.js <username> <hostname> <top level domain> <couch db user> <couch db pass> <couch db ip> <couch db port> <couch db prefix> <install app username> <app home dir> <install git username> <git home dir>');
+  console.log('install.js <username> <hostname> <top level domain> <couch db user> <couch db pass> <couch db ip> <couch db port> <couch db prefix> <tenant apps dir> <install app username> <app home dir> <install git username> <git home dir>');
   console.log('nb. You should be able to ssh to the host using a key, and use sudo with no passphrase.');
   process.exit(1);
 }
@@ -20,6 +20,7 @@ var couch_db_pass = args.shift();
 var couch_db_host = args.shift();
 var couch_db_port = args.shift();
 var couch_db_prefix = args.shift();
+var apps_homedir = args.shift();
 var app_username = args.shift();
 var app_homedir = args.shift();
 var git_username = args.shift();
@@ -66,6 +67,9 @@ add_c(host_base, 'sudo groupadd -g 2002 ' + git_username, '', true);
 add_c(host_base, 'sudo useradd -d ' + app_homedir + ' -c "nodester app" -g ' + app_username + ' -m -r -s /bin/bash ' + app_username, '', true);
 add_c(host_base, 'sudo useradd -d ' + git_homedir + ' -c "nodester git user" -g ' + git_username + ' -m -r -s /bin/bash ' + git_username, '', true);
 add_c(host_base, 'sudo mkdir ' + app_homedir + '/.ssh', '', true);
+add_c(host_base, 'sudo mkdir ' + apps_homedir, '', true);
+add_c(host_base, 'sudo chown -R ' + app_username + ':' + git_username + '' + apps_homedir, '', true);
+add_c(host_base, 'sudo chmod -R 0774 ' + apps_homedir, '', true);
 add_c(host_base, 'sudo cp ${HOME}/.ssh/authorized_keys ' + app_homedir + '/.ssh/authorized_keys', '', true);
 add_c(host_base, 'sudo chown -R ' + app_username + ':' + app_username + ' ' + app_homedir + '/.ssh', '', false);
 add_c(host_base, 'sudo chmod -R 0700 ' + app_homedir + '/.ssh', '', false);

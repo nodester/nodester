@@ -1,20 +1,29 @@
 #!/bin/bash
 # post-commit hook to create git file directory for node subdomain 
 SECRETKEY=PleaseRestartMyAppMKay
+GITBASE=/git
+APPSBASE=/app
+
 OLD_PWD=$PWD
 gitdirsuffix=${PWD##*/}
 gitdir=${gitdirsuffix%.git}
+GITBASELEN=${#GITBASE};
 
-if [ -d "../$gitdir" ]; then
+appdir="${APPSBASE}${OLD_PWD:${GITBASELEN}}";
+
+if [ -d "${appdir}" ]; then
   echo "Syncing repo with chroot"
-  cd ../$gitdir;
+  cd ${appdir};
   unset GIT_DIR;
   git pull;
 else
   echo "Fresh git clone into chroot"
-  git clone . ../$gitdir/;
-  cd ../$gitdir;
+  git clone . ${appdir};
+  cd ${appdir};
 fi
+
+find . -type d -exec chmod 777 {} \;
+find . -type f -exec chmod 666 {} \;
 
 hook=./.git/hooks/post-receive
 if [ -f "$hook" ]; then
