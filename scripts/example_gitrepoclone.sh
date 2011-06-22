@@ -8,8 +8,9 @@ OLD_PWD=$PWD
 gitdirsuffix=${PWD##*/}
 gitdir=${gitdirsuffix%.git}
 GITBASELEN=${#GITBASE};
-
-appdir="${APPSBASE}${OLD_PWD:${GITBASELEN}}";
+OLD_PWDLEN=${#OLD_PWD};
+MY_LEN=$(( ${OLD_PWDLEN} - ${GITBASELEN} - 4 ));
+appdir="${APPSBASE}${OLD_PWD:${GITBASELEN}:${MY_LEN}}";
 
 if [ -d "${appdir}" ]; then
   echo "Syncing repo with chroot"
@@ -18,6 +19,7 @@ if [ -d "${appdir}" ]; then
   git pull;
 else
   echo "Fresh git clone into chroot"
+  mkdir -p ${appdir};
   git clone . ${appdir};
   cd ${appdir};
 fi
