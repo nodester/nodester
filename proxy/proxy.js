@@ -5,6 +5,8 @@ Nodester - Nodejs hosting
 This app runs on port 80 and forwards traffic to the appropriate node app 
 
 */
+console.log('');
+console.log('');
 
 var httpProxy = require('http-proxy'),
     http = require('http'),
@@ -27,7 +29,7 @@ var proxymap = {};
 var proxy_refresh_timer = null;
 
 var queue_proxy_map_refresh = function () {
-  if (proxy_refresh_timer != null) {
+  if (proxy_refresh_timer == null) {
     proxy_refresh_timer = setTimeout(function () {
       load_proxymap(config.opt.proxy_table_file, function (err, res) {
         if (err) {
@@ -35,7 +37,7 @@ var queue_proxy_map_refresh = function () {
         }
         proxy_refresh_timer = null;
       });
-    }, 10 * 1000);
+    }, 5 * 1000);
   }
 };
 
