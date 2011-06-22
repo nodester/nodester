@@ -22,7 +22,6 @@ mkdir -p ${GIT_DIR} ${APP_DIR};
 git init --bare ${GIT_DIR};
 #ln -s ${BASEDIR}/scripts/gitrepoclone.sh ${GIT_DIR}/hooks/post-receive;
 cp ${BASEDIR}/scripts/gitrepoclone.sh ${GIT_DIR}/hooks/post-receive;
-chmod +x ${GIT_DIR}/hooks/post-receive;
 
 git clone ${GIT_DIR} ${APP_DIR}/;
 wait
@@ -34,4 +33,5 @@ echo "find ${GIT_DIR} ${APP_DIR} -type d -exec chmod 775 {} \;";
 find ${GIT_DIR} ${APP_DIR} -type d -exec chmod 775 {} \;
 echo "find ${GIT_DIR} ${APP_DIR} -type f -exec chmod 664 {} \;";
 find ${GIT_DIR} ${APP_DIR} -type f -exec chmod 664 {} \;
-
+echo "chmod +x ${GIT_DIR}/hooks/post-receive;";
+chmod +x ${GIT_DIR}/hooks/post-receive;
