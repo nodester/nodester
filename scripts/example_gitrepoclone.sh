@@ -24,8 +24,8 @@ else
   cd ${appdir};
 fi
 
-find . -type d -exec chmod 777 {} \;
-find . -type f -exec chmod 666 {} \;
+find ${appdir} -type d -exec chmod 777 {} \;
+find ${appdir} -type f -exec chmod 666 {} \;
 
 hook=./.git/hooks/post-receive
 if [ -f "$hook" ]; then
