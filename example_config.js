@@ -7,7 +7,7 @@ exports.opt = {
   couch_tables: ['coupons', 'nodefu', 'nextport', 'apps', 'repos', 'aliasdomains'],
   home_dir: '/var/nodester',
   app_dir: '/var/nodester/nodester',
-  hosted_apps_subdir: 'hosted_apps', // This should be a subfolder of home_dir - TODO - Change this..
+  git_home_dir: '/git',
   public_html_dir: '/var/nodester/nodester/public',
   proxy_table_file: '/var/nodester/var/proxy_table.json',
   tl_dom: 'testnodester.com',
