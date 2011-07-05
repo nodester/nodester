@@ -107,6 +107,7 @@ var handle_upgrade_request = function (req, socket, head) {
   if (typeof req.headers.host == 'string') {
     var hostport = lookup_hostport(req.headers.host);
     if (hostport != null) {
+      hostport['buffer'] = proxy.buffer(socket);
       proxy.proxyWebSocketRequest(req, socket, head, hostport);
     } else {
       socket.end();
