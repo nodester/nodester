@@ -23,5 +23,6 @@ exports.opt = {
   enable_ssl: false, // Currently SSL forward to the app/api, when I have a wildcard cert to test, then all apps can have SSL.
   ssl_ca_file: '',
   ssl_cert_file: '',
-  ssl_key_file: ''
+  ssl_key_file: '',
+  node_base_folder: '/opt/node-v0.4.9_npm_v1.0.3'
 };
