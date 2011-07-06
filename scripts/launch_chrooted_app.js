@@ -12,6 +12,7 @@ var creds = crypto.createCredentials();
 
 
 var config = JSON.parse(fs.readFileSync(path.join('.nodester', 'config.json'), encoding='utf8'));
+config.userid = parseInt(config.userid);
 
 console.log(config);
 
@@ -19,6 +20,7 @@ console.log(config);
 // one available to root, since we are sudoed at this point
 require.paths.unshift(path.join(config.appdir, '../', '.node_libraries'));
 require.paths.unshift('/.node_libraries');
+require.paths.unshift('/node_modules');
 var daemon = require('daemon');
 
 var app_port = parseInt(config.port);
@@ -34,8 +36,8 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
 	console.log('Inside Daemon: ', pid);
 	console.log('Changing to user: ', config.userid);
     try {
-        //daemon.setreuid(config.userid);
-        process.setuid(config.userid);
+        daemon.setreuid(config.userid);
+        // process.setuid(config.userid);
         console.log('User Changed: ', process.getuid());
     } catch (e) {
         console.log('User Change FAILED');
@@ -179,7 +181,7 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
     sandbox.require.main = sandbox.module;
     sandbox.require.cache = {};
     sandbox.require.cache['/' + config.start] = sandbox.module;
-    sandbox.require.paths = ['/.node_libraries'];
+    sandbox.require.paths = ['/.node_libraries', '/node_modules'];
 
     sandbox.process.on('uncaughtException', function (err) {
         fs.write(error_log_fd, util.inspect(err));
@@ -192,10 +194,12 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
     fs.readFile(config.start, function (err, script_src) {
         try {
             //Just to make sure the process is owned by the right users (overkill)
-            process.setuid(config.userid);
+
+            var resp = daemon.setreuid(config.userid);
             //console.log('Final user check (overkill)', process.getuid());
         } catch (e2) {
             console.log('Final User Change Failed.');
+            console.log(resp);
         }
         if (err) {
             console.log(err.stack);
