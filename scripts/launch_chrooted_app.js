@@ -18,9 +18,11 @@ console.log(config);
 
 //These 3 lines ensure that we get the daemon setup by the nodester user and not the
 // one available to root, since we are sudoed at this point
+require.paths.unshift(path.join(config.appdir, '../', 'node_modules'));
 require.paths.unshift(path.join(config.appdir, '../', '.node_libraries'));
-require.paths.unshift('/.node_libraries');
 require.paths.unshift('/node_modules');
+require.paths.unshift('/.node_libraries');
+
 var daemon = require('daemon');
 
 var app_port = parseInt(config.port);
@@ -37,17 +39,16 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
 	console.log('Changing to user: ', config.userid);
     try {
         daemon.setreuid(config.userid);
-        // process.setuid(config.userid);
         console.log('User Changed: ', process.getuid());
     } catch (e) {
         console.log('User Change FAILED');
     }
     
-    //Setup the errorlog
-	var error_log_fd = fs.openSync('/error.log', 'w');
-	process.on('uncaughtException', function (err) {
-	    fs.write(error_log_fd, err.stack);
-	});
+      //Setup the errorlog
+  	var error_log_fd = fs.openSync('/error.log', 'w');
+  	process.on('uncaughtException', function (err) {
+  	    fs.write(error_log_fd, err.stack);
+  	});
     
     var etc = path.join('/', 'etc');
     //create /etc inside the chroot
@@ -193,10 +194,8 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
     console.log('Reading file...');
     fs.readFile(config.start, function (err, script_src) {
         try {
-            //Just to make sure the process is owned by the right users (overkill)
-
             var resp = daemon.setreuid(config.userid);
-            //console.log('Final user check (overkill)', process.getuid());
+            console.log('Final user check: ', process.getuid());
         } catch (e2) {
             console.log('Final User Change Failed.');
             console.log(resp);
@@ -205,7 +204,7 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
             console.log(err.stack);
             process.exit(1);
         } else {
-            console.log('Nodester wrapped script starting (' + process.pid + ') at ', new Date());
+            console.log('Nodester wrapped script starting (PID: ' + process.pid + ') at ', new Date());
             Script.runInNewContext(script_src, sandbox, config.start);
         }
     });

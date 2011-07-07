@@ -17,6 +17,9 @@ process.on('uncaughtException', function (err) {
    console.log(err.stack);
 });
 
+var daemon = require('daemon');
+// daemon.setreuid(config.opt.userid);
+
 var myapp = express.createServer();
 
 myapp.configure(function(){
