@@ -12,13 +12,17 @@ var creds = crypto.createCredentials();
 
 
 var config = JSON.parse(fs.readFileSync(path.join('.nodester', 'config.json'), encoding='utf8'));
+config.userid = parseInt(config.userid);
 
 console.log(config);
 
 //These 3 lines ensure that we get the daemon setup by the nodester user and not the
 // one available to root, since we are sudoed at this point
+require.paths.unshift(path.join(config.appdir, '../', 'node_modules'));
 require.paths.unshift(path.join(config.appdir, '../', '.node_libraries'));
+require.paths.unshift('/node_modules');
 require.paths.unshift('/.node_libraries');
+
 var daemon = require('daemon');
 
 
@@ -47,7 +51,6 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
         log('User Change FAILED');
     }
     
-    //Setup the errorlog
 	process.on('uncaughtException', function (err) {
 	    fs.write(error_log_fd, err.stack);
 	});
@@ -196,17 +199,17 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
     console.log('Reading file...');
     fs.readFile(config.start, function (err, script_src) {
         try {
-            //Just to make sure the process is owned by the right users (overkill)
-            daemon.setreuid(config.userid);
-            console.log('Final user check (overkill)', process.getuid());
+            var resp = daemon.setreuid(config.userid);
+            console.log('Final user check: ', process.getuid());
         } catch (e2) {
             console.log('Final User Change Failed.');
+            console.log(resp);
         }
         if (err) {
             console.log(err.stack);
             process.exit(1);
         } else {
-            console.log('Nodester wrapped script starting (' + process.pid + ') at ', new Date());
+            console.log('Nodester wrapped script starting (PID: ' + process.pid + ') at ', new Date());
             Script.runInNewContext(script_src, sandbox, config.start);
         }
     });

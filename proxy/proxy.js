@@ -178,6 +178,9 @@ lib.update_proxytable_map(function (err) {
     } else {
       switch_user();
     }
+    daemon.setreuid(config.opt.userid);
+    console.log('Switched to ' + process.getuid() + '.');
+    console.log('Nodester started on port 80');
   }
 });
 
