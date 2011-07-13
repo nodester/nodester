@@ -113,6 +113,7 @@ License: Creative Commons Attribution
                             <li><a href="#env">Env Resource</a></li>
                             <li><a href="#appnpm">NPM Resource</a></li>
                             <li><a href="#appdomains">App Domains Resource</a></li>
+                            <li><a href="#reset_password">Reset Password Resource</a></li>
                             <li><a href="#clicommands">CLI Commands</a></li>
                             <li><a href="#git">Git Resources</a></li>
                         </ul>
@@ -268,6 +269,18 @@ License: Creative Commons Attribution
 				curl -u "testuser:123"  http://api.nodester.com/appdomains</code>
 
 
+				<a name="reset_password"></a>
+        <h3>RESET_PASSWORD</h3>
+				<p><b>Reset Password :: POST</b>
+				<br/>Base URL: http://api.nodester.com</p>
+				<code>/reset_password - Sends a e-mail with a token to reset your user password<br/><br/>
+        curl -X POST -d "user=your_username" http://nodester.com/reset_password</code>
+
+				<p><b>Reset Password :: PUT</b>
+				<br/>Base URL: http://api.nodester.com</p>
+        <code>/reset_password/&lt;token&gt; - Updates your password using the provided token<br/><br/>
+        curl -X PUT -d "password=your_new_password" http://nodester.com/reset_password/&lt;token&gt;</code>
+
 				<a name="clicommands"></a>
 				<h3>CLI Commands</h3>
 				<p>You can install our Command Line Interface by running "npm install nodester-cli"</p>
@@ -297,6 +310,8 @@ License: Creative Commons Attribution
 					nodester appdomain add  &lt;app-name&gt;  &lt;domain-name&gt;<br/>
 					nodester appdomain delete &lt;app-name&gt;  &lt;domain-name&gt;<br/>
 					nodester appdomains<br/>
+					nodester password_reset token &lt;user&gt; - Request a password reset token<br/>
+					nodester password_reset setpass &lt;token&gt; &lt;password&gt; - Set a new password for the user with token<br/>
 					
 					
 				</code>
