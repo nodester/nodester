@@ -48,7 +48,7 @@ if (config.env) {
 }
 env.app_port = parseInt(config.port);
 env.app_host = config.ip;
-var args = [];
+var args = ['/app/' + config.start];
 
 var chroot_res = daemon.chroot(config.appchroot);
 if (chroot_res != true) {
@@ -64,13 +64,23 @@ if (ch_uid != true) {
 }
 var child = null;
 var child_watcher_time = null;
+if (path.existsSync('/app/error.log')) fs.unlinkSync('/app/error.log');
 error_log_fd = fs.openSync('/app/error.log', 'w');
 
 var myPid = daemon.start();
 log_line.call('chroot_runner: ', 'New PID: ' + myPid.toString());
+fs.writeFileSync('/.nodester/pids/runner.pid', myPid.toString());
+
+process.on('SIGINT', function () {
+  log_line.call('chroot_runner: ', 'SIGINT recieved, sending SIGTERM to children.');
+  if (child != null) {
+    log_line.call('chroot_runner: ', 'Child PID: ' + child.pid.toString());
+    process.kill(child.pid, 'SIGTERM');
+  }
+});
 
 var start_child = function () {
-  child = spawn(config.start, args, { env: env });
+  child = spawn('/usr/bin/node', args, { env: env });
   child.stdout.on('data', log_line.bind('stdout: '));
   child.stderr.on('data', log_line.bind('stderr: '));
   child.on('exit', function (code) {
