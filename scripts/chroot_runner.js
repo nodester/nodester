@@ -83,6 +83,17 @@ process.on('SIGINT', function () {
   }
 });
 
+process.on('SIGTERM', function () {
+  log_line.call('chroot_runner: ', 'SIGTERM recieved, sending SIGTERM to children.');
+  if (child != null) {
+    log_line.call('chroot_runner: ', 'Child PID: ' + child.pid.toString());
+    process.kill(child.pid, 'SIGTERM');
+    process.exit();
+  } else {
+    process.exit();
+  }
+});
+
 var start_child = function () {
   child = spawn('/usr/bin/node', args, { env: env });
   child.stdout.on('data', log_line.bind('stdout: '));
