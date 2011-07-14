@@ -66,6 +66,9 @@ var child = null;
 var child_watcher_time = null;
 error_log_fd = fs.openSync('/app/error.log', 'w');
 
+var myPid = daemon.start();
+log_line.call('chroot_runner: ', 'New PID: ' + myPid.toString());
+
 var start_child = function () {
   child = spawn(config.start, args, { env: env });
   child.stdout.on('data', log_line.bind('stdout: '));
