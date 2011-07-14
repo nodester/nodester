@@ -69,6 +69,7 @@ error_log_fd = fs.openSync('/app/error.log', 'w');
 
 var myPid = daemon.start();
 log_line.call('chroot_runner: ', 'New PID: ' + myPid.toString());
+if (path.existsSync('/.nodester/pids/runner.pid')) fs.unlinkSync('/.nodester/pids/runner.pid');
 fs.writeFileSync('/.nodester/pids/runner.pid', myPid.toString());
 
 process.on('SIGINT', function () {
@@ -76,6 +77,9 @@ process.on('SIGINT', function () {
   if (child != null) {
     log_line.call('chroot_runner: ', 'Child PID: ' + child.pid.toString());
     process.kill(child.pid, 'SIGTERM');
+    process.exit();
+  } else {
+    process.exit();
   }
 });
 
