@@ -1,8 +1,12 @@
 #!/usr/bin/env node
-var child_process = require('child_process').spawn;
+
+require.paths.unshift('/usr/lib/node_modules');
+
+var spawn = require('child_process').spawn;
 var daemon = require('daemon');
 var fs = require('fs');
 var path = require('path');
+
 
 var config = JSON.parse(fs.readFileSync(path.join('.nodester', 'config.json'), encoding='utf8'));
 
@@ -46,7 +50,7 @@ env.app_port = parseInt(config.port);
 env.app_host = config.ip;
 var args = [];
 
-var chroot_res = daemon.chroot(config.apphome);
+var chroot_res = daemon.chroot(config.appchroot);
 if (chroot_res != true) {
   log_line('chroot_runner: ', 'Failed to chroot to ' + config.apphome, LOG_STDERR);
   pre_shutdown();
@@ -60,10 +64,10 @@ if (ch_uid != true) {
 }
 var child = null;
 var child_watcher_time = null;
-error_log_fd = fs.openSync('/error.log', 'w');
+error_log_fd = fs.openSync('/app/error.log', 'w');
 
 var start_child = function () {
-  child = child_process.spawn(config.start, args, { env: env });
+  child = spawn(config.start, args, { env: env });
   child.stdout.on('data', log_line.bind('stdout: '));
   child.stderr.on('data', log_line.bind('stderr: '));
   child.on('exit', function (code) {
