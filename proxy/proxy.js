@@ -5,10 +5,8 @@ Nodester - Nodejs hosting
 This app runs on port 80 and forwards traffic to the appropriate node app 
 
 */
-console.log('');
-console.log('');
 
-var httpProxy = require('http-proxy'),
+var httpProxy = require('../deps/node-http-proxy/node-http-proxy.js'),
     http = require('http'),
     https = require('http'),
     net = require('net'),
@@ -90,9 +88,13 @@ var lookup_hostport = function (hostport) {
 
 var handle_http_request = function (req, res) {
   if (typeof req.headers.host == 'string') {
-    var hostport = lookup_hostport(req.headers.host);
-    if (hostport != null) {
-      proxy.proxyRequest(req, res, hostport);
+    var options = lookup_hostport(req.headers.host);
+    if (options != null) {
+      req.headers['x-forwarded-for'] = req.connection.remoteAddress || req.connection.socket.remoteAddress;
+      req.headers['x-forwarded-port'] = req.connection.remotePort || req.connection.socket.remotePort;
+      req.headers['x-forwarded-proto'] = res.connection.pair ? 'https' : 'http';
+      options['allow_xforwarded_headers'] = true;
+      proxy.proxyRequest(req, res, options);
     } else {
       res.writeHead(404, {'Content-Type': 'text/plain'});
       res.end('hostname not known');
@@ -105,10 +107,11 @@ var handle_http_request = function (req, res) {
 
 var handle_upgrade_request = function (req, socket, head) {
   if (typeof req.headers.host == 'string') {
-    var hostport = lookup_hostport(req.headers.host);
-    if (hostport != null) {
-      hostport['buffer'] = proxy.buffer(socket);
-      proxy.proxyWebSocketRequest(req, socket, head, hostport);
+    var options = lookup_hostport(req.headers.host);
+    if (options != null) {
+      req.headers['x-forwarded-for'] = req.connection.remoteAddress || req.connection.socket.remoteAddress;
+      req.headers['x-forwarded-port'] = req.connection.remotePort || req.connection.socket.remotePort;
+      proxy.proxyWebSocketRequest(req, socket, head, options);
     } else {
       socket.end();
       socket.destroy();
