@@ -93,7 +93,7 @@ var handle_http_request = function (req, res) {
       req.headers['x-forwarded-for'] = req.connection.remoteAddress || req.connection.socket.remoteAddress;
       req.headers['x-forwarded-port'] = req.connection.remotePort || req.connection.socket.remotePort;
       req.headers['x-forwarded-proto'] = res.connection.pair ? 'https' : 'http';
-      options['allow_xforwarded_headers'] = true;
+      options['allow_xforwarded_headers'] = false;
       proxy.proxyRequest(req, res, options);
     } else {
       res.writeHead(404, {'Content-Type': 'text/plain'});
