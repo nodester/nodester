@@ -25,42 +25,47 @@ require.paths.unshift('/.node_libraries');
 
 var daemon = require('daemon');
 
+
 var app_port = parseInt(config.port);
 var app_host = config.ip;
 
 console.log('chroot: ', config.apphome);
 daemon.chroot(config.apphome);
+require.paths.unshift('/node_modules');
 console.log('Starting Daemon');
 daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodester', 'pids', 'app.pid'), function(err, pid) {
+  var error_log_fd = fs.openSync('/error.log', 'w');
+  var log = function (obj) {
+    console.log(arguments);
+    fs.write(error_log_fd, arguments[0] + '\n');
+  };
 	if (err) {
-		console.log(err.stack);
+		log(err.stack);
 	}
-	console.log('Inside Daemon: ', pid);
-	console.log('Changing to user: ', config.userid);
+	log('Inside Daemon: ' + pid);
+	log('Changing to user: ' + config.userid);
     try {
         daemon.setreuid(config.userid);
-        console.log('User Changed: ', process.getuid());
+        log('User Changed: ' + process.getuid());
     } catch (e) {
-        console.log('User Change FAILED');
+        log('User Change FAILED');
     }
     
-      //Setup the errorlog
-  	var error_log_fd = fs.openSync('/error.log', 'w');
-  	process.on('uncaughtException', function (err) {
-  	    fs.write(error_log_fd, err.stack);
-  	});
+	process.on('uncaughtException', function (err) {
+	    fs.write(error_log_fd, err.stack);
+	});
     
     var etc = path.join('/', 'etc');
     //create /etc inside the chroot
-    console.log('Checking for /etc');
+    log('Checking for /etc');
     if (!path.existsSync(etc)) {
-        console.log('/etc does not exist. Creating..');
+        log('/etc does not exist. Creating..');
         fs.mkdirSync(etc, 0777);
     }
-    console.log('Update /etc/resolve.conf with Googles DNS servers..');
+    log('Update /etc/resolve.conf with Googles DNS servers..');
     fs.writeFileSync(path.join(etc, 'resolv.conf'), 'nameserver 8.8.8.8\nnameserver 8.8.4.4\n', encoding='utf8');
 
-    console.log('Setting up sandbox..');
+    log('Setting up sandbox..');
     //Setup the main sandbox..
     var sandbox = {
         global: {},
@@ -182,7 +187,7 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
     sandbox.require.main = sandbox.module;
     sandbox.require.cache = {};
     sandbox.require.cache['/' + config.start] = sandbox.module;
-    sandbox.require.paths = ['/.node_libraries', '/node_modules'];
+    sandbox.require.paths = ['/node_modules','/.node_libraries'];
 
     sandbox.process.on('uncaughtException', function (err) {
         fs.write(error_log_fd, util.inspect(err));

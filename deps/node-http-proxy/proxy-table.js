@@ -26,41 +26,44 @@
 
 var util = require('util'),
     events = require('events'),
-    fs = require('fs'),
-    maxEventListeners = 1000;
+    fs = require('fs');
 
-var ProxyTable = function (router, silent, hostname_only) {
+//
+// ### function ProxyTable (router, silent) 
+// #### @router {Object} Object containing the host based routes
+// #### @silent {Boolean} Value indicating whether we should suppress logs
+// #### @hostnameOnly {Boolean} Value indicating if we should route based on __hostname string only__
+// Constructor function for the ProxyTable responsible for getting
+// locations of proxy targets based on ServerRequest headers; specifically
+// the HTTP host header.
+//
+var ProxyTable = exports.ProxyTable = function (router, silent, hostnameOnly) {
   events.EventEmitter.call(this);
-  // this.setMaxListeners(maxEventListeners);
+  
   this.silent = typeof silent !== 'undefined' ? silent : true;
-  this.hostname_only = typeof hostname_only !== 'undefined' ? hostname_only : false;
+  this.hostnameOnly = typeof hostnameOnly !== 'undefined' ? hostnameOnly : false;
+  
   if (typeof router === 'object') {
+    //
     // If we are passed an object literal setup 
     // the routes with RegExps from the router 
-    this.updateRoutes(router);
+    //
+    this.setRoutes(router);
   }
   else if (typeof router === 'string') {
+    //
     // If we are passed a string then assume it is a 
     // file path, parse that file and watch it for changes
+    //
     var self = this;
     this.routeFile = router;
-    this.updateRoutes(JSON.parse(fs.readFileSync(router)).router);
+    this.setRoutes(JSON.parse(fs.readFileSync(router)).router);
     
-    fs.watchFile(this.routeFile, function (c,p) {
-      console.log("watchFile");
+    fs.watchFile(this.routeFile, function () {
       fs.readFile(self.routeFile, function (err, data) {
         if (err) throw err;
-		try {
-        	self.updateRoutes(JSON.parse(data).router);
-		} catch(e) {
-			// report error
-		}
-        if (self.hostname_only === true) {
-          self.emit('updateRoutes', self.router);
-        }
-        else {
-          self.emit('updateRoutes', self.routes);
-        }
+        self.setRoutes(JSON.parse(data).router);
+        self.emit('routes', self.hostnameOnly === false ? self.routes : self.router);
       });
     });
   }
@@ -69,19 +72,26 @@ var ProxyTable = function (router, silent, hostname_only) {
   }
 };
 
+// Inherit from events.EventEmitter
 util.inherits(ProxyTable, events.EventEmitter);
 
-ProxyTable.prototype.updateRoutes = function (router) {
+//
+// ### function setRoutes (router) 
+// #### @router {Object} Object containing the host based routes
+// Sets the host-based routes to be used by this instance. 
+//
+ProxyTable.prototype.setRoutes = function (router) {
   if (!router) throw new Error('Cannot update ProxyTable routes without router.');
   
-  var self = this;
   this.router = router;
-  if (self.hostname_only !== true) {
+  
+  if (this.hostnameOnly === false) {
+    var self = this;
     this.routes = [];
 
     Object.keys(router).forEach(function (path) {
       var route = new RegExp(path, 'i');
- 
+
       self.routes.push({
         route: route,
         target: router[path]
@@ -90,66 +100,57 @@ ProxyTable.prototype.updateRoutes = function (router) {
   }
 };
 
-ProxyTable.prototype.proxyRequest = function (proxy) {
-  if (typeof proxy.req.headers.host !== 'undefined') {
-    if (this.hostname_only === true) {
-      var target = proxy.req.headers.host.split(':')[0];
-      if (this.router.hasOwnProperty(target)) {
-        var location = this.router[target].split(':'),
+//
+// ### function getProxyLocation (req) 
+// #### @req {ServerRequest} The incoming server request to get proxy information about.
+// Returns the proxy location based on the HTTP Headers in the  ServerRequest `req`
+// available to this instance.
+//
+ProxyTable.prototype.getProxyLocation = function (req) {
+  if (!req || !req.headers || !req.headers.host) {
+    return null;
+  }
+  
+  var target = req.headers.host.split(':')[0];
+  if (this.hostnameOnly == true) {
+    if (this.router.hasOwnProperty(target)) {
+      var location = this.router[target].split(':'),
+          host = location[0],
+          port = location.length === 1 ? 80 : location[1];
+      
+      return {
+        port: port,
+        host: host
+      };
+    }
+  }
+  else {
+    target += req.url;
+    for (var i in this.routes) {
+      var match, route = this.routes[i];
+      if (match = target.match(route.route)) {
+        var location = route.target.split(':'),
             host = location[0],
             port = location.length === 1 ? 80 : location[1];
-        if (!this.silent) {
-          util.log('Proxy Table proxying request to: ' + host + ':' + port);
-        }
-		try {
-        	proxy.proxyRequest(port, host);
-		} catch(e){
-			console.log(e.stack);
-		}
-        return;
-      }
-    }
-    else {
-      var target = proxy.req.headers.host.split(':')[0] + proxy.req.url;
-      for (var i in this.routes) {
-        var match, route = this.routes[i];
-        if (match = target.match(route.route)) {
-          var location = route.target.split(':'),
-              host = location[0],
-              port = location.length === 1 ? 80 : location[1];
 
-          if (!this.silent) {
-            util.log('Proxy Table proxying request to: ' + host + ':' + port);
-          }
-		  try {
-          	proxy.proxyRequest(port, host);
-   		  } catch(e){
-		 	console.log(e.stack);
-		  }
-
-          return;
-        }
+        return {
+          port: port,
+          host: host
+        };
       }
     }
   }
-  if (proxy.res) {
-    proxy.res.writeHead(404, {'Content-Type': 'text/plain'});
-    proxy.res.end();
-  }
-  else if (proxy.sock) {
-    // Remark: How do we perform '404' over a socket?
-    proxy.sock.destroy();
-  }
+  
+  return null;
 };
 
+//
+// ### close function ()
+// Cleans up the event listeneners maintained
+// by this instance.
+//
 ProxyTable.prototype.close = function () {
   if (typeof this.routeFile === 'string') {
     fs.unwatchFile(this.routeFile);
   }
 };
-
-exports.ProxyTable = ProxyTable;
-
-// process.on('uncaughtException', function (err) {
-//   console.log(err.stack);
-// });
