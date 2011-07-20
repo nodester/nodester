@@ -1,0 +1,25 @@
+0.1.9
+- Init scpOptions as array if not configured so later logic can assume array 
+- Document and add example of hosts() usage without tasks system
+
+0.1.8
+- Add exit callbacks to host.ssh(), host.scp() for handling non-zero exit codes
+- Add scpOptions (like sshOptions)
+- Add config tasks command line arguments rewriting
+
+0.1.7
+- Add host.logMask to allow masking things like passwords from command logging
+
+0.1.6
+- Document sshOptions and reimplement to allow setting in config or host object
+- Remove undocumented host() method for setting up a single host from config
+- Add engines specfication to package.json for node >=0.1.99
+
+0.1.5
+- Remove errant console.log statement in ssh command
+- Log commands before launching subprocess instead of after
+
+0.1.4
+- Add sshOptions to host config to allow passing options to ssh on ssh()
+- Add -r flag to scp() invocations to make useful for both files and directories
+- Tighten permissions on log file so readable only to local control user 

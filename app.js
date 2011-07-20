@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /* 
 
 Nodester opensource Node.js hosting service
