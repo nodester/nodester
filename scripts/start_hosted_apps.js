@@ -1,3 +1,6 @@
+#!/usr/bin/env node
+
+require.paths.unshift('/usr/lib/node_modules/');
 var http = require('http'),
     config = require("../config"),
     util = require('util'),
