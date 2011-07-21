@@ -10,6 +10,7 @@ var httpProxy = require('../deps/node-http-proxy/node-http-proxy.js'),
     http = require('http'),
     https = require('http'),
     net = require('net'),
+    policyfile = require('policyfile'),
     url = require('url'),
     fs = require('fs'),
     path = require('path'),
@@ -122,27 +123,6 @@ var handle_upgrade_request = function (req, socket, head) {
   }
 };
 
-var handle_flash_policy_file = function (socket) {
-  var buff_in = '';
-  socket.setEncoding('ascii');
-  var parse_buff = function () {
-    if (buff_in.length > 21) {
-      if (buff_in.substr == '<policy-file-request/>') {
-        socket.write('<cross-domain-policy>\r\n')
-        socket.write('     <allow-access-from domain="*" to-ports="*" />\r\n')
-        socket.write('</cross-domain-policy>\r\n');
-        socket.end();
-      } else {
-        console.error('invalid request: %s', buff_in);
-        socket.end();
-      }
-    }
-  }
-  socket.on('data', function (data) {
-    buff_in += data.toString();
-    parse_buff();
-  });
-}
 
 var switch_user = function () {
   var child = exec('id -u ' + config.opt.userid, function (err, stdout, stderr) {
@@ -158,9 +138,9 @@ lib.update_proxytable_map(function (err) {
     queue_proxy_map_refresh();
     var http_server = http.createServer(handle_http_request);
     http_server.on('upgrade', handle_upgrade_request);
-    http_server.listen(80);
+    http_server.listen(80, '0.0.0.0');
     console.log('Nodester started on port 80');
-    var flash_server = net.createServer(handle_flash_policy_file);
+    var flash_server = policyfile.createServer();
     flash_server.listen(843);
     console.log('Flash Policy Server started on port 843.');
     if (config.opt.enable_ssl === true) {
