@@ -23,9 +23,6 @@ else
   git clone . ${appdir};
   cd ${appdir};
 fi
-#  -path ${appdir}/node_modules -prune -path ${appdir}/.nodester -prune -path ${appdir}/error.log -prune -path ${appdir}/etc -prune
-find ${appdir} -type d -exec chmod 777 {} \; >/dev/null 2>&1;
-find ${appdir} -type f -exec chmod 666 {} \; >/dev/null 2>&1;
 
 hook=./.git/hooks/post-receive
 if [ -f "$hook" ]; then
@@ -41,7 +38,8 @@ fi
 cd $OLD_PWD
 
 echo "Attempting to restart your app: ${gitdir}"
-curl "http://127.0.0.1:4001/app_restart?repo_id=${gitdir}&restart_key=${SECRETKEY}" >/dev/null 2>&1 &
+curl "http://127.0.0.1:4001/app_restart?repo_id=${gitdir}&restart_key=${SECRETKEY}" 2>/dev/null
+echo ""
 echo "App restarted.."
 echo ""
 echo "  \m/ Nodester out \m/"
