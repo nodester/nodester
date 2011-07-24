@@ -56,7 +56,7 @@ if (config.opt.couch_prefix.length > 0) {
 
 // NATIVE BASE64 HANDLING
 var buff = new Buffer(config.opt.couch_user + ':' + config.opt.couch_pass, encoding='ascii');
-var dbcreds = buff.toString('base64')
+var dbcreds = buff.toString('base64');
 var request = couch_http.request(
   'GET',
   '/' + cprefix + 'apps' + '/_design/nodeapps/_view/all',
@@ -126,7 +126,7 @@ var next = function() {
             util.log((f + ' apps failed to ' + action).red.bold);
         }
     }
-}
+};
 
 var start_running_apps = function (apps_arr) {
     for(var i in apps_arr) {
