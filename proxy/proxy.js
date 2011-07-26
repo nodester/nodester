@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 /*
 
 Nodester - Nodejs hosting
@@ -16,8 +17,7 @@ var httpProxy = require('../deps/node-http-proxy/node-http-proxy.js'),
     path = require('path'),
     lib = require('../lib/lib'),
     exec = require('child_process').exec,
-    config = require('../config')
-;
+    config = require('../config');
 
 require.paths.unshift(path.join(config.app_dir, '../', '.node_libraries'));
 
@@ -27,10 +27,10 @@ var proxy = new httpProxy.HttpProxy();
 var proxymap = {};
 var proxy_refresh_timer = null;
 
-var queue_proxy_map_refresh = function () {
+var queue_proxy_map_refresh = function() {
   if (proxy_refresh_timer === null) {
-    proxy_refresh_timer = setTimeout(function () {
-      load_proxymap(config.opt.proxy_table_file, function (err, res) {
+    proxy_refresh_timer = setTimeout(function() {
+      load_proxymap(config.opt.proxy_table_file, function(err, res) {
         if (err) {
           console.error('failed to load proxymap: %s', err.toString());
         }
@@ -40,12 +40,12 @@ var queue_proxy_map_refresh = function () {
   }
 };
 
-fs.watchFile(config.opt.proxy_table_file, function (oldts, newts) {
+fs.watchFile(config.opt.proxy_table_file, function(oldts, newts) {
   queue_proxy_map_refresh();
 });
 
-var load_proxymap = function (fname, cb) {
-  fs.readFile(fname, function (err, data) {
+var load_proxymap = function(fname, cb) {
+  fs.readFile(fname, function(err, data) {
     if (err) {
       console.error('load_proxymap read error: %s', err.toString());
       cb(err, undefined);
@@ -54,10 +54,13 @@ var load_proxymap = function (fname, cb) {
         var map = JSON.parse(data);
         if (typeof map.router != 'null') {
           proxymap = {};
-          for(var i in map.router) {
+          for (var i in map.router) {
             if (map.router.hasOwnProperty(i)) {
               var prts = map.router[i].split(':');
-              proxymap[i] = {host: prts[0], port: prts[1]};
+              proxymap[i] = {
+                host: prts[0],
+                port: prts[1]
+              };
             }
           }
           cb(undefined, true);
@@ -72,7 +75,7 @@ var load_proxymap = function (fname, cb) {
   });
 };
 
-var lookup_hostport = function (hostport) {
+var lookup_hostport = function(hostport) {
   if (proxymap.hasOwnProperty(hostport)) {
     return proxymap[hostport];
   } else if (hostport.indexOf(':') > -1) {
@@ -87,7 +90,7 @@ var lookup_hostport = function (hostport) {
   }
 };
 
-var handle_http_request = function (req, res) {
+var handle_http_request = function(req, res) {
   if (typeof req.headers.host == 'string') {
     var options = lookup_hostport(req.headers.host);
     if (options !== null) {
@@ -97,16 +100,20 @@ var handle_http_request = function (req, res) {
       options['allow_xforwarded_headers'] = false;
       proxy.proxyRequest(req, res, options);
     } else {
-      res.writeHead(404, {'Content-Type': 'text/plain'});
+      res.writeHead(404, {
+        'Content-Type': 'text/plain'
+      });
       res.end('hostname not known');
     }
   } else {
-    res.writeHead(406, {'Content-Type': 'text/plain'});
+    res.writeHead(406, {
+      'Content-Type': 'text/plain'
+    });
     res.end('no hostname in request');
   }
 };
 
-var handle_upgrade_request = function (req, socket, head) {
+var handle_upgrade_request = function(req, socket, head) {
   if (typeof req.headers.host == 'string') {
     var options = lookup_hostport(req.headers.host);
     if (options !== null) {
@@ -124,14 +131,14 @@ var handle_upgrade_request = function (req, socket, head) {
 };
 
 
-var switch_user = function () {
-  var child = exec('id -u ' + config.opt.userid, function (err, stdout, stderr) {
-      daemon.setreuid(parseInt(stdout, 10));
-      console.log('Switched to ' + process.getuid() + '.');
+var switch_user = function() {
+  var child = exec('id -u ' + config.opt.userid, function(err, stdout, stderr) {
+    daemon.setreuid(parseInt(stdout, 10));
+    console.log('Switched to ' + process.getuid() + '.');
   });
 };
 
-lib.update_proxytable_map(function (err) {
+lib.update_proxytable_map(function(err) {
   if (err) {
     console.log("err: " + JSON.stringify(err));
   } else {
@@ -150,7 +157,7 @@ lib.update_proxytable_map(function (err) {
         key: fs.readFileSync(config.opt.app_dir + '/' + config.opt.ssl_key_file),
         cert: fs.readFileSync(config.opt.app_dir + '/' + config.opt.ssl_cert_file)
       };
-      var httpSsl = https.createServer(options, function (req, res) {
+      var httpSsl = https.createServer(options, function(req, res) {
         var proxy = new httpProxy.HttpProxy(req, res);
         proxy.proxyRequest(4001, "127.0.0.1", req, res);
       });
@@ -165,6 +172,6 @@ lib.update_proxytable_map(function (err) {
   }
 });
 
-process.on('uncaughtException', function (err) {
+process.on('uncaughtException', function(err) {
   console.log(err.stack);
 });

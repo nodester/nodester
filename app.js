@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 /* 
 
 Nodester opensource Node.js hosting service
@@ -14,16 +15,15 @@ var express = require('express'),
     config = require('./config'),
     middle = require('./lib/middle');
 
-process.on('uncaughtException', function (err) {
-   console.log(err.stack);
+process.on('uncaughtException', function(err) {
+  console.log(err.stack);
 });
 
 var daemon = require('daemon');
 // daemon.setreuid(config.opt.userid);
-
 var myapp = express.createServer();
 
-myapp.configure(function(){
+myapp.configure(function() {
   myapp.use(express.bodyParser());
   myapp.use(express.static(config.opt.public_html_dir));
   myapp.use(middle.error());
@@ -31,19 +31,19 @@ myapp.configure(function(){
 
 // Routes
 // Homepage
-myapp.get('/', function(req, res, next){
+myapp.get('/', function(req, res, next) {
   res.render('index.html');
 });
 
-myapp.get('/api', function(req, res, next){
+myapp.get('/api', function(req, res, next) {
   res.redirect('/api.html');
 });
 
-myapp.get('/admin', function(req, res, next){
+myapp.get('/admin', function(req, res, next) {
   res.redirect('http://admin.nodester.com');
 });
 
-myapp.get('/irc', function(req, res, next){
+myapp.get('/irc', function(req, res, next) {
   res.redirect('http://irc.nodester.com');
 });
 
@@ -149,6 +149,8 @@ myapp.delete('/appdomains', middle.authenticate, middle.authenticate_app, domain
 myapp.get('/appdomains', middle.authenticate, domains.get);
 
 
-myapp.use(express.errorHandler({ showStack: true }));
-myapp.listen(4001); 
+myapp.use(express.errorHandler({
+  showStack: true
+}));
+myapp.listen(4001);
 console.log('Nodester app started on port 4001');

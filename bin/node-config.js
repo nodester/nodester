@@ -8,10 +8,10 @@ var fs = require('fs');
 var data = [];
 
 for (var i in config) {
-    if (typeof config[i] == 'string') {
-        data.push('export ' + i.toUpperCase() + '=' + config[i]);
-    }
+  if (typeof config[i] == 'string') {
+    data.push('export ' + i.toUpperCase() + '=' + config[i]);
+  }
 }
 
-fs.writeFileSync('./.nodester.config', data.join('\n'), encoding='utf8');
+fs.writeFileSync('./.nodester.config', data.join('\n'), encoding = 'utf8');
 fs.chmodSync('./.nodester.config', '0777');
