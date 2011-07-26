@@ -93,7 +93,8 @@ var lookup_hostport = function(hostport) {
 var handle_http_request = function(req, res) {
   if (typeof req.headers.host == 'string') {
     if (req.headers.host == 'nodefu.com' || req.headers.host == 'www.nodefu.com') {
-      res.redirect('http://nodester.com', 301);
+      res.writeHead(301, {Location: 'http://nodester.com'});
+      res.end();
     } else {
       var options = lookup_hostport(req.headers.host);
       if (options !== null) {
