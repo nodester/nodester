@@ -34,7 +34,7 @@ var log_line = function (line, stdout) {
       console.error(line);
     }
   }
-  if (typeof error_log_fd != 'null') fs.write(error_log_fd, line + '\n');
+  if (error_log_fd !== null) fs.write(error_log_fd, line + '\n');
 };
 
 var env = {
@@ -46,26 +46,24 @@ if (config.env) {
         env[key] = String(config.env[key]);
     });
 }
-env.app_port = parseInt(config.port);
+env.app_port = parseInt(config.port, 10);
 env.app_host = config.ip;
 var args = ['/app/' + config.start];
 
 var chroot_res = daemon.chroot(config.appchroot);
-if (chroot_res != true) {
+if (chroot_res !== true) {
   log_line('chroot_runner: ', 'Failed to chroot to ' + config.apphome, LOG_STDERR);
   pre_shutdown();
   process.exit(1);
 }
 var ch_uid = daemon.setreuid(config.userid);
-if (ch_uid != true) {
+if (ch_uid !== true) {
   log_line.call('chroot_runner: ', 'Failed to change user to ' + config.userid, LOG_STDERR);
   pre_shutdown();
   process.exit(2);
 }
 var child = null;
 var child_watcher_time = null;
-if (path.existsSync('/app/error.log')) fs.unlinkSync('/app/error.log');
-error_log_fd = fs.openSync('/app/error.log', 'w');
 
 var myPid = daemon.start();
 log_line.call('chroot_runner: ', 'New PID: ' + myPid.toString());
@@ -74,7 +72,7 @@ fs.writeFileSync('/.nodester/pids/runner.pid', myPid.toString());
 
 process.on('SIGINT', function () {
   log_line.call('chroot_runner: ', 'SIGINT recieved, sending SIGTERM to children.');
-  if (child != null) {
+  if (child !== null) {
     log_line.call('chroot_runner: ', 'Child PID: ' + child.pid.toString());
     process.kill(child.pid, 'SIGTERM');
     process.exit();
@@ -85,7 +83,7 @@ process.on('SIGINT', function () {
 
 process.on('SIGTERM', function () {
   log_line.call('chroot_runner: ', 'SIGTERM recieved, sending SIGTERM to children.');
-  if (child != null) {
+  if (child !== null) {
     log_line.call('chroot_runner: ', 'Child PID: ' + child.pid.toString());
     process.kill(child.pid, 'SIGTERM');
     process.exit();
@@ -116,9 +114,11 @@ var start_child = function () {
   });
 };
 var child_watcher = function () {
-  if (child == null) {
+  if (child === null) {
     start_child();
     run_count++;
   }
 };
+if (path.existsSync('/app/error.log')) fs.unlinkSync('/app/error.log');
+error_log_fd = fs.openSync('/app/error.log', 'w', '0777');
 child_watcher_timer = setInterval(child_watcher, 750);

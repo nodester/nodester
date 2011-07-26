@@ -14,4 +14,4 @@ for (var i in config) {
 }
 
 fs.writeFileSync('./.nodester.config', data.join('\n'), encoding='utf8');
-fs.chmodSync('./.nodester.config', 0777);
+fs.chmodSync('./.nodester.config', '0777');

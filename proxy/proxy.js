@@ -28,7 +28,7 @@ var proxymap = {};
 var proxy_refresh_timer = null;
 
 var queue_proxy_map_refresh = function () {
-  if (proxy_refresh_timer == null) {
+  if (proxy_refresh_timer === null) {
     proxy_refresh_timer = setTimeout(function () {
       load_proxymap(config.opt.proxy_table_file, function (err, res) {
         if (err) {
@@ -90,7 +90,7 @@ var lookup_hostport = function (hostport) {
 var handle_http_request = function (req, res) {
   if (typeof req.headers.host == 'string') {
     var options = lookup_hostport(req.headers.host);
-    if (options != null) {
+    if (options !== null) {
       req.headers['x-forwarded-for'] = req.connection.remoteAddress || req.connection.socket.remoteAddress;
       req.headers['x-forwarded-port'] = req.connection.remotePort || req.connection.socket.remotePort;
       req.headers['x-forwarded-proto'] = res.connection.pair ? 'https' : 'http';
@@ -109,7 +109,7 @@ var handle_http_request = function (req, res) {
 var handle_upgrade_request = function (req, socket, head) {
   if (typeof req.headers.host == 'string') {
     var options = lookup_hostport(req.headers.host);
-    if (options != null) {
+    if (options !== null) {
       req.headers['x-forwarded-for'] = req.connection.remoteAddress || req.connection.socket.remoteAddress;
       req.headers['x-forwarded-port'] = req.connection.remotePort || req.connection.socket.remotePort;
       proxy.proxyWebSocketRequest(req, socket, head, options);
@@ -126,10 +126,10 @@ var handle_upgrade_request = function (req, socket, head) {
 
 var switch_user = function () {
   var child = exec('id -u ' + config.opt.userid, function (err, stdout, stderr) {
-      daemon.setreuid(parseInt(stdout));
+      daemon.setreuid(parseInt(stdout, 10));
       console.log('Switched to ' + process.getuid() + '.');
   });
-}
+};
 
 lib.update_proxytable_map(function (err) {
   if (err) {

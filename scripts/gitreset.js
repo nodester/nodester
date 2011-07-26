@@ -8,7 +8,7 @@ var git_dir = app_dir + '.git';
 var cmds = [
   'rm -Rf ' + app_dir,
   'git clone ' + git_dir + ' ' + app_dir
-]
+];
 
 var do_cmd = function () {
   if (cmds.length > 0) {
@@ -17,4 +17,4 @@ var do_cmd = function () {
       do_cmd();
     });
   }
-}
+};
