@@ -92,18 +92,22 @@ var lookup_hostport = function(hostport) {
 
 var handle_http_request = function(req, res) {
   if (typeof req.headers.host == 'string') {
-    var options = lookup_hostport(req.headers.host);
-    if (options !== null) {
-      req.headers['x-forwarded-for'] = req.connection.remoteAddress || req.connection.socket.remoteAddress;
-      req.headers['x-forwarded-port'] = req.connection.remotePort || req.connection.socket.remotePort;
-      req.headers['x-forwarded-proto'] = res.connection.pair ? 'https' : 'http';
-      options['allow_xforwarded_headers'] = false;
-      proxy.proxyRequest(req, res, options);
+    if (req.headers.host == 'nodefu.com' || req.headers.host == 'www.nodefu.com') {
+      res.redirect('http://nodester.com', 301);
     } else {
-      res.writeHead(404, {
-        'Content-Type': 'text/plain'
-      });
-      res.end('hostname not known');
+      var options = lookup_hostport(req.headers.host);
+      if (options !== null) {
+        req.headers['x-forwarded-for'] = req.connection.remoteAddress || req.connection.socket.remoteAddress;
+        req.headers['x-forwarded-port'] = req.connection.remotePort || req.connection.socket.remotePort;
+        req.headers['x-forwarded-proto'] = res.connection.pair ? 'https' : 'http';
+        options['allow_xforwarded_headers'] = false;
+        proxy.proxyRequest(req, res, options);
+      } else {
+        res.writeHead(404, {
+          'Content-Type': 'text/plain'
+        });
+        res.end('hostname not known');
+      }
     }
   } else {
     res.writeHead(406, {
