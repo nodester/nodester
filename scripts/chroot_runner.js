@@ -17,16 +17,10 @@ console.log('Changed umask from: ' + oldmask.toString(8) + ' to ' + newmask.toSt
 
 var run_max = 5;
 var run_count = 0;
-// var run_count = typeof process.argv[2] != 'undefined' ? parseInt(process.argv[2]) : 0;
 
 var LOG_STDOUT = 1;
 var LOG_STDERR = 2;
 
-// var error_log_fd = null;
-
-var pre_shutdown = function () {
-  // if (typeof error_log_fd != 'null') fs.closeSync(error_log_fd);
-};
 
 var env = {
     PATH: '/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin',
@@ -120,16 +114,12 @@ var myPid = daemon.start();
         if (code > 0 && run_count > run_max) {
           log_line.call('Watcher', 'Error: Restarted too many times, bailing.', LOG_STDERR);
           clearInterval(child_watcher_timer);
-          pre_shutdown();
-          process.exit(3);
         } else if (code > 0) {
           log_line.call('Watcher', 'Process died with exit code ' + code + '. Restarting...', LOG_STDERR);
           child = null;
         } else {
           log_line.call('Watcher', 'Process exited cleanly. Dieing.', LOG_STDERR);
           clearInterval(child_watcher_timer);
-          pre_shutdown();
-          process.exit(0);
         }
       });
     };
