@@ -10,6 +10,11 @@ var net = require('net');
 
 var config = JSON.parse(fs.readFileSync(path.join('.nodester', 'config.json'), encoding='utf8'));
 
+var oldmask, newmask = 0000;
+
+oldmask = process.umask(newmask);
+console.log('Changed umask from: ' + oldmask.toString(8) + ' to ' + newmask.toString(8));
+
 var run_max = 5;
 var run_count = 0;
 // var run_count = typeof process.argv[2] != 'undefined' ? parseInt(process.argv[2]) : 0;
