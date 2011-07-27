@@ -649,6 +649,7 @@ width: 220px;
 line-height: 1.4em;
 padding: 0px;
 border-right: 1px solid #DDD;
+height: 420px;
 }
 
 ul.sidetabs li {
@@ -701,16 +702,23 @@ line-height: 1.2em;
 }
 
 div.avatar {
+  clear: both;
   border-top: 1px solid #DDD;
   padding-top: 10px;
   margin-top: 30px;
   margin-bottom: 30px;
 }
 
+div.fingerprint {
+  border-top: 1px solid #DDD;
+  margin-top: 16px;
+  padding-top: 5px;
+}
+
 .hidden { display: none; }
 
 div.column-main { width: 440px; float: left; }
-div.column-sidebar { width: 208px; float: right; }
+div.column-sidebar { width: 190px; float: left; margin-left: 20px;}
 div.column-group { background: url(../img/column-group-bg.png) no-repeat; }
 div.column-fields { padding: 8px; }
 
@@ -731,6 +739,11 @@ border: 1px solid #DDD;
 -moz-border-radius: 3px;
 }
 
+ul.field-pills li:hover {
+ background-color: #f5f5f5;
+ border-color: #ccc;
+}
+
 ul.field-pills li .remove {
 position: absolute;
 top: 50%;
@@ -740,7 +753,12 @@ width: 18px;
 height: 18px;
 text-indent: -9999px;
 text-decoration: none;
+opacity: 0.7;
 background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALBAMAAABbgmoVAAAAA3NCSVQICAjb4U/gAAAAGFBMVEX///+ZmZmZmZmZmZn///+ZmZmJiYl7e3trE/RpAAAACHRSTlMARIjM/////wcesEcAAAAJcEhZcwAACxIAAAsSAdLdfvwAAAAWdEVYdENyZWF0aW9uIFRpbWUAMTAvMTQvMDkZqeG9AAAAHHRFWHRTb2Z0d2FyZQBBZG9iZSBGaXJld29ya3MgQ1M1cbXjNgAAAERJREFUCJljYBAODRZgYGAKDQ0NYmAQBVKhAgymIaEhoQYMoWGubqEBDKGhKalgyt0VSJmGpKYA5UTDQsOAKqH6IKYAAHwFEI290O6NAAAAAElFTkSuQmCC') no-repeat;
+}
+
+ul.field-pills li .remove:hover {
+  opacity: 1.0;
 }
 
 .explain 

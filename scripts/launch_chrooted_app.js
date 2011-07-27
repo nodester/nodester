@@ -114,7 +114,7 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
         if (f.indexOf('./') === 0) {
             //console.log('Nodester fixing require path', f); 
             f = f.substring(1);
-            //console.log('Nodester fixed require path', f); 
+            //console.log('Cloudnode fixed require path', f); 
         }   
         /**
         * Simple HTTP sandbox to make sure that http listens on the assigned port.
@@ -127,7 +127,7 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
             h.listen = function(port) {
                 port = parseInt(port, 10);
                 if (port !== app_port) {
-                    console.log('[ERROR] You asked to listen on port', port, 'but cloudnode will use port', app_port, 'instead..');
+                    console.log('[INFO] You asked to listen on port', port, 'but cloudnode will use port', app_port, 'instead..');
                 } else {
                     console.log('[INFO] Cloudnode listening on port:', app_port);
                 }
@@ -147,9 +147,9 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
     }   
     sandbox.require.resolve = function(f) {
         if (f.indexOf('./') === 0) {
-            //console.log('Nodester fixing require path', f); 
+            //console.log('Cloudnode fixing require path', f); 
             f = f.substring(1);
-            //console.log('Nodester fixed require path', f); 
+            //console.log('Cloudnode fixed require path', f); 
         }   
         return _resolve.call(this, f); 
     };   
@@ -180,7 +180,7 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
             console.log(err.stack);
             process.exit(1);
         } else {
-            console.log('Nodester wrapped script starting (' + process.pid + ') at ', new Date());
+            console.log('Cloudnode wrapped script starting (' + process.pid + ') at ', new Date());
             Script.runInNewContext(script_src, sandbox, config.start);
         }
     });

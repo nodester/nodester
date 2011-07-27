@@ -14,7 +14,8 @@ wait
 rm ./.nodester.config
 
 export HOME=$HOME_DIR;
-export PATH="/usr/local/bin:${HOME}/bin:${PATH}";
+export PATH="/usr/local/node-v0.4.0:/usr/local/bin:${HOME}/bin:${PATH}";
+#export PATH="/home/hajo/prj/node-v0.4.5:/usr/local/bin:${HOME}/bin:${PATH}";
 
 APPDIR=$APP_DIR/proxy
 

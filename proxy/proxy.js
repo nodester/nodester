@@ -12,6 +12,7 @@ var httpProxy = require('../lib/3rdparty/node-http-proxy'),
     path = require('path'),
     lib = require('../lib/lib'),
     exec = require('child_process').exec,
+    util = require('util'),
     config = require('../config')
 ;
 
@@ -24,7 +25,7 @@ lib.update_proxytable_map(function (err) {
   if (err) {
     console.log("err: " + JSON.stringify(err));
   } else {
-    var proxy = httpProxy.createServer({router: config.opt.proxy_table_file, silent: true, hostname_only: true});
+    var proxy = httpProxy.createServer({router: config.opt.proxy_table_file, silent: false, hostname_only: true});
     proxy.listen(80);
     proxy.addListener('updateRoutes', function () {
       console.log('updateRoutes fired');
@@ -38,12 +39,19 @@ lib.update_proxytable_map(function (err) {
       };
       var httpSsl = https.createServer(options, function (req, res) {
         var proxy = new httpProxy.HttpProxy(req, res);
-	console.log('Secure request: ' + req.headers.host + ', url: ' + req.url); 
+	util.log('https: ' + req.headers.host + ', url: ' + req.url); 
         if (req.headers.host == 'cloudno.de' &&
 	  (req.url.indexOf('/lead') == 0 ||
+	   req.url.indexOf('/echo') == 0 ||
 	   req.url.indexOf('/login') == 0 || req.url == '/')) {
           proxy.proxyRequest(80, "81.169.133.153", req, res);
-        } else {
+        } 
+	else if (req.headers.host == 'cloudno.de' &&
+	  (req.url.indexOf('/monit') == 0)) {
+	  req.url = req.url.substring(6);
+	  proxy.proxyRequest(2812, "127.0.0.1", req, res);
+	}
+	else {
           proxy.proxyRequest(4001, "127.0.0.1", req, res);
 	}
       });
@@ -51,10 +59,8 @@ lib.update_proxytable_map(function (err) {
       httpSsl.listen(443);
       console.log('Nodester started on port 443');
     }
-    var child = exec('id -u ' + config.opt.userid, function (err, stdout, stderr) {
-        daemon.setreuid(parseInt(stdout));
-        console.log('Switched to ' + process.getuid() + '.');
-    });
+    daemon.setreuid(config.opt.uid);
+    console.log('Switched to ' + process.getuid() + '.');
     console.log('Nodester started on port 80');
   }
 });
