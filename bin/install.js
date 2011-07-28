@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var nodeControl = require('../deps/node-control/index.js');
+var nodeControl = require(__dirname+'../deps/node-control/index.js');
 
 var util = require('util');
 var ins = util.inspect;
