@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var nodeControl = require(__dirname+'../deps/node-control/index.js');
+var nodeControl = require(__dirname+'/../deps/node-control/index.js');
 
 var util = require('util');
 var ins = util.inspect;
@@ -72,9 +72,9 @@ add_c(host_base, 'sudo groupadd -g 2001 ' + app_username, '', true);
 add_c(host_base, 'sudo groupadd -g 2002 ' + git_username, '', true);
 add_c(host_base, 'sudo useradd -d ' + app_homedir + ' -c "nodester app" -g ' + app_username + ' -m -r -s /bin/bash ' + app_username, '', true);
 add_c(host_base, 'sudo useradd -d ' + git_homedir + ' -c "nodester git user" -g ' + git_username + ' -m -r -s /bin/bash ' + git_username, '', true);
-add_c(host_base, 'sudo mkdir ' + app_homedir + '/.ssh', '', true);
-add_c(host_base, 'sudo mkdir ' + apps_homedir, '', true);
+add_c(host_base, 'sudo mkdir -p ' + [app_homedir + '/.ssh ', apps_homedir, git_homedir].join(' '), '', true);
 add_c(host_base, 'sudo chown -R ' + app_username + ':' + git_username + ' ' + apps_homedir, '', true);
+add_c(host_base, 'sudo chown -R ' + git_username + ':' + git_username + ' ' + git_homedir, '', true);
 add_c(host_base, 'sudo chmod -R 0774 ' + apps_homedir, '', true);
 add_c(host_base, 'sudo cp ${HOME}/.ssh/authorized_keys ' + app_homedir + '/.ssh/authorized_keys', '', true);
 add_c(host_base, 'sudo chown -R ' + app_username + ':' + app_username + ' ' + app_homedir + '/.ssh', '', false);
@@ -82,7 +82,9 @@ add_c(host_base, 'sudo chmod -R 0700 ' + app_homedir + '/.ssh', '', false);
 
 add_c(host_app, 'git clone http://github.com/DanBUK/nodester.git ./nodester', '', true);
 add_c(host_app, 'cp ./nodester/example_config.js ./nodester/config.js', '', true);
-add_c(host_app, 'sed -i -e "s/\\\/var\\\/nodester\/' + app_homedir.replace(/\//g, '\\\/') + '/g" ./nodester/config.js', '', false);
+add_c(host_app, 'sed -i -e "s/\\\/var\\\/nodester/' + app_homedir.replace(/\//g, '\\\/') + '/g" ./nodester/config.js', '', false);
+add_c(host_app, 'sed -i -e "s/\'\\\/git\'/' + git_homedir.replace(/\//g, '\\\/') + '/g" ./nodester/config.js', '', false);
+add_c(host_app, 'sed -i -e "s/\'\\\/app\'/' + apps_homedir.replace(/\//g, '\\\/') + '/g" ./nodester/config.js', '', false);
 add_c(host_app, 'sed -i -e "s/couch_user: \'nodester/couch_user: \'' + couch_db_user + '/" ./nodester/config.js', '', false);
 add_c(host_app, 'sed -i -e "s/couch_pass: \'password/couch_pass: \'' + couch_db_pass + '/" ./nodester/config.js', '', false);
 add_c(host_app, 'sed -i -e "s/couch_host: \'127.0.0.1/couch_host: \'' + couch_db_host + '/" ./nodester/config.js', '', false);
