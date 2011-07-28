@@ -3,13 +3,13 @@
 var path = require('path');
 var fs = require('fs');
 var config = require('../config').opt;
-var hosted = path.join(config.home_dir, config.hosted_apps_subdir);
+var hosted = path.join(config.main_home_dir, config.hosted_apps_subdir);
 var exists = path.existsSync;
 var util = require('util');
 process.chdir(hosted);
 require('colors');
 util.print('Reading git repos:'.magenta);
-var src = path.join(config.app_dir, 'scripts', 'gitrepoclone.sh');
+var src = path.join(config.main_app_dir, 'scripts', 'gitrepoclone.sh');
 var copy = function() {
     if (repos.length) {
         var dest = repos.pop();

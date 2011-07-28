@@ -13,10 +13,8 @@ source ./.nodester.config
 wait
 rm ./.nodester.config
 
-export HOME=$HOME_DIR;
+export HOME=$MAIN_HOME_DIR;
 export PATH="/usr/local/bin:${HOME}/bin:${PATH}";
-
-#APPDIR=$APP_DIR/proxy
 
 FHOME=$HOME/forever-proxy/
 
@@ -34,6 +32,6 @@ if [ -f $FHOME/logs/forever.log ]; then
 fi
 
 ulimit -n 99999;
-forever start -l logs/forever.log -o $FHOME/logs/proxy-out.log -e $FHOME/logs/proxy-err.log -d $APPDIR -p $FHOME $APP_DIR/proxy/proxy.js
+forever start -l logs/forever.log -o $FHOME/logs/proxy-out.log -e $FHOME/logs/proxy-err.log -d $MAIN_APP_DIR -p $FHOME $MAIN_APP_DIR/proxy/proxy.js
 wait
-forever list -p $FHOME $APP_DIR/proxy/proxy.js
+forever list -p $FHOME $MAIN_APP_DIR/proxy/proxy.js

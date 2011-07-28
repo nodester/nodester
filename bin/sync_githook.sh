@@ -6,8 +6,8 @@ cd `dirname $0`
 wait
 source ./.nodester.config
 
-export HOME=$HOME_DIR;
+export HOME=$MAIN_HOME_DIR;
 export PATH="/usr/local/bin:${PATH}";
 
-$APP_DIR/scripts/sync_githook.js
+$MAIN_APP_DIR/scripts/sync_githook.js
 

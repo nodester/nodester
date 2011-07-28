@@ -19,7 +19,7 @@ var httpProxy = require('../deps/node-http-proxy/node-http-proxy.js'),
     exec = require('child_process').exec,
     config = require('../config');
 
-require.paths.unshift(path.join(config.app_dir, '../', '.node_libraries'));
+require.paths.unshift(path.join(config.main_app_dir, '../', '.node_libraries'));
 
 var daemon = require('daemon');
 
@@ -158,9 +158,9 @@ lib.update_proxytable_map(function(err) {
     if (config.opt.enable_ssl === true) {
       var https = require('https');
       var options = {
-        ca: fs.readFileSync(config.opt.app_dir + '/' + config.opt.ssl_ca_file),
-        key: fs.readFileSync(config.opt.app_dir + '/' + config.opt.ssl_key_file),
-        cert: fs.readFileSync(config.opt.app_dir + '/' + config.opt.ssl_cert_file)
+        ca: fs.readFileSync(config.opt.main_app_dir + '/' + config.opt.ssl_ca_file),
+        key: fs.readFileSync(config.opt.main_app_dir + '/' + config.opt.ssl_key_file),
+        cert: fs.readFileSync(config.opt.main_app_dir + '/' + config.opt.ssl_cert_file)
       };
       var httpSsl = https.createServer(options, function(req, res) {
         var proxy = new httpProxy.HttpProxy(req, res);

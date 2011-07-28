@@ -12,10 +12,9 @@ wait
 source ./.nodester.config
 rm ./.nodester.config
 
-export HOME=$HOME_DIR;
+export HOME=$MAIN_HOME_DIR;
 export PATH="/usr/local/bin:${HOME}/bin:${PATH}";
 
-APPDIR=$APP_DIR
 FHOME=$HOME/forever-app/
 
 if [ ! -d $FHOME ]; then
@@ -29,6 +28,6 @@ fi
 
 
 wait
-forever start -l logs/forever.log -o $FHOME/logs/app-out.log -e $FHOME/logs/app-err.log -d $APPDIR -p $FHOME $APP_DIR/app.js
+forever start -l logs/forever.log -o $FHOME/logs/app-out.log -e $FHOME/logs/app-err.log -d $MAIN_APP_DIR -p $FHOME $MAIN_APP_DIR/app.js
 wait
-forever list -p $FHOME $APP_DIR/app.js
+forever list -p $FHOME $MAIN_APP_DIR/app.js

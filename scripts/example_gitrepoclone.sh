@@ -1,8 +1,8 @@
 #!/bin/bash
 # post-commit hook to create git file directory for node subdomain 
-SECRETKEY=PleaseRestartMyAppMKay
-GITBASE=/git
-APPSBASE=/app
+SECRETKEY=<RestartKey>
+GITBASE=<GitHomeDir>
+APPSBASE=<AppsHomeDir>
 
 OLD_PWD=$PWD
 gitdirsuffix=${PWD##*/}
