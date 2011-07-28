@@ -28,7 +28,7 @@ var app_homedir = args.shift();
 var git_username = args.shift();
 var git_homedir = args.shift();
 
-var deps = new Array('pool', 'express', 'npm-wrapper', 'request', 'daemon', 'forever', 'cradle', 'colored');
+var deps = new Array('pool', 'express', 'npm-wrapper', 'request', 'daemon', 'forever', 'cradle', 'coloured');
 
 var ssh_config_base = {
   user: username
@@ -74,7 +74,7 @@ add_c(host_base, 'sudo useradd -d ' + app_homedir + ' -c "nodester app" -g ' + a
 add_c(host_base, 'sudo useradd -d ' + git_homedir + ' -c "nodester git user" -g ' + git_username + ' -m -r -s /bin/bash ' + git_username, '', true);
 add_c(host_base, 'sudo mkdir ' + app_homedir + '/.ssh', '', true);
 add_c(host_base, 'sudo mkdir ' + apps_homedir, '', true);
-add_c(host_base, 'sudo chown -R ' + app_username + ':' + git_username + '' + apps_homedir, '', true);
+add_c(host_base, 'sudo chown -R ' + app_username + ':' + git_username + ' ' + apps_homedir, '', true);
 add_c(host_base, 'sudo chmod -R 0774 ' + apps_homedir, '', true);
 add_c(host_base, 'sudo cp ${HOME}/.ssh/authorized_keys ' + app_homedir + '/.ssh/authorized_keys', '', true);
 add_c(host_base, 'sudo chown -R ' + app_username + ':' + app_username + ' ' + app_homedir + '/.ssh', '', false);
@@ -82,7 +82,7 @@ add_c(host_base, 'sudo chmod -R 0700 ' + app_homedir + '/.ssh', '', false);
 
 add_c(host_app, 'git clone http://github.com/DanBUK/nodester.git ./nodester', '', true);
 add_c(host_app, 'cp ./nodester/example_config.js ./nodester/config.js', '', true);
-add_c(host_app, 'sed -i -e "s/\\\/var\\\/nodester/' + app_homedir.replace('/', '\\\/') + '/g" ./nodester/config.js', '', false);
+add_c(host_app, 'sed -i -e "s/\\\/var\\\/nodester\/' + app_homedir.replace(/\//g, '\\\/') + '/g" ./nodester/config.js', '', false);
 add_c(host_app, 'sed -i -e "s/couch_user: \'nodester/couch_user: \'' + couch_db_user + '/" ./nodester/config.js', '', false);
 add_c(host_app, 'sed -i -e "s/couch_pass: \'password/couch_pass: \'' + couch_db_pass + '/" ./nodester/config.js', '', false);
 add_c(host_app, 'sed -i -e "s/couch_host: \'127.0.0.1/couch_host: \'' + couch_db_host + '/" ./nodester/config.js', '', false);
@@ -115,6 +115,7 @@ add_c(host_app, './nodester/scripts/couchdb/setup_default_views.js', '', true);
 
 add_c(host_base, 'sudo cp /etc/sudoers /tmp/my_file_1', '', false);
 add_c(host_base, 'sudo chown ' + username + ' /tmp/my_file_1', '', false);
+add_c(host_base, 'sudo chmod +w /tmp/my_file_1', '', false);
 add_c(host_base, 'echo "' + app_username + ' ALL = NOPASSWD: ' + app_homedir + '/nodester/bin/proxy_stop.sh" >> /tmp/my_file_1', '', false);
 add_c(host_base, 'echo "' + app_username + ' ALL = NOPASSWD: ' + app_homedir + '/nodester/bin/proxy_start.sh" >> /tmp/my_file_1', '', false);
 add_c(host_base, 'echo "' + app_username + ' ALL = NOPASSWD: ' + app_homedir + '/nodester/scripts/launch_chrooted_app.js *" >> /tmp/my_file_1', '', false);
