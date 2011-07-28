@@ -104,12 +104,14 @@ var coupon_code = random_string(8);
 console.log('coupon_code set to: %s', coupon_code);
 console.log('restart key set to: %s', restart_key);
 
-add_c(host_app, 'cp ./nodester/scripts/example_gitrepoclone.sh ./nodester/scripts/gitrepoclone.sh', '', true);
 add_c(host_app, 'sed -i -e "s/KeepThisSecret/' + restart_key + '/" ./nodester/config.js', '', false);
-add_c(host_app, 'sed -i -e "s/KeepThisSecret/' + restart_key + '/" ./nodester/scripts/gitrepoclone.sh', '', false);
 add_c(host_app, 'sed -i -e "s/CouponCode/' + coupon_code + '/" ./nodester/config.js', '', false);
-add_c(host_app, 'sed -i -e "s/GITBASE=\\\/git/GITBASE=' + git_homedir + '/" ./nodester/scripts/gitrepoclone.sh', '', false);
-add_c(host_app, 'sed -i -e "s/APPSBASE=\\\/app/APPSBASE=' + apps_homedir + '/" ./nodester/scripts/gitrepoclone.sh', '', false);
+
+add_c(host_app, 'cp ./nodester/scripts/example_gitrepoclone.sh ./nodester/scripts/gitrepoclone.sh', '', true);
+add_c(host_app, 'sed -i -e "s/PleaseRestartMyAppMKay/' + restart_key + '/" ./nodester/scripts/gitrepoclone.sh', '', false);
+add_c(host_app, 'sed -i -e "s/GITBASE=\\\/git/GITBASE=' + git_homedir.replace(/\//g, '\\\/') + '/" ./nodester/scripts/gitrepoclone.sh', '', false);
+add_c(host_app, 'sed -i -e "s/APPSBASE=\\\/app/APPSBASE=' + apps_homedir.replace(/\//g, '\\\/') + '/" ./nodester/scripts/gitrepoclone.sh', '', false);
+
 for (var i in deps) {
   add_c(host_app, 'npm install ' + deps[i], '', true);
 }
