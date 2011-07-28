@@ -72,7 +72,7 @@ add_c(host_base, 'sudo groupadd -g 2001 ' + app_username, '', true);
 add_c(host_base, 'sudo groupadd -g 2002 ' + git_username, '', true);
 add_c(host_base, 'sudo useradd -d ' + app_homedir + ' -c "nodester app" -g ' + app_username + ' -m -r -s /bin/bash ' + app_username, '', true);
 add_c(host_base, 'sudo useradd -d ' + git_homedir + ' -c "nodester git user" -g ' + git_username + ' -m -r -s /bin/bash ' + git_username, '', true);
-add_c(host_base, 'sudo mkdir -p ' + [app_homedir + '/.ssh ', apps_homedir, git_homedir].join(' '), '', true);
+add_c(host_base, 'sudo mkdir -p ' + [app_homedir + '/.ssh ', apps_homedir, git_homedir + '/.ssh'].join(' '), '', true);
 add_c(host_base, 'sudo chown -R ' + app_username + ':' + git_username + ' ' + apps_homedir, '', true);
 add_c(host_base, 'sudo chown -R ' + git_username + ':' + git_username + ' ' + git_homedir, '', true);
 add_c(host_base, 'sudo chmod -R 0774 ' + apps_homedir, '', true);
