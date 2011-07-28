@@ -108,6 +108,8 @@ add_c(host_app, 'cp ./nodester/scripts/example_gitrepoclone.sh ./nodester/script
 add_c(host_app, 'sed -i -e "s/KeepThisSecret/' + restart_key + '/" ./nodester/config.js', '', false);
 add_c(host_app, 'sed -i -e "s/KeepThisSecret/' + restart_key + '/" ./nodester/scripts/gitrepoclone.sh', '', false);
 add_c(host_app, 'sed -i -e "s/CouponCode/' + coupon_code + '/" ./nodester/config.js', '', false);
+add_c(host_app, 'sed -i -e "s/GITBASE=\\\/git/GITBASE=' + git_homedir + '/" ./nodester/scripts/gitrepoclone.sh', '', false);
+add_c(host_app, 'sed -i -e "s/APPSBASE=\\\/app/APPSBASE=' + apps_homedir + '/" ./nodester/scripts/gitrepoclone.sh', '', false);
 for (var i in deps) {
   add_c(host_app, 'npm install ' + deps[i], '', true);
 }
