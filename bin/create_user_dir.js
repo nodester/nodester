@@ -7,7 +7,7 @@ var cmd = 'mkdir ' + process.argv[2];
 
 var cmds = [
   'mkdir ' + process.argv[2],
-  'chown ' + config.userid + ':' + config.userid + ' ' + process.argv[2]
+  'chown ' + config.main_user + ':' + config.main_user + ' ' + process.argv[2]
 ];
 
 var do_cmd = function () {
