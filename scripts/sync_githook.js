@@ -19,7 +19,7 @@ var copy = function() {
     } else {
        util.print(' [done]\n'.white);   
     }
-}
+};
 
 var repos = []; 
 var dirs = fs.readdirSync('.');

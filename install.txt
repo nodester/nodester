@@ -21,8 +21,8 @@ Installation:
     OR wget, ./configure, make, make install
   Create a user and group to run nodester as
     sudo su -
-    groupadd -g 501 nodester 
-    useradd -d /var/nodester -c "nodester" -g nodester -m -r -s /bin/bash -u 501 nodester
+    groupadd nodester 
+    useradd -d /var/nodester -c "nodester" -g nodester -m -r -s /bin/bash nodester
     passwd nodester
   Login to that account and ensure that .ssh/authorized_keys exists
     ssh nodester@yourhost

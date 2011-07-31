@@ -12,46 +12,57 @@ var creds = crypto.createCredentials();
 
 
 var config = JSON.parse(fs.readFileSync(path.join('.nodester', 'config.json'), encoding='utf8'));
+config.userid = parseInt(config.userid);
 
 console.log(config);
 
 //These 3 lines ensure that we get the daemon setup by the nodester user and not the
 // one available to root, since we are sudoed at this point
+require.paths.unshift(path.join(config.appdir, '../', 'node_modules'));
 require.paths.unshift(path.join(config.appdir, '../', '.node_libraries'));
+require.paths.unshift('/node_modules');
 require.paths.unshift('/.node_libraries');
 console.log('require paths: ', require.paths);
 var daemon = require('daemon');
+
 
 var app_port = parseInt(config.port);
 var app_host = config.ip;
 
 console.log('chroot: ', config.apphome);
 daemon.chroot(config.apphome);
+require.paths.unshift('/node_modules');
 console.log('Starting Daemon');
 daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodester', 'pids', 'app.pid'), function(err, pid) {
+  var error_log_fd = fs.openSync('/error.log', 'w');
+  var log = function (obj) {
+    console.log(arguments);
+    fs.write(error_log_fd, arguments[0] + '\n');
+  };
 	if (err) {
-		console.log(err.stack);
+		log(err.stack);
 	}
-	console.log('Inside Daemon: ', pid);
-	console.log('Changing to user: ', config.userid);
-	//daemon.setreuid(config.userid);
-    process.setuid(config.userid);
-    console.log('User Changed: ', process.getuid());
+	log('Inside Daemon: ' + pid);
+	log('Changing to user: ' + config.userid);
+    try {
+        daemon.setreuid(config.userid);
+        log('User Changed: ' + process.getuid());
+    } catch (e) {
+        log('User Change FAILED');
+    }
     
-    //Setup the errorlog
-	var error_log_fd = fs.openSync('/error.log', 'w');
 	process.on('uncaughtException', function (err) {
 	    fs.write(error_log_fd, err.stack);
 	});
     
     var etc = path.join('/', 'etc');
     //create /etc inside the chroot
-    console.log('Checking for /etc');
+    log('Checking for /etc');
     if (!path.existsSync(etc)) {
-        console.log('/etc does not exist. Creating..');
+        log('/etc does not exist. Creating..');
         fs.mkdirSync(etc, 0777);
     }
-    console.log('Update /etc/resolve.conf with Googles DNS servers..');
+    log('Update /etc/resolve.conf with Googles DNS servers..');
     fs.writeFileSync(path.join(etc, 'resolv.conf'), 'nameserver 8.8.8.8\nnameserver 8.8.4.4\n', encoding='utf8');
 
     // create /tmp inside the chroot
@@ -70,7 +81,7 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
         fs.mkdirSync(mnt, 0777);
     }
     
-    console.log('Setting up sandbox..');
+    log('Setting up sandbox..');
     //Setup the main sandbox..
     var sandbox = {
         global: {},
@@ -95,10 +106,20 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
     sandbox.process.installPrefix = '/';
     sandbox.process.ARGV = ['node', config.start];
     sandbox.process.argv = sandbox.process.ARGV;
-    sandbox.process.env = sandbox.process.ENV = {
-      'app_port': app_port,
-      'app_host': app_host
+    var env = sandbox.process.env = sandbox.process.ENV = {
+        // defaults which can be overriden
+        NODE_ENV: "production"
     };
+    
+    if (config.env) {
+        Object.keys(config.env).forEach(function (key) {
+            env[key] = String(config.env[key]);
+        });
+    }
+    
+    // environment variables which cannot be overriden by config.
+    env.app_port = app_port;
+    env.app_host = app_host;
     sandbox.process.mainModule = sandbox.module;
     sandbox.process.kill = function () { return 'process.kill is disabled' };
     sandbox.process.stdout.write = sandbox.console.warn = sandbox.console.error = function (args) {
@@ -111,11 +132,35 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
     var _resolve = require.resolve;
     //this should make require('./lib/foo'); work properly
     sandbox.require = function(f) {
+        sandbox.require.paths.forEach(function(v, k) {
+            if (v.indexOf('./') === 0) {
+                 sandbox.require.paths[k] = v.substring(1);
+            }   
+        }); 
         if (f.indexOf('./') === 0) {
-            //console.log('Nodester fixing require path', f); 
-            f = f.substring(1);
-            //console.log('Cloudnode fixed require path', f); 
-        }   
+            try {
+                _require.call(_require, f); 
+            } catch (e) {
+                    f = f.substring(1);
+            }   
+        }
+        //This is to support require.paths.push('./lib'); require('foo.js');
+        try {
+            _require.call(_require, f); 
+        } catch (e) {
+            var m;
+            sandbox.require.paths.forEach(function(v, k) {
+                 if (m) {
+                      return;
+                 }   
+                 try {
+                        m = _require.call( _require, path.join(v, f));
+                        f = path.join(v, f); 
+                 } catch (e) {
+                 }   
+            }); 
+        } 
+
         /**
         * Simple HTTP sandbox to make sure that http listens on the assigned port.
         * May also need to handle the net module too..
@@ -158,7 +203,7 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
     sandbox.require.main = sandbox.module;
     sandbox.require.cache = {};
     sandbox.require.cache['/' + config.start] = sandbox.module;
-    sandbox.require.paths = ['/.node_libraries'];
+    sandbox.require.paths = ['/node_modules','/.node_libraries'];
 
     sandbox.process.on('uncaughtException', function (err) {
         fs.write(error_log_fd, util.inspect(err));
@@ -170,11 +215,11 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
     console.log('Reading file...');
     fs.readFile(config.start, function (err, script_src) {
         try {
-            //Just to make sure the process is owned by the right users (overkill)
-            process.setuid(config.userid);
-            //console.log('Final user check (overkill)', process.getuid());
-        } catch (err) {
-            console.log(err.stack);
+            var resp = daemon.setreuid(config.userid);
+            console.log('Final user check: ', process.getuid());
+        } catch (e2) {
+            console.log('Final User Change Failed.');
+            console.log(resp);
         }
         if (err) {
             console.log(err.stack);
@@ -186,28 +231,4 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
     });
 //End Daemon
 });
-
-
-function daemonize(out, lock, callback) {
-  //
-  // If we only get one argument assume it's an fd and
-  // simply return with the pid from binding.daemonize(fd);
-  //
-  if (arguments.length === 1) {
-    return binding.daemonize(out);
-  }
-
-  fs.open(out, 'w+', 0666, function (err, fd) {
-    if (err) return callback(err);
-
-    try {
-      var pid = daemon.start(fd);
-      daemon.lock(lock);
-      callback(null, pid);
-    }
-    catch (ex) {
-      callback(ex);
-    }
-  });
-};
 

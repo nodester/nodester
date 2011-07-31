@@ -48,10 +48,21 @@ Please see install.txt for setup instructions (https://github.com/nodester/nodes
   /apps - get all your apps info (requires basic auth)
   curl -u "testuser:123" http://api.localhost:8080/apps
 
-  /appnpm - install, update and uninstall npm packages to your application
-  curl -X POST -u "testuser:123" -d "appname=a&action=install&package=express" http://api.localhost:8080/appnpm
-  curl -X POST -u "testuser:123" -d "appname=a&action=update&package=express" http://api.nodester.com/appnpm
-  curl -X POST -u "testuser:123" -d "appname=a&action=uninstall&package=express" http://api.nodester.com/appnpm
+  ENV
+  /env - create/update environment key/value pair (requires basic auth, appname, and environment key and value)
+  curl -X PUT -u "testuser:123" -d "appname=a&key=color&value=blue" http://api.nodester.com/env
+
+  /env - delete environment key/value pair (requires basic auth, appname, and environment key)
+  curl -X DELETE -u "testuser:123" -d "appname=test&key=color" http://api.nodester.com/env
+
+  /env - get environment info (requires basic auth, appname, and environment key)
+  curl -u "testuser:123" -d "appname=test&key=color" http://api.nodester.com/env
+
+  NPM
+  /npm - install, update and uninstall npm packages to your application
+  curl -X POST -u "testuser:123" -d "appname=a&action=install&package=express" http://api.localhost:8080/npm
+  curl -X POST -u "testuser:123" -d "appname=a&action=update&package=express" http://api.nodester.com/npm
+  curl -X POST -u "testuser:123" -d "appname=a&action=uninstall&package=express" http://api.nodester.com/npm
 
 == CLI Documentation
 
@@ -77,9 +88,9 @@ Operations are as simple as nodester <command> <param1> <param2>.  Here is a lis
   nodester app start <app-name>
   nodester app restart <app-name>
   nodester app stop <app-name>
-  nodester appnpm install <app-name> <package name>
-  nodester appnpm upgrade <app-name> <package name>
-  nodester appnpm uninstall <app-name> <package name>
+  nodester npm install <app-name> <package name>
+  nodester npm upgrade <app-name> <package name>
+  nodester npm uninstall <app-name> <package name>
   nodester appdomain add <app-name> <domain-name>
   nodester appdomain delete <app-name> <domain-name>
 
@@ -100,15 +111,22 @@ We are always looking for areas to improve Nodester!  Here are a few of the big 
 
 * Setup public AMI running Nodester
 * Ability to start app with additional instances (dynos)
+* Horizontal scaling
 
 Feel free to suggest improvements at https://github.com/nodester/nodester/issues
 
 == Core Team Members
 
 @ChrisMatthieu (http://twitter.com/chrismatthieu)
-@DavGlass (http://twitter.com/davglass)
 @DanBUK (http://twitter.com/danbuk)
 @Marcosvm (http://twitter.com/marcosvm)
 
-If this project inspires you, please feel free to help out by forking this project and sending us pull requests!
+If this project inspires you, please feel free to help out by forking this project and sending us pull requests! \m/
 http://github.com/nodester
+
+== Need Help?
+
+Hit us up in IRC at irc.freenode.net #nodester or http://irc.nodester.com 
+You can also ask questions and provide feedback in our google group at http://groups.google.com/group/nodester
+
+

@@ -21,3 +21,5 @@ APPDIR=$APP_DIR
 FHOME=$HOME/forever-proxy
 
 forever stopall -p $FHOME
+
+sleep 1
