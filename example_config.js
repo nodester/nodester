@@ -4,7 +4,7 @@ exports.opt = {
   couch_host: '127.0.0.1',
   couch_port: 5984,
   couch_prefix: 'nodester',
-  couch_tables: ['coupons', 'nodefu', 'nextport', 'apps', 'repos', 'aliasdomains'],
+  couch_tables: ['coupons', 'nodefu', 'nextport', 'apps', 'repos', 'aliasdomains','password_resets'],
   home_dir: '/var/nodester',
   app_dir: '/var/nodester/nodester',
   git_home_dir: '/git',
@@ -21,8 +21,14 @@ exports.opt = {
   userid: 'nodester',
   app_uid: 100,
   enable_ssl: false, // Currently SSL forward to the app/api, when I have a wildcard cert to test, then all apps can have SSL.
-  ssl_ca_file: '',
-  ssl_cert_file: '',
-  ssl_key_file: '',
-  node_base_folder: '/opt/node-v0.4.9_npm_v1.0.3'
+  ssl_ca_file: "",
+  ssl_cert_file: "",
+  ssl_key_file: "",
+  node_base_folder: '/opt/node-v0.4.9_npm_v1.0.3',
+  smtp_host: "localhost",
+  smtp_port: "25",
+  smtp_domain: "nodester.com",
+  smtp_username: "smtp_username",
+  smtp_password: "smtp_password",
+  smtp_auth: "login"
 };
