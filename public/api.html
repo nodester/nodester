@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title>Nodester | Open Source Node.JS Hosting Platform</title>
+<title>Nodester | Open Source Node.JS Platform as a Service</title>
 <link rel="stylesheet" href="styles.css" type="text/css" />
 <!--
 ablaze, a free CSS web template by spyka Webmaster (www.spyka.net)
@@ -97,13 +97,13 @@ License: Creative Commons Attribution
 		<div id="header" class="clear">
 
 			<!-- <img src="images/warriors.gif" align="left"> -->
-			<h2><center>Node.JS&trade; Open Source Hosting Platform!</center></h2><br/>
+			<h2><center>{ Node.JS&trade; Open Source Hosting Platform-as-a-Service }</center></h2>
 		</div>
 		<div id="body" class="clear">
 			<div id="sidebar" class="column-left">
 				<ul>
                 	<li>
-						<h4>REST API</h4>
+						<h3>REST API</h3>
                         <ul class="blocklist">
                             <!-- <li class="selected-item"><a href="index.html">Home</a></li> -->
                             <li><a href="#couponapi">Coupon Request</a></li>
@@ -119,7 +119,7 @@ License: Creative Commons Attribution
 
 					</li>
 					<li>
-						<h4>Technology</h4>
+						<h3>Technology</h3>
 						<ul>
 							<li><a href="http://nodejs.org" title="Node.JS">Node.JS</a></li>
 							<li><a href="http://npmjs.org/" title="Node Package Manager">Node Package Manager</a></li>
@@ -136,7 +136,7 @@ License: Creative Commons Attribution
 						</ul>
 					</li>
 					<li>
-						<h4>Node.JS 101</h4>
+						<h3>Node.JS 101</h3>
                         <ul>
                             <li><a href="http://nodetuts.com/">NodeTuts Screencasts</a></li>
                             <li><a href="http://nodetuts.com/handson-nodejs-book.html">HANDS-ON NODE.JS</a></li>
@@ -148,8 +148,41 @@ License: Creative Commons Attribution
 				</ul>
 			</div>
 			<div id="content" class="column-right">
+				
+				<a name="clicommands"></a>
+				<h2>CLI Commands</h2>
+				<p>You can install our Command Line Interface by running <br/>npm install nodester-cli -g</p>
+				<p>You can request a Nodester hosting coupon by running <br/>nodester coupon &lt;email address&gt;</p>
+				<p>Once you have your coupon you can setup your account by running <br/>
+					nodester user create &lt;username&gt; &lt;password&gt; &lt;email address&gt; &lt;file containing ssh public key&gt; &lt;coupon code&gt;<br/></p>
+				<p>If you already registered through the site you can setup your CLI by running <br/>
+					nodester user setup &lt;username&gt; &lt;password&gt;<br/>	
+					nodester user setkey &lt;file containing ssh public key&gt<br/>
+					</p>
+				<p>Other Nodester CLI commands include:</p>
+				<code>
+					nodester &lt;command&gt; &lt;param1&gt; &lt;param2&gt;<br/>
+					nodester user setpass &lt;new password&gt;<br/>
+					nodester apps list<br/>
+					nodester app create &lt;app-name&gt; &lt;initial js file&gt;<br/>
+					nodester app init &lt;app-name&gt;<br/>
+					nodester app info &lt;app-name&gt;<br/>
+					nodester app logs &lt;app-name&gt;<br/>
+					nodester app start &lt;app-name&gt;<br/>
+					nodester app restart &lt;app-name&gt;<br/>
+					nodester app stop &lt;app-name&gt;<br/>
+					nodester app gitreset &lt;app-name&gt;<br/>
+					nodester npm install &lt;app-name&gt; &lt;package name&gt; &lt;package name&gt;<br/>
+					nodester npm upgrade &lt;app-name&gt; &lt;package name&gt;<br/>
+					nodester npm uninstall &lt;app-name&gt; &lt;package name&gt;<br/>
+					nodester appdomain add  &lt;app-name&gt;  &lt;domain-name&gt;<br/>
+					nodester appdomain delete &lt;app-name&gt;  &lt;domain-name&gt;<br/>
+					nodester appdomains<br/>
+					
+					
+				</code>
+				
                 <h2>REST API</h2>
-                <p>We do not currently have a full featured website as we are focusing on the API and the service. We are currently running version of Node v.0.4.7 and we support Node.JS sandboxing of your apps which means that you can install your own NPM modules using our NPM API! Git is required to push your updates to Nodester.</p>	
 
 				<a name="couponapi"></a>
 				<h3>COUPON REQUEST</h3>
@@ -268,38 +301,6 @@ License: Creative Commons Attribution
 				curl -u "testuser:123"  http://api.nodester.com/appdomains</code>
 
 
-				<a name="clicommands"></a>
-				<h3>CLI Commands</h3>
-				<p>You can install our Command Line Interface by running "npm install nodester-cli"</p>
-				<code>
-					nodester &lt;command&gt; &lt;param1&gt; &lt;param2&gt;<br/><br/>
-
-					Commands are:<br/>
-					nodester coupon &lt;email address&gt;<br/>
-					nodester user create &lt;username&gt; &lt;password&gt; &lt;email address&gt; &lt;file containing ssh public key&gt; &lt;coupon code&gt;<br/>
-					nodester user setup &lt;username&gt; &lt;password&gt;<br/><br/>
-
-					The commands below require you to have run 'user setup' before/<br/>
-					nodester user setpass &lt;new password&gt;<br/><br/>
-					You should run user setup after running setpass.<br/>
-					nodester user setkey &lt;file containing ssh public key&gt;<br/>
-					nodester apps list<br/>
-					nodester app create &lt;app-name&gt; &lt;initial js file&gt;<br/>
-					nodester app info &lt;app-name&gt;<br/>
-					nodester app logs &lt;app-name&gt;<br/>
-					nodester app start &lt;app-name&gt;<br/>
-					nodester app restart &lt;app-name&gt;<br/>
-					nodester app stop &lt;app-name&gt;<br/>
-					nodester app gitreset &lt;app-name&gt;<br/>
-					nodester npm install &lt;app-name&gt; &lt;package name&gt;<br/>
-					nodester npm upgrade &lt;app-name&gt; &lt;package name&gt;<br/>
-					nodester npm uninstall &lt;app-name&gt; &lt;package name&gt;<br/>
-					nodester appdomain add  &lt;app-name&gt;  &lt;domain-name&gt;<br/>
-					nodester appdomain delete &lt;app-name&gt;  &lt;domain-name&gt;<br/>
-					nodester appdomains<br/>
-					
-					
-				</code>
 
 				<a name="git"></a>
 				<h3>GIT</h3>
@@ -339,6 +340,7 @@ License: Creative Commons Attribution
                   <li><a href="http://twitter.com/chrismatthieu">@ChrisMatthieu</a></li>
                   <li><a href="http://twitter.com/danbuk">@DanBUK</a></li>
                   <li><a href="http://twitter.com/marcosvm">@Marcosvm</a></li>
+                  <li><a href="http://twitter.com/wearefractal">@WeAreFractal</a></li>
                 </ul>
 
             </div>
@@ -368,7 +370,7 @@ License: Creative Commons Attribution
         <div id="footer-links">
 
         <!-- A link to http://www.spyka.net must remain. To remove link see http://www.spyka.net/licensing -->
-                <p>Node.JS is a trademark of Joyent | Website design by <a href="http://www.spyka.net">Free CSS Templates</a> | <a href="http://www.justfreetemplates.com">Free Web Templates</a></p>
+        <p>&copy; 2011 Nodester | Node.JS is a trademark of Joyent</p>
         </div>
     </div>
 	<!-- twitter follow badge by go2web20 -->

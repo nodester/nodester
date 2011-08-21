@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title>Nodester | Open Source Node.JS Hosting Platform</title>
+<title>Nodester | Open Source Node.JS Platform as a Service</title>
 <link rel="stylesheet" href="styles.css" type="text/css" />
 <!--
 ablaze, a free CSS web template by spyka Webmaster (www.spyka.net)
@@ -102,86 +102,86 @@ Copy & Paste RSA key from command line:
 		</div>
 
 		<div id="header" class="clear">
-			<h2><center>Node.JS&trade; Open Source Hosting Platform!</center></h2>
+			<h2><center>{ Node.JS&trade; Open Source Hosting Platform-as-a-Service }</center></h2>
 			<br/>
+			<div id="headleft">
+				<div class="tagline">
+					<p>Deploy your Node.JS applications on Nodester.com for FREE or deploy your apps to your own private cloud instance of Nodester running in your 
+						own datacenter or on Amazon EC2, Rackspace, or GoGrid!  </p>
+						
+					<p>
+						Nodester is an open source Node.JS Platform-as-a-Service written in Node.JS with a RESTful API designed to run in any cloud without a VPS!
+						It was the first of it's kind and 100% open sourced under the Apache 2 license on <a href="http://github.com/nodester"><span>GitHub</span></a>.
+						-> <a href="#TB_inline?height=700&width=980&inlineId=hiddenVideoContent&modal=true" class="thickbox">Watch the video!</a>
+					</p>
+				</div>
+			</div>
+			<br/>
+			<div id="headright" >
+				<div class="tagline">
+					<p class="nodestercommand">$ nodester app create myapp</p>
+					<p class="nodesteroutput">
+					nodester successfully created app myapp to will run on port 11449 from server.js<br/>
+					run nodester app init myapp to setup this app on localhost and server.
+					</p>
+
+					<p class="nodestercommand">$ nodester app init myapp</p>
+					<p class="nodesteroutput">
+						nodester initializing git repo for myapp into folder myapp<br/>
+						nodester clone complete<br/>
+						nodester app running - visit http://myapp.nodester.com
+					</p>
+
+
+				</div>
+			</div>
 			
-			<div class="tagline"><p>Deploy your Node.JS&trade; applications on Nodester for FREE or deploy it to your own cloud instance on Amazon EC2, Rackspace, or GoGrid!  Nodester is an open source Node.JS hosting platform built on a RESTful API running in the cloud. </p></div>
 		</div>
         
 		<div id="body" class="clear">
-			<div id="sidebar" class="column-left">
-				<ul>
-                	<li>
-						<h4>REST API</h4>
-                        <ul class="blocklist">
-                            <!-- <li class="selected-item"><a href="index.html">Home</a></li> -->
-                            <li><a href="/api.html#couponapi">Coupon Request</a></li>
-                            <li><a href="/api.html#status">API Status</a></li>
-                            <li><a href="/api.html#userapi">User Resource</a></li>
-                            <li><a href="/api.html#app">App Resource</a></li>
-                            <li><a href="/api.html#env">Env Resource</a></li>
-                            <li><a href="/api.html#appnpm">NPM Resource</a></li>
-                            <li><a href="/api.html#appdomains">App Domains Resource</a></li>
-                            <li><a href="/api.html#clicommands">CLI Commands</a></li>
-                            <li><a href="/api.html#git">Git Resources</a></li>
-                        </ul>
-					</li>	
-					<li>
-						<h4>Technology</h4>
-						<ul>
-							<li><a href="http://nodejs.org" title="Node.JS">Node.JS</a></li>
-							<li><a href="http://npmjs.org/" title="Node Package Manager">Node Package Manager</a></li>
-							<li><a href="http://git-scm.com/" title="Git version control">Git Version Control</a></li>
-							<li><a href="http://www.iriscouch.com/" title="IrisCouch DB Hosting">IrisCouch DB Hosting</a></li>
-							<li><a href="http://aws.amazon.com/" title="Amazon Web Services">Amazon Web Services</a></li>
-							<li><a href="https://github.com/nodejitsu/node-http-proxy" title="Node HTTP Proxy">Node HTTP Proxy</a></li>
-							<li><a href="https://github.com/remy/nodemon" title="Nodemon">Nodemon</a></li>
-							<li><a href="https://github.com/creationix/couch-client" title="Couch Client">Couch Client</a></li>
-							<li><a href="https://github.com/visionmedia/express" title="Express">Express</a></li>
-							<li><a href="http://jquery.com/" title="jQuery">jQuery</a></li>
-						</ul>
-					</li>
-					<li>
-						<h4>Node.JS 101</h4>
-                        <ul>
-                            <li><a href="http://nodetuts.com/">NodeTuts Screencasts</a></li>
-                            <li><a href="http://nodetuts.com/handson-nodejs-book.html">HANDS-ON NODE.JS</a></li>
-                            <li><a href="http://visionmedia.github.com/masteringnode/">Mastering Node</a></li>
-                        </ul>
-					</li>
-					
-				</ul>
-			</div>
-			<div id="content" class="column-right"><br/>
-                <h2>Welcome to Nodester</h2>
-                <p>We do not currently have a full featured website as we are focusing on the API and the service. We are currently running version of Node v.0.4.7 and we support Node.JS sandboxing of your apps which means that you can install your own NPM modules using our NPM API! Git is required to push your updates to Nodester.</p>	
-
-				<p><a href="#TB_inline?height=700&width=980&inlineId=hiddenVideoContent&modal=true" class="thickbox"><img src="/images/nodestercast.jpg" width="700"></a></p>
+			<div id="contenthome" ><br/>
 				
-				<h3>Check out our new Command Line Interface (CLI)!</h3>
-                <p><strong>If you are using npm 1.0, the "-g" is required for a global install.</strong></p>
-				<ol>
-				<li>npm install nodester-cli -g</li>
-				<li>type "nodester" to see a list of command uses</li>
-				</ol>
-
-                <h3>Request a coupon via CLI or cURL to get on our invite list!</h3>
-				<code>nodester coupon your_address@gmail.com</code>
-				<p>- OR -</p>				
-				<code>curl -X POST -d "email=your_address@gmail.com" http://nodester.com/coupon</code>
-
-				<h3>Deployment is Easy - Create, Git Push, & Run!</h3> 
-				<p>Create and deploy a hello world Node.JS app in <b>less than 2 minutes</b>!  The two commands below creates an app on Nodester, creates a Node.JS hello world app as server.js in a myapp directory, sets up a local git repo, pushes it to Nodester as origin, and starts your Node.JS app on Nodester making it immediately available at myapp.nodester.com!</p>
-				<code>
-					nodester app create myapp<br/><br/>
-					nodester app init myapp<br/><br/>
-				</code>
-				<p>- OR if you have an existing app -</p>
+				<table>
+					<tr>
+						<td valign="top" width="33%">
+							<h2><img src="/images/rocket-md-right.png" width="50"> Preparing for Launch.</h2>	
+							<p>Request your free Nodester Node.JS hosting coupon.</p>	
+							<code>curl -X POST -d "email=your_address@gmail.com" http://nodester.com/coupon</code>					
+						</td>
+						<td valign="top" width="33%">
+							<h2><img src="/images/rocket-md-right.png" width="50"> All Systems Go!</h2>
+							<p>You have received your coupon and you're ready to install our Command Line Interface (CLI).</p>
+							<ol>
+							<li>npm install nodester-cli -g</li>
+							<li>nodester user setup &lt;username&gt; &lt;password&gt;</li>
+							<li>nodester user setkey &lt;file containing ssh public key&gt</li>
+							</ol>							
+						</td>
+						<td valign="top" width="33%">
+							<h2><img src="/images/rocket-md-right.png" width="50"> 3-2-1 Launch App!</h2>
+							<p>You are ready to deploy your test Hello World app with 2 commands.</p>							
+							<ol>
+								<li>nodester app create &lt;app-name&gt; &lt;initial js file&gt;</li>								
+								<li>nodester app init &lt;app-name&gt;</li>								
+							</ol>
+							<p>Visit http://myapp.nodester.com!</p>
+						</td>
+					</tr>
+				</table>
+				
+				
+				<!-- <center><p><a href="#TB_inline?height=700&width=980&inlineId=hiddenVideoContent&modal=true" class="thickbox"><img src="/images/nodestercast.jpg" width="700"></a></p></center> -->
+				
+				<h2><img src="/images/rocket-md-right.png" width="50"> Experienced Nodester with Existing App?</h2>
+				<p>Simply skip the init command and add a nodester git remote!  Init basically creates a hello world app for you locally, adds git and the nodester remote, pushes your app to nodester, and launches it.</p>
 				<code>
 					nodester app create myapp<br/><br/>
 					nodester app info myapp<br/><br/>
 					git remote add nodester the_url_returned_by_our_api and git push nodester master<br/><br/>
-					<b>NPM modules?</b> nodester npm install myapp express socket.io etc<br/><br/>
+				</code>
+					Do you have <b>NPM</b> modules?
+				<code>
+					 nodester npm install myapp express socket.io etc<br/><br/>
 					nodester app start myapp
 				</code>
 				<p>- OR use our REST API-</p>
@@ -213,6 +213,7 @@ Copy & Paste RSA key from command line:
                   <li><a href="http://twitter.com/chrismatthieu">@ChrisMatthieu</a></li>
                   <li><a href="http://twitter.com/danbuk">@DanBUK</a></li>
                   <li><a href="http://twitter.com/marcosvm">@Marcosvm</a></li>
+                  <li><a href="http://twitter.com/wearefractal">@WeAreFractal</a></li>
                 </ul>
 
             </div>
@@ -242,7 +243,7 @@ Copy & Paste RSA key from command line:
         <div id="footer-links">
 
         <!-- A link to http://www.spyka.net must remain. To remove link see http://www.spyka.net/licensing -->
-                <p>Node.JS is a trademark of Joyent | Website design by <a href="http://www.spyka.net">Free CSS Templates</a> | <a href="http://www.justfreetemplates.com">Free Web Templates</a></p>
+                <p>&copy; 2011 Nodester | Node.JS is a trademark of Joyent</p>
         </div>  
     </div>
 	<!-- twitter follow badge by go2web20 --> 

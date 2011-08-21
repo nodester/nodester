@@ -3,9 +3,9 @@ body {
 	margin:0px auto;
 	padding:0;
 	font-family:Verdana, Geneva, sans-serif;
-	font-size:12px;
+	font-size:18px;
 	color:#555;
-	background:#fff url('images/body-bg-black.png') repeat-x;
+	background:#eee url('images/body-bg-black.png') repeat-x;
 }
 
 body.small-header {
@@ -145,7 +145,8 @@ li {
 
 /** wrapper **/
 div#wrapper {
-	width:960px;
+/*	width:960px;*/
+	width:100%;
 	margin:0px auto;
 	padding:0;
 }
@@ -222,7 +223,35 @@ div#nav ul li.selected a span, div#nav ul li.selected a:hover span {
 div#header {
 	padding:40px 0 0;
 	margin:0 auto;
-	height:135px;
+/*	height:135px;*/
+	background: #A50000;
+	height:425px;
+}
+div#headleft{
+	float:left;
+	width:45%;
+	padding:30px;
+	font-family:Arial,Helvetica,sans-serif;
+	font-size:30px;
+}
+div#headleft p{
+	font-family:Arial,Helvetica,sans-serif;
+	font-size:19px;
+}
+
+div#headright{
+	float:right;
+	width:45%;
+	padding:20px;
+	background: #111;
+	height:250px;
+	
+}
+.nodestercommand{
+	color:#ff0;
+}
+.nodesteroutput{
+	color:#f00;
 }
 
 .small-header div#header {
@@ -303,13 +332,18 @@ div.slide-text {
 /** body **/
 div#body {
 	padding:10px 0;
-	background: transparent url('images/body-arrow.png') no-repeat scroll 5px 0;
+/*	background: transparent url('images/body-arrow.png') no-repeat scroll 5px 0;*/
 }
 
 
 /** content+sidebar styles **/
+div#contenthome {
+	width:95%;
+	margin:0 auto;
+}
 div#content {
-	width:715px;
+	width:75%;
+	margin:0 auto;
 }
 div.column-left {
 	float:left;
