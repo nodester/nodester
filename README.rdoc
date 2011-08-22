@@ -68,7 +68,7 @@ Please see install.txt for setup instructions (https://github.com/nodester/nodes
 
 Installation of our Command Line Interface is simple using NPM.
 
-  npm install nodester-cli
+  npm install nodester-cli -g
 
 Operations are as simple as nodester <command> <param1> <param2>.  Here is a list of the commands available today:
 
