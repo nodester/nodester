@@ -68,7 +68,7 @@ Please see install.txt for setup instructions (https://github.com/nodester/nodes
 
 Installation of our Command Line Interface is simple using NPM.
 
-  npm install nodester-cli
+  npm install nodester-cli -g
 
 Operations are as simple as nodester <command> <param1> <param2>.  Here is a list of the commands available today:
 
@@ -120,6 +120,7 @@ Feel free to suggest improvements at https://github.com/nodester/nodester/issues
 @ChrisMatthieu (http://twitter.com/chrismatthieu)
 @DanBUK (http://twitter.com/danbuk)
 @Marcosvm (http://twitter.com/marcosvm)
+@WeAreFractal (http://twitter.com/wearefractal)
 
 If this project inspires you, please feel free to help out by forking this project and sending us pull requests! \m/
 http://github.com/nodester
