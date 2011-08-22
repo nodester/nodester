@@ -34,6 +34,6 @@ if [ -f $FHOME/logs/forever.log ]; then
 fi
 
 ulimit -n 99999;
-forever start -l logs/forever.log -o $FHOME/logs/proxy-out.log -e $FHOME/logs/proxy-err.log -d $APPDIR -p $FHOME $APPDIR/proxy/proxy.js
+forever start -l logs/forever.log -o $FHOME/logs/proxy-out.log -e $FHOME/logs/proxy-err.log -d $APPDIR -p $FHOME $APPDIR/proxy.js
 wait
-forever list -p $FHOME $APPDIR/proxy/proxy.js
+forever list -p $FHOME $APPDIR/proxy.js
