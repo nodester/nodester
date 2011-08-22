@@ -148,6 +148,11 @@ myapp.post('/appdomains', middle.authenticate, middle.authenticate_app, domains.
 myapp.delete('/appdomains', middle.authenticate, middle.authenticate_app, domains.delete);
 myapp.get('/appdomains', middle.authenticate, domains.get);
 
+// curl -X POST -d "user=username" http://localhost:4001/reset_password
+// curl -X PUT -d "password=newpassword" http://localhost:4001/reset_password/<token>
+var reset_password = require('./lib/reset_password');
+myapp.post('/reset_password', reset_password.post);
+myapp.put('/reset_password/:token', reset_password.put);
 
 myapp.use(express.errorHandler({
   showStack: true
