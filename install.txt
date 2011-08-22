@@ -19,7 +19,7 @@ Installation:
   Install node.js (0.4.x recommended)
     Package from distro
     OR wget, ./configure, make, make install
-  Create a user and group to run nodester as
+  Create a user and group to run nodester as (do this as root)
     sudo su -
     groupadd nodester 
     useradd -d /var/nodester -c "nodester" -g nodester -m -r -s /bin/bash nodester
@@ -30,14 +30,14 @@ Installation:
     mkdir .ssh
     touch .ssh/authorized_keys
     chmod go-rwx .ssh/authorized_keys
-  Update sudoers to allow running of the proxy on port 80
+  Update sudoers to allow running of the proxy on port 80 (do this as root)
     sudo visudo
     And add the following lines
     nodester ALL = NOPASSWD: /var/nodester/nodester/bin/proxy_start.sh *
     nodester ALL = NOPASSWD: /var/nodester/nodester/bin/proxy_stop.sh
     nodester ALL = NOPASSWD: /var/nodester/nodester/bin/app_start.sh *
     nodester ALL = NOPASSWD: /var/nodester/nodester/bin/app_stop.sh *
-  Install npm
+  Install npm (do this as nodester)
     cd ~
     echo -e "root = ~/.node_libraries\nmanroot = ~/local/share/man\nbinroot = ~/bin" > ~/.npmrc
     echo -e "export PATH=\"\${PATH}:~/bin\";" >> ~/.bashrc
@@ -70,34 +70,32 @@ Installation:
 
   Either install CouchDB or get a CouchOne account
 
-  Install node-module dependencies
-    for X in pool express npm-wrapper request daemon forever cradle colored; do npm install ${X}; done
+  Install node-module dependencies (do this as nodester)
+    for X in pool express npm-wrapper request daemon forever cradle coloured; do npm install ${X}; done
   
-  Get nodester
+  Get nodester (do this as nodester)
     cd ~
     git clone git://github.com/nodester/nodester.git
     cd nodester
 
-  (Need to do these steps as the non-nodester user)
-  Ensure that the ownership of nodester/proxy is all root for security
+  Ensure that the ownership of nodester/proxy is all root for security (do this as root)
     cd /var/nodester
     sudo chown -R root:root nodester/proxy
-  Install the git folder shell to restrict git to per user folders
+  Install the git folder shell to restrict git to per user folders (do this as root)
     cd /var/nodester/nodester
     sudo cp scripts/git-shell-enforce-directory /usr/local/bin
     sudo chmod +x /usr/local/bin/git-shell-enforce-directory
   
-  (Back to the nodester user)
-  Configure the app
+  Configure the app (do this as nodester)
     Copy nodester/example_config.js to nodester/config.js
     Edit the settings in nodester/config.js
     Copy scripts/example_gitrepoclone.sh to scripts/gitrepoclone.sh
     Update scripts/gitrepoclone.sh with the key you specified in config.js
-  Setup the CouchDB tables
+  Setup the CouchDB tables (do this as nodester)
     cd ./nodester/scripts/couchdb/create_all_couchdb_tables.js
         ./create_all_couchdb_tables.js
         ./nodester/scripts/couchdb/setup_default_views.js
-  Start up the proxy and main/api app
+  Start up the proxy and main/api app (do this as nodester)
     cd nodester
     ./bin/app_start.sh
     sudo ./bin/proxy_start.sh
