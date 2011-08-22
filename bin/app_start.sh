@@ -16,7 +16,7 @@ export HOME=$HOME_DIR;
 export PATH="/usr/local/bin:${HOME}/bin:${PATH}";
 
 APPDIR=$APP_DIR
-FHOME=$HOME/forever-app/
+FHOME=$HOME/forever-app
 
 if [ ! -d $FHOME ]; then
     mkdir -p $FHOME/logs

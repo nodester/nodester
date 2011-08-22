@@ -18,7 +18,8 @@ export PATH="/usr/local/bin:${HOME}/bin:${PATH}";
 
 APPDIR=$APP_DIR/proxy
 
-FHOME=$HOME/forever-proxy/
+FHOME=$HOME/forever-proxy
+
 
 if [ ! -d $HOME/var ]; then
     mkdir $HOME/var
