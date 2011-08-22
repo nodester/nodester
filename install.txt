@@ -1,7 +1,7 @@
 Nodester - A node.js hosting platform
 
 Dependencies:
-  node.js (Latest stable version 0.4.0)
+  node.js (Latest stable version 0.4.11)
   npm
   curl
   node.js Modules:
@@ -13,7 +13,7 @@ Dependencies:
     daemon
     forever
     cradle
-    colored
+    coloured
 
 Installation:
   Install node.js (0.4.x recommended)
@@ -33,9 +33,10 @@ Installation:
   Update sudoers to allow running of the proxy on port 80
     sudo visudo
     And add the following lines
-    nodester ALL = NOPASSWD: /var/nodester/nodester/proxy/start_proxy.sh *
-    nodester ALL = NOPASSWD: /var/nodester/nodester/proxy/stop.sh
-    nodester ALL = NOPASSWD: /var/nodester/nodester/scripts/launch_app.sh *
+    nodester ALL = NOPASSWD: /var/nodester/nodester/bin/proxy_start.sh *
+    nodester ALL = NOPASSWD: /var/nodester/nodester/bin/proxy_stop.sh
+    nodester ALL = NOPASSWD: /var/nodester/nodester/bin/app_start.sh *
+    nodester ALL = NOPASSWD: /var/nodester/nodester/bin/app_stop.sh *
   Install npm
     cd ~
     echo -e "root = ~/.node_libraries\nmanroot = ~/local/share/man\nbinroot = ~/bin" > ~/.npmrc
