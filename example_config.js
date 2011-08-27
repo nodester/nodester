@@ -16,7 +16,7 @@ exports.opt = {
   git_user: 'nodester',
   git_dom: 'testnodester.com',
   coupon_code: 'CouponCode',
-  blocked_apps: ['www', 'api'],
+  blocked_apps: ['www', 'api', 'admin', 'support', 'blog'],
   restart_key: 'KeepThisSecret',
   userid: 'nodester',
   app_uid: 100,
