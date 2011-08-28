@@ -14,6 +14,7 @@ Dependencies:
     forever
     cradle
     colored
+    coffee-script
 
 Installation:
   Install node.js (0.4.x recommended)
@@ -70,7 +71,7 @@ Installation:
   Either install CouchDB or get a CouchOne account
 
   Install node-module dependencies
-    for X in pool express npm-wrapper request daemon forever cradle colored; do npm install ${X}; done
+    for X in pool express npm-wrapper request daemon forever cradle colored coffee-script; do npm install ${X}; done
   
   Get nodester
     cd ~

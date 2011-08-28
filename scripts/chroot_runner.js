@@ -107,7 +107,7 @@ var myPid = daemon.start();
     });
 
     var start_child = function () {
-      child = spawn('/usr/bin/node', args, { env: env });
+      child = spawn((path.extname(args[0]) == '.coffee' ? '/usr/bin/coffee' : '/usr/bin/node'), args, { env: env });
       child.stdout.on('data', log_line.bind('stdout'));
       child.stderr.on('data', log_line.bind('stderr'));
       child.on('exit', function (code) {
