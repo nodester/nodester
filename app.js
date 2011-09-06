@@ -8,6 +8,7 @@ Written by: @ChrisMatthieu & @DanBUK
 http://nodester.com
 
 */
+require('coffee-script');
 
 var express = require('express'),
     url = require('url'),
