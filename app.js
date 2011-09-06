@@ -13,7 +13,8 @@ var express = require('express'),
     url = require('url'),
     sys = require('sys'),
     config = require('./config'),
-    middle = require('./lib/middle');
+    middle = require('./lib/middle')
+    nodeinfo = require('nodeinfo');
 
 process.on('uncaughtException', function(err) {
   console.log(err.stack);
@@ -45,6 +46,10 @@ myapp.get('/admin', function(req, res, next) {
 
 myapp.get('/irc', function(req, res, next) {
   res.redirect('http://irc.nodester.com');
+});
+
+myapp.get('/monitor', function(req, res, next) {
+  res.redirect('http://monitor.nodester.com');
 });
 
 // Status API
@@ -159,3 +164,6 @@ myapp.use(express.errorHandler({
 }));
 myapp.listen(4001);
 console.log('Nodester app started on port 4001');
+
+nodeinfo.broadcast(1337);
+console.log('NodeInfo monitor started on port 1337');
