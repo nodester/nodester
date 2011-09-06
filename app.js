@@ -49,7 +49,7 @@ myapp.get('/irc', function(req, res, next) {
 });
 
 myapp.get('/monitor', function(req, res, next) {
-  res.redirect('http://monitor.nodester.com');
+  res.redirect('http://site.nodester.com');
 });
 
 // Status API
