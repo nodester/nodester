@@ -102,7 +102,23 @@ var next = function() {
                 restart_key: config.opt.restart_key
             }
         }, {
+            writeHead: function(data){},
             send: function(data) {
+                if (data instanceof Object) {
+                    if (data.status.indexOf('failed') > -1) {
+                        f++;
+                    } else {
+                        g++;
+                    }
+                    util.print(' [' + ((data.status.indexOf('failed') > -1) ? bad.red.bold : good.bold.green) + ']\n');
+                } else {
+                    g++;
+                    util.print(' [' + '!!'.yellow.bold + ']\n');
+                }
+                //Let the process fire up and daemonize before starting the next one
+                setTimeout(next, 500);
+            },
+            end: function(data){
                 if (data instanceof Object) {
                     if (data.status.indexOf('failed') > -1) {
                         f++;

@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 
 var exec = require('child_process').exec;
-var cmd = "ps aux | awk '/launch_chroot/ && !/awk/ {print $3,$4,$2,$5,$6,$10,$13}' | sort -r | head -n 20";
+//$13 should be name?
+var cmd = "ps aux | awk '/chroot_runner/ && !/awk/ {print $3,$4,$2,$5,$6,$10,$9}' | sort -r | head -n 50";
 
 require('colors');
 
 var top = function() {
-    console.log('cpu\tmem\tvsz\trss\tpid\ttime\tapp'.magenta.bold);
+    console.log('cpu\tmem\tvsz\trss\tpid\ttime\tdate'.magenta.bold);
 
     exec(cmd, function(err, stdout) {
         var data = stdout.split('\n');
@@ -14,23 +15,20 @@ var top = function() {
         data.forEach(function(l) {
             var line = l.split(' ');
             if (line[1]) {
-                for (var i = 2; i < 6; i++) {
+                for (var i = 2; i < 7; i++) {
                     line[i] = line[i].white;
                 }
 
-                if (parseFloat(line[0]) > 1) {
+                if (parseFloat(line[0]) > 0.75) {
                     line[0] = line[0].red.bold;
                 } else {
                     line[0] = line[0].white;
                 }
-                if (parseFloat(line[1]) > 1) {
+                if (parseFloat(line[1]) > 0.75) {
                     line[1] = line[1].red.bold;
                 } else {
                     line[1] = line[1].white;
                 }
-                
-                var tmp = line[6].split(':');
-                line[6] = ('[' + tmp[0] + ']:').blue + tmp[1].yellow;
 
                 console.log(line.join('\t'));
             }

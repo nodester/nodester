@@ -14,6 +14,7 @@ Dependencies:
     forever
     cradle
     coloured
+    coffee-script
 
 Installation:
   Install node.js (0.4.x recommended)
