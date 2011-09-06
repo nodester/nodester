@@ -138,6 +138,7 @@ var next = function () {
           }
         });
       } catch (err) {
+        f++;
         util.print(err + '\n')
         util.print('[' + '!!'.red.bold + ']\n')
       }
