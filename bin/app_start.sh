@@ -1,10 +1,5 @@
 #!/bin/bash
 
-if [ "$USER" != "root" ]; then
-    echo "Must be root to run this.. Please sudo this command."
-    exit
-fi
-
 cd `dirname $0`
 
 ./node-config.js
