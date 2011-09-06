@@ -88,7 +88,8 @@ request.on('response', function (response) {
 var apps = [], count = 0, g = 0, f = 0,
     good = "✔", bad = "✖";
 
-console.log = function() {}; //Commenting this out so the debugging from ../lib/app doesn't display
+// Bad idea
+//console.log = function() {}; //Commenting this out so the debugging from ../lib/app doesn't display
 
 var next = function() {
     if (apps.length) {
@@ -116,7 +117,8 @@ var next = function() {
                     util.print(' [' + '!!'.yellow.bold + ']\n');
                 }
                 //Let the process fire up and daemonize before starting the next one
-                setTimeout(next, 500);
+                //setTimeout(next, 500);
+                next();
             },
             end: function(data){
                 if (data instanceof Object) {
@@ -130,8 +132,9 @@ var next = function() {
                     g++;
                     util.print(' [' + '!!'.yellow.bold + ']\n');
                 }
+                next();
                 //Let the process fire up and daemonize before starting the next one
-                setTimeout(next, 500);
+                //setTimeout(next, 500);
             }
         });
         
