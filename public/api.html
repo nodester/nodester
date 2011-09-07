@@ -245,7 +245,10 @@ License: Creative Commons Attribution
 
 				<code>/app/<appname> - get nodejs app info (requires basic auth and appname)<br/> <br/>
 				curl -u "testuser:123"  http://api.nodester.com/app/appname</code>
-
+                
+                <code>/applogs/<appname> - get nodejs app logs (requires basic auth and appname)<br/> <br/>
+				curl -u "testuser:123"  http://api.nodester.com/applogs/appname</code>
+				
 				<a name="env"></a>
 				<h3>ENV</h3>
 				<p><b>Create/Update Environment :: PUT</b>
@@ -342,8 +345,8 @@ License: Creative Commons Attribution
 					nodester appdomain add  &lt;app-name&gt;  &lt;domain-name&gt;<br/>
 					nodester appdomain delete &lt;app-name&gt;  &lt;domain-name&gt;<br/>
 					nodester appdomains<br/>
-					nodester password_reset token &lt;user&gt; - Request a password reset token<br/>
-					nodester password_reset setpass &lt;token&gt; &lt;password&gt; - Set a new password for the user with token<br/>
+					nodester reset_password token - Request a password reset token<br/>
+					nodester reset_password setpass &lt;token&gt; &lt;password&gt; - Set a new password for the user with token<br/>
 					
 					
 				</code>
