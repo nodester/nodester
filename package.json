@@ -1,0 +1,32 @@
+{
+   "name":"nodester-server",
+   "description":"Nodester Server",
+   "version":"0.0.1",
+   "homepage":"http://github.com/nodester/nodester",
+   "repository":"git://github.com/nodester/nodester.git",
+   "author":"Nodester <contact@nodester.com> (http://nodester.com/)",
+   
+   "dependencies":{
+      "coffee-script":"*",
+      "colors":"*",
+      "nodemailer":"*",
+      "pool":"*",
+      "express":"*",
+      "request":"*",
+      "npm-wrapper":"*",
+      "daemon":"*",
+      "forever":"*",
+      "cradle":"*",
+      "nodeinfo":"*",
+      "socket.io":"*"
+   },
+   "engines":{
+      "node":">= 0.4.7"
+   },
+   "licenses":[
+      {
+         "type":"MIT",
+         "url":"http://github.com/nodester/nodester/blob/master/LICENSE.txt"
+      }
+   ]
+}

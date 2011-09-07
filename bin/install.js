@@ -80,7 +80,7 @@ add_c(host_base, 'sudo cp ${HOME}/.ssh/authorized_keys ' + app_homedir + '/.ssh/
 add_c(host_base, 'sudo chown -R ' + app_username + ':' + app_username + ' ' + app_homedir + '/.ssh', '', false);
 add_c(host_base, 'sudo chmod -R 0700 ' + app_homedir + '/.ssh', '', false);
 
-add_c(host_app, 'git clone http://github.com/DanBUK/nodester.git ./nodester', '', true);
+add_c(host_app, 'git clone http://github.com/nodester/nodester.git ./nodester', '', true);
 add_c(host_app, 'cp ./nodester/example_config.js ./nodester/config.js', '', true);
 add_c(host_app, 'sed -i -e "s/\\\/var\\\/nodester/' + app_homedir.replace('/', '\\\/') + '/g" ./nodester/config.js', '', false);
 add_c(host_app, 'sed -i -e "s/couch_user: \'nodester/couch_user: \'' + couch_db_user + '/" ./nodester/config.js', '', false);

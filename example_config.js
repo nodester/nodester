@@ -4,7 +4,7 @@ exports.opt = {
   couch_host: '127.0.0.1',
   couch_port: 5984,
   couch_prefix: 'nodester',
-  couch_tables: ['coupons', 'nodefu', 'nextport', 'apps', 'repos', 'aliasdomains','password_resets'],
+  couch_tables: ['coupons', 'nodefu', 'nextport', 'apps', 'repos', 'aliasdomains', 'password_resets'],
   home_dir: '/var/nodester',
   app_dir: '/var/nodester/nodester',
   git_home_dir: '/git',
@@ -16,19 +16,20 @@ exports.opt = {
   git_user: 'nodester',
   git_dom: 'testnodester.com',
   coupon_code: 'CouponCode',
-  blocked_apps: ['www', 'api', 'admin', 'support', 'blog'],
+  blocked_apps: ['www', 'api', 'admin', 'support', 'blog', 'site'],
   restart_key: 'KeepThisSecret',
   userid: 'nodester',
   app_uid: 100,
   enable_ssl: false, // Currently SSL forward to the app/api, when I have a wildcard cert to test, then all apps can have SSL.
-  ssl_ca_file: "",
-  ssl_cert_file: "",
-  ssl_key_file: "",
+  ssl_ca_file: '',
+  ssl_cert_file: '',
+  ssl_key_file: '',
   node_base_folder: '/opt/node-v0.4.9_npm_v1.0.3',
-  smtp_host: "localhost",
-  smtp_port: "25",
-  smtp_domain: "nodester.com",
-  smtp_username: "smtp_username",
-  smtp_password: "smtp_password",
-  smtp_auth: "login"
+
+  //Amazon SES mail info
+  SES = {
+    AWSAccessKeyID: 'ACCESSKEY',
+    AWSSecretKey: 'SECRETKEY',
+    ServiceUrl: 'https://email.us-east-1.amazonaws.com',
+  }
 };
