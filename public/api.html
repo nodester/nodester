@@ -103,6 +103,10 @@ License: Creative Commons Attribution
 			<div id="sidebar" class="column-left">
 				<ul>
                 	<li>
+                	    <h3>CLI</h3>
+                	        <ul class="blocklist">
+                	            <li><a href="#clicommands">Commands</a></li>
+                	         </ul>    
 						<h3>REST API</h3>
                         <ul class="blocklist">
                             <!-- <li class="selected-item"><a href="index.html">Home</a></li> -->
@@ -149,10 +153,8 @@ License: Creative Commons Attribution
 				</ul>
 			</div>
 			<div id="content" class="column-right">
-				
-				<a name="clicommands"></a>
-				<h2>CLI Commands</h2>
-				<p>You can install our Command Line Interface by running <br/>npm install nodester-cli -g</p>
+				<h2>Nodester CLI</h2>
+				<p>You can install our Command Line Interface by running "npm install -g nodester-cli"</p>
 				<p>You can request a Nodester hosting coupon by running <br/>nodester coupon &lt;email address&gt;</p>
 				<p>Once you have your coupon you can setup your account by running <br/>
 					nodester user create &lt;username&gt; &lt;password&gt; &lt;email address&gt; &lt;file containing ssh public key&gt; &lt;coupon code&gt;<br/></p>
@@ -160,27 +162,32 @@ License: Creative Commons Attribution
 					nodester user setup &lt;username&gt; &lt;password&gt;<br/>	
 					nodester user setkey &lt;file containing ssh public key&gt<br/>
 					</p>
-				<p>Other Nodester CLI commands include:</p>
+				<a name="clicommands"></a>
+				<h3>CLI Commands</h3>
 				<code>
-					nodester &lt;command&gt; &lt;param1&gt; &lt;param2&gt;<br/>
-					nodester user setpass &lt;new password&gt;<br/>
+				    Format:<br/>
+					nodester &lt;command&gt; &lt;param1&gt; &lt;param2&gt;<br/><br/>
+
+					nodester coupon &lt;email address&gt;<br/>
+					nodester user create &lt;username&gt; &lt;password&gt; &lt;email address&gt; &lt;file containing ssh public key&gt; &lt;coupon code&gt;<br/>
+					nodester user setup &lt;username&gt; &lt;password&gt;<br/><br/>
+					nodester user setkey &lt;file containing ssh public key&gt;
+					nodester user setpass sendtoken<br/>
+					nodester user setpass &lt;token&gt; &lt;new_password&gt;<br/><br/><br/>
 					nodester apps list<br/>
-					nodester app create &lt;app-name&gt; &lt;initial js file&gt;<br/>
-					nodester app init &lt;app-name&gt;<br/>
-					nodester app info &lt;app-name&gt;<br/>
-					nodester app logs &lt;app-name&gt;<br/>
-					nodester app start &lt;app-name&gt;<br/>
-					nodester app restart &lt;app-name&gt;<br/>
-					nodester app stop &lt;app-name&gt;<br/>
-					nodester app gitreset &lt;app-name&gt;<br/>
-					nodester npm install &lt;app-name&gt; &lt;package name&gt; &lt;package name&gt;<br/>
-					nodester npm upgrade &lt;app-name&gt; &lt;package name&gt;<br/>
-					nodester npm uninstall &lt;app-name&gt; &lt;package name&gt;<br/>
-					nodester appdomain add  &lt;app-name&gt;  &lt;domain-name&gt;<br/>
-					nodester appdomain delete &lt;app-name&gt;  &lt;domain-name&gt;<br/>
+					nodester app create &lt;appname&gt; &lt;initial js file&gt;<br/>
+					nodester app info &lt;appname&gt;<br/>
+					nodester app logs &lt;appname&gt;<br/>
+					nodester app start &lt;appname&gt;<br/>
+					nodester app restart &lt;appname&gt;<br/>
+					nodester app stop &lt;appname&gt;<br/>
+					nodester app gitreset &lt;appname&gt;<br/><br/>
+					nodester npm install &lt;appname&gt; &lt;package name&gt;<br/>
+					nodester npm upgrade &lt;appname&gt; &lt;package name&gt;<br/>
+					nodester npm uninstall &lt;appname&gt; &lt;package name&gt;<br/><br/>
+					nodester appdomain add  &lt;appname&gt;  &lt;domain-name&gt;<br/>
+					nodester appdomain delete &lt;appname&gt;  &lt;domain-name&gt;<br/>
 					nodester appdomains<br/>
-					
-					
 				</code>
 				
                 <h2>REST API</h2>
@@ -243,10 +250,10 @@ License: Creative Commons Attribution
 				<p><b>Application Information :: GET</b>
 					<br/>Base URL: http://api.nodester.com</p>
 
-				<code>/app/<appname> - get nodejs app info (requires basic auth and appname)<br/> <br/>
+				<code>/app/&lt;appname&gt; - get nodejs app info (requires basic auth and appname)<br/> <br/>
 				curl -u "testuser:123"  http://api.nodester.com/app/appname</code>
                 
-                <code>/applogs/<appname> - get nodejs app logs (requires basic auth and appname)<br/> <br/>
+                <code>/applogs/&lt;appname&gt; - get nodejs app logs (requires basic auth and appname)<br/> <br/>
 				curl -u "testuser:123"  http://api.nodester.com/applogs/appname</code>
 				
 				<a name="env"></a>
@@ -272,7 +279,7 @@ License: Creative Commons Attribution
 				<h3>APPS</h3>
 				<p><b>All Applications Information :: GET</b>
 				<br/>Base URL: http://api.nodester.com</p>
-				<code>/apps<appname> - get all nodejs app info(requires basic auth)<br/> <br/>
+				<code>/apps - get all nodejs app info(requires basic auth)<br/> <br/>
 				curl -u "testuser:123"  http://api.nodester.com/apps</code>
 
 				<a name="appnpm"></a>
@@ -315,41 +322,6 @@ License: Creative Commons Attribution
 				<br/>Base URL: http://api.nodester.com</p>
         <code>/reset_password/&lt;token&gt; - Updates your password using the provided token<br/><br/>
         curl -X PUT -d "password=your_new_password" http://nodester.com/reset_password/&lt;token&gt;</code>
-
-				<a name="clicommands"></a>
-				<h3>CLI Commands</h3>
-				<p>You can install our Command Line Interface by running "npm install nodester-cli"</p>
-				<code>
-					nodester &lt;command&gt; &lt;param1&gt; &lt;param2&gt;<br/><br/>
-
-					Commands are:<br/>
-					nodester coupon &lt;email address&gt;<br/>
-					nodester user create &lt;username&gt; &lt;password&gt; &lt;email address&gt; &lt;file containing ssh public key&gt; &lt;coupon code&gt;<br/>
-					nodester user setup &lt;username&gt; &lt;password&gt;<br/><br/>
-
-					The commands below require you to have run 'user setup' before/<br/>
-					nodester user setpass &lt;new password&gt;<br/><br/>
-					You should run user setup after running setpass.<br/>
-					nodester user setkey &lt;file containing ssh public key&gt;<br/>
-					nodester apps list<br/>
-					nodester app create &lt;app-name&gt; &lt;initial js file&gt;<br/>
-					nodester app info &lt;app-name&gt;<br/>
-					nodester app logs &lt;app-name&gt;<br/>
-					nodester app start &lt;app-name&gt;<br/>
-					nodester app restart &lt;app-name&gt;<br/>
-					nodester app stop &lt;app-name&gt;<br/>
-					nodester app gitreset &lt;app-name&gt;<br/>
-					nodester npm install &lt;app-name&gt; &lt;package name&gt;<br/>
-					nodester npm upgrade &lt;app-name&gt; &lt;package name&gt;<br/>
-					nodester npm uninstall &lt;app-name&gt; &lt;package name&gt;<br/>
-					nodester appdomain add  &lt;app-name&gt;  &lt;domain-name&gt;<br/>
-					nodester appdomain delete &lt;app-name&gt;  &lt;domain-name&gt;<br/>
-					nodester appdomains<br/>
-					nodester reset_password token - Request a password reset token<br/>
-					nodester reset_password setpass &lt;token&gt; &lt;password&gt; - Set a new password for the user with token<br/>
-					
-					
-				</code>
 
 				<a name="git"></a>
 				<h3>GIT</h3>
