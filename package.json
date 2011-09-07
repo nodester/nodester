@@ -18,7 +18,8 @@
       "forever":"*",
       "cradle":"*",
       "nodeinfo":"*",
-      "socket.io":"*"
+      "socket.io":"*",
+      "coloured":"*"
    },
    "engines":{
       "node":">= 0.4.7"
