@@ -60,14 +60,14 @@ for (var i in all_views) {
             db.save('_design/' + view.design, view.views, function (err, res) {
               if (err) {
                 console.error('Failed to create view ' + view.table + '/' + view.design + '.'.red().bold());
-                console.error('  ' + err.toString().red());
+                console.error(err);
               } else {
                 console.log('Created view ' + view.table + '/' + view.design + '.'.yellow());
               }
             });
           } else {
             console.error('Failed to query view ' + view.table + '/' + view.design + '.'.red().bold());
-            console.error('  ' + err.toString().red());
+            console.error(err);
           }
         } else {
           console.log('Skipping creating view ' + view.table + '/' + view.design + '.'.yellow());
@@ -86,12 +86,12 @@ db.get('port', function (err, resp) {
       db.save('port', {address: default_port}, function (err, resp) {
         if (err) {
           console.error('Error saving next port:'.red());
-          console.error('  ' + (err).red());
+          console.error(err);
         } else console.log('Next port initialised.'.yellow());
       });
     } else {
       console.error('Unknown error working on next port:'.red());
-      console.error('  ' + (err).red());
+      console.error(err);
     }
   } else {
     console.log('Skipping next port initialisation.'.yellow());
