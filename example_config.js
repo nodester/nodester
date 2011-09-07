@@ -27,7 +27,7 @@ exports.opt = {
   node_base_folder: '/opt/node-v0.4.9_npm_v1.0.3',
 
   //Amazon SES mail info
-  SES = {
+  SES: {
     AWSAccessKeyID: 'ACCESSKEY',
     AWSSecretKey: 'SECRETKEY',
     ServiceUrl: 'https://email.us-east-1.amazonaws.com',
