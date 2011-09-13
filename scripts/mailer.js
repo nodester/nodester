@@ -9,7 +9,7 @@ var resets = lib.get_couchdb_database('password_resets');
 mailer.SES = config.opt.SES;
 
 function send_email(doc) {
-  nodemailer.send_mail({
+  mailer.send_mail({
     sender: '<notifier@nodester.com>',
     to: doc.id,
     subject: 'Password reset request',
