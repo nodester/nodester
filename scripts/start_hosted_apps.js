@@ -88,8 +88,7 @@ var apps = [],
   bad = "✖";
 
 // Bad idea
-console.log = function() {}; //Commenting this out so the debugging from ../lib/app doesn't display
-
+console.log = function () {}; //Commenting this out so the debugging from ../lib/app doesn't display
 var next = function () {
     if (apps.length) {
       var len = apps.length;
