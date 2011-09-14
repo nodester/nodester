@@ -31,7 +31,7 @@ for(var i in config.opt.couch_tables) {
     (function (table_name) {
         delete_couchdb_table(config.opt.couch_port, config.opt.couch_host, table_name, function (success) {
             if (success) {
-                console.log((table_name + " was deleted.").yellow);
+                console.log((table_name + " was deleted.").yellow));
             } else {
                 console.log((table_name + " failed to be deleted.").red.bold);
             }
