@@ -8,7 +8,7 @@ var fs = require('fs');
 var path = require('path');
 var net = require('net');
 
-var config = JSON.parse(fs.readFileSync(path.join('.nodester', 'config.json'), encoding='utf8'));
+var config = JSON.parse(fs.readFileSync(path.join('.nodester', 'config.json'), encoding = 'utf8'));
 
 var oldmask, newmask = 0000;
 
@@ -23,13 +23,13 @@ var LOG_STDERR = 2;
 
 
 var env = {
-    PATH: '/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin',
-    NODE_ENV: 'production'
+  PATH: '/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin',
+  NODE_ENV: 'production'
 };
 if (config.env) {
-    Object.keys(config.env).forEach(function (key) {
-        env[key] = String(config.env[key]);
-    });
+  Object.keys(config.env).forEach(function (key) {
+    env[key] = String(config.env[key]);
+  });
 }
 env.app_port = parseInt(config.port, 10);
 env.app_host = config.ip;
@@ -54,23 +54,23 @@ var myPid = daemon.start();
 (function () {
 
   var log_listen = function (p, cb) {
-    var srv = net.createServer(function (conn) {
-      var logs = JSON.stringify({
-        logs: log_lines.join('\n')
+      var srv = net.createServer(function (conn) {
+        var logs = JSON.stringify({
+          logs: log_lines.join('\n')
+        });
+        conn.write(logs);
+        conn.end();
       });
-      conn.write(logs);
-      conn.end();
-    });
-    srv.listen(p, cb);
-  };
+      srv.listen(p, cb);
+    };
 
   var log_line = function (line, stdout) {
-    if (typeof this == 'string') {
-      line = this + line;
-    }
-    log_lines.push(line);
-    if (log_lines.length > 150) log_lines.shift();
-  };
+      if (typeof this == 'string') {
+        line = this + line;
+      }
+      log_lines.push(line);
+      if (log_lines.length > 150) log_lines.shift();
+    };
 
   log_line.call('chroot_runner', 'New PID: ' + myPid.toString());
   if (path.existsSync('/.nodester/pids/runner.pid')) fs.unlinkSync('/.nodester/pids/runner.pid');
@@ -107,28 +107,30 @@ var myPid = daemon.start();
     });
 
     var start_child = function () {
-      child = spawn((path.extname(args[0]) == '.coffee' ? '/usr/bin/coffee' : '/usr/bin/node'), args, { env: env });
-      child.stdout.on('data', log_line.bind('stdout'));
-      child.stderr.on('data', log_line.bind('stderr'));
-      child.on('exit', function (code) {
-        if (code > 0 && run_count > run_max) {
-          log_line.call('Watcher', 'Error: Restarted too many times, bailing.', LOG_STDERR);
-          clearInterval(child_watcher_timer);
-        } else if (code > 0) {
-          log_line.call('Watcher', 'Process died with exit code ' + code + '. Restarting...', LOG_STDERR);
-          child = null;
-        } else {
-          log_line.call('Watcher', 'Process exited cleanly. Dieing.', LOG_STDERR);
-          clearInterval(child_watcher_timer);
-        }
-      });
-    };
+        child = spawn((path.extname(args[0]) == '.coffee' ? '/usr/bin/coffee' : '/usr/bin/node'), args, {
+          env: env
+        });
+        child.stdout.on('data', log_line.bind('stdout'));
+        child.stderr.on('data', log_line.bind('stderr'));
+        child.on('exit', function (code) {
+          if (code > 0 && run_count > run_max) {
+            log_line.call('Watcher', 'Error: Restarted too many times, bailing.', LOG_STDERR);
+            clearInterval(child_watcher_timer);
+          } else if (code > 0) {
+            log_line.call('Watcher', 'Process died with exit code ' + code + '. Restarting...', LOG_STDERR);
+            child = null;
+          } else {
+            log_line.call('Watcher', 'Process exited cleanly. Dieing.', LOG_STDERR);
+            clearInterval(child_watcher_timer);
+          }
+        });
+      };
     var child_watcher = function () {
-      if (child === null) {
-        start_child();
-        run_count++;
-      }
-    };
+        if (child === null) {
+          start_child();
+          run_count++;
+        }
+      };
     child_watcher_timer = setInterval(child_watcher, 750);
   });
 })();
