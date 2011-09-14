@@ -88,7 +88,13 @@ var apps = [],
   bad = "✖";
 
 // Bad idea
-console.log = function () {}; //Commenting this out so the debugging from ../lib/app doesn't display
+//console.log = function () {}; //Commenting this out so the debugging from ../lib/app doesn't display
+
+// Another bad idea but we don't want this thing crashing
+process.on('uncaughtException', function(err) {
+  util.print('UNCAUGHT ERROR! '.red + err);
+});
+
 var next = function () {
     if (apps.length) {
       var len = apps.length;
@@ -116,8 +122,8 @@ var next = function () {
               util.print(' [' + '!!'.yellow.bold + ']\n');
             }
             //Let the process fire up and daemonize before starting the next one
-            //setTimeout(next, 500);
-            next();
+            setTimeout(next, 500);
+            //next();
           },
           end: function (data) {
             if (data instanceof Object) {
@@ -131,9 +137,9 @@ var next = function () {
               g++;
               util.print(' [' + '!!'.yellow.bold + ']\n');
             }
-            next();
+            //next();
             //Let the process fire up and daemonize before starting the next one
-            //setTimeout(next, 500);
+            setTimeout(next, 500);
           }
         });
       } catch (err) {
