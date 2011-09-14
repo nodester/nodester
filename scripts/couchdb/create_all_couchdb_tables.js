@@ -32,10 +32,10 @@ for (var i in config.opt.couch_tables) {
     db.create(function (err, res) {
       if (err) {
         console.error(('Failed to create ' + table_name + '.').red.bold);
-        console.error('  ' + err.reason.red;
-        } else {
-          console.log(('Created ' + table_name + '.').yellow);
-        }
-      });
-    })(tabname);
-  }
+        console.error('  ' + err.reason.red);
+      } else {
+        console.log(('Created ' + table_name + '.').yellow);
+      }
+    });
+  })(tabname);
+}
