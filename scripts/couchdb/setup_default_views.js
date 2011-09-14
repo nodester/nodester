@@ -45,7 +45,7 @@ var all_views = [
     table: 'password_resets',
     design: 'tokens',
     views: {
-      list: { map: function(doc) { emit(doc.token, doc); } },
+      all: { map: function(doc) { emit(doc.token, doc); } },
       unsent: { map: function(doc) { if (doc.email_sent == false) { emit(doc.token, doc) } } }
     }
   }
