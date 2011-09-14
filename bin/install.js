@@ -41,31 +41,31 @@ var ssh_config_app = {
 var ssh_hosts_app = nodeControl.hosts(ssh_config_app, [hostname]);
 var host_app = ssh_hosts_app[0];
 
-var random_string = function(L) {
-  var s = '';
-  var randomchar = function() {
-    var n = Math.floor(Math.random() * 62);
-    if (n < 10) return n; // 1-10
-    if (n < 36) return String.fromCharCode(n + 55); // A-Z
-    return String.fromCharCode(n + 61); // a-z
+var random_string = function (L) {
+    var s = '';
+    var randomchar = function () {
+        var n = Math.floor(Math.random() * 62);
+        if (n < 10) return n; // 1-10
+        if (n < 36) return String.fromCharCode(n + 55); // A-Z
+        return String.fromCharCode(n + 61); // a-z
+      };
+    while (s.length < L) s += randomchar();
+    return s;
   };
-  while (s.length < L) s += randomchar();
-  return s;
-};
 
 
-var print_lines_prefix = function(prefix, lines) {
-  var i = 0,
+var print_lines_prefix = function (prefix, lines) {
+    var i = 0,
       l = lines.length;
-  for (i = 0; i < l; i++) {
-    if (i < (l - 1) || lines[i].length > 0) console.log('%s: %s', prefix, lines[i]);
-  }
-};
+    for (i = 0; i < l; i++) {
+      if (i < (l - 1) || lines[i].length > 0) console.log('%s: %s', prefix, lines[i]);
+    }
+  };
 
 var commands = [];
-var add_c = function(host, cmd, exp, need) {
-  commands.push([host, cmd, exp, need]);
-};
+var add_c = function (host, cmd, exp, need) {
+    commands.push([host, cmd, exp, need]);
+  };
 
 
 add_c(host_base, 'sudo groupadd -g 2001 ' + app_username, '', true);
@@ -126,22 +126,22 @@ add_c(host_base, 'rm -f /tmp/my_file_1', '', false);
 add_c(host_base, 'sudo chown root:root /etc/sudoers', '', false);
 add_c(host_base, 'sudo chmod 0440 /etc/sudoers', '', false);
 
-var run_command = function(cmds) {
-  var cmd = cmds.shift();
-  cmd[0].ssh(cmd[1], cmd[2], function(err, stdout, stderr) {
-    if (cmd[3] === false && err > 0) {
-      console.error('failed command: %s', cmd[1]);
-      console.error('response expected: "%s"', cmd[2]);
-      console.error('response recieved:\nSTDOUT: "%s"\nSTDERR: "%s"', stdout, stderr);
-      process.exit(3);
-    } else {
-      console.log('completed: %s', cmd[1]);
-      if (cmds.length > 0) {
-        run_command(cmds);
+var run_command = function (cmds) {
+    var cmd = cmds.shift();
+    cmd[0].ssh(cmd[1], cmd[2], function (err, stdout, stderr) {
+      if (cmd[3] === false && err > 0) {
+        console.error('failed command: %s', cmd[1]);
+        console.error('response expected: "%s"', cmd[2]);
+        console.error('response recieved:\nSTDOUT: "%s"\nSTDERR: "%s"', stdout, stderr);
+        process.exit(3);
+      } else {
+        console.log('completed: %s', cmd[1]);
+        if (cmds.length > 0) {
+          run_command(cmds);
+        }
       }
-    }
-  });
-};
+    });
+  };
 
 if (commands.length > 0) {
   run_command(commands);
