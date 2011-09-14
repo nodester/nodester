@@ -3,8 +3,7 @@
 var cradle = require('cradle'),
     config = require('../../config');
 
-var Cols = require('coloured');
-Cols.extendString();
+require('colors');
 
 var c_opts = {
   cache: false,
@@ -30,10 +29,10 @@ for(var i in config.opt.couch_tables) {
       var db = conn.database(table_name);
       db.create(function (err, res) {
         if (err) {
-          console.error(('Failed to create ' + table_name + '.').red().bold());
-          console.error('  ' + err.reason.red());
+          console.error(('Failed to create ' + table_name + '.').red.bold;
+          console.error('  ' + err.reason.red;
         } else {
-          console.log(('Created ' + table_name + '.').yellow());
+          console.log(('Created ' + table_name + '.').yellow;
         }
       });
     })(tabname);
