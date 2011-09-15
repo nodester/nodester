@@ -84,8 +84,8 @@ var apps = [],
   count = 0,
   g = 0,
   f = 0,
-  good = "✔",
-  bad = "✖";
+  good = "✔ SUCCESS",
+  bad = "✖ FAILURE";
 
 // Bad idea
 //console.log = function () {}; //Commenting this out so the debugging from ../lib/app doesn't display
