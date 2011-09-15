@@ -89,11 +89,26 @@ var apps = [],
 
 // Bad idea
 //console.log = function () {}; //Commenting this out so the debugging from ../lib/app doesn't display
-
 // Another bad idea but we don't want this thing crashing
-process.on('uncaughtException', function(err) {
+process.on('uncaughtException', function (err) {
   util.print('UNCAUGHT ERROR! '.red + err);
 });
+var handleResponse = function (data) {
+    if (data instanceof Object) {
+      if (data.status.indexOf('failed') > -1) {
+        f++;
+      } else {
+        g++;
+      }
+      util.print(' [' + ((data.status.indexOf('failed') > -1) ? bad.bold.red : good.bold.green) + ']\n');
+    } else {
+      g++;
+      util.print(' [' + good.bold.green + ']\n');
+    }
+    //Let the process fire up and daemonize before starting the next one
+    setTimeout(next, 500);
+    //next();
+  };
 
 var next = function () {
     if (apps.length) {
@@ -109,23 +124,8 @@ var next = function () {
           }
         }, {
           writeHead: function (data) {},
-          send: function (data) {
-            if (data instanceof Object) {
-              if (data.status.indexOf('failed') > -1) {
-                f++;
-              } else {
-                g++;
-              }
-              util.print(' [' + ((data.status.indexOf('failed') > -1) ? bad.bold.red : good.bold.green) + ']\n');
-            } else {
-              g++;
-              util.print(' [' + good.bold.green + ']\n');
-            }
-            //Let the process fire up and daemonize before starting the next one
-            setTimeout(next, 500);
-            //next();
-          },
-          end: this.send
+          send: handleResponse,
+          end: handleResponse,
         });
       } catch (err) {
         f++;
