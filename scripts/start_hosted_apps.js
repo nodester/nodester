@@ -116,36 +116,21 @@ var next = function () {
               } else {
                 g++;
               }
-              util.print(' [' + ((data.status.indexOf('failed') > -1) ? bad.red.bold : good.bold.green) + ']\n');
+              util.print(' [' + ((data.status.indexOf('failed') > -1) ? bad.bold.red : good.bold.green) + ']\n');
             } else {
               g++;
-              util.print(' [' + '!!'.yellow.bold + ']\n');
+              util.print(' [' + good.bold.green + ']\n');
             }
             //Let the process fire up and daemonize before starting the next one
             setTimeout(next, 500);
             //next();
           },
-          end: function (data) {
-            if (data instanceof Object) {
-              if (data.status.indexOf('failed') > -1) {
-                f++;
-              } else {
-                g++;
-              }
-              util.print(' [' + ((data.status.indexOf('failed') > -1) ? bad.red.bold : good.bold.green) + ']\n');
-            } else {
-              g++;
-              util.print(' [' + '!!'.yellow.bold + ']\n');
-            }
-            //next();
-            //Let the process fire up and daemonize before starting the next one
-            setTimeout(next, 500);
-          }
+          end: this.send
         });
       } catch (err) {
         f++;
         util.print(err + '\n')
-        util.print('[' + '!!'.red.bold + ']\n')
+        util.print('[' + bad.red.bold + ']\n')
       }
 
     } else {
