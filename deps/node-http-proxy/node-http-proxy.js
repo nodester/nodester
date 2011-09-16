@@ -430,7 +430,7 @@ HttpProxy.prototype.proxyRequest = function (req, res, options) {
       // This NODE_ENV=production behavior is mimics Express and
       // Connect.
       //
-      res.write(getErrorPage('Application Error', 500, 'Application is registed but not running'));
+      res.write(getErrorPage('Application Error', 500, 'Application is offline'));
       /*
       if (process.env.NODE_ENV === 'production') {
         res.write('Internal Server Error');
