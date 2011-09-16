@@ -22,10 +22,15 @@ var httpProxy = require('../deps/node-http-proxy/node-http-proxy.js'),
 require.paths.unshift(path.join(config.app_dir, '../', '.node_libraries'));
 
 var daemon = require('daemon');
-
 var proxy = new httpProxy.HttpProxy();
 var proxymap = {};
 var proxy_refresh_timer = null;
+
+// Ghetto hack
+var errorPage = '<html><head><title id="title">{title}</title></head><body><center><img src="http://nodester.com/images/rocket-md-right.png" alt="logo" /><h1>{code}</h1><h3>{error}</h3></center></body></html>';
+var getErrorPage = function(title, code, error) {
+    return errorPage.replace('{title}', title).replace('{code}', code).replace('{error}', error);
+};
 
 var queue_proxy_map_refresh = function() {
   if (proxy_refresh_timer === null) {
@@ -107,14 +112,14 @@ var handle_http_request = function(req, res) {
         res.writeHead(404, {
           'Content-Type': 'text/plain'
         });
-        res.end('hostname not known');
+        res.end(getErrorPage('Page not found', 404, 'Application does not exist!'));
       }
     }
   } else {
     res.writeHead(406, {
       'Content-Type': 'text/plain'
     });
-    res.end('no hostname in request');
+    res.end(getErrorPage('Page not found', 406, 'You didn\'t specify a hostname!'));
   }
 };
 
@@ -139,7 +144,7 @@ var handle_upgrade_request = function(req, socket, head) {
 var switch_user = function() {
   var child = exec('id -u ' + config.opt.userid, function(err, stdout, stderr) {
     daemon.setreuid(parseInt(stdout, 10));
-    console.log('Switched to ' + process.getuid() + '.');
+    //console.log('Switched to ' + process.getuid() + '.');
   });
 };
 

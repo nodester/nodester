@@ -41,6 +41,11 @@ exports.version = [0, 5, 7];
 //
 var _agents = {};
 
+// Ghetto hack
+var errorPage = '<html><head><title id="title">{title}</title></head><body><center><img src="http://nodester.com/images/rocket-md-right.png" alt="logo" /><h1>{code}</h1><h3>{error}</h3></center></body></html>';
+var getErrorPage = function(title, code, error) {
+    return errorPage.replace('{title}', title).replace('{code}', code).replace('{error}', error);
+};
 //
 // ### function _getAgent (host, port, secure)
 // #### @host {string} Host of the agent to get
@@ -425,12 +430,14 @@ HttpProxy.prototype.proxyRequest = function (req, res, options) {
       // This NODE_ENV=production behavior is mimics Express and
       // Connect.
       //
+      res.write(getErrorPage('Application Error', 500, 'Application is registed but not running'));
+      /*
       if (process.env.NODE_ENV === 'production') {
         res.write('Internal Server Error');
       }
       else {
         res.write('An error has occurred: ' + JSON.stringify(err));
-      }
+      }*/
     }
   
     res.end();
