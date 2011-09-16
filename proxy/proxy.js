@@ -110,14 +110,14 @@ var handle_http_request = function(req, res) {
         proxy.proxyRequest(req, res, options);
       } else {
         res.writeHead(404, {
-          'Content-Type': 'text/plain'
+          'Content-Type': 'text/html'
         });
         res.end(getErrorPage('Page not found', 404, 'Application does not exist!'));
       }
     }
   } else {
     res.writeHead(406, {
-      'Content-Type': 'text/plain'
+      'Content-Type': 'text/html'
     });
     res.end(getErrorPage('Page not found', 406, 'You didn\'t specify a hostname!'));
   }

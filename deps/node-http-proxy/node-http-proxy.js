@@ -423,7 +423,7 @@ HttpProxy.prototype.proxyRequest = function (req, res, options) {
       return;
     }
 
-    res.writeHead(500, { 'Content-Type': 'text/plain' });
+    res.writeHead(500, { 'Content-Type': 'text/html' });
 
     if (req.method !== 'HEAD') {
       //
