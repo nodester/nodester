@@ -41,6 +41,27 @@ exports.version = [0, 5, 7];
 //
 var _agents = {};
 
+var errorHtml = '<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">' +
+  '<head>' +
+    '<title id="title">{title}</title>' +
+    '<style stype="text/css">' +
+      'html { font-family: Arial,Helvetica,sans-serif; }' +
+      'div { width: 100%; text-align: center; margin-top: 230px; color: #909090; }' +
+    '</style>' +
+  '</head>' +
+  '<body>' +
+    '<div>' +
+      '<img src="http://static.jgate.de/img/cloudnode-logo2-light.png" alt="logo" />' +
+        '<h1>{code}</h1>' +
+        '<h3>{error}</h3>' +
+    '</div>' +
+  '</body>' +
+'</html>';
+
+var getErrorPage = function(title, code, error) {
+    return errorHtml.replace('{title}', title).replace('{code}', code).replace('{error}', error);
+};
+
 //
 // ### function _getAgent (host, port, secure)
 // #### @host {string} Host of the agent to get
@@ -341,7 +362,7 @@ HttpProxy.prototype.proxyRequest = function (req, res, options) {
   options      = options || {};
   options.host = options.host || this.target.host;
   options.port = options.port || this.target.port;
-  options.allow_xforwarded_headers = options.allow_xforwarded_headers || false;
+  options.allow_xforwarded_headers = options.allow_xforwarded_headers || true;
   
   //
   // Check the proxy table for this instance to see if we need
@@ -386,7 +407,7 @@ HttpProxy.prototype.proxyRequest = function (req, res, options) {
     req.headers['x-forwarded-port']  = req.connection.remotePort || req.connection.socket.remotePort;
     req.headers['x-forwarded-proto'] = res.connection.pair ? 'https' : 'http';
   }
-  
+  util.log(req.method + ': ' + req.headers.host + req.url + ' - ' + req.headers["x-forwarded-for"]);
   //
   // Emit the `start` event indicating that we have begun the proxy operation.
   //
@@ -418,19 +439,22 @@ HttpProxy.prototype.proxyRequest = function (req, res, options) {
       return;
     }
 
-    res.writeHead(500, { 'Content-Type': 'text/plain' });
+    res.writeHead(500, { 'Content-Type': 'text/html' });
 
     if (req.method !== 'HEAD') {
       //
       // This NODE_ENV=production behavior is mimics Express and
       // Connect.
       //
+      res.write(getErrorPage('Application Offline', 500, 'Application is offline'));
+/*
       if (process.env.NODE_ENV === 'production') {
         res.write('Internal Server Error');
       }
       else {
         res.write('An error has occurred: ' + JSON.stringify(err));
       }
+*/
     }
   
     res.end();

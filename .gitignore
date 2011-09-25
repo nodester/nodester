@@ -5,3 +5,5 @@ proxy/.monitor
 scripts/gitrepoclone.sh
 ssl/*
 bin/.nodester.config
+*.log
+*.log.*

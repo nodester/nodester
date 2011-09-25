@@ -88,7 +88,7 @@ request.on('response', function (response) {
 var apps = [], count = 0, g = 0, f = 0,
     good = "ok", bad = "nok";
 
-console.log = function() {}; //Commenting this out so the debugging from ../lib/app doesn't display
+//console.log = function() {}; //Commenting this out so the debugging from ../lib/app doesn't display
 
 var next = function() {
     if (apps.length) {

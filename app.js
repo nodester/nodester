@@ -39,9 +39,9 @@ myapp.get('/api', function(req, res, next) {
   res.redirect('/api.html');
 });
 
-myapp.get('/admin', function(req, res, next) {
-  res.redirect('http://admin.nodester.com');
-});
+//myapp.get('/admin', function(req, res, next) {
+//  res.redirect('http://admin.nodester.com');
+//});
 
 myapp.get('/irc', function(req, res, next) {
   res.redirect('http://irc.nodester.com');
