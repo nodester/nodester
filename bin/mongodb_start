@@ -1,0 +1,1 @@
+/opt/mongodb/bin/mongod --fork --logpath /var/cloudnode/mongodb.log --logappend --dur

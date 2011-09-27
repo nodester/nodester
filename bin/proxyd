@@ -1,0 +1,75 @@
+#!/bin/sh
+# Usage: proxyd {start|stop|stat|restart}
+
+PROC="proxy/proxy.js"
+APP="Proxy"
+DATE=$(date)
+LOG="proxyd.log"
+
+if [ -z "$USER" ]; then
+  USER=root
+fi
+
+cd /var/cloudnode/nodester
+#echo "$DATE  Proxy control started with command $1 as user $USER" | tee -a $LOG
+ 
+get_pid()
+{
+  PID=$(ps -ef | grep "$PROC" | grep -v grep | grep node |  awk '{print $2}')
+}
+
+case "$1" in
+  start)
+    if [ "$USER" != "root" ]; then
+      echo "Must be root to run this.. Please sudo this command." | tee -a $LOG
+      exit
+    fi
+    get_pid
+    if [ -z "$PID" ]; then
+      /usr/local/node-v0.4.0/node  proxy/proxy.js > proxy.log | tee -a $LOG &
+      echo "$APP started" | tee -a $LOG
+    else
+      echo "$APP is already running ($PID)" | tee -a$LOG
+    fi
+    ;;
+
+  stop)
+    get_pid
+    if [ -n "$PID" ]; then
+      kill -9 $PID
+      echo "$APP stopped ($PID)" | tee -a $LOG
+    else
+      echo "$APP is not running ($PID)" | tee -a $LOG
+    fi
+    ;;
+
+  restart)
+    if [ "$USER" != "root" ]; then
+      echo "Must be root to run this.. Please sudo this command." | tee -a $LOG
+      exit
+    fi
+    $0 stop
+    $0 stat
+    sleep 1
+    $0 stat
+    $0 start
+    $0 stat
+    ;;
+
+  status|stat)
+    get_pid
+    if [ -n "$PID" ]; then
+      echo "$APP is running ($PID)" | tee -a $LOG
+    else
+      echo "$APP is not running" | tee -a $LOG
+    fi
+    ;;
+
+  *)
+    echo "Usage: proxyd {start|stop|stat|restart}"
+    exit 1
+  ;;
+
+esac
+
+
