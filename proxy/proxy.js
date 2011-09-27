@@ -179,8 +179,11 @@ lib.update_proxytable_map(function(err) {
     if (config.opt.enable_ssl === true) {
       var https = require('https');
       var options = {
-        ca: fs.readFileSync(config.opt.app_dir + '/' + config.opt.ssl_ca_file),
-        key: fs.readFileSync(config.opt.app_dir + '/' + config.opt.ssl_key_file),
+        ca: [
+	    fs.readFileSync(config.opt.app_dir + '/' + config.opt.ssl_ca_file),
+            fs.readFileSync(config.opt.app_dir + '/' + config.opt.ssl_sub1_file)
+	],
+	key: fs.readFileSync(config.opt.app_dir + '/' + config.opt.ssl_key_file),
         cert: fs.readFileSync(config.opt.app_dir + '/' + config.opt.ssl_cert_file)
       };
       var httpSsl = https.createServer(options, function(req, res) {
