@@ -129,7 +129,7 @@ myapp.get('/applogs/:appname', middle.authenticate, middle.authenticate_app, app
 // curl -u GET -u "testuser:123" -d "appname=test" http://localhost:4001/env
 // curl -u PUT -u "testuser:123" -d "appname=test&key=NODE_ENV&value=production" http://localhost:4001/env
 // curl -u DELETE -u "testuser:123" -d "appname=test&key=NODE_ENV" http://localhost:4001/env
-myapp.get('/env', middle.authenticate, middle.authenticate_app, app.env_get);
+myapp.get('/env/:appname', middle.authenticate, middle.authenticate_app, app.env_get);
 myapp.put('/env', middle.authenticate, middle.authenticate_app, app.env_put);
 myapp.delete('/env', middle.authenticate, middle.authenticate_app, app.env_delete);
 
