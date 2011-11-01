@@ -55,8 +55,8 @@ Please see install.txt for setup instructions (https://github.com/nodester/nodes
   /env - delete environment key/value pair (requires basic auth, appname, and environment key)
   curl -X DELETE -u "testuser:123" -d "appname=test&key=color" http://api.nodester.com/env
 
-  /env - get environment info (requires basic auth, appname, and environment key)
-  curl -u "testuser:123" -d "appname=test&key=color" http://api.nodester.com/env
+  /env - get environment info (requires basic auth, appname)
+  curl -u "testuser:123" http://api.nodester.com/env/appname
 
   NPM
   /npm - install, update and uninstall npm packages to your application
