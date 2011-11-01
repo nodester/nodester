@@ -195,10 +195,15 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
     fs.write(error_log_fd, util.inspect(err));
   });
 
-  console.log('Globallizing Buffer');
+  console.log('Globalizing Buffer');
   sandbox.Buffer = Buffer;
 
   console.log('Reading file...');
+  console.log(config.start + ' owned by ' + config.userid);
+  var isCoffee = (path.extname(config.start) === '.coffee');
+  if (isCoffee) {
+    console.log('App is coffee-script!');
+  }
   fs.readFile(config.start, function (err, script_src) {
     try {
       var resp = daemon.setreuid(config.userid);
@@ -208,10 +213,13 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
       console.log(resp);
     }
     if (err) {
-      console.log(err.stack);
+      console.log(util.inspect(err));
       process.exit(1);
     } else {
       console.log('Nodester wrapped script starting (PID: ' + process.pid + ') at ', new Date());
+      if (isCoffee){
+        // script_src = coffee.compile(script_src);
+      }
       Script.runInNewContext(script_src, sandbox, config.start);
     }
   });
