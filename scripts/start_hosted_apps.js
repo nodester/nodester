@@ -114,31 +114,37 @@ var next = function () {
     if (apps.length) {
       var len = apps.length;
       var doc = apps.pop();
-      util.print(verb + ' (' + len + '): [' + (doc.username + '/' + doc.repo_id + '/' + doc.start + ':' + doc.port).blue + ']');
-      var method = 'app_' + action;
-      try {
-        app[method]({
-          query: {
-            repo_id: doc.repo_id,
-            restart_key: config.opt.restart_key
-          }
-        }, {
-          writeHead: function (data) {},
-          send: handleResponse,
-          end: handleResponse,
-        });
-      } catch (err) {
-        f++;
-        util.print(err + '\n')
-        util.print('[' + bad.red.bold + ']\n')
-      }
+      if (doc && doc.username && doc.repo_id && doc.start && doc.port) {
+        util.print(verb + ' (' + len + '): [' + (doc.username + '/' + doc.repo_id + '/' + doc.start + ':' + doc.port).blue + ']');
+        var method = 'app_' + action;
+        try {
+          app[method]({
+            query: {
+              repo_id: doc.repo_id,
+              restart_key: config.opt.restart_key
+            }
+          }, {
+            writeHead: function (data) {},
+            send: handleResponse,
+            end: handleResponse,
+          });
+        } catch (err) {
+          f++;
+          util.print(err + '\n');
+          util.print('[' + bad.red.bold + ']\n');
+        }
 
-    } else {
-      util.log(('All ' + count + ' apps ' + past).bold);
-      util.log(g + ' apps ' + past + ' successfully');
-      if (f) {
-        util.log((f + ' apps failed to ' + action).red.bold);
+      } else {
+        util.log(('All ' + count + ' apps ' + past).bold);
+        util.log(g + ' apps ' + past + ' successfully');
+        if (f) {
+          util.log((f + ' apps failed to ' + action).red.bold);
+        }
       }
+    } else {
+      f++;
+      util.print('Missing records.\n')
+      util.print('[' + bad.red.bold + ']\n')
     }
   };
 
