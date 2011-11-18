@@ -166,5 +166,5 @@ myapp.use(express.errorHandler({
 myapp.listen(4001);
 console.log('Nodester app started on port 4001');
 
-//nodeinfo.broadcast(13377);
-//console.log('NodeInfo monitor started on port 13377');
+nodeinfo.broadcast(13377);
+console.log('NodeInfo monitor started on port 13377');
