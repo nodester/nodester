@@ -721,7 +721,7 @@ HttpProxy.prototype.proxyWebSocketRequest = function (req, socket, head, options
   };
 
   // Setup the incoming client socket.
-  _socket(socket);
+  _socket(socket, true);
   
   function getPort (port) {
     port = port || 80;
@@ -859,6 +859,9 @@ HttpProxy.prototype.proxyWebSocketRequest = function (req, socket, head, options
     // Attempt to write the upgrade-head to the reverseProxy request.
     //
     reverseProxy.write(head);
+    if (head && head.length === 0) {
+	reverseProxy._send('');
+    }
   } 
   catch (ex) {
     proxyError(ex);
