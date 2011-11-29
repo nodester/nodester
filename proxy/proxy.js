@@ -2,11 +2,10 @@
 
 var lib = require('../lib/lib'),
     fs = require('fs'),
-    sys = require('sys'),
     config = require('../config'),
     bouncy = require('bouncy');
 
-sys.puts('Starting proxy initialization');
+console.log('Starting proxy initialization');
 
 var proxymap = {};
 
@@ -19,21 +18,22 @@ var getErrorPage = function (title, code, error) {
 //Update proxymap any time the routing file is updated
 fs.watchFile(config.opt.proxy_table_file, function (oldts, newts) {
     proxymap = JSON.parse(newts);
-    sys.puts('Proxy map updated');
+    console.log('Proxy map updated');
 });
 
 //Don't crash br0
 process.on('uncaughtException', function (err) {
-    sys.puts('Uncaught proxy error: ' + sys.inspect(err));
+    console.log('Uncaught proxy error: ' + err.stack);
+    console.log(err.message);
 });
 
 
 // Pulls out DB records and puts them in a routing file
 lib.update_proxytable_map(function (err) {
     if (err) {
-        sys.puts('err writing initial proxy file: ' + JSON.stringify(err));
+        console.log('err writing initial proxy file: ' + JSON.stringify(err));
     } else {
-        sys.puts('Initial Proxy file written successfully!');
+        console.log('Initial Proxy file written successfully!');
     }
 });
 
@@ -50,4 +50,4 @@ bouncy(function (req, bounce) {
         res.end();
     }
 }).listen(80);
-sys.puts('Proxy initialization completed');
+console.log('Proxy initialization completed');
