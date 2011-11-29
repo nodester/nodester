@@ -14,6 +14,7 @@ var express = require('express'),
     url = require('url'),
     sys = require('sys'),
     config = require('./config'),
+    lib = require('./lib/lib'),
     middle = require('./lib/middle')
     nodeinfo = require('nodeinfo');
 
