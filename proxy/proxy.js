@@ -2,8 +2,9 @@
 
 var lib = require('../lib/lib'),
     fs = require('fs'),
-    bouncy = require('bouncy'),
-    sys = require('sys');
+    sys = require('sys'),
+    config = require('../config')
+    bouncy = require('bouncy'),;
 
 var proxymap = {};
 
