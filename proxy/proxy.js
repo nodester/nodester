@@ -5,8 +5,8 @@ sys.puts('Starting proxy initialization');
 var lib = require('../lib/lib'),
     fs = require('fs'),
     sys = require('sys'),
-    config = require('../config')
-    bouncy = require('bouncy'),;
+    config = require('../config'),
+    bouncy = require('bouncy');
 
 var proxymap = {};
 
@@ -23,11 +23,10 @@ fs.watchFile(config.opt.proxy_table_file, function (oldts, newts) {
 });
 
 //Don't crash br0
-/*
 process.on('uncaughtException', function (err) {
     sys.puts('Uncaught proxy error: ' + sys.inspect(err));
 });
-*/
+
 
 // Pulls out DB records and puts them in a routing file
 lib.update_proxytable_map(function (err) {
