@@ -168,3 +168,11 @@ console.log('Nodester app started on port 4001');
 
 nodeinfo.broadcast(13377);
 console.log('NodeInfo monitor started on port 13377');
+
+lib.update_proxytable_map(function(err) {
+  if (err) {
+    console.log("err writing proxy file: " + JSON.stringify(err));
+  } else {
+      console.log('Proxy file written successfully!');
+  }
+});
