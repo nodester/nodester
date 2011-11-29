@@ -87,8 +87,6 @@ var apps = [],
   good = "SUCCESS ✔",
   bad = "FAILURE ✖";
 
-// Bad idea
-//console.log = function () {}; //Commenting this out so the debugging from ../lib/app doesn't display
 // Another bad idea but we don't want this thing crashing
 process.on('uncaughtException', function (err) {
   util.print('UNCAUGHT ERROR! '.red + err);
