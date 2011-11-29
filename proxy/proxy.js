@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-sys.puts('Starting proxy initialization');
-
 var lib = require('../lib/lib'),
     fs = require('fs'),
     sys = require('sys'),
     config = require('../config'),
     bouncy = require('bouncy');
+
+sys.puts('Starting proxy initialization');
 
 var proxymap = {};
 
