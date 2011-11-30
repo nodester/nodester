@@ -44,13 +44,14 @@ lib.update_proxytable_map(function (err) {
     }
 });
 
-bouncy({ headers: { Connection: 'close' } }, function (req, bounce) {
+bouncy(function (req, bounce) {
     var host = (req.headers.host || '').replace(/:\d+$/, '');
     var route = proxymap[host] || proxymap[''];
 
     if (route) {
-        bounce(route);
+        bounce(route, { headers: { Connection: 'close' } });
     } else {
+        //bounce(proxymap['404.nodester.com']);
         var res = bounce.respond();
         res.statusCode = 404;
         res.end(getErrorPage('404 - Application not found!', '404', 'Application does not exist'));
