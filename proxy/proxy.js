@@ -25,7 +25,6 @@ fs.watchFile(config.opt.proxy_table_file, function (oldts, newts) {
             proxymap = JSON.parse(newts);
             console.log('Proxy map updated');
         }
-    }
     });
 });
 
