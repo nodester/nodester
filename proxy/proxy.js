@@ -9,7 +9,7 @@ console.log('Starting proxy initialization');
 
 var proxymap = {};
 
-// Ghetto hack
+// Ghetto hack for error page
 var errorPage = '<html><head><title id="title">{title}</title></head><body><br/><br/><br/><br/><br/><center><img src="http://nodester.com/images/rocket-md-right.png" alt="logo" /><br/><h1 style ="color:#000;font-family:Arial,Helvetica,sans-serif;font-size:38px;font-weight:bold;letter-spacing:-2px;padding:0 0 5px;margin:0;">{code}</h1><h3 style ="color:#000;font-family:Arial,Helvetica,sans-serif;font-size:24px;font-weight:bold;padding:0 0 5px;margin:0;">{error}</h3></center></body></html>';
 var getErrorPage = function (title, code, error) {
         return errorPage.replace('{title}', title).replace('{code}', code).replace('{error}', error);
@@ -52,7 +52,7 @@ bouncy(function (req, bounce) {
     } else {
         var res = bounce.respond();
         res.statusCode = 404;
-        res.write(getErrorPage('404 - Application not found!', '404', 'Application does not exist'));
+        //res.write(getErrorPage('404 - Application not found!', '404', 'Application does not exist'));
         res.end();
     }
 }).listen(80);
