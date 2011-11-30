@@ -51,9 +51,8 @@ bouncy(function (req, bounce) {
         bounce(route);
     } else {
         var res = bounce.respond();
-        res.statusCode = 404;
-        //res.write(getErrorPage('404 - Application not found!', '404', 'Application does not exist'));
-        res.end();
+        res.writeHead(404);
+        res.end(getErrorPage('404 - Application not found!', '404', 'Application does not exist'));
     }
 }).listen(80);
 console.log('Proxy initialization completed');
