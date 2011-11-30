@@ -44,7 +44,7 @@ lib.update_proxytable_map(function (err) {
     }
 });
 
-bouncy(function (req, bounce) {
+bouncy({ headers: { Connection: 'close' } }, function (req, bounce) {
     var host = (req.headers.host || '').replace(/:\d+$/, '');
     var route = proxymap[host] || proxymap[''];
 
@@ -52,7 +52,7 @@ bouncy(function (req, bounce) {
         bounce(route);
     } else {
         var res = bounce.respond();
-        //res.statusCode = 404;
+        res.statusCode = 404;
         res.end(getErrorPage('404 - Application not found!', '404', 'Application does not exist'));
     }
 }).listen(80);
