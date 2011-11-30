@@ -34,10 +34,11 @@ process.on('uncaughtException', function (err) {
 });
 
 
-// Pulls out DB records and puts them in a routing file
+//Pulls out DB records and puts them in a routing file
 lib.update_proxytable_map(function (err) {
     if (err) {
         console.log('err writing initial proxy file: ' + JSON.stringify(err));
+        throw err;
     } else {
         console.log('Initial Proxy file written successfully!');
     }
@@ -52,8 +53,7 @@ bouncy(function (req, bounce) {
     } else {
         var res = bounce.respond();
         res.statusCode = 404;
-        //getErrorPage('404 - Application not found!', '404', 'Application does not exist')
-        res.end();
+        res.end(getErrorPage('404 - Application not found!', '404', 'Application does not exist'));
     }
 }).listen(80);
 console.log('Proxy initialization completed');
