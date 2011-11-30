@@ -13,18 +13,25 @@ var proxymap = {};
 var errorPage = '<html><head><title id="title">{title}</title></head><body><br/><br/><br/><br/><br/><center><img src="http://nodester.com/images/rocket-md-right.png" alt="logo" /><br/><h1 style ="color:#000;font-family:Arial,Helvetica,sans-serif;font-size:38px;font-weight:bold;letter-spacing:-2px;padding:0 0 5px;margin:0;">{code}</h1><h3 style ="color:#000;font-family:Arial,Helvetica,sans-serif;font-size:24px;font-weight:bold;padding:0 0 5px;margin:0;">{error}</h3></center></body></html>';
 var getErrorPage = function (title, code, error) {
         return errorPage.replace('{title}', title).replace('{code}', code).replace('{error}', error);
-};
+    };
 
 //Update proxymap any time the routing file is updated
 fs.watchFile(config.opt.proxy_table_file, function (oldts, newts) {
-    proxymap = JSON.parse(newts);
-    console.log('Proxy map updated');
+    fs.readFile(config.opt.proxy_table_file, function (err, data) {
+        if (err) {
+            console.log('Proxy map failed to update! (read)');
+            throw err;
+        } else {
+            proxymap = JSON.parse(newts);
+            console.log('Proxy map updated');
+        }
+    }
+    });
 });
 
 //Don't crash br0
 process.on('uncaughtException', function (err) {
-    console.log('Uncaught proxy error: ' + err.stack);
-    console.log(err.message);
+    console.log('Uncaught error: ' + err.stack);
 });
 
 
@@ -40,7 +47,7 @@ lib.update_proxytable_map(function (err) {
 bouncy(function (req, bounce) {
     var host = (req.headers.host || '').replace(/:\d+$/, '');
     var route = proxymap[host] || proxymap[''];
-    
+
     if (route) {
         bounce(route);
     } else {
