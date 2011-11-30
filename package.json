@@ -14,8 +14,7 @@
       "express":"*",
       "request":"*",
       "npm-wrapper":"*",
-      "daemon":"*",
-      "forever":"*",
+      "bouncy":"*",
       "cradle":"*",
       "nodeinfo":"*",
       "socket.io":"*"
