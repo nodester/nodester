@@ -3,7 +3,7 @@
 require.paths.unshift('/usr/lib/node_modules');
 
 var spawn = require('child_process').spawn;
-var daemon = require('daemon.js');
+var daemon = require('daemon');
 var fs = require('fs');
 var path = require('path');
 var net = require('net');
