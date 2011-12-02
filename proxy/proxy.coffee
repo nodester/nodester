@@ -14,5 +14,5 @@ lib.update_proxytable_map (err) -> throw err if err
 
 bouncy((req, bounce) ->
   route = proxymap[(req.headers.host or "").replace(/:\d+$/, "")]
-  bounce route, headers: Connection: "close" if route else bounce.respond().end()
+  if route bounce route, {headers: Connection: "close"} else bounce.respond().end()
 ).listen 80
