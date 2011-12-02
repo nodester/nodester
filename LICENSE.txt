@@ -1,5 +1,4 @@
-Nodester (http://nodester.com) is a Node.JS Hosting Platform-as-a-Service (PaaS)
-Copyright (C) 2011 Chris Matthieu (contact info: chris@nodester.com)
+Copyright (C) 2011 Chris Matthieu (Contact: chris@nodester.com)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as

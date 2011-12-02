@@ -8,24 +8,17 @@
    
    "dependencies":{
       "coffee-script":"*",
-      "colors":"*",
-      "nodemailer":"*",
-      "pool":"*",
-      "express":"*",
-      "request":"*",
-      "npm-wrapper":"*",
       "bouncy":"*",
       "cradle":"*",
       "nodeinfo":"*",
-      "socket.io":"*",
-      "daemon":"*"
+      "socket.io":"*"
    },
    "engines":{
-      "node":">= 0.4.7"
+      "node":">= 0.4.0"
    },
    "licenses":[
       {
-         "type":"MIT",
+         "type":"GNU Affero",
          "url":"http://github.com/nodester/nodester/blob/master/LICENSE.txt"
       }
    ]
