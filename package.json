@@ -18,6 +18,7 @@
       "cradle":"*",
       "nodeinfo":"*",
       "socket.io":"*",
+      "bouncy":"*",
       "daemon":"*"
    },
    "engines":{

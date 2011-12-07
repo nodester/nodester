@@ -3,6 +3,7 @@ PLEASE NOTE - THIS IS HORRIBLY OUT OF DATE, UPDATED INSTALL INSTRUCTIONS AND A S
 Nodester - A node.js hosting platform
 
 Dependencies:
+  bouncy
   node.js (Latest stable version 0.4.11)
   npm
   curl
