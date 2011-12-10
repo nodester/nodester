@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>crypto - Node.js v0.6.5 Manual &amp; Documentation</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="assets/sh.css" />
+  <link rel="canonical" href="http://nodejs.org/docs/latest/api/crypto.html"/>
+</head>
+<body>
+  <div id="container">
+    <header>
+      <h1>Node.js v0.6.5 Manual &amp; Documentation</h1>
+      <div id="gtoc">
+        <p><a href="index.html">Index</a> | <a href="all.html">View on single page</a></p>
+      </div>
+      <hr />
+    </header>
+    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#crypto">Crypto</a><ul><li><a href="#crypto.createCredentials">crypto.createCredentials(details)</a></li><li><a href="#crypto.createHash">crypto.createHash(algorithm)</a></li><li><a href="#hash.update">hash.update(data)</a></li><li><a href="#hash.digest">hash.digest(encoding='binary')</a></li><li><a href="#crypto.createHmac">crypto.createHmac(algorithm, key)</a></li><li><a href="#hmac.update">hmac.update(data)</a></li><li><a href="#hmac.digest">hmac.digest(encoding='binary')</a></li><li><a href="#crypto.createCipher">crypto.createCipher(algorithm, password)</a></li><li><a href="#crypto.createCipheriv">crypto.createCipheriv(algorithm, key, iv)</a></li><li><a href="#cipher.update">cipher.update(data, input_encoding='binary', output_encoding='binary')</a></li><li><a href="#cipher.final">cipher.final(output_encoding='binary')</a></li><li><a href="#crypto.createDecipher">crypto.createDecipher(algorithm, password)</a></li><li><a href="#crypto.createDecipheriv">crypto.createDecipheriv(algorithm, key, iv)</a></li><li><a href="#decipher.update">decipher.update(data, input_encoding='binary', output_encoding='binary')</a></li><li><a href="#decipher.final">decipher.final(output_encoding='binary')</a></li><li><a href="#crypto.createSign">crypto.createSign(algorithm)</a></li><li><a href="#signer.update">signer.update(data)</a></li><li><a href="#signer.sign">signer.sign(private_key, output_format='binary')</a></li><li><a href="#crypto.createVerify">crypto.createVerify(algorithm)</a></li><li><a href="#verifier.update">verifier.update(data)</a></li><li><a href="#verifier.verify">verifier.verify(object, signature, signature_format='binary')</a></li><li><a href="#crypto.createDiffieHellman">crypto.createDiffieHellman(prime_length)</a></li><li><a href="#crypto.createDiffieHellman">crypto.createDiffieHellman(prime, encoding='binary')</a></li><li><a href="#diffieHellman.generateKeys">diffieHellman.generateKeys(encoding='binary')</a></li><li><a href="#diffieHellman.computeSecret">diffieHellman.computeSecret(other_public_key, input_encoding='binary', output_encoding=input_encoding)</a></li><li><a href="#diffieHellman.getPrime">diffieHellman.getPrime(encoding='binary')</a></li><li><a href="#diffieHellman.getGenerator">diffieHellman.getGenerator(encoding='binary')</a></li><li><a href="#diffieHellman.getPublicKey">diffieHellman.getPublicKey(encoding='binary')</a></li><li><a href="#diffieHellman.getPrivateKey">diffieHellman.getPrivateKey(encoding='binary')</a></li><li><a href="#diffieHellman.setPublicKey">diffieHellman.setPublicKey(public_key, encoding='binary')</a></li><li><a href="#diffieHellman.setPrivateKey">diffieHellman.setPrivateKey(public_key, encoding='binary')</a></li><li><a href="#pbkdf2">pbkdf2(password, salt, iterations, keylen, callback)</a></li><li><a href="#randomBytes">randomBytes(size, [callback])</a></li></ul></li></ul><hr /></div>
+<h2 id="crypto">Crypto</h2>
+
+<p>Use <code>require('crypto')</code> to access this module.</p>
+
+<p>The crypto module requires OpenSSL to be available on the underlying platform.
+It offers a way of encapsulating secure credentials to be used as part
+of a secure HTTPS net or http connection.</p>
+
+<p>It also offers a set of wrappers for OpenSSL's hash, hmac, cipher, decipher, sign and verify methods.</p>
+
+<h3 id="crypto.createCredentials">crypto.createCredentials(details) <a href="#crypto.createCredentials">#</a></h3>
+
+<p>Creates a credentials object, with the optional details being a dictionary with keys:</p>
+
+<ul><li><code>key</code> : a string holding the PEM encoded private key</li><li><code>cert</code> : a string holding the PEM encoded certificate</li><li><code>ca</code> : either a string or list of strings of PEM encoded CA certificates to trust.</li></ul>
+
+<p>If no 'ca' details are given, then node.js will use the default publicly trusted list of CAs as given in
+<a href="http://mxr.mozilla.org/mozilla/source/security/nss/lib/ckfw/builtins/certdata.txt">http://mxr.mozilla.org/mozilla/source/security/nss/lib/ckfw/builtins/certdata.txt</a>.</p>
+
+<h3 id="crypto.createHash">crypto.createHash(algorithm) <a href="#crypto.createHash">#</a></h3>
+
+<p>Creates and returns a hash object, a cryptographic hash with the given algorithm
+which can be used to generate hash digests.</p>
+
+<p><code>algorithm</code> is dependent on the available algorithms supported by the version
+of OpenSSL on the platform. Examples are <code>'sha1'</code>, <code>'md5'</code>, <code>'sha256'</code>, <code>'sha512'</code>, etc.
+On recent releases, <code>openssl list-message-digest-algorithms</code> will display the available digest algorithms.</p>
+
+<p>Example: this program that takes the sha1 sum of a file</p>
+
+<pre><code>var filename = process.argv[2];
+var crypto = require('crypto');
+var fs = require('fs');
+
+var shasum = crypto.createHash('sha1');
+
+var s = fs.ReadStream(filename);
+s.on('data', function(d) {
+  shasum.update(d);
+});
+
+s.on('end', function() {
+  var d = shasum.digest('hex');
+  console.log(d + '  ' + filename);
+});</code></pre>
+
+<h3 id="hash.update">hash.update(data) <a href="#hash.update">#</a></h3>
+
+<p>Updates the hash content with the given <code>data</code>.
+This can be called many times with new data as it is streamed.</p>
+
+<h3 id="hash.digest">hash.digest(encoding='binary') <a href="#hash.digest">#</a></h3>
+
+<p>Calculates the digest of all of the passed data to be hashed.
+The <code>encoding</code> can be <code>'hex'</code>, <code>'binary'</code> or <code>'base64'</code>.</p>
+
+<p>Note: <code>hash</code> object can not be used after <code>digest()</code> method been called.</p>
+
+<h3 id="crypto.createHmac">crypto.createHmac(algorithm, key) <a href="#crypto.createHmac">#</a></h3>
+
+<p>Creates and returns a hmac object, a cryptographic hmac with the given algorithm and key.</p>
+
+<p><code>algorithm</code> is dependent on the available algorithms supported by OpenSSL - see createHash above.
+<code>key</code> is the hmac key to be used.</p>
+
+<h3 id="hmac.update">hmac.update(data) <a href="#hmac.update">#</a></h3>
+
+<p>Update the hmac content with the given <code>data</code>.
+This can be called many times with new data as it is streamed.</p>
+
+<h3 id="hmac.digest">hmac.digest(encoding='binary') <a href="#hmac.digest">#</a></h3>
+
+<p>Calculates the digest of all of the passed data to the hmac.
+The <code>encoding</code> can be <code>'hex'</code>, <code>'binary'</code> or <code>'base64'</code>.</p>
+
+<p>Note: <code>hmac</code> object can not be used after <code>digest()</code> method been called.</p>
+
+<h3 id="crypto.createCipher">crypto.createCipher(algorithm, password) <a href="#crypto.createCipher">#</a></h3>
+
+<p>Creates and returns a cipher object, with the given algorithm and password.</p>
+
+<p><code>algorithm</code> is dependent on OpenSSL, examples are <code>'aes192'</code>, etc.
+On recent releases, <code>openssl list-cipher-algorithms</code> will display the
+available cipher algorithms.
+<code>password</code> is used to derive key and IV, which must be <code>'binary'</code> encoded
+string (See the <a href="buffers.html">Buffers</a> for more information).</p>
+
+<h3 id="crypto.createCipheriv">crypto.createCipheriv(algorithm, key, iv) <a href="#crypto.createCipheriv">#</a></h3>
+
+<p>Creates and returns a cipher object, with the given algorithm, key and iv.</p>
+
+<p><code>algorithm</code> is the same as the <code>createCipher()</code>. <code>key</code> is a raw key used in
+algorithm. <code>iv</code> is an Initialization vector. <code>key</code> and <code>iv</code> must be <code>'binary'</code>
+encoded string (See the <a href="buffers.html">Buffers</a> for more information).</p>
+
+<h3 id="cipher.update">cipher.update(data, input_encoding='binary', output_encoding='binary') <a href="#cipher.update">#</a></h3>
+
+<p>Updates the cipher with <code>data</code>, the encoding of which is given in <code>input_encoding</code>
+and can be <code>'utf8'</code>, <code>'ascii'</code> or <code>'binary'</code>. The <code>output_encoding</code> specifies
+the output format of the enciphered data, and can be <code>'binary'</code>, <code>'base64'</code> or <code>'hex'</code>.</p>
+
+<p>Returns the enciphered contents, and can be called many times with new data as it is streamed.</p>
+
+<h3 id="cipher.final">cipher.final(output_encoding='binary') <a href="#cipher.final">#</a></h3>
+
+<p>Returns any remaining enciphered contents, with <code>output_encoding</code> being one of: <code>'binary'</code>, <code>'base64'</code> or <code>'hex'</code>.</p>
+
+<p>Note: <code>cipher</code> object can not be used after <code>final()</code> method been called.</p>
+
+<h3 id="crypto.createDecipher">crypto.createDecipher(algorithm, password) <a href="#crypto.createDecipher">#</a></h3>
+
+<p>Creates and returns a decipher object, with the given algorithm and key.
+This is the mirror of the <a href="#crypto.createCipher">createCipher()</a> above.</p>
+
+<h3 id="crypto.createDecipheriv">crypto.createDecipheriv(algorithm, key, iv) <a href="#crypto.createDecipheriv">#</a></h3>
+
+<p>Creates and returns a decipher object, with the given algorithm, key and iv.
+This is the mirror of the <a href="#crypto.createCipheriv">createCipheriv()</a> above.</p>
+
+<h3 id="decipher.update">decipher.update(data, input_encoding='binary', output_encoding='binary') <a href="#decipher.update">#</a></h3>
+
+<p>Updates the decipher with <code>data</code>, which is encoded in <code>'binary'</code>, <code>'base64'</code> or <code>'hex'</code>.
+The <code>output_decoding</code> specifies in what format to return the deciphered plaintext: <code>'binary'</code>, <code>'ascii'</code> or <code>'utf8'</code>.</p>
+
+<h3 id="decipher.final">decipher.final(output_encoding='binary') <a href="#decipher.final">#</a></h3>
+
+<p>Returns any remaining plaintext which is deciphered,
+with <code>output_encoding</code> being one of: <code>'binary'</code>, <code>'ascii'</code> or <code>'utf8'</code>.</p>
+
+<p>Note: <code>decipher</code> object can not be used after <code>final()</code> method been called.</p>
+
+<h3 id="crypto.createSign">crypto.createSign(algorithm) <a href="#crypto.createSign">#</a></h3>
+
+<p>Creates and returns a signing object, with the given algorithm.
+On recent OpenSSL releases, <code>openssl list-public-key-algorithms</code> will display
+the available signing algorithms. Examples are <code>'RSA-SHA256'</code>.</p>
+
+<h3 id="signer.update">signer.update(data) <a href="#signer.update">#</a></h3>
+
+<p>Updates the signer object with data.
+This can be called many times with new data as it is streamed.</p>
+
+<h3 id="signer.sign">signer.sign(private_key, output_format='binary') <a href="#signer.sign">#</a></h3>
+
+<p>Calculates the signature on all the updated data passed through the signer.
+<code>private_key</code> is a string containing the PEM encoded private key for signing.</p>
+
+<p>Returns the signature in <code>output_format</code> which can be <code>'binary'</code>, <code>'hex'</code> or <code>'base64'</code>.</p>
+
+<p>Note: <code>signer</code> object can not be used after <code>sign()</code> method been called.</p>
+
+<h3 id="crypto.createVerify">crypto.createVerify(algorithm) <a href="#crypto.createVerify">#</a></h3>
+
+<p>Creates and returns a verification object, with the given algorithm.
+This is the mirror of the signing object above.</p>
+
+<h3 id="verifier.update">verifier.update(data) <a href="#verifier.update">#</a></h3>
+
+<p>Updates the verifier object with data.
+This can be called many times with new data as it is streamed.</p>
+
+<h3 id="verifier.verify">verifier.verify(object, signature, signature_format='binary') <a href="#verifier.verify">#</a></h3>
+
+<p>Verifies the signed data by using the <code>object</code> and <code>signature</code>. <code>object</code> is  a
+string containing a PEM encoded object, which can be one of RSA public key,
+DSA public key, or X.509 certificate. <code>signature</code> is the previously calculated
+signature for the data, in the <code>signature_format</code> which can be <code>'binary'</code>,
+<code>'hex'</code> or <code>'base64'</code>.</p>
+
+<p>Returns true or false depending on the validity of the signature for the data and public key.</p>
+
+<p>Note: <code>verifier</code> object can not be used after <code>verify()</code> method been called.</p>
+
+<h3 id="crypto.createDiffieHellman">crypto.createDiffieHellman(prime_length) <a href="#crypto.createDiffieHellman">#</a></h3>
+
+<p>Creates a Diffie-Hellman key exchange object and generates a prime of the
+given bit length. The generator used is <code>2</code>.</p>
+
+<h3 id="crypto.createDiffieHellman">crypto.createDiffieHellman(prime, encoding='binary') <a href="#crypto.createDiffieHellman">#</a></h3>
+
+<p>Creates a Diffie-Hellman key exchange object using the supplied prime. The
+generator used is <code>2</code>. Encoding can be <code>'binary'</code>, <code>'hex'</code>, or <code>'base64'</code>.</p>
+
+<h3 id="diffieHellman.generateKeys">diffieHellman.generateKeys(encoding='binary') <a href="#diffieHellman.generateKeys">#</a></h3>
+
+<p>Generates private and public Diffie-Hellman key values, and returns the
+public key in the specified encoding. This key should be transferred to the
+other party. Encoding can be <code>'binary'</code>, <code>'hex'</code>, or <code>'base64'</code>.</p>
+
+<h3 id="diffieHellman.computeSecret">diffieHellman.computeSecret(other_public_key, input_encoding='binary', output_encoding=input_encoding) <a href="#diffieHellman.computeSecret">#</a></h3>
+
+<p>Computes the shared secret using <code>other_public_key</code> as the other party's
+public key and returns the computed shared secret. Supplied key is
+interpreted using specified <code>input_encoding</code>, and secret is encoded using
+specified <code>output_encoding</code>. Encodings can be <code>'binary'</code>, <code>'hex'</code>, or
+<code>'base64'</code>. If no output encoding is given, the input encoding is used as
+output encoding.</p>
+
+<h3 id="diffieHellman.getPrime">diffieHellman.getPrime(encoding='binary') <a href="#diffieHellman.getPrime">#</a></h3>
+
+<p>Returns the Diffie-Hellman prime in the specified encoding, which can be
+<code>'binary'</code>, <code>'hex'</code>, or <code>'base64'</code>.</p>
+
+<h3 id="diffieHellman.getGenerator">diffieHellman.getGenerator(encoding='binary') <a href="#diffieHellman.getGenerator">#</a></h3>
+
+<p>Returns the Diffie-Hellman prime in the specified encoding, which can be
+<code>'binary'</code>, <code>'hex'</code>, or <code>'base64'</code>.</p>
+
+<h3 id="diffieHellman.getPublicKey">diffieHellman.getPublicKey(encoding='binary') <a href="#diffieHellman.getPublicKey">#</a></h3>
+
+<p>Returns the Diffie-Hellman public key in the specified encoding, which can
+be <code>'binary'</code>, <code>'hex'</code>, or <code>'base64'</code>.</p>
+
+<h3 id="diffieHellman.getPrivateKey">diffieHellman.getPrivateKey(encoding='binary') <a href="#diffieHellman.getPrivateKey">#</a></h3>
+
+<p>Returns the Diffie-Hellman private key in the specified encoding, which can
+be <code>'binary'</code>, <code>'hex'</code>, or <code>'base64'</code>.</p>
+
+<h3 id="diffieHellman.setPublicKey">diffieHellman.setPublicKey(public_key, encoding='binary') <a href="#diffieHellman.setPublicKey">#</a></h3>
+
+<p>Sets the Diffie-Hellman public key. Key encoding can be <code>'binary'</code>, <code>'hex'</code>,
+or <code>'base64'</code>.</p>
+
+<h3 id="diffieHellman.setPrivateKey">diffieHellman.setPrivateKey(public_key, encoding='binary') <a href="#diffieHellman.setPrivateKey">#</a></h3>
+
+<p>Sets the Diffie-Hellman private key. Key encoding can be <code>'binary'</code>, <code>'hex'</code>, or <code>'base64'</code>.</p>
+
+<h3 id="pbkdf2">pbkdf2(password, salt, iterations, keylen, callback) <a href="#pbkdf2">#</a></h3>
+
+<p>Asynchronous PBKDF2 applies pseudorandom function HMAC-SHA1 to derive
+a key of given length from the given password, salt and iterations.
+The callback gets two arguments <code>(err, derivedKey)</code>.</p>
+
+<h3 id="randomBytes">randomBytes(size, [callback]) <a href="#randomBytes">#</a></h3>
+
+<p>Generates cryptographically strong pseudo-random data. Usage:</p>
+
+<pre><code>// async
+crypto.randomBytes(256, function(ex, buf) {
+  if (ex) throw ex;
+  console.log('Have %d bytes of random data: %s', buf.length, buf);
+});
+
+// sync
+try {
+  var buf = crypto.randomBytes(256);
+  console.log('Have %d bytes of random data: %s', buf.length, buf);
+} catch (ex) {
+  // handle error
+}</code></pre>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+</body>
+</html>

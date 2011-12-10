@@ -1,0 +1,6 @@
+#!/bin/sh
+echo "Installing node.js..."
+mkdir ./tmp/node
+curl -L -s http://nodejs.org/dist/v0.6.5/node-v0.6.5.tar.gz | tar xz -C ./tmp/node --strip-components 1
+cd ./tmp/node
+./configure; make; make install

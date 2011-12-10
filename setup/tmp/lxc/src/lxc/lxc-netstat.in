@@ -1,0 +1,85 @@
+#!/bin/bash
+# set -ex
+
+usage() {
+	echo "usage: $(basename $0) --name <name> [netstat options]"
+}
+
+help() {
+	usage
+	echo
+	echo "execute netstat for the specified container"
+	echo "with the added netstat options"
+	echo
+	echo "Options:"
+	echo "name  : name of the container"
+	echo "help  : this current help."
+	echo
+	echo "to be executed as root."
+}
+
+exec=""
+
+if [ $# -eq  0 ]; then
+	usage
+	exit 1
+fi
+
+for i in "$@"; do
+	case $i in
+		-h|--help)
+			help; exit 1;;
+		-n|--name)
+			name=$2; shift 2;;
+		--exec)
+			exec="exec"; shift;;
+	esac
+done
+
+if [ -z "$exec" ]; then
+    exec @BINDIR@/lxc-unshare -s MOUNT -- $0 -n $name --exec "$@"
+fi
+
+if [ -z "$name" ]; then
+	usage
+	exit 1
+fi
+
+cgroups=$(mount -l -t cgroup)
+cgroup_path=""
+
+for i in "$cgroups"; do
+
+    cgroup_name=$(echo $i | awk ' { print $1 } ')
+    cgroup_path=$(echo $i | awk ' { print $3 } ')
+
+    if [ "$cgroup_name" == "lxc" ]; then
+        break;
+    fi
+
+done
+
+if [ -z "$cgroup_path" ]; then
+	cgroups=`grep -m1 -E '^[^ \t]+[ \t]+[^ \t]+[ \t]+cgroup' /proc/self/mounts`
+	for i in "$cgroups"; do
+	    cgroup_path=$(echo $i | awk ' { print $2 } ')
+	    if [ -n $cgroup_path ]; then
+		break;
+	    fi
+	done
+fi
+
+if [ -z "$cgroup_path" ]; then
+    echo "no cgroup mount point found"
+    exit 1
+fi
+
+pid=$(head -1 $cgroup_path/$name/tasks)
+
+if [ -z "$pid" ]; then
+    echo "no process found for '$name'"
+    exit 1
+fi
+
+mount --bind /proc/$pid/net /proc/$$/net && \
+    exec netstat "$@"

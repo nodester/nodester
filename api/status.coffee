@@ -1,6 +1,3 @@
 module.exports =
-  get: (req, res, next) ->
-    res.end JSON.stringify {status: 'Online'}
-    next()
-      
-
+  exec: (res) ->
+    res.end JSON.stringify status: 'Online'

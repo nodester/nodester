@@ -1,0 +1,3 @@
+#!/bin/bash
+
+echo "lxc version: 0.7.5"

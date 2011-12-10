@@ -1,0 +1,10 @@
+#!/bin/sh
+echo "Installing LXC userspace..."
+mkdir ./tmp/lxc
+curl -L -s http://lxc.sourceforge.net/download/lxc/lxc-0.7.5.tar.gz | tar xz -C ./tmp/lxc --strip-components 1
+cd ./tmp/lxc
+./configure --prefix=/usr; make; make install
+
+echo "Configuring LXC userspace..."
+# TODO
+

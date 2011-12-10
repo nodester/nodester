@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>url - Node.js v0.6.5 Manual &amp; Documentation</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="assets/sh.css" />
+  <link rel="canonical" href="http://nodejs.org/docs/latest/api/url.html"/>
+</head>
+<body>
+  <div id="container">
+    <header>
+      <h1>Node.js v0.6.5 Manual &amp; Documentation</h1>
+      <div id="gtoc">
+        <p><a href="index.html">Index</a> | <a href="all.html">View on single page</a></p>
+      </div>
+      <hr />
+    </header>
+    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#uRL">URL</a><ul><li><a href="#url.parse">url.parse(urlStr, parseQueryString=false, slashesDenoteHost=false)</a></li><li><a href="#url.format">url.format(urlObj)</a></li><li><a href="#url.resolve">url.resolve(from, to)</a></li></ul></li></ul><hr /></div>
+<h2 id="uRL">URL</h2>
+
+<p>This module has utilities for URL resolution and parsing.
+Call <code>require('url')</code> to use it.</p>
+
+<p>Parsed URL objects have some or all of the following fields, depending on
+whether or not they exist in the URL string. Any parts that are not in the URL
+string will not be in the parsed object. Examples are shown for the URL</p>
+
+<p><code>'http://user:pass@host.com:8080/p/a/t/h?query=string#hash'</code></p>
+
+<ul><li><p><code>href</code>: The full URL that was originally parsed. Both the protocol and host are lowercased.</p><p>Example: <code>'http://user:pass@host.com:8080/p/a/t/h?query=string#hash'</code></p></li><li><p><code>protocol</code>: The request protocol, lowercased.</p><p>Example: <code>'http:'</code></p></li><li><p><code>host</code>: The full lowercased host portion of the URL, including port and authentication information.</p><p>Example: <code>'user:pass@host.com:8080'</code></p></li><li><p><code>auth</code>: The authentication information portion of a URL.</p><p>Example: <code>'user:pass'</code></p></li><li><p><code>hostname</code>: Just the lowercased hostname portion of the host.</p><p>Example: <code>'host.com'</code></p></li><li><p><code>port</code>: The port number portion of the host.</p><p>Example: <code>'8080'</code></p></li><li><p><code>pathname</code>: The path section of the URL, that comes after the host and before the query, including the initial slash if present.</p><p>Example: <code>'/p/a/t/h'</code></p></li><li><p><code>search</code>: The 'query string' portion of the URL, including the leading question mark.</p><p>Example: <code>'?query=string'</code></p></li><li><p><code>path</code>: Concatenation of <code>pathname</code> and <code>search</code>.</p><p>Example: <code>'/p/a/t/h?query=string'</code></p></li><li><p><code>query</code>: Either the 'params' portion of the query string, or a querystring-parsed object.</p><p>Example: <code>'query=string'</code> or <code>{'query':'string'}</code></p></li><li><p><code>hash</code>: The 'fragment' portion of the URL including the pound-sign.</p><p>Example: <code>'#hash'</code></p></li></ul>
+
+<p>The following methods are provided by the URL module:</p>
+
+<h3 id="url.parse">url.parse(urlStr, parseQueryString=false, slashesDenoteHost=false) <a href="#url.parse">#</a></h3>
+
+<p>Take a URL string, and return an object.</p>
+
+<p>Pass <code>true</code> as the second argument to also parse
+the query string using the <code>querystring</code> module.</p>
+
+<p>Pass <code>true</code> as the third argument to treat <code>//foo/bar</code> as
+<code>{ host: 'foo', pathname: '/bar' }</code> rather than
+<code>{ pathname: '//foo/bar' }</code>.</p>
+
+<h3 id="url.format">url.format(urlObj) <a href="#url.format">#</a></h3>
+
+<p>Take a parsed URL object, and return a formatted URL string.</p>
+
+<ul><li><code>href</code> will be ignored.</li><li><code>protocol</code>is treated the same with or without the trailing <code>:</code> (colon).<ul><li>The protocols <code>http</code>, <code>https</code>, <code>ftp</code>, <code>gopher</code>, <code>file</code> will be postfixed with <code>://</code> (colon-slash-slash).</li><li>All other protocols <code>mailto</code>, <code>xmpp</code>, <code>aim</code>, <code>sftp</code>, <code>foo</code>, etc will be postfixed with <code>:</code> (colon)</li></ul></li><li><code>auth</code> will only be used if <code>host</code> is absent.</li><li><code>hostname</code> will only be used if <code>host</code> is absent.</li><li><code>port</code> will only be used if <code>host</code> is absent.</li><li><code>host</code> will be used in place of <code>auth</code>, <code>hostname</code>, and <code>port</code></li><li><code>pathname</code> is treated the same with or without the leading <code>/</code> (slash)</li><li><code>search</code> will be used in place of <code>query</code></li><li><code>query</code> (object; see <code>querystring</code>) will only be used if <code>search</code> is absent.</li><li><code>search</code> is treated the same with or without the leading <code>?</code> (question mark)</li><li><code>hash</code> is treated the same with or without the leading <code>#</code> (pound sign, anchor)</li></ul>
+
+<h3 id="url.resolve">url.resolve(from, to) <a href="#url.resolve">#</a></h3>
+
+<p>Take a base URL, and a href URL, and resolve them as a browser would for an anchor tag.</p>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+</body>
+</html>

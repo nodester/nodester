@@ -1,0 +1,149 @@
+Redis 2.4 release notes
+
+Migrating from 2.2 to 2.4
+=========================
+
+Redis 2.2 is mostly a strict subset of 2.4.
+The only thing you should be aware is that you can't use .rdb and AOF files
+generated with 2.4 into a 2.2 instance.
+
+2.4 slaves can be attached to 2.2 masters, but not the contrary, and only for
+the time needed to perform the version upgrade.
+
+From the point of view of the API Redis 2.4 only adds new commands
+(other commands now accepts a variable number of arguments) so you don't need
+to modify your program in order to use Redis 2.4.
+
+---------
+CHANGELOG
+---------
+
+What's new in Redis 2.4.4
+=========================
+
+* [BUGFIX] jemalloc upgraded to version 2.2.5, previous versions had a
+  potentially serious issue when allocating big memory areas, something that
+  Redis actually does. However we never received bug reports that appear
+  to be caused by jemalloc.
+* [BUGFIX] DISCARD now clears DIRTY_CAS flag in the client. Now the next
+  transaction will not fail if the previous transaction used WATCH and
+  the key was touched.
+* CLIENT LIST output modified to include the last command executed by clients.
+* Better bug report on crash.
+* Protocol errors are now logged for loglevel >= verbose.
+* Two new INFO fields related to AOF, that can be useful when investigating
+  Redis issues.
+
+What's new in Redis 2.4.3
+=========================
+
+* redis-cli now supports 'single quotes' style strings.
+* It is possible to disable password auth with CONFIG SET.
+* Some section of redis.conf better documented.
+* Default timeout for client connections now is 0 (no timeout).
+* I/O buffer length modified for better performances with big payloads.
+* Fixed crash on SPARC due to improper alighment due to bad assumptions about data types size.
+* CLIENT LIST output improved, code refactored.
+* [BUGFIX] Max log message length set to 4k to avoid truncation in INFO output written in the log file after a crash.
+* [BUGFIX] Close client connection when the query buffer reaches 1GB and log informaiton about the offending client, instead of crashing the instance when the query buffer reaches 2GB (for sds.c string overflow). This is related to issue #141 (github issues) and should fix the effect of this rare bug related to replication, but the cause is still not perfectly clear.
+
+What's new in Redis 2.4.2
+=========================
+
+* [BUGFIX] Unix socket creation mask config directive fixed.
+* [BUGFIX] Fixed a bug that forced Redis to continously rewrite the AOF file
+           when a manual BGREWRITEAOF was issued during a BGSAVE was
+           still in progress.
+* [BUGFIX] Fixed a server crash resulting from bad handling of SLAVEOF NO ONE.
+* [BUGFIX] Fixed a memory leak in redis-cli.
+* Debian/Ubuntu Redis system-wide installation script added under /utils.
+
+What's new in Redis 2.4.1
+=========================
+
+* [BUGFIX] FLUSHALL was not replicated nor written into the Append Only File.
+* [BUGFIX] FLUSHALL now only performs a sync SAVE if there is at least
+           one save point configured.
+
+What's new in Redis 2.4.0
+=========================
+
+* [BUGFIX] redis-cli segfault with single numerical argument fixed.
+* [BUGFIX] OpenBSD compilation problem fixed.
+* [BUGFIX] More robust Redis test, with better random port selection.
+* [BUGFIX] Fix for bug #128 about the RENAME command.
+* [BUGFIX] Fixed Issue #131. stime/utime reported in INFO was inverted.
+* [BUGFIX] Unlink Unix socket file on shutdown.
+* [BUGFIX] AUTH now returns error if no password is set on the server.
+* [BUGFIX] Exit with Fatal error at startup on RDB loading errors.
+* redis-check-dump: RDB version 2 now supported.
+* More informative error when DEBUG RELOAD fails.
+* Added a config directive for a Unix socket mask.
+* CONFIG SET/GET for loglevel.
+
+What's new in Redis 2.3.11 (2.4 Release Candidate 8)
+====================================================
+
+* [BUGFIX] Fixed a rare but possible AOF race condition that could result into
+           duplicated commands inside the AOF.
+* [BUGFIX] Fixed issue 620, don't segfault on corrupted (by hand) AOF.
+* [BUGFIX] Fixed compilation on Mac/PPC.
+* [BUGFIX] Don't replicate SAVE.
+* LRANGE optimization may drastically improve performances when querying the
+  final part of a long list.
+* redis-cli now implements a --latency mode to monitory Redis delay.
+* Hash type settings removed from INFO (same info is available via config GET)
+* Include port number on error when can't bind.
+* AOF fsync is now performed in background when fsync policy is 'everysec'.
+* AOF performances improved moving in background a possibly slow close(2) call.
+* AOF protocol synthesis speedup.
+
+What's new in Redis 2.3.10 (2.4 Release Candidate 7)
+====================================================
+
+* [BUGFIX] Fixed issue 593 (BRPOPLPUSH related crash).
+* [BUGFIX] Fixed an issue with the networking layer that may prevent Redis from sending the whole reply back to client under extreme conditions.
+
+What's new in Redis 2.3.9 (2.4 Release Candidate 6)
+===================================================
+
+* [BUGFIX] Fixed a bug with the automatic AOF rewrite causing continuous
+  rewrites for AOF files bigger than 4 GB.
+* New maxmemory tests.
+
+What's new in Redis 2.3.8 (2.4 Release Candidate 5)
+===================================================
+
+Compared to Redis 2.3.7 (RC4) there are the following changes:
+
+* [BUGFIX] HDEL: Abort deleting fields when hash is removed.
+* [BUGFIX] Fix adding bulk reply when getcwd fails.
+
+WHAT'S NEW IN REDIS 2.4 compared to the 2.2 version?
+====================================================
+
+* Specially encoded sorted sets, now small sorted sets will use little memory.
+* Native persistence of specially encoded data types (ziplists, zipmaps,
+  intsets). Many data sets will be saved and loaded an order of magnitude
+  faster.
+* Variadic versions of commands: SADD, HDEL, SREM, ZREM, ZADD, L/RPUSH.
+* Jemalloc support (enabled by default for Linux build) in order to
+  avoid fragmentation issues.
+* Reduced memory usage while saving.
+* More info fields (peak memory, fork time, ...)
+* OBJECT command for objects introspection.
+* CLIENT command for clients introspection.
+* Non blocking slave -> master connection.
+* Better redis-cli connection handling. New redis-cli features.
+* Better redis-benchmark, now able to benchmark user provided commands.
+* Colorized Make.
+* VM deprecated. Still supported but with a big warning... don't use it.
+* Many speed optimizations and bug fixes.
+
+Credits: Where not specified the implementation and design are done by
+Salvatore Sanfilippo and Pieter Noordhuis. Thanks to VMware for making all
+this possible. Also many thanks to all the other contributors and the amazing
+community we have.
+
+Cheers,
+Salvatore

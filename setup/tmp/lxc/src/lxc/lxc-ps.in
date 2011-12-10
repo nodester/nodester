@@ -1,0 +1,207 @@
+#!/usr/bin/perl
+#
+# lxc-ps
+#
+# Authors:
+# Daniel Lezcano <daniel.lezcano@free.fr>
+
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+#
+# This script allows to
+# display processes information with related container name if available.
+#
+use strict;
+
+
+# Some globals
+
+our $PS_HEADERS;      # String containing headers of the ps output
+our $PS_PID_INDEX;    # Index of the PID column in the ps headers
+our @PS_LINES;        # Output lines of the ps command
+
+our $LXC_DISPLAY = 0; # By default do not display container information
+our %LXC_NAMES;       # Specified container names (if any)
+
+sub get_container_names {
+	my $ref_names = shift;
+	my $lxcpath = '@LXCPATH@';
+
+	open(active, "netstat -xa | grep $lxcpath |") or return;
+	while(<active>) {
+		chomp;
+		s#.*$lxcpath/(.*)/command.*#$1#;
+		push @$ref_names, $_;
+	}
+	close active;
+}
+
+sub get_cgroup {
+	my $ref_cgroup = shift;
+	my $mount_string;
+
+	$mount_string=`mount -t cgroup |grep -E -e '^lxc '`;
+	unless ($mount_string) {
+		$mount_string=`mount |grep -m1 'type cgroup'`;
+	}
+	chomp($mount_string);
+	if ($mount_string) {
+		$$ref_cgroup=`echo "$mount_string" |cut -d' ' -f3`;
+		chomp($$ref_cgroup);
+	}
+	die "unable to find mounted cgroup" unless $$ref_cgroup;
+}
+
+sub get_pids_in_containers {
+	my $ref_names = shift;
+	my $ref_cgroup = shift;
+	my $ref_pids = shift;
+	my @pidlist;
+
+	for (@{$ref_names}) {
+		my $task_file = "$$ref_cgroup/$_/tasks";
+
+		$LXC_NAMES{$_} = 1;
+		open(tasks, "cat $task_file 2>/dev/null |") or next;
+		while (<tasks>) {
+			chomp $_;
+			push @pidlist, $_;
+		}
+		close tasks;
+	}
+	$$ref_pids = join(',', @pidlist);
+}
+
+sub reclaim_pid_index {
+    my @headers = split " ", $PS_HEADERS;
+    for my $i (0 .. $#headers) {
+	if ($headers[$i] eq "PID") {
+	    $PS_PID_INDEX = $i;
+	    return;
+	}
+    }
+    print "Cannot find ps PID column !\n";
+    exit 1;
+}
+
+sub execute_ps {
+    open(ps, "ps @_ |") or die "Cannot execute ps command: $!\n";
+
+    $PS_HEADERS = <ps>;
+    reclaim_pid_index;
+
+    while (<ps>) {
+	push @PS_LINES, $_;
+    }
+    close ps;
+}
+
+sub get_container {
+    my $pid = shift;
+    my $filename = "/proc/$pid/cgroup";
+    open(LXC, "$filename");
+    # read all lines at once
+    my @cgroup = <LXC>;
+    close LXC;
+    my $container = '';
+    foreach ( @cgroup ) {
+        chomp;
+        # find the container name after :/
+	s/.*:\///o;
+	$container = $_;
+    }
+    return $container;
+}
+
+sub display_headers {
+    printf "%-10s %s", "CONTAINER", $PS_HEADERS;
+}
+
+sub display_usage {
+    print <<EOF;
+Usage: lxc-ps [--help] [--usage] [-n|--name NAME...] [--lxc] [-- ps options]
+EOF
+}
+
+sub display_help {
+    display_usage;
+    print <<EOF;
+
+Display processes information with related container name if available.
+
+Options:
+--help     Display this help.
+--usage    Display the command usage.
+--name     Display processes related to given containers.
+           Containers are identified by a comma separated list of
+	   their names.
+--lxc      Display processes related to all lxc containers.
+
+Other available options correspond to the ps ones, see the ps manual
+or try a 'ps --help' for further details.
+EOF
+}
+
+use Getopt::Long qw(:config pass_through);
+
+my $arg_help  = '';
+my $arg_usage = '';
+my $arg_lxc   = '';
+my @arg_name;
+
+GetOptions('help'   => \$arg_help,
+	   'usage'  => \$arg_usage,
+	   'lxc'    => \$arg_lxc,
+	   'name=s' => \@arg_name);
+
+@arg_name = split(/,/, join(',', @arg_name));
+
+# Some help
+if ($arg_help)  {display_help; exit 0;}
+if ($arg_usage) {display_usage; exit 0;}
+
+if ($ARGV[0] == '--') {
+	shift @ARGV;
+}
+
+# Should we filter processes related to containers
+if ($arg_lxc) {
+	$LXC_DISPLAY = 1;
+	get_container_names \@arg_name;
+}
+if (@arg_name > 0) {
+	my $cgroup;
+	my $pid_list;
+	$LXC_DISPLAY = 2;
+
+	get_cgroup \$cgroup;
+	get_pids_in_containers(\@arg_name, \$cgroup, \$pid_list);
+	if ($pid_list) {
+		@ARGV = ("-p $pid_list",@ARGV);
+	}
+}
+
+execute_ps @ARGV;
+
+display_headers;
+for (@PS_LINES) {
+    my @a = split;
+    my $container = get_container $a[$PS_PID_INDEX];
+    if ($LXC_DISPLAY == 2 and not $LXC_NAMES{$container}) {next;}
+    if ($LXC_DISPLAY == 1 and $container eq '') {next;}
+    printf "%-10s %s", $container, $_;
+}
+
+exit 0;

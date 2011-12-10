@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>readline - Node.js v0.6.5 Manual &amp; Documentation</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="assets/sh.css" />
+  <link rel="canonical" href="http://nodejs.org/docs/latest/api/readline.html"/>
+</head>
+<body>
+  <div id="container">
+    <header>
+      <h1>Node.js v0.6.5 Manual &amp; Documentation</h1>
+      <div id="gtoc">
+        <p><a href="index.html">Index</a> | <a href="all.html">View on single page</a></p>
+      </div>
+      <hr />
+    </header>
+    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#readline">Readline</a><ul><li><a href="#rl.createInterface">rl.createInterface(input, output, completer)</a></li><li><a href="#rl.setPrompt">rl.setPrompt(prompt, length)</a></li><li><a href="#rl.prompt">rl.prompt()</a></li><li><a href="#rl.question">rl.question(query, callback)</a></li><li><a href="#rl.close">rl.close()</a></li><li><a href="#rl.pause">rl.pause()</a></li><li><a href="#rl.resume">rl.resume()</a></li><li><a href="#rl.write">rl.write()</a></li><li><a href="#event_line_">Event: 'line'</a></li><li><a href="#event_close_">Event: 'close'</a></li></ul></li></ul><hr /></div>
+<h2 id="readline">Readline</h2>
+
+<p>To use this module, do <code>require('readline')</code>. Readline allows reading of a
+stream (such as STDIN) on a line-by-line basis.</p>
+
+<p>Note that once you've invoked this module, your node program will not
+terminate until you've closed the interface, and the STDIN stream. Here's how
+to allow your program to gracefully terminate:</p>
+
+<pre><code>var rl = require('readline');
+
+var i = rl.createInterface(process.stdin, process.stdout, null);
+i.question("What do you think of node.js?", function(answer) {
+  // TODO: Log the answer in a database
+  console.log("Thank you for your valuable feedback.");
+
+  // These two lines together allow the program to terminate. Without
+  // them, it would run forever.
+  i.close();
+  process.stdin.destroy();
+});</code></pre>
+
+<h3 id="rl.createInterface">rl.createInterface(input, output, completer) <a href="#rl.createInterface">#</a></h3>
+
+<p>Takes two streams and creates a readline interface. The <code>completer</code> function
+is used for autocompletion. When given a substring, it returns <code>[[substr1,
+substr2, ...], originalsubstring]</code>.</p>
+
+<p>Also <code>completer</code> can be run in async mode if it accepts two arguments:</p>
+
+<p>  function completer(linePartial, callback) {
+    callback(null, [['123'], linePartial]);
+  }</p>
+
+<p><code>createInterface</code> is commonly used with <code>process.stdin</code> and
+<code>process.stdout</code> in order to accept user input:</p>
+
+<pre><code>var readline = require('readline'),
+  rl = readline.createInterface(process.stdin, process.stdout);</code></pre>
+
+<h3 id="rl.setPrompt">rl.setPrompt(prompt, length) <a href="#rl.setPrompt">#</a></h3>
+
+<p>Sets the prompt, for example when you run <code>node</code> on the command line, you see
+<code>&gt; </code>, which is node's prompt.</p>
+
+<h3 id="rl.prompt">rl.prompt() <a href="#rl.prompt">#</a></h3>
+
+<p>Readies readline for input from the user, putting the current <code>setPrompt</code>
+options on a new line, giving the user a new spot to write.</p>
+
+<p>&lt;!-- ### rl.getColumns() Not available? --&gt;</p>
+
+<h3 id="rl.question">rl.question(query, callback) <a href="#rl.question">#</a></h3>
+
+<p>Prepends the prompt with <code>query</code> and invokes <code>callback</code> with the user's
+response. Displays the query to the user, and then invokes <code>callback</code> with the
+user's response after it has been typed.</p>
+
+<p>Example usage:</p>
+
+<pre><code>interface.question('What is your favorite food?', function(answer) {
+  console.log('Oh, so your favorite food is ' + answer);
+});</code></pre>
+
+<h3 id="rl.close">rl.close() <a href="#rl.close">#</a></h3>
+
+<p>  Closes tty.</p>
+
+<h3 id="rl.pause">rl.pause() <a href="#rl.pause">#</a></h3>
+
+<p>  Pauses tty.</p>
+
+<h3 id="rl.resume">rl.resume() <a href="#rl.resume">#</a></h3>
+
+<p>  Resumes tty.</p>
+
+<h3 id="rl.write">rl.write() <a href="#rl.write">#</a></h3>
+
+<p>  Writes to tty.</p>
+
+<h3 id="event_line_">Event: 'line' <a href="#event_line_">#</a></h3>
+
+<p><code>function (line) {}</code></p>
+
+<p>Emitted whenever the <code>in</code> stream receives a <code>\n</code>, usually received when the
+user hits enter, or return. This is a good hook to listen for user input.</p>
+
+<p>Example of listening for <code>line</code>:</p>
+
+<pre><code>rl.on('line', function (cmd) {
+  console.log('You just typed: '+cmd);
+});</code></pre>
+
+<h3 id="event_close_">Event: 'close' <a href="#event_close_">#</a></h3>
+
+<p><code>function () {}</code></p>
+
+<p>Emitted whenever the <code>in</code> stream receives a <code>^C</code> or <code>^D</code>, respectively known
+as <code>SIGINT</code> and <code>EOT</code>. This is a good way to know the user is finished using
+your program.</p>
+
+<p>Example of listening for <code>close</code>, and exiting the program afterward:</p>
+
+<pre><code>rl.on('close', function() {
+  console.log('goodbye!');
+  process.exit(0);
+});</code></pre>
+
+<p>Here's an example of how to use all these together to craft a tiny command
+line interface:</p>
+
+<pre><code>var readline = require('readline'),
+  rl = readline.createInterface(process.stdin, process.stdout),
+  prefix = 'OHAI&gt; ';
+
+rl.on('line', function(line) {
+  switch(line.trim()) {
+    case 'hello':
+      console.log('world!');
+      break;
+    default:
+      console.log('Say what? I might have heard `' + line.trim() + '`');
+      break;
+  }
+  rl.setPrompt(prefix, prefix.length);
+  rl.prompt();
+}).on('close', function() {
+  console.log('Have a great day!');
+  process.exit(0);
+});
+console.log(prefix + 'Good to see you. Try typing stuff.');
+rl.setPrompt(prefix, prefix.length);
+rl.prompt();</code></pre>
+
+<p>Take a look at this slightly more complicated
+<a href="https://gist.github.com/901104">example</a>, and
+<a href="https://github.com/cloudhead/http-console">http-console</a> for a real-life use
+case.</p>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+</body>
+</html>

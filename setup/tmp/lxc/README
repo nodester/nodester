@@ -1,0 +1,54 @@
+Please see the COPYING file for details on copying and usage.
+Please refer to the INSTALL file for instructions on how to build.
+
+What is lxc:
+
+  The container technology is actively being pushed into the mainstream linux
+  kernel. It provides the resource management through the control groups  aka
+  process containers and resource isolation through the namespaces.
+
+  The  linux  containers, lxc, aims to use these new functionnalities to pro-
+  vide an userspace container object which provides full  resource  isolation
+  and resource control for an applications or a system.
+
+  The first objective of this project is to make the life easier for the ker-
+  nel developers involved in the containers project and  especially  to  con-
+  tinue  working  on  the  Checkpoint/Restart  new features. The lxc is small
+  enough to easily manage a container with simple command lines and  complete
+  enough to be used for other purposes.
+
+Using lxc:
+
+  Refer the lxc* man pages (generated from doc/* files)
+
+Downloading the current source code:
+
+  Source for the latest released version can always be downloaded from
+  http://lxc.sourceforge.net/download/lxc
+
+  You can browse the up to the minute source code and change history online.
+  http://lxc.git.sourceforge.net
+
+  For detailed build instruction refer to INSTALL and man lxc man page
+  but a short command line should work:
+  ./configure && make && sudo make install && sudo lxc-setcap
+  preceded by ./autogen.sh if configure do not exist yet.
+
+Getting help:
+
+  when you find you need help, you can check out one of the two
+  lxc mailing list archives and register if interested:
+  https://lists.sourceforge.net/lists/listinfo/lxc-devel
+  https://lists.sourceforge.net/lists/listinfo/lxc-users
+
+Portability:
+
+  lxc  is  still  in  development, so the command syntax and the API can
+  change. The version 1.0.0 will be the frozen version.
+
+  lxc is developed and tested on Linux since kernel mainline version 2.6.27
+  (without network) and 2.6.29 with network isolation.
+  is compiled with gcc, and supports i686, x86_64, ppc, ppc64, S390 archi.
+
+AUTHOR
+       Daniel Lezcano <daniel.lezcano@free.fr>

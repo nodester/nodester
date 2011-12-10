@@ -1,0 +1,6 @@
+#!/bin/sh
+echo "Installing Redis..."
+mkdir ./tmp/redis
+curl -L -s http://redis.googlecode.com/files/redis-2.4.4.tar.gz | tar xz -C ./tmp/redis --strip-components 1
+cd ./tmp/redis
+./configure; make; make install

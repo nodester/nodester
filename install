@@ -1,0 +1,14 @@
+#!/bin/sh
+echo "                 _           _"
+echo "                | |         | |"
+echo " _ __   ___   __| | ___  ___| |_ ___ _ __"
+echo "| '_ \ / _ \ / _' |/ _ \/ __| __/ _ \ '__|"
+echo "| | | | (_) | (_| |  __/\__ \ ||  __/ |"
+echo "|_| |_|\___/ \__,_|\___||___/\__\___|_|"
+echo ""
+echo "Installation in progress. Make sure this installer has root!"
+
+rm -rf ./setup/tmp/; mkdir ./setup/tmp/; cd ./setup
+./sys; ./node; ./redis; ./lxc;
+cd ../
+npm install

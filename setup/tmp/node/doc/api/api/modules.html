@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>modules - Node.js v0.6.5 Manual &amp; Documentation</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="assets/sh.css" />
+  <link rel="canonical" href="http://nodejs.org/docs/latest/api/modules.html"/>
+</head>
+<body>
+  <div id="container">
+    <header>
+      <h1>Node.js v0.6.5 Manual &amp; Documentation</h1>
+      <div id="gtoc">
+        <p><a href="index.html">Index</a> | <a href="all.html">View on single page</a></p>
+      </div>
+      <hr />
+    </header>
+    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#modules">Modules</a><ul><li><a href="#cycles">Cycles</a></li><li><a href="#core_Modules">Core Modules</a></li><li><a href="#file_Modules">File Modules</a></li><li><a href="#loading_from_node_modules_Folders">Loading from `node_modules` Folders</a></li><li><a href="#folders_as_Modules">Folders as Modules</a></li><li><a href="#caching">Caching</a><ul><li><a href="#module_Caching_Caveats">Module Caching Caveats</a></li></ul></li><li><a href="#module.exports">module.exports</a></li><li><a href="#module.require">module.require</a></li><li><a href="#all_Together...">All Together...</a></li><li><a href="#loading_from_the_global_folders">Loading from the global folders</a></li><li><a href="#accessing_the_main_module">Accessing the main module</a></li></ul></li><li><a href="#addenda_Package_Manager_Tips">Addenda: Package Manager Tips</a></li></ul><hr /></div>
+<h2 id="modules">Modules</h2>
+
+<p>Node has a simple module loading system.  In Node, files and modules are in
+one-to-one correspondence.  As an example, <code>foo.js</code> loads the module
+<code>circle.js</code> in the same directory.</p>
+
+<p>The contents of <code>foo.js</code>:</p>
+
+<pre><code>var circle = require('./circle.js');
+console.log( 'The area of a circle of radius 4 is '
+           + circle.area(4));</code></pre>
+
+<p>The contents of <code>circle.js</code>:</p>
+
+<pre><code>var PI = Math.PI;
+
+exports.area = function (r) {
+  return PI * r * r;
+};
+
+exports.circumference = function (r) {
+  return 2 * PI * r;
+};</code></pre>
+
+<p>The module <code>circle.js</code> has exported the functions <code>area()</code> and
+<code>circumference()</code>.  To export an object, add to the special <code>exports</code>
+object.</p>
+
+<p>Variables
+local to the module will be private. In this example the variable <code>PI</code> is
+private to <code>circle.js</code>.</p>
+
+<h3 id="cycles">Cycles <a href="#cycles">#</a></h3>
+
+<p>When there are circular <code>require()</code> calls, a module might not be
+done being executed when it is returned.</p>
+
+<p>Consider this situation:</p>
+
+<p><code>a.js</code>:</p>
+
+<pre><code>console.log('a starting');
+exports.done = false;
+var b = require('./b.js');
+console.log('in a, b.done = %j', b.done);
+exports.done = true;
+console.log('a done');</code></pre>
+
+<p><code>b.js</code>:</p>
+
+<pre><code>console.log('b starting');
+exports.done = false;
+var a = require('./a.js');
+console.log('in b, a.done = %j', a.done);
+exports.done = true;
+console.log('b done');</code></pre>
+
+<p><code>main.js</code>:</p>
+
+<pre><code>console.log('main starting');
+var a = require('./a.js');
+var b = require('./b.js');
+console.log('in main, a.done=%j, b.done=%j', a.done, b.done);</code></pre>
+
+<p>When <code>main.js</code> loads <code>a.js</code>, then <code>a.js</code> in turn loads <code>b.js</code>.  At that
+point, <code>b.js</code> tries to load <code>a.js</code>.  In order to prevent an infinite
+loop an <strong>unfinished copy</strong> of the <code>a.js</code> exports object is returned to the
+<code>b.js</code> module.  <code>b.js</code> then finishes loading, and its exports object is
+provided to the <code>a.js</code> module.</p>
+
+<p>By the time <code>main.js</code> has loaded both modules, they're both finished.
+The output of this program would thus be:</p>
+
+<pre><code>$ node main.js
+main starting
+a starting
+b starting
+in b, a.done = false
+b done
+in a, b.done = true
+a done
+in main, a.done=true, b.done=true</code></pre>
+
+<p>If you have cyclic module dependencies in your program, make sure to
+plan accordingly.</p>
+
+<h3 id="core_Modules">Core Modules <a href="#core_Modules">#</a></h3>
+
+<p>Node has several modules compiled into the binary.  These modules are
+described in greater detail elsewhere in this documentation.</p>
+
+<p>The core modules are defined in node's source in the <code>lib/</code> folder.</p>
+
+<p>Core modules are always preferentially loaded if their identifier is
+passed to <code>require()</code>.  For instance, <code>require('http')</code> will always
+return the built in HTTP module, even if there is a file by that name.</p>
+
+<h3 id="file_Modules">File Modules <a href="#file_Modules">#</a></h3>
+
+<p>If the exact filename is not found, then node will attempt to load the
+required filename with the added extension of <code>.js</code>, <code>.json</code>, and then <code>.node</code>.</p>
+
+<p><code>.js</code> files are interpreted as JavaScript text files, and <code>.json</code> files are
+parsed as JSON text files. <code>.node</code> files are interpreted as compiled addon
+modules loaded with <code>dlopen</code>.</p>
+
+<p>A module prefixed with <code>'/'</code> is an absolute path to the file.  For
+example, <code>require('/home/marco/foo.js')</code> will load the file at
+<code>/home/marco/foo.js</code>.</p>
+
+<p>A module prefixed with <code>'./'</code> is relative to the file calling <code>require()</code>.
+That is, <code>circle.js</code> must be in the same directory as <code>foo.js</code> for
+<code>require('./circle')</code> to find it.</p>
+
+<p>Without a leading '/' or './' to indicate a file, the module is either a
+"core module" or is loaded from a <code>node_modules</code> folder.</p>
+
+<h3 id="loading_from_node_modules_Folders">Loading from `node_modules` Folders <a href="#loading_from_node_modules_Folders">#</a></h3>
+
+<p>If the module identifier passed to <code>require()</code> is not a native module,
+and does not begin with <code>'/'</code>, <code>'../'</code>, or <code>'./'</code>, then node starts at the
+parent directory of the current module, and adds <code>/node_modules</code>, and
+attempts to load the module from that location.</p>
+
+<p>If it is not found there, then it moves to the parent directory, and so
+on, until the root of the tree is reached.</p>
+
+<p>For example, if the file at <code>'/home/ry/projects/foo.js'</code> called
+<code>require('bar.js')</code>, then node would look in the following locations, in
+this order:</p>
+
+<ul><li><code>/home/ry/projects/node_modules/bar.js</code></li><li><code>/home/ry/node_modules/bar.js</code></li><li><code>/home/node_modules/bar.js</code></li><li><code>/node_modules/bar.js</code></li></ul>
+
+<p>This allows programs to localize their dependencies, so that they do not
+clash.</p>
+
+<h3 id="folders_as_Modules">Folders as Modules <a href="#folders_as_Modules">#</a></h3>
+
+<p>It is convenient to organize programs and libraries into self-contained
+directories, and then provide a single entry point to that library.
+There are three ways in which a folder may be passed to <code>require()</code> as
+an argument.</p>
+
+<p>The first is to create a <code>package.json</code> file in the root of the folder,
+which specifies a <code>main</code> module.  An example package.json file might
+look like this:</p>
+
+<pre><code>{ "name" : "some-library",
+  "main" : "./lib/some-library.js" }</code></pre>
+
+<p>If this was in a folder at <code>./some-library</code>, then
+<code>require('./some-library')</code> would attempt to load
+<code>./some-library/lib/some-library.js</code>.</p>
+
+<p>This is the extent of Node's awareness of package.json files.</p>
+
+<p>If there is no package.json file present in the directory, then node
+will attempt to load an <code>index.js</code> or <code>index.node</code> file out of that
+directory.  For example, if there was no package.json file in the above
+example, then <code>require('./some-library')</code> would attempt to load:</p>
+
+<ul><li><code>./some-library/index.js</code></li><li><code>./some-library/index.node</code></li></ul>
+
+<h3 id="caching">Caching <a href="#caching">#</a></h3>
+
+<p>Modules are cached after the first time they are loaded.  This means
+(among other things) that every call to <code>require('foo')</code> will get
+exactly the same object returned, if it would resolve to the same file.</p>
+
+<p>Multiple calls to <code>require('foo')</code> may not cause the module code to be
+executed multiple times.  This is an important feature.  With it,
+"partially done" objects can be returned, thus allowing transitive
+dependencies to be loaded even when they would cause cycles.</p>
+
+<p>If you want to have a module execute code multiple times, then export a
+function, and call that function.</p>
+
+<h4 id="module_Caching_Caveats">Module Caching Caveats <a href="#module_Caching_Caveats">#</a></h4>
+
+<p>Modules are cached based on their resolved filename.  Since modules may
+resolve to a different filename based on the location of the calling
+module (loading from <code>node_modules</code> folders), it is not a <em>guarantee</em>
+that <code>require('foo')</code> will always return the exact same object, if it
+would resolve to different files.</p>
+
+<h3 id="module.exports">module.exports <a href="#module.exports">#</a></h3>
+
+<p>The <code>exports</code> object is created by the Module system. Sometimes this is not
+acceptable, many want their module to be an instance of some class. To do this
+assign the desired export object to <code>module.exports</code>. For example suppose we
+were making a module called <code>a.js</code></p>
+
+<pre><code>var EventEmitter = require('events').EventEmitter;
+
+module.exports = new EventEmitter();
+
+// Do some work, and after some time emit
+// the 'ready' event from the module itself.
+setTimeout(function() {
+  module.exports.emit('ready');
+}, 1000);</code></pre>
+
+<p>Then in another file we could do</p>
+
+<pre><code>var a = require('./a');
+a.on('ready', function() {
+  console.log('module a is ready');
+});</code></pre>
+
+<p>Note that assignment to <code>module.exports</code> must be done immediately. It cannot be
+done in any callbacks.  This does not work:</p>
+
+<p>x.js:</p>
+
+<pre><code>setTimeout(function() {
+  module.exports = { a: "hello" };
+}, 0);</code></pre>
+
+<p>y.js:</p>
+
+<pre><code>var x = require('./x');
+console.log(x.a);</code></pre>
+
+<h3 id="module.require">module.require <a href="#module.require">#</a></h3>
+
+<p>The <code>module.require</code> method provides a way to load a module as if
+<code>require()</code> was called from the original module.</p>
+
+<p>Note that in order to do this, you must get a reference to the <code>module</code>
+object.  Since <code>require()</code> returns the <code>exports</code>, and the <code>module</code> is
+typically <em>only</em> available within a specific module's code, it must be
+explicitly exported in order to be used.</p>
+
+<h3 id="all_Together...">All Together... <a href="#all_Together...">#</a></h3>
+
+<p>To get the exact filename that will be loaded when <code>require()</code> is called, use
+the <code>require.resolve()</code> function.</p>
+
+<p>Putting together all of the above, here is the high-level algorithm
+in pseudocode of what require.resolve does:</p>
+
+<pre><code>require(X) from module at path Y
+1. If X is a core module,
+   a. return the core module
+   b. STOP
+2. If X begins with './' or '/' or '../'
+   a. LOAD_AS_FILE(Y + X)
+   b. LOAD_AS_DIRECTORY(Y + X)
+3. LOAD_NODE_MODULES(X, dirname(Y))
+4. THROW "not found"
+
+LOAD_AS_FILE(X)
+1. If X is a file, load X as JavaScript text.  STOP
+2. If X.js is a file, load X.js as JavaScript text.  STOP
+3. If X.node is a file, load X.node as binary addon.  STOP
+
+LOAD_AS_DIRECTORY(X)
+1. If X/package.json is a file,
+   a. Parse X/package.json, and look for "main" field.
+   b. let M = X + (json main field)
+   c. LOAD_AS_FILE(M)
+2. If X/index.js is a file, load X/index.js as JavaScript text.  STOP
+3. If X/index.node is a file, load X/index.node as binary addon.  STOP
+
+LOAD_NODE_MODULES(X, START)
+1. let DIRS=NODE_MODULES_PATHS(START)
+2. for each DIR in DIRS:
+   a. LOAD_AS_FILE(DIR/X)
+   b. LOAD_AS_DIRECTORY(DIR/X)
+
+NODE_MODULES_PATHS(START)
+1. let PARTS = path split(START)
+2. let ROOT = index of first instance of "node_modules" in PARTS, or 0
+3. let I = count of PARTS - 1
+4. let DIRS = []
+5. while I &gt; ROOT,
+   a. if PARTS[I] = "node_modules" CONTINUE
+   c. DIR = path join(PARTS[0 .. I] + "node_modules")
+   b. DIRS = DIRS + DIR
+   c. let I = I - 1
+6. return DIRS</code></pre>
+
+<h3 id="loading_from_the_global_folders">Loading from the global folders <a href="#loading_from_the_global_folders">#</a></h3>
+
+<p>If the <code>NODE_PATH</code> environment variable is set to a colon-delimited list
+of absolute paths, then node will search those paths for modules if they
+are not found elsewhere.  (Note: On Windows, <code>NODE_PATH</code> is delimited by
+semicolons instead of colons.)</p>
+
+<p>Additionally, node will search in the following locations:</p>
+
+<ul><li>1: <code>$HOME/.node_modules</code></li><li>2: <code>$HOME/.node_libraries</code></li><li>3: <code>$PREFIX/lib/node</code></li></ul>
+
+<p>Where <code>$HOME</code> is the user's home directory, and <code>$PREFIX</code> is node's
+configured <code>installPrefix</code>.</p>
+
+<p>These are mostly for historic reasons.  You are highly encouraged to
+place your dependencies locally in <code>node_modules</code> folders.  They will be
+loaded faster, and more reliably.</p>
+
+<h3 id="accessing_the_main_module">Accessing the main module <a href="#accessing_the_main_module">#</a></h3>
+
+<p>When a file is run directly from Node, <code>require.main</code> is set to its
+<code>module</code>. That means that you can determine whether a file has been run
+directly by testing</p>
+
+<pre><code>require.main === module</code></pre>
+
+<p>For a file <code>foo.js</code>, this will be <code>true</code> if run via <code>node foo.js</code>, but
+<code>false</code> if run by <code>require('./foo')</code>.</p>
+
+<p>Because <code>module</code> provides a <code>filename</code> property (normally equivalent to
+<code>__filename</code>), the entry point of the current application can be obtained
+by checking <code>require.main.filename</code>.</p>
+
+<h2 id="addenda_Package_Manager_Tips">Addenda: Package Manager Tips</h2>
+
+<p>The semantics of Node's <code>require()</code> function were designed to be general
+enough to support a number of sane directory structures. Package manager
+programs such as <code>dpkg</code>, <code>rpm</code>, and <code>npm</code> will hopefully find it possible to
+build native packages from Node modules without modification.</p>
+
+<p>Below we give a suggested directory structure that could work:</p>
+
+<p>Let's say that we wanted to have the folder at
+<code>/usr/lib/node/&lt;some-package&gt;/&lt;some-version&gt;</code> hold the contents of a
+specific version of a package.</p>
+
+<p>Packages can depend on one another. In order to install package <code>foo</code>, you
+may have to install a specific version of package <code>bar</code>.  The <code>bar</code> package
+may itself have dependencies, and in some cases, these dependencies may even
+collide or form cycles.</p>
+
+<p>Since Node looks up the <code>realpath</code> of any modules it loads (that is,
+resolves symlinks), and then looks for their dependencies in the
+<code>node_modules</code> folders as described above, this situation is very simple to
+resolve with the following architecture:</p>
+
+<ul><li><code>/usr/lib/node/foo/1.2.3/</code> - Contents of the <code>foo</code> package, version 1.2.3.</li><li><code>/usr/lib/node/bar/4.3.2/</code> - Contents of the <code>bar</code> package that <code>foo</code>
+depends on.</li><li><code>/usr/lib/node/foo/1.2.3/node_modules/bar</code> - Symbolic link to
+<code>/usr/lib/node/bar/4.3.2/</code>.</li><li><code>/usr/lib/node/bar/4.3.2/node_modules/*</code> - Symbolic links to the packages
+that <code>bar</code> depends on.</li></ul>
+
+<p>Thus, even if a cycle is encountered, or if there are dependency
+conflicts, every module will be able to get a version of its dependency
+that it can use.</p>
+
+<p>When the code in the <code>foo</code> package does <code>require('bar')</code>, it will get the
+version that is symlinked into <code>/usr/lib/node/foo/1.2.3/node_modules/bar</code>.
+Then, when the code in the <code>bar</code> package calls <code>require('quux')</code>, it'll get
+the version that is symlinked into
+<code>/usr/lib/node/bar/4.3.2/node_modules/quux</code>.</p>
+
+<p>Furthermore, to make the module lookup process even more optimal, rather
+than putting packages directly in <code>/usr/lib/node</code>, we could put them in
+<code>/usr/lib/node_modules/&lt;name&gt;/&lt;version&gt;</code>.  Then node will not bother
+looking for missing dependencies in <code>/usr/node_modules</code> or <code>/node_modules</code>.</p>
+
+<p>In order to make modules available to the node REPL, it might be useful to
+also add the <code>/usr/lib/node_modules</code> folder to the <code>$NODE_PATH</code> environment
+variable.  Since the module lookups using <code>node_modules</code> folders are all
+relative, and based on the real path of the files making the calls to
+<code>require()</code>, the packages themselves can be anywhere.</p>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+</body>
+</html>

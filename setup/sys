@@ -1,0 +1,3 @@
+#!/bin/sh
+echo "Installing dependencies..."
+apt-get -y install libcap-dev curl git-core gcc libssl-dev

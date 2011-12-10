@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>addons - Node.js v0.6.5 Manual &amp; Documentation</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="assets/sh.css" />
+  <link rel="canonical" href="http://nodejs.org/docs/latest/api/addons.html"/>
+</head>
+<body>
+  <div id="container">
+    <header>
+      <h1>Node.js v0.6.5 Manual &amp; Documentation</h1>
+      <div id="gtoc">
+        <p><a href="index.html">Index</a> | <a href="all.html">View on single page</a></p>
+      </div>
+      <hr />
+    </header>
+    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#addons">Addons</a></li></ul><hr /></div>
+<h2 id="addons">Addons</h2>
+
+<p>Addons are dynamically linked shared objects. They can provide glue to C and
+C++ libraries. The API (at the moment) is rather complex, involving
+knowledge of several libraries:</p>
+
+<ul><li><p>V8 JavaScript, a C++ library. Used for interfacing with JavaScript:
+creating objects, calling functions, etc.  Documented mostly in the
+<code>v8.h</code> header file (<code>deps/v8/include/v8.h</code> in the Node source tree).</p></li><li><p><a href="https://github.com/joyent/libuv">libuv</a>, C event loop library. Anytime one
+needs to wait for a file descriptor to become readable, wait for a timer, or
+wait for a signal to received one will need to interface with libuv. That is,
+if you perform any I/O, libuv will need to be used.</p></li><li><p>Internal Node libraries. Most importantly is the <code>node::ObjectWrap</code>
+class which you will likely want to derive from.</p></li><li><p>Others. Look in <code>deps/</code> for what else is available.</p></li></ul>
+
+<p>Node statically compiles all its dependencies into the executable. When
+compiling your module, you don't need to worry about linking to any of these
+libraries.</p>
+
+<p>To get started let's make a small Addon which is the C++ equivalent of
+the following Javascript code:</p>
+
+<pre><code>exports.hello = function() { return 'world'; };</code></pre>
+
+<p>To get started we create a file <code>hello.cc</code>:</p>
+
+<pre><code>#include &lt;node.h&gt;
+#include &lt;v8.h&gt;
+
+using namespace v8;
+
+Handle&lt;Value&gt; Method(const Arguments&amp; args) {
+  HandleScope scope;
+  return scope.Close(String::New("world"));
+}
+
+void init(Handle&lt;Object&gt; target) {
+  NODE_SET_METHOD(target, "hello", Method);
+}
+NODE_MODULE(hello, init)</code></pre>
+
+<p>Note that all Node addons must export an initialization function:</p>
+
+<pre><code>void Initialize (Handle&lt;Object&gt; target);
+NODE_MODULE(module_name, Initialize)</code></pre>
+
+<p>There is no semi-colon after <code>NODE_MODULE</code> as it's not a function (see <code>node.h</code>).</p>
+
+<p>The <code>module_name</code> needs to match the filename of the final binary (minus the
+.node suffix).</p>
+
+<p>The source code needs to be built into <code>hello.node</code>, the binary Addon. To
+do this we create a file called <code>wscript</code> which is python code and looks
+like this:</p>
+
+<pre><code>srcdir = '.'
+blddir = 'build'
+VERSION = '0.0.1'
+
+def set_options(opt):
+  opt.tool_options('compiler_cxx')
+
+def configure(conf):
+  conf.check_tool('compiler_cxx')
+  conf.check_tool('node_addon')
+
+def build(bld):
+  obj = bld.new_task_gen('cxx', 'shlib', 'node_addon')
+  obj.target = 'hello'
+  obj.source = 'hello.cc'</code></pre>
+
+<p>Running <code>node-waf configure build</code> will create a file
+<code>build/default/hello.node</code> which is our Addon.</p>
+
+<p><code>node-waf</code> is just <a href="http://code.google.com/p/waf">WAF</a>, the python-based build system. <code>node-waf</code> is
+provided for the ease of users.</p>
+
+<p>You can now use the binary addon in a Node project <code>hello.js</code> by pointing <code>require</code> to
+the recently built module:</p>
+
+<pre><code>var addon = require('./build/Release/hello');
+
+console.log(addon.hello()); // 'world'</code></pre>
+
+<p>For the moment, that is all the documentation on addons. Please see
+<a href="https://github.com/ry/node_postgres">https://github.com/ry/node_postgres</a> for a real example.</p>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+</body>
+</html>

@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>buffers - Node.js v0.6.5 Manual &amp; Documentation</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="assets/sh.css" />
+  <link rel="canonical" href="http://nodejs.org/docs/latest/api/buffers.html"/>
+</head>
+<body>
+  <div id="container">
+    <header>
+      <h1>Node.js v0.6.5 Manual &amp; Documentation</h1>
+      <div id="gtoc">
+        <p><a href="index.html">Index</a> | <a href="all.html">View on single page</a></p>
+      </div>
+      <hr />
+    </header>
+    <div id="toc"><h2>Table Of Contents</h2><ul><li><a href="#buffers">Buffers</a><ul><li><a href="#new_Buffer">new Buffer(size)</a></li><li><a href="#new_Buffer">new Buffer(array)</a></li><li><a href="#new_Buffer">new Buffer(str, encoding='utf8')</a></li><li><a href="#buffer.write">buffer.write(string, offset=0, length=buffer.length-offset, encoding='utf8')</a></li><li><a href="#buffer.toString">buffer.toString(encoding, start=0, end=buffer.length)</a></li><li><a href="#buffer_index_">buffer[index]</a></li><li><a href="#buffer.isBuffer">Buffer.isBuffer(obj)</a></li><li><a href="#buffer.byteLength">Buffer.byteLength(string, encoding='utf8')</a></li><li><a href="#buffer.length">buffer.length</a></li><li><a href="#buffer.copy">buffer.copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length)</a></li><li><a href="#buffer.slice">buffer.slice(start, end=buffer.length)</a></li><li><a href="#buffer.readUInt8">buffer.readUInt8(offset, noAssert=false)</a></li><li><a href="#buffer.readUInt16LE">buffer.readUInt16LE(offset, noAssert=false)</a></li><li><a href="#buffer.readUInt16BE">buffer.readUInt16BE(offset, noAssert=false)</a></li><li><a href="#buffer.readUInt32LE">buffer.readUInt32LE(offset, noAssert=false)</a></li><li><a href="#buffer.readUInt32BE">buffer.readUInt32BE(offset, noAssert=false)</a></li><li><a href="#buffer.readInt8">buffer.readInt8(offset, noAssert=false)</a></li><li><a href="#buffer.readInt16LE">buffer.readInt16LE(offset, noAssert=false)</a></li><li><a href="#buffer.readInt16BE">buffer.readInt16BE(offset, noAssert=false)</a></li><li><a href="#buffer.readInt32LE">buffer.readInt32LE(offset, noAssert=false)</a></li><li><a href="#buffer.readInt32BE">buffer.readInt32BE(offset, noAssert=false)</a></li><li><a href="#buffer.readFloatLE">buffer.readFloatLE(offset, noAssert=false)</a></li><li><a href="#buffer.readFloatBE">buffer.readFloatBE(offset, noAssert=false)</a></li><li><a href="#buffer.readDoubleLE">buffer.readDoubleLE(offset, noAssert=false)</a></li><li><a href="#buffer.readDoubleBE">buffer.readDoubleBE(offset, noAssert=false)</a></li><li><a href="#buffer.writeUInt8">buffer.writeUInt8(value, offset, noAssert=false)</a></li><li><a href="#buffer.writeUInt16LE">buffer.writeUInt16LE(value, offset, noAssert=false)</a></li><li><a href="#buffer.writeUInt16BE">buffer.writeUInt16BE(value, offset, noAssert=false)</a></li><li><a href="#buffer.writeUInt32LE">buffer.writeUInt32LE(value, offset, noAssert=false)</a></li><li><a href="#buffer.writeUInt32BE">buffer.writeUInt32BE(value, offset, noAssert=false)</a></li><li><a href="#buffer.writeInt8">buffer.writeInt8(value, offset, noAssert=false)</a></li><li><a href="#buffer.writeInt16LE">buffer.writeInt16LE(value, offset, noAssert=false)</a></li><li><a href="#buffer.writeInt16BE">buffer.writeInt16BE(value, offset, noAssert=false)</a></li><li><a href="#buffer.writeInt32LE">buffer.writeInt32LE(value, offset, noAssert=false)</a></li><li><a href="#buffer.writeInt32BE">buffer.writeInt32BE(value, offset, noAssert=false)</a></li><li><a href="#buffer.writeFloatLE">buffer.writeFloatLE(value, offset, noAssert=false)</a></li><li><a href="#buffer.writeFloatBE">buffer.writeFloatBE(value, offset, noAssert=false)</a></li><li><a href="#buffer.writeDoubleLE">buffer.writeDoubleLE(value, offset, noAssert=false)</a></li><li><a href="#buffer.writeDoubleBE">buffer.writeDoubleBE(value, offset, noAssert=false)</a></li><li><a href="#buffer.fill">buffer.fill(value, offset=0, end=buffer.length)</a></li><li><a href="#iNSPECT_MAX_BYTES">INSPECT_MAX_BYTES</a></li></ul></li></ul><hr /></div>
+<h2 id="buffers">Buffers</h2>
+
+<p>Pure Javascript is Unicode friendly but not nice to binary data.  When
+dealing with TCP streams or the file system, it's necessary to handle octet
+streams. Node has several strategies for manipulating, creating, and
+consuming octet streams.</p>
+
+<p>Raw data is stored in instances of the <code>Buffer</code> class. A <code>Buffer</code> is similar
+to an array of integers but corresponds to a raw memory allocation outside
+the V8 heap. A <code>Buffer</code> cannot be resized.</p>
+
+<p>The <code>Buffer</code> object is global.</p>
+
+<p>Converting between Buffers and JavaScript string objects requires an explicit encoding
+method.  Here are the different string encodings;</p>
+
+<ul><li><p><code>'ascii'</code> - for 7 bit ASCII data only.  This encoding method is very fast, and will
+strip the high bit if set.
+Note that this encoding converts a null character (<code>'\0'</code> or <code>'\u0000'</code>) into
+<code>0x20</code> (character code of a space). If you want to convert a null character
+into <code>0x00</code>, you should use <code>'utf8'</code>.</p></li><li><p><code>'utf8'</code> - Multi byte encoded Unicode characters.  Many web pages and other document formats use UTF-8.</p></li><li><p><code>'ucs2'</code> - 2-bytes, little endian encoded Unicode characters. It can encode
+only BMP(Basic Multilingual Plane, U+0000 - U+FFFF).</p></li><li><p><code>'base64'</code> - Base64 string encoding.</p></li><li><p><code>'binary'</code> - A way of encoding raw binary data into strings by using only
+the first 8 bits of each character. This encoding method is deprecated and
+should be avoided in favor of <code>Buffer</code> objects where possible. This encoding
+will be removed in future versions of Node.</p></li><li><p><code>'hex'</code> - Encode each byte as two hexidecimal characters.</p></li></ul>
+
+<h3 id="new_Buffer">new Buffer(size) <a href="#new_Buffer">#</a></h3>
+
+<p>Allocates a new buffer of <code>size</code> octets.</p>
+
+<h3 id="new_Buffer">new Buffer(array) <a href="#new_Buffer">#</a></h3>
+
+<p>Allocates a new buffer using an <code>array</code> of octets.</p>
+
+<h3 id="new_Buffer">new Buffer(str, encoding='utf8') <a href="#new_Buffer">#</a></h3>
+
+<p>Allocates a new buffer containing the given <code>str</code>.</p>
+
+<h3 id="buffer.write">buffer.write(string, offset=0, length=buffer.length-offset, encoding='utf8') <a href="#buffer.write">#</a></h3>
+
+<p>Writes <code>string</code> to the buffer at <code>offset</code> using the given encoding. <code>length</code> is
+the number of bytes to write. Returns number of octets written. If <code>buffer</code> did
+not contain enough space to fit the entire string, it will write a partial
+amount of the string. The method will not write partial characters.</p>
+
+<p>Example: write a utf8 string into a buffer, then print it</p>
+
+<pre><code>buf = new Buffer(256);
+len = buf.write('\u00bd + \u00bc = \u00be', 0);
+console.log(len + " bytes: " + buf.toString('utf8', 0, len));</code></pre>
+
+<p>The number of characters written (which may be different than the number of
+bytes written) is set in <code>Buffer._charsWritten</code> and will be overwritten the
+next time <code>buf.write()</code> is called.</p>
+
+<h3 id="buffer.toString">buffer.toString(encoding, start=0, end=buffer.length) <a href="#buffer.toString">#</a></h3>
+
+<p>Decodes and returns a string from buffer data encoded with <code>encoding</code>
+beginning at <code>start</code> and ending at <code>end</code>.</p>
+
+<p>See <code>buffer.write()</code> example, above.</p>
+
+<h3 id="buffer_index_">buffer[index] <a href="#buffer_index_">#</a></h3>
+
+<p>Get and set the octet at <code>index</code>. The values refer to individual bytes,
+so the legal range is between <code>0x00</code> and <code>0xFF</code> hex or <code>0</code> and <code>255</code>.</p>
+
+<p>Example: copy an ASCII string into a buffer, one byte at a time:</p>
+
+<pre><code>str = "node.js";
+buf = new Buffer(str.length);
+
+for (var i = 0; i &lt; str.length ; i++) {
+  buf[i] = str.charCodeAt(i);
+}
+
+console.log(buf);
+
+// node.js</code></pre>
+
+<h3 id="buffer.isBuffer">Buffer.isBuffer(obj) <a href="#buffer.isBuffer">#</a></h3>
+
+<p>Tests if <code>obj</code> is a <code>Buffer</code>.</p>
+
+<h3 id="buffer.byteLength">Buffer.byteLength(string, encoding='utf8') <a href="#buffer.byteLength">#</a></h3>
+
+<p>Gives the actual byte length of a string.  This is not the same as
+<code>String.prototype.length</code> since that returns the number of <em>characters</em> in a
+string.</p>
+
+<p>Example:</p>
+
+<pre><code>str = '\u00bd + \u00bc = \u00be';
+
+console.log(str + ": " + str.length + " characters, " +
+  Buffer.byteLength(str, 'utf8') + " bytes");
+
+// ½ + ¼ = ¾: 9 characters, 12 bytes</code></pre>
+
+<h3 id="buffer.length">buffer.length <a href="#buffer.length">#</a></h3>
+
+<p>The size of the buffer in bytes.  Note that this is not necessarily the size
+of the contents. <code>length</code> refers to the amount of memory allocated for the
+buffer object.  It does not change when the contents of the buffer are changed.</p>
+
+<pre><code>buf = new Buffer(1234);
+
+console.log(buf.length);
+buf.write("some string", "ascii", 0);
+console.log(buf.length);
+
+// 1234
+// 1234</code></pre>
+
+<h3 id="buffer.copy">buffer.copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length) <a href="#buffer.copy">#</a></h3>
+
+<p>Does copy between buffers. The source and target regions can be overlapped.</p>
+
+<p>Example: build two Buffers, then copy <code>buf1</code> from byte 16 through byte 19
+into <code>buf2</code>, starting at the 8th byte in <code>buf2</code>.</p>
+
+<pre><code>buf1 = new Buffer(26);
+buf2 = new Buffer(26);
+
+for (var i = 0 ; i &lt; 26 ; i++) {
+  buf1[i] = i + 97; // 97 is ASCII a
+  buf2[i] = 33; // ASCII !
+}
+
+buf1.copy(buf2, 8, 16, 20);
+console.log(buf2.toString('ascii', 0, 25));
+
+// !!!!!!!!qrst!!!!!!!!!!!!!</code></pre>
+
+<h3 id="buffer.slice">buffer.slice(start, end=buffer.length) <a href="#buffer.slice">#</a></h3>
+
+<p>Returns a new buffer which references the
+same memory as the old, but offset and cropped by the <code>start</code> and <code>end</code>
+indexes.</p>
+
+<p><strong>Modifying the new buffer slice will modify memory in the original buffer!</strong></p>
+
+<p>Example: build a Buffer with the ASCII alphabet, take a slice, then modify one
+byte from the original Buffer.</p>
+
+<pre><code>var buf1 = new Buffer(26);
+
+for (var i = 0 ; i &lt; 26 ; i++) {
+  buf1[i] = i + 97; // 97 is ASCII a
+}
+
+var buf2 = buf1.slice(0, 3);
+console.log(buf2.toString('ascii', 0, buf2.length));
+buf1[0] = 33;
+console.log(buf2.toString('ascii', 0, buf2.length));
+
+// abc
+// !bc</code></pre>
+
+<h3 id="buffer.readUInt8">buffer.readUInt8(offset, noAssert=false) <a href="#buffer.readUInt8">#</a></h3>
+
+<p>Reads an unsigned 8 bit integer from the buffer at the specified offset.</p>
+
+<p>Set <code>noAssert</code> to true to skip validation of <code>offset</code>. This means that <code>offset</code>
+may be beyond the end of the buffer.</p>
+
+<p>Example:</p>
+
+<pre><code>var buf = new Buffer(4);
+
+buf[0] = 0x3;
+buf[1] = 0x4;
+buf[2] = 0x23;
+buf[3] = 0x42;
+
+for (ii = 0; ii &lt; buf.length; ii++) {
+  console.log(buf.readUInt8(ii));
+}
+
+// 0x3
+// 0x4
+// 0x23
+// 0x42</code></pre>
+
+<h3 id="buffer.readUInt16LE">buffer.readUInt16LE(offset, noAssert=false) <a href="#buffer.readUInt16LE">#</a></h3>
+
+<h3 id="buffer.readUInt16BE">buffer.readUInt16BE(offset, noAssert=false) <a href="#buffer.readUInt16BE">#</a></h3>
+
+<p>Reads an unsigned 16 bit integer from the buffer at the specified offset with
+specified endian format.</p>
+
+<p>Set <code>noAssert</code> to true to skip validation of <code>offset</code>. This means that <code>offset</code>
+may be beyond the end of the buffer.</p>
+
+<p>Example:</p>
+
+<pre><code>var buf = new Buffer(4);
+
+buf[0] = 0x3;
+buf[1] = 0x4;
+buf[2] = 0x23;
+buf[3] = 0x42;
+
+console.log(buf.readUInt16BE(0));
+console.log(buf.readUInt16LE(0));
+console.log(buf.readUInt16BE(1));
+console.log(buf.readUInt16LE(1));
+console.log(buf.readUInt16BE(2));
+console.log(buf.readUInt16LE(2));
+
+// 0x0304
+// 0x0403
+// 0x0423
+// 0x2304
+// 0x2342
+// 0x4223</code></pre>
+
+<h3 id="buffer.readUInt32LE">buffer.readUInt32LE(offset, noAssert=false) <a href="#buffer.readUInt32LE">#</a></h3>
+
+<h3 id="buffer.readUInt32BE">buffer.readUInt32BE(offset, noAssert=false) <a href="#buffer.readUInt32BE">#</a></h3>
+
+<p>Reads an unsigned 32 bit integer from the buffer at the specified offset with
+specified endian format.</p>
+
+<p>Set <code>noAssert</code> to true to skip validation of <code>offset</code>. This means that <code>offset</code>
+may be beyond the end of the buffer.</p>
+
+<p>Example:</p>
+
+<pre><code>var buf = new Buffer(4);
+
+buf[0] = 0x3;
+buf[1] = 0x4;
+buf[2] = 0x23;
+buf[3] = 0x42;
+
+console.log(buf.readUInt32BE(0));
+console.log(buf.readUInt32LE(0));
+
+// 0x03042342
+// 0x42230403</code></pre>
+
+<h3 id="buffer.readInt8">buffer.readInt8(offset, noAssert=false) <a href="#buffer.readInt8">#</a></h3>
+
+<p>Reads a signed 8 bit integer from the buffer at the specified offset.</p>
+
+<p>Set <code>noAssert</code> to true to skip validation of <code>offset</code>. This means that <code>offset</code>
+may be beyond the end of the buffer.</p>
+
+<p>Works as <code>buffer.readUInt8</code>, except buffer contents are treated as two's
+complement signed values.</p>
+
+<h3 id="buffer.readInt16LE">buffer.readInt16LE(offset, noAssert=false) <a href="#buffer.readInt16LE">#</a></h3>
+
+<h3 id="buffer.readInt16BE">buffer.readInt16BE(offset, noAssert=false) <a href="#buffer.readInt16BE">#</a></h3>
+
+<p>Reads a signed 16 bit integer from the buffer at the specified offset with
+specified endian format.</p>
+
+<p>Set <code>noAssert</code> to true to skip validation of <code>offset</code>. This means that <code>offset</code>
+may be beyond the end of the buffer.</p>
+
+<p>Works as <code>buffer.readUInt16*</code>, except buffer contents are treated as two's
+complement signed values.</p>
+
+<h3 id="buffer.readInt32LE">buffer.readInt32LE(offset, noAssert=false) <a href="#buffer.readInt32LE">#</a></h3>
+
+<h3 id="buffer.readInt32BE">buffer.readInt32BE(offset, noAssert=false) <a href="#buffer.readInt32BE">#</a></h3>
+
+<p>Reads a signed 32 bit integer from the buffer at the specified offset with
+specified endian format.</p>
+
+<p>Set <code>noAssert</code> to true to skip validation of <code>offset</code>. This means that <code>offset</code>
+may be beyond the end of the buffer.</p>
+
+<p>Works as <code>buffer.readUInt32*</code>, except buffer contents are treated as two's
+complement signed values.</p>
+
+<h3 id="buffer.readFloatLE">buffer.readFloatLE(offset, noAssert=false) <a href="#buffer.readFloatLE">#</a></h3>
+
+<h3 id="buffer.readFloatBE">buffer.readFloatBE(offset, noAssert=false) <a href="#buffer.readFloatBE">#</a></h3>
+
+<p>Reads a 32 bit float from the buffer at the specified offset with specified
+endian format.</p>
+
+<p>Set <code>noAssert</code> to true to skip validation of <code>offset</code>. This means that <code>offset</code>
+may be beyond the end of the buffer.</p>
+
+<p>Example:</p>
+
+<pre><code>var buf = new Buffer(4);
+
+buf[0] = 0x00;
+buf[1] = 0x00;
+buf[2] = 0x80;
+buf[3] = 0x3f;
+
+console.log(buf.readFloatLE(0));
+
+// 0x01</code></pre>
+
+<h3 id="buffer.readDoubleLE">buffer.readDoubleLE(offset, noAssert=false) <a href="#buffer.readDoubleLE">#</a></h3>
+
+<h3 id="buffer.readDoubleBE">buffer.readDoubleBE(offset, noAssert=false) <a href="#buffer.readDoubleBE">#</a></h3>
+
+<p>Reads a 64 bit double from the buffer at the specified offset with specified
+endian format.</p>
+
+<p>Set <code>noAssert</code> to true to skip validation of <code>offset</code>. This means that <code>offset</code>
+may be beyond the end of the buffer.</p>
+
+<p>Example:</p>
+
+<pre><code>var buf = new Buffer(8);
+
+buf[0] = 0x55;
+buf[1] = 0x55;
+buf[2] = 0x55;
+buf[3] = 0x55;
+buf[4] = 0x55;
+buf[5] = 0x55;
+buf[6] = 0xd5;
+buf[7] = 0x3f;
+
+console.log(buf.readDoubleLE(0));
+
+// 0.3333333333333333</code></pre>
+
+<h3 id="buffer.writeUInt8">buffer.writeUInt8(value, offset, noAssert=false) <a href="#buffer.writeUInt8">#</a></h3>
+
+<p>Writes <code>value</code> to the buffer at the specified offset. Note, <code>value</code> must be a
+valid unsigned 8 bit integer.</p>
+
+<p>Set <code>noAssert</code> to true to skip validation of <code>value</code> and <code>offset</code>. This means
+that <code>value</code> may be too large for the specific function and <code>offset</code> may be
+beyond the end of the buffer leading to the values being silently dropped. This
+should not be used unless you are certain of correctness.</p>
+
+<p>Example:</p>
+
+<pre><code>var buf = new Buffer(4);
+buf.writeUInt8(0x3, 0);
+buf.writeUInt8(0x4, 1);
+buf.writeUInt8(0x23, 2);
+buf.writeUInt8(0x42, 3);
+
+console.log(buf);
+
+// &lt;Buffer 03 04 23 42&gt;</code></pre>
+
+<h3 id="buffer.writeUInt16LE">buffer.writeUInt16LE(value, offset, noAssert=false) <a href="#buffer.writeUInt16LE">#</a></h3>
+
+<h3 id="buffer.writeUInt16BE">buffer.writeUInt16BE(value, offset, noAssert=false) <a href="#buffer.writeUInt16BE">#</a></h3>
+
+<p>Writes <code>value</code> to the buffer at the specified offset with specified endian
+format. Note, <code>value</code> must be a valid unsigned 16 bit integer.</p>
+
+<p>Set <code>noAssert</code> to true to skip validation of <code>value</code> and <code>offset</code>. This means
+that <code>value</code> may be too large for the specific function and <code>offset</code> may be
+beyond the end of the buffer leading to the values being silently dropped. This
+should not be used unless you are certain of correctness.</p>
+
+<p>Example:</p>
+
+<pre><code>var buf = new Buffer(4);
+buf.writeUInt16BE(0xdead, 0);
+buf.writeUInt16BE(0xbeef, 2);
+
+console.log(buf);
+
+buf.writeUInt16LE(0xdead, 0);
+buf.writeUInt16LE(0xbeef, 2);
+
+console.log(buf);
+
+// &lt;Buffer de ad be ef&gt;
+// &lt;Buffer ad de ef be&gt;</code></pre>
+
+<h3 id="buffer.writeUInt32LE">buffer.writeUInt32LE(value, offset, noAssert=false) <a href="#buffer.writeUInt32LE">#</a></h3>
+
+<h3 id="buffer.writeUInt32BE">buffer.writeUInt32BE(value, offset, noAssert=false) <a href="#buffer.writeUInt32BE">#</a></h3>
+
+<p>Writes <code>value</code> to the buffer at the specified offset with specified endian
+format. Note, <code>value</code> must be a valid unsigned 32 bit integer.</p>
+
+<p>Set <code>noAssert</code> to true to skip validation of <code>value</code> and <code>offset</code>. This means
+that <code>value</code> may be too large for the specific function and <code>offset</code> may be
+beyond the end of the buffer leading to the values being silently dropped. This
+should not be used unless you are certain of correctness.</p>
+
+<p>Example:</p>
+
+<pre><code>var buf = new Buffer(4);
+buf.writeUInt32BE(0xfeedface, 0);
+
+console.log(buf);
+
+buf.writeUInt32LE(0xfeedface, 0);
+
+console.log(buf);
+
+// &lt;Buffer fe ed fa ce&gt;
+// &lt;Buffer ce fa ed fe&gt;</code></pre>
+
+<h3 id="buffer.writeInt8">buffer.writeInt8(value, offset, noAssert=false) <a href="#buffer.writeInt8">#</a></h3>
+
+<p>Writes <code>value</code> to the buffer at the specified offset. Note, <code>value</code> must be a
+valid signed 8 bit integer.</p>
+
+<p>Set <code>noAssert</code> to true to skip validation of <code>value</code> and <code>offset</code>. This means
+that <code>value</code> may be too large for the specific function and <code>offset</code> may be
+beyond the end of the buffer leading to the values being silently dropped. This
+should not be used unless you are certain of correctness.</p>
+
+<p>Works as <code>buffer.writeUInt8</code>, except value is written out as a two's complement
+signed integer into <code>buffer</code>.</p>
+
+<h3 id="buffer.writeInt16LE">buffer.writeInt16LE(value, offset, noAssert=false) <a href="#buffer.writeInt16LE">#</a></h3>
+
+<h3 id="buffer.writeInt16BE">buffer.writeInt16BE(value, offset, noAssert=false) <a href="#buffer.writeInt16BE">#</a></h3>
+
+<p>Writes <code>value</code> to the buffer at the specified offset with specified endian
+format. Note, <code>value</code> must be a valid signed 16 bit integer.</p>
+
+<p>Set <code>noAssert</code> to true to skip validation of <code>value</code> and <code>offset</code>. This means
+that <code>value</code> may be too large for the specific function and <code>offset</code> may be
+beyond the end of the buffer leading to the values being silently dropped. This
+should not be used unless you are certain of correctness.</p>
+
+<p>Works as <code>buffer.writeUInt16*</code>, except value is written out as a two's
+complement signed integer into <code>buffer</code>.</p>
+
+<h3 id="buffer.writeInt32LE">buffer.writeInt32LE(value, offset, noAssert=false) <a href="#buffer.writeInt32LE">#</a></h3>
+
+<h3 id="buffer.writeInt32BE">buffer.writeInt32BE(value, offset, noAssert=false) <a href="#buffer.writeInt32BE">#</a></h3>
+
+<p>Writes <code>value</code> to the buffer at the specified offset with specified endian
+format. Note, <code>value</code> must be a valid signed 32 bit integer.</p>
+
+<p>Set <code>noAssert</code> to true to skip validation of <code>value</code> and <code>offset</code>. This means
+that <code>value</code> may be too large for the specific function and <code>offset</code> may be
+beyond the end of the buffer leading to the values being silently dropped. This
+should not be used unless you are certain of correctness.</p>
+
+<p>Works as <code>buffer.writeUInt32*</code>, except value is written out as a two's
+complement signed integer into <code>buffer</code>.</p>
+
+<h3 id="buffer.writeFloatLE">buffer.writeFloatLE(value, offset, noAssert=false) <a href="#buffer.writeFloatLE">#</a></h3>
+
+<h3 id="buffer.writeFloatBE">buffer.writeFloatBE(value, offset, noAssert=false) <a href="#buffer.writeFloatBE">#</a></h3>
+
+<p>Writes <code>value</code> to the buffer at the specified offset with specified endian
+format. Note, <code>value</code> must be a valid 32 bit float.</p>
+
+<p>Set <code>noAssert</code> to true to skip validation of <code>value</code> and <code>offset</code>. This means
+that <code>value</code> may be too large for the specific function and <code>offset</code> may be
+beyond the end of the buffer leading to the values being silently dropped. This
+should not be used unless you are certain of correctness.</p>
+
+<p>Example:</p>
+
+<pre><code>var buf = new Buffer(4);
+buf.writeFloatBE(0xcafebabe, 0);
+
+console.log(buf);
+
+buf.writeFloatLE(0xcafebabe, 0);
+
+console.log(buf);
+
+// &lt;Buffer 4f 4a fe bb&gt;
+// &lt;Buffer bb fe 4a 4f&gt;</code></pre>
+
+<h3 id="buffer.writeDoubleLE">buffer.writeDoubleLE(value, offset, noAssert=false) <a href="#buffer.writeDoubleLE">#</a></h3>
+
+<h3 id="buffer.writeDoubleBE">buffer.writeDoubleBE(value, offset, noAssert=false) <a href="#buffer.writeDoubleBE">#</a></h3>
+
+<p>Writes <code>value</code> to the buffer at the specified offset with specified endian
+format. Note, <code>value</code> must be a valid 64 bit double.</p>
+
+<p>Set <code>noAssert</code> to true to skip validation of <code>value</code> and <code>offset</code>. This means
+that <code>value</code> may be too large for the specific function and <code>offset</code> may be
+beyond the end of the buffer leading to the values being silently dropped. This
+should not be used unless you are certain of correctness.</p>
+
+<p>Example:</p>
+
+<pre><code>var buf = new Buffer(8);
+buf.writeDoubleBE(0xdeadbeefcafebabe, 0);
+
+console.log(buf);
+
+buf.writeDoubleLE(0xdeadbeefcafebabe, 0);
+
+console.log(buf);
+
+// &lt;Buffer 43 eb d5 b7 dd f9 5f d7&gt;
+// &lt;Buffer d7 5f f9 dd b7 d5 eb 43&gt;</code></pre>
+
+<h3 id="buffer.fill">buffer.fill(value, offset=0, end=buffer.length) <a href="#buffer.fill">#</a></h3>
+
+<p>Fills the buffer with the specified value. If the offset and end are not
+given it will fill the entire buffer.</p>
+
+<pre><code>var b = new Buffer(50);
+b.fill("h");</code></pre>
+
+<h3 id="iNSPECT_MAX_BYTES">INSPECT_MAX_BYTES <a href="#iNSPECT_MAX_BYTES">#</a></h3>
+
+<p>How many bytes will be returned when <code>buffer.inspect()</code> is called. This can
+be overridden by user modules.</p>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+</body>
+</html>

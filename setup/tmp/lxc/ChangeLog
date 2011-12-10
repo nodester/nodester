@@ -1,0 +1,81 @@
+Cedric Le Goater (4):
+      lxc-attach: fix access permissions of /proc/$pid/ns
+      lxc: fix bogus header file
+      lxc-execute: document the '--' option
+      lxc: don't install setns.h
+
+Daniel Lezcano (13):
+      factor out networking configuration code
+      rename physical device to the original name
+      fix mount path
+      templates: don't put devpts in $confdir/container/fstab
+      ignore non-lxc configuration line
+      set close-on-exec flag on command socket
+      explicitly do not use the console
+      lxc-checkconfig takes into account cgroup.clone_children
+      add container init pid with the lxc-info command
+      lxc-ps : fix the container name search
+      lxc-ps : update the man page for passing the options
+      fix setns parameter
+      Version 0.7.5     Signed-off-by: Daniel Lezcano <dlezcano@fr.ibm.com>
+
+François-Xavier Bourlet (1):
+      lxc_cgroup_path_get, cache the right value
+
+Frederic Crozat (1):
+      templates: add openSUSE template.
+
+Greg Kurz (1):
+      lxc: default log appender on stderr
+
+InformatiQ (2):
+      working fedora template
+      fix RELEAE_URL to not hardcode the arch
+
+Joerg Gollnick (1):
+      fix lxc-ps to work with systemd
+
+Michael Santos (7):
+      Exit if allocation fails
+      Ensure monitored container name is null terminated
+      lxc_unshare: edit help output
+      network: ensure interface name is NULL terminated
+      arguments: check allocation succeeds
+      conf: increase buffer size to include spaces
+      confile: check allocation succeeds
+
+Michel Normand (1):
+      lxc-* tools are vulnerable for arguments with spaces
+
+Serge E. Hallyn (12):
+      templates: don't put devpts in $confdir/container/fstab
+      lxc-destroy: delete a rootfs if it is an lvm volume
+      Add lxc-clone script
+      lxc-create: pass remaining args to templates
+      cgroups: support cgroups mounted in multiple places (v3)
+      Don't try to add host user's groups in container
+      add ubuntu-keyring to the packagelist for oneiric containers.
+      Use container's /run/utmp if it exists
+      lxc-ps: support '-n name' and '-- ps-options'
+      fix lxc-ls with mtab != /proc/mounts
+      make lxc-netstat work when /etc/mtab is not /proc/mounts
+      Silence lxc-unshare warning when removing cgroup
+
+Serge Hallyn (8):
+      consolidate ubuntu templates
+      lxc-ubuntu: Base arch detection code on debootstrap's with some additions when we don't have dpkg or udpkg
+      lxc-ubuntu: Default to current ubuntu release.
+      Clarify the template-specific options a bit in lxc-create's help
+      print netdev name, not link, after moving dev into netns
+      Add arm as a supported srcarch
+      lxc-ubuntu: don't put devpts in $confdir/container/fstab
+      lxc-ubuntu: Allow /dev/fuse to be used in a container
+
+Stéphane Graber (2):
+      Convert all Debian (and derivative) templates from using 'arch' to using 'dpkg --print-architecture' as debootstrap does
+      Add initial oneiric template
+
+Sven Wegener (2):
+      Add relatime and strictatime mount options
+      Check for existing ptmx symlink
+

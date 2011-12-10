@@ -1,0 +1,191 @@
+#!/bin/bash
+
+#
+# lxc: linux Container library
+
+# Authors:
+# Daniel Lezcano <daniel.lezcano@free.fr>
+
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+install_sshd()
+{
+    rootfs=$1
+
+    tree="\
+$rootfs/var/run/sshd \
+$rootfs/var/empty/sshd \
+$rootfs/var/lib/empty/sshd \
+$rootfs/etc/ssh \
+$rootfs/dev/shm \
+$rootfs/proc \
+$rootfs/bin \
+$rootfs/sbin \
+$rootfs/usr \
+$rootfs/tmp \
+$rootfs/home \
+$rootfs/root \
+$rootfs/lib \
+$rootfs/lib64"
+
+    mkdir -p $tree
+    if [ $? -ne 0 ]; then
+	return 1
+    fi
+
+    return 0
+}
+
+configure_sshd()
+{
+    rootfs=$1
+
+    cat <<EOF > $rootfs/etc/passwd
+root:x:0:0:root:/root:/bin/bash
+sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin
+EOF
+
+    cat <<EOF > $rootfs/etc/group
+root:x:0:root
+sshd:x:74:
+EOF
+
+ssh-keygen -t rsa -f $rootfs/etc/ssh/ssh_host_rsa_key
+ssh-keygen -t dsa -f $rootfs/etc/ssh/ssh_host_dsa_key
+
+    # by default setup root password with no password
+    cat <<EOF > $rootfs/etc/ssh/sshd_config
+Port 22
+Protocol 2
+HostKey /etc/ssh/ssh_host_rsa_key
+HostKey /etc/ssh/ssh_host_dsa_key
+UsePrivilegeSeparation yes
+KeyRegenerationInterval 3600
+ServerKeyBits 768
+SyslogFacility AUTH
+LogLevel INFO
+LoginGraceTime 120
+PermitRootLogin yes
+StrictModes yes
+RSAAuthentication yes
+PubkeyAuthentication yes
+IgnoreRhosts yes
+RhostsRSAAuthentication no
+HostbasedAuthentication no
+PermitEmptyPasswords yes
+ChallengeResponseAuthentication no
+EOF
+    return 0
+}
+
+copy_configuration()
+{
+    path=$1
+    rootfs=$2
+    name=$3
+
+cat <<EOF >> $path/config
+lxc.utsname = $name
+lxc.pts = 1024
+lxc.rootfs = $rootfs
+lxc.mount.entry=/dev $rootfs/dev none ro,bind 0 0
+lxc.mount.entry=/lib $rootfs/lib none ro,bind 0 0
+lxc.mount.entry=/bin $rootfs/bin none ro,bind 0 0
+lxc.mount.entry=/usr /$rootfs/usr none ro,bind 0 0
+lxc.mount.entry=/sbin $rootfs/sbin none ro,bind 0 0
+lxc.mount.entry=tmpfs $rootfs/var/run/sshd tmpfs mode=0644 0 0
+lxc.mount.entry=@LXCTEMPLATEDIR@/lxc-sshd $rootfs/sbin/init none bind 0 0
+EOF
+
+if [ "$(uname -m)" = "x86_64" ]; then
+    cat <<EOF >> $path/config
+lxc.mount.entry=/lib64 $rootfs/lib64 none ro,bind 0 0
+EOF
+fi
+}
+
+usage()
+{
+    cat <<EOF
+$1 -h|--help -p|--path=<path>
+EOF
+    return 0
+}
+
+options=$(getopt -o hp:n: -l help,path:,name: -- "$@")
+if [ $? -ne 0 ]; then
+        usage $(basename $0)
+	exit 1
+fi
+eval set -- "$options"
+
+while true
+do
+    case "$1" in
+        -h|--help)      usage $0 && exit 0;;
+        -p|--path)      path=$2; shift 2;;
+	-n|--name)      name=$2; shift 2;;
+        --)             shift 1; break ;;
+        *)              break ;;
+    esac
+done
+
+if [ "$(id -u)" != "0" ]; then
+    echo "This script should be run as 'root'"
+    exit 1
+fi
+
+if [ $0 == "/sbin/init" ]; then
+
+    type @LXCINITDIR@/lxc-init
+    if [ $? -ne 0 ]; then
+	echo "'lxc-init is not accessible on the system"
+	exit 1
+    fi
+
+    type sshd
+    if [ $? -ne 0 ]; then
+	echo "'sshd' is not accessible on the system "
+	exit 1
+    fi
+
+    exec @LXCINITDIR@/lxc-init -- /usr/sbin/sshd
+    exit 1
+fi
+
+if [ -z "$path" ]; then
+    echo "'path' parameter is required"
+    exit 1
+fi
+
+rootfs=$path/rootfs
+
+install_sshd $rootfs
+if [ $? -ne 0 ]; then
+    echo "failed to install sshd's rootfs"
+    exit 1
+fi
+
+configure_sshd $rootfs
+if [ $? -ne 0 ]; then
+    echo "failed to configure sshd template"
+    exit 1
+fi
+
+copy_configuration $path $rootfs $name
+if [ $? -ne 0 ]; then
+    echo "failed to write configuration file"
+    exit 1
+fi
