@@ -8,7 +8,13 @@ echo "|_| |_|\___/ \__,_|\___||___/\__\___|_|"
 echo ""
 echo "Installation in progress. Make sure this installer has root!"
 
-rm -rf ./setup/tmp/; mkdir ./setup/tmp/; cd ./setup
-./sys; ./node; ./redis; ./lxc;
+rm -rf ./setup/tmp/
+mkdir ./setup/tmp/
+cd ./setup
+./sys
+./node
+./redis
+./lxc;
 cd ../
 npm install
+rm -rf ./setup/tmp/

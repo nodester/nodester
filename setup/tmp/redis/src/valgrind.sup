@@ -1,5 +1,0 @@
-{
-   <lzf_unitialized_hash_table>
-   Memcheck:Cond
-   fun:lzf_compress
-}
