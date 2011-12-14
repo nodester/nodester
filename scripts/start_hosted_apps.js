@@ -112,8 +112,8 @@ var next = function () {
     if (apps.length > 0) {
       var len = apps.length;
       var doc = apps.pop();
+      console.log(JSON.stringify(doc));
       if (doc && doc.username && doc.repo_id && doc.start && doc.port) {
-        console.log(JSON.stringify(doc));
         util.print(verb + ' (' + len + '): [' + (doc.username + '/' + doc.repo_id + '/' + doc.start + ':' + doc.port).blue + ']');
         var method = 'app_' + action;
         try {
@@ -136,6 +136,7 @@ var next = function () {
         f++;
         util.print('Missing records.\n')
         util.print('[' + bad.red.bold + ']\n')
+        next();
       }
     } else {
       util.log(('All ' + count + ' apps ' + past).bold);
