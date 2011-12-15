@@ -49,9 +49,13 @@ bouncy(function (req, bounce) {
     var route = proxymap[host] || proxymap[''];
 
     if (route) {
-        bounce(route, { headers: { Connection: 'close' } });
+        var stream = bounce(route);
+        stream.on('error', function (err) {
+            var res = bounce.respond();
+            res.statusCode = 503;
+            res.end(getErrorPage('503 - Application offline!', '503', 'Application offline'));
+        });
     } else {
-        //bounce(proxymap['404.nodester.com']);
         var res = bounce.respond();
         res.statusCode = 404;
         res.end(getErrorPage('404 - Application not found!', '404', 'Application does not exist'));
