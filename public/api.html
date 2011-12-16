@@ -1,207 +1,409 @@
-
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Nodester -> Open Source Node.JS PaaS</title>
-    <meta name="description" content="Open Source Node.JS Platform as a Service">
-
-    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
-    <!--[if lt IE 9]>
+   <head>
+      <meta charset="utf-8" />
+      <title>Nodester -> Open Source Node.JS PaaS</title>
+      <meta name="description" content="Open Source Node.JS Platform as a Service" />
+      <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+      <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
-    <!-- Le styles -->
-    <link href="bootstrap.css" rel="stylesheet">
-    <style type="text/css">
-      body {
-        padding-top: 60px;
-      }
-    </style>
-
-    <!-- Le fav and touch icons -->
-    <link rel="shortcut icon" href="/images/nodester_favicon.ico">
-    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
-	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
-	<script src="http://twitter.github.com/bootstrap/1.4.0/bootstrap-tabs.js"></script>
-
-	<script type="text/javascript">
-
-	  var _gaq = _gaq || [];
-	  _gaq.push(['_setAccount', 'UA-2483685-22']);
-	  _gaq.push(['_setDomainName', 'nodester.com']);
-	  _gaq.push(['_trackPageview']);
-
-	  (function() {
-	    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-	  })();
-
-	</script>
-	
-  </head>
-
-  <body>
-
-    <div class="topbar">
-      <div class="fill">
-        <div class="container">
-          <a class="brand" href="/"><img src="/images/rocket-md-right.png" width="20"> nodester</a>
-          <ul class="nav">
-            <li><a href="/">Home</a></li>
-            <li class="active"><a href="/api.html">Docs</a></li>
-            <li><a href="http://nodester.tumblr.com">Blog</a></li>
-            <li><a href="http://irc.nodester.com">IRC</a></li>
-
-          </ul>
-			<p class="pull-right"><a class="btn primary large" href="developer.html">Signin &raquo;</a></p>
-        </div>
+      <![endif]-->
+      <!-- Le styles -->
+      <link href="bootstrap.css" rel="stylesheet" type="text/css" />
+      <style type="text/css">
+         body {
+         padding-top: 60px;
+         }
+      </style>
+      <!-- Le fav and touch icons -->
+      <link rel="shortcut icon" href="images/nodester_favicon.ico" />
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png" />
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png" />
+      <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+      <script src="http://twitter.github.com/bootstrap/1.4.0/bootstrap-tabs.js"></script>
+      <script type="text/javascript">
+         var _gaq = _gaq || [];
+         _gaq.push(['_setAccount', 'UA-2483685-22']);
+         _gaq.push(['_setDomainName', 'nodester.com']);
+         _gaq.push(['_trackPageview']);
+         
+         (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+         })();
+         
+      </script>
+   </head>
+   <body>
+      <div class="topbar">
+         <div class="fill">
+            <div class="container">
+               <a class="brand" href="index.html"><img src="images/rocket-md-right.png" width="20" /> nodester</a>
+               <ul class="nav">
+                  <li><a href="index.html">Home</a></li>
+                  <li class="active"><a href="api.html">Docs</a></li>
+                  <li><a href="http://nodester.tumblr.com">Blog</a></li>
+                  <li><a href="http://irc.nodester.com">IRC</a></li>
+               </ul>
+               <p class="pull-right">
+               <form action="developer.html" class="pull-right">
+                  <input class="input-small" type="text" placeholder="Username" />
+                  <input class="input-small" type="password" placeholder="Password" />
+                  <button class="btn" type="submit">Sign in</button>
+               </form>
+               </p>
+            </div>
+         </div>
       </div>
-    </div>
-
-    <div class="container">
-
-    <div class="row">
-
-		<div class="span16"><br/>
-	        <h1>Nodester Docs</h1>
-			<p>Our entire platform is built on a set of REST APIs. A subset of these APIs are implemented in our CLI (command line interface). 
-				We are also working on a web admin panel based on these APIs which will eventually allow you to provision, monitor, and control 
-				Node.JS applications running on the Nodester platform without going to the command line.
-			</p>	
-			
-			<ul class="tabs" data-tabs="tabs">
-			  <li class="active"><a href="#cli">Command Line Interface (CLI)</a></li>
-			  <li><a href="#rest">REST API</a></li>
-			</ul>
-
-			<div id="my-tab-content" class="tab-content">
-	            <div class="active tab-pane" id="cli">
-					<p>
-						Our command line interface allows you to manage your user account and applications with simple commands. Before you can begin using
-						these commands, you need to install the Nodester CLI using NPM. 
-					</p>
-					<p>
-						<b>npm install nodester-cli -g</b>
-					</p>
-					<br/>
-					<table class="bordered-table zebra-striped">
-						<tr><td><b>coupon</b></td><td>&nbsp;</td></tr>
-						<tr><td>&nbsp;</td><td>nodester coupon &lt;email address&gt;</td></tr>
-						<tr><td><b>user</b></td><td>&nbsp;</td></tr>
-						<tr><td>&nbsp;</td><td>nodester user create &lt;username&gt; &lt;password&gt; &lt;email address&gt; &lt;file containing ssh public key&gt; &lt;coupon code&gt;</td></tr>
-						<tr><td>&nbsp;</td><td>nodester user setup &lt;username&gt; &lt;password&gt;</td></tr>
-						<tr><td>&nbsp;</td><td>nodester user setkey &lt;file containing ssh public key&gt;</td></tr>
-						<tr><td>&nbsp;</td><td>nodester user setpass sendtoken</td></tr>
-						<tr><td>&nbsp;</td><td>nodester user setpass &lt;token&gt; &lt;new_password&gt;</td></tr>
-						<tr><td><b>apps</b></td><td>&nbsp;</td></tr>
-						<tr><td>&nbsp;</td><td>nodester apps list</td></tr>
-						<tr><td><b>app</b></td><td>&nbsp;</td></tr>
-						<tr><td>&nbsp;</td><td>nodester app create &lt;appname&gt; &lt;initial js file&gt;</td></tr>
-						<tr><td>&nbsp;</td><td>nodester app info &lt;appname&gt;</td></tr>
-						<tr><td>&nbsp;</td><td>nodester app logs &lt;appname&gt;</td></tr>
-						<tr><td>&nbsp;</td><td>nodester app start &lt;appname&gt;</td></tr>
-						<tr><td>&nbsp;</td><td>nodester app restart &lt;appname&gt;</td></tr>
-						<tr><td>&nbsp;</td><td>nodester app stop &lt;appname&gt;</td></tr>
-						<tr><td>&nbsp;</td><td>nodester app gitreset &lt;appname&gt;</td></tr>
-						<tr><td><b>status</b></td><td>&nbsp;</td></tr>
-						<tr><td>&nbsp;</td><td>nodester status</td></tr>
-					</table>
-					<p>
-						If you would like to contribute to our open source Nodester CLI on <a href="https://github.com/nodester/nodester-cli">GitHub</a>, please send us pull requests :)
-					</p>
-
-	            </div>
-	            <div class="tab-pane" id="rest">
-					<p>
-						Our REST API is very powerful.
-					</p>
-					<p>
-						<b>Base URL is http://api.nodester.com</b>
-					</p>
-					<br/>
-					<table class="bordered-table zebra-striped">
-						<tr><td><b>coupon</b></td><td>&nbsp;</td><td>&nbsp;</td></tr>
-						<tr><td>&nbsp;</td><td><a class="btn disabled success">POST</a></td><td><b>/coupon</b> - Creates coupon request for early access (pass in email)<br/>
-							<code>curl -X POST -d "email=your_address@gmail.com" http://nodester.com/coupon</code></td></tr>
-						<tr><td><b>user</b></td><td>&nbsp;</td><td>&nbsp;</td></tr>
-						<tr><td>&nbsp;</td><td><a class="btn disabled success">POST</a></td><td><b>/user</b> - Creates user account (pass in user and password and email and id_rsa.pub string) <i>Ensure that all + in the ssh key are substituted for their %2B counter parts, else your key will break. Run this on your command line to copy your RSA string and swap out the plus signs: "cat ~/.ssh/id_rsa.pub | sed s/'+'/'%2B'/g | pbcopy"</i><br/>
-								<code>curl -X POST -d "coupon=mycoupon&user=testuser&password=123&email=chris@nodester.com&rsakey=ssh-rsa AAAAB3NzaC1yc..." http://nodester.com/user</code></td></tr>
-						<tr><td>&nbsp;</td><td><a class="btn disabled">PUT</a></td><td><b>/user</b> - Updates user account (pass in password and/or RSA key - "cat ~/.ssh/id_rsa.pub | sed s/'+'/'%2B'/g | pbcopy")<br/>
-								<code>curl -X PUT -u "testuser:123" -d "password=test" http://api.nodester.com/user</code><br/>
-								<code>curl -X PUT -u "testuser:123" -d "rsakey=1234567" http://api.nodester.com/user</code></td></tr>
-						<tr><td>&nbsp;</td><td><a class="btn disabled danger">DELETE</a></td><td><b>/user</b> - Deletes user account (requires basic auth)<br/>
-								<code>curl -X DELETE -u "testuser:123" http://api.nodester.com/user</code></td></tr>
-						<tr><td><b>apps</b></td><td>&nbsp;</td><td>&nbsp;</td></tr>
-						<tr><td>&nbsp;</td><td><a class="btn disabled primary">GET</a></td><td><b>/apps</b> - Returns a list of all apps created by a user account (requires basic auth)<br/>
-							<code>curl -X GET -u "testuser:123" http://nodester.com/apps</code></td></tr>
-						<tr><td><b>app</b></td><td>&nbsp;</td><td>&nbsp;</td></tr>
-						<tr><td>&nbsp;</td><td><a class="btn disabled success">POST</a></td><td><b>/app</b> - Creates nodejs app for hosting (requires basic auth and returns the port address required for use along with a git repo to push to)<br/>
-								<code>curl -X POST -u "testuser:123" -d "appname=a&start=hello.js" http://api.nodester.com/app</code></td></tr>
-						<tr><td>&nbsp;</td><td><a class="btn disabled">PUT</a></td><td><b>/app</b> - Updates starting app name (requires basic auth, appname, and starting page and returns the port address required for use along with a git repo to push to and running status of the app)<br/>
-								<code>curl -X PUT -u "testuser:123" -d "appname=a&start=hello1.js" http://api.nodester.com/app</code></td></tr>
-						<tr><td>&nbsp;</td><td><a class="btn disabled">PUT</a></td><td><b>/app</b> - Start and stop your hosted nodejs app (requires basic auth, appname, and running=true|false and returns the port address required for use along with a git repo to push to)<br/>
-								<code>curl -X PUT -u "testuser:123" -d "appname=a&running=true" http://api.nodester.com/app</code></td></tr>
-						<tr><td>&nbsp;</td><td><a class="btn disabled danger">DELETE</a></td><td><b>/app </b>- Deletes nodejs app (requires basic auth and appname)<br/>
-								<code>curl -X DELETE -u "testuser:123" -d "appname=test" http://api.nodester.com/app</code></td></tr>
-						<tr><td>&nbsp;</td><td><a class="btn disabled primary">GET</a></td><td><b>/app/&lt;appname&gt;</b> - get nodejs app info (requires basic auth and appname)<br/>
-								<code>curl -u "testuser:123"  http://api.nodester.com/app/appname</code></td></tr>
-						<tr><td><b>applogs</b></td><td>&nbsp;</td><td>&nbsp;</td></tr>
-						<tr><td>&nbsp;</td><td><a class="btn disabled primary">GET</a></td><td><b>/applogs/&lt;appname&gt;</b> - Gets nodejs app logs (requires basic auth and appname)<br/>
-								<code>curl -u "testuser:123"  http://api.nodester.com/applogs/appname</code></td></tr>
-						<tr><td><b>env</b></td><td>&nbsp;</td><td>&nbsp;</td></tr>
-						<tr><td>&nbsp;</td><td><a class="btn disabled">PUT</a></td><td><b>/env</b> - Create/update environment key/value pair (requires basic auth, appname, and environment key and value)<br/>
-								<code>curl -X PUT -u "testuser:123" -d "appname=a&key=color&value=blue" http://api.nodester.com/env</code></td></tr>
-						<tr><td>&nbsp;</td><td><a class="btn disabled danger">DELETE</a></td><td><b>/env</b> - Deletes environment key/value pair (requires basic auth, appname, and environment key)<br/>
-								<code>curl -X DELETE -u "testuser:123" -d "appname=test&key=color" http://api.nodester.com/env</code></td></tr>
-						<tr><td>&nbsp;</td><td><a class="btn disabled primary">GET</a></td><td><b>/env</b> - Gets environment info (requires basic auth, appname, and environment key)<br/>
-								<code>curl -u "testuser:123" -d "appname=test&key=color" http://api.nodester.com/env</code></td></tr>
-						<tr><td><b>status</b></td><td>&nbsp;</td><td>&nbsp;</td></tr>
-						<tr><td>&nbsp;</td><td><a class="btn disabled primary">GET</a></td><td><b>/status</b> - Returns platform status and number of apps hosted and running<br/>
-								<code>curl http://nodester.com/status</code></td></tr>
-						<tr><td><b>npm</b></td><td>&nbsp;</td><td>&nbsp;</td></tr>
-						<tr><td>&nbsp;</td><td><a class="btn disabled success">POST</a></td><td><b>/npm</b> - Allows you to manage the NPM packages for an application.<br/>
-								<code>curl -X POST  -u "testuser:123" -d "appname=a&action=install&package=express" http://api.nodester.com/npm</code><br/>
-								<code>curl -X POST  -u "testuser:123" -d "appname=a&action=update&package=express" http://api.nodester.com/npm</code><br/>
-								<code>curl -X POST  -u "testuser:123" -d "appname=a&action=uninstall&package=express" http://api.nodester.com/npm</code></td></tr>
-						<tr><td><b>appdomains</b></td><td>&nbsp;</td><td>&nbsp;</td></tr>
-						<tr><td>&nbsp;</td><td><a class="btn disabled success">POST</a></td><td><b>/appdomains</b> - Creates app domain for hosting example.com (requires basic auth)<br/>
-								<code>curl -X POST -u "testuser:123" -d "appname=test&domain=example.com" http://api.nodester.com/appdomains</code></td></tr>
-						<tr><td>&nbsp;</td><td><a class="btn disabled danger">DELETE</a></td><td><b>/appdomains</b> - Deletes app domain for hosting example.com (requires basic auth)<br/>
-								<code<curl -X DELETE -u "testuser:123" -d "appname=test&domain=example.com" http://api.nodester.com/appdomains</code></td></tr>
-						<tr><td>&nbsp;</td><td><a class="btn disabled primary">GET</a></td><td><b>/appdomains</b> - Gets list of your domains (requires basic auth)<br/>
-								<code>curl -u "testuser:123"  http://api.nodester.com/appdomains</code></td></tr>
-						<tr><td><b>reset_password</b></td><td>&nbsp;</td><td>&nbsp;</td></tr>
-						<tr><td>&nbsp;</td><td><a class="btn disabled success">POST</a></td><td><b>/reset_password</b> - Sends a e-mail with a token to reset your user password<br/>
-						        <code>curl -X POST -d "user=your_username" http://nodester.com/reset_password</code></td></tr>
-						<tr><td>&nbsp;</td><td><a class="btn disabled">PUT</a></td><td><b>/reset_password/&lt;token&gt;</b> - Updates your password using the provided token<br/>
-								<code>curl -X PUT -d "password=your_new_password" http://nodester.com/reset_password/&lt;token&gt;</code></td></tr>
-						<tr><td><b>gitreset</b></td><td>&nbsp;</td><td>&nbsp;</td></tr>
-						<tr><td>&nbsp;</td><td><a class="btn disabled danger">DELETE</a></td><td><b>/gitreset</b> - Resets your Nodester git repository and npm list (pass in appname)<br/>
-							<code>curl -X DELETE -u "testuser:123" -d "appname=a" http://api.nodester.com/gitreset</code></td></tr>
-
-					</table>
-
-
-	            </div>
-			</div>			
-			
-		</div>
-	</div>
-	
-      <footer>
-        <p>&copy; 
-			<script type="text/javascript">
-			var theDate=new Date()
-			document.write(theDate.getFullYear())
-			</script>
-			 Nodester, inc. | <a href="/about.html">about us</a> | <a href="http://twitter.com/nodester">twitter</a> | <a href="http://github.com/nodester">github</a></p>
+      <div class="container">
+         <div class="row">
+            <div class="span16">
+               <br />
+               <h1>Nodester Docs</h1>
+               <p>Our entire platform is built on a set of REST APIs. A subset of these APIs are implemented in our CLI (command line interface). 
+                  We are also working on a web admin panel based on these APIs which will eventually allow you to provision, monitor, and control 
+                  Node.JS applications running on the Nodester platform without going to the command line.
+               </p>
+               <ul class="tabs" data-tabs="tabs">
+                  <li class="active"><a href="#cli">Command Line Interface (CLI)</a></li>
+                  <li><a href="#rest">REST API</a></li>
+               </ul>
+               <div id="my-tab-content" class="tab-content">
+                  <div class="active tab-pane" id="cli">
+                     <p>
+                        Our command line interface allows you to manage your user account and applications with simple commands. Before you can begin using
+                        these commands, you need to install the Nodester CLI using NPM. 
+                     </p>
+                     <p>
+                        <b>npm install nodester-cli -g</b>
+                     </p>
+                     <br />
+                     <table class="bordered-table zebra-striped">
+                        <tr>
+                           <td><b>coupon</b></td>
+                           <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td>nodester coupon &lt;email address&gt;</td>
+                        </tr>
+                        <tr>
+                           <td><b>user</b></td>
+                           <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td>nodester user create &lt;username&gt; &lt;password&gt; &lt;email address&gt; &lt;file containing ssh public key&gt; &lt;coupon code&gt;</td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td>nodester user setup &lt;username&gt; &lt;password&gt;</td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td>nodester user setkey &lt;file containing ssh public key&gt;</td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td>nodester user setpass sendtoken</td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td>nodester user setpass &lt;token&gt; &lt;new_password&gt;</td>
+                        </tr>
+                        <tr>
+                           <td><b>apps</b></td>
+                           <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td>nodester apps list</td>
+                        </tr>
+                        <tr>
+                           <td><b>app</b></td>
+                           <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td>nodester app create &lt;appname&gt; &lt;initial js file&gt;</td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td>nodester app info &lt;appname&gt;</td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td>nodester app logs &lt;appname&gt;</td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td>nodester app start &lt;appname&gt;</td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td>nodester app restart &lt;appname&gt;</td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td>nodester app stop &lt;appname&gt;</td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td>nodester app gitreset &lt;appname&gt;</td>
+                        </tr>
+                        <tr>
+                           <td><b>status</b></td>
+                           <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td>nodester status</td>
+                        </tr>
+                     </table>
+                     <p>
+                        If you would like to contribute to our open source Nodester CLI on <a href="https://github.com/nodester/nodester-cli">GitHub</a>, please send us pull requests :)
+                     </p>
+                  </div>
+                  <div class="tab-pane" id="rest">
+                     <p>
+                        Our REST API is very powerful.
+                     </p>
+                     <p>
+                        <b>Base URL is http://api.nodester.com</b>
+                     </p>
+                     <br />
+                     <table class="bordered-table zebra-striped">
+                        <tr>
+                           <td><b>coupon</b></td>
+                           <td>&nbsp;</td>
+                           <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td><a class="btn disabled success">POST</a></td>
+                           <td><b>/coupon</b> - Creates coupon request for early access (pass in email)<br />
+                              <code>curl -X POST -d "email=your_address@gmail.com" http://nodester.com/coupon</code>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td><b>user</b></td>
+                           <td>&nbsp;</td>
+                           <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td><a class="btn disabled success">POST</a></td>
+                           <td><b>/user</b> - Creates user account (pass in user and password and email and id_rsa.pub string) <i>Ensure that all + in the ssh key are substituted for their %2B counter parts, else your key will break. Run this on your command line to copy your RSA string and swap out the plus signs: "cat ~/.ssh/id_rsa.pub | sed s/'+'/'%2B'/g | pbcopy"</i><br />
+                              <code>curl -X POST -d "coupon=mycoupon&user=testuser&password=123&email=chris@nodester.com&rsakey=ssh-rsa AAAAB3NzaC1yc..." http://nodester.com/user</code>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td><a class="btn disabled">PUT</a></td>
+                           <td><b>/user</b> - Updates user account (pass in password and/or RSA key - "cat ~/.ssh/id_rsa.pub | sed s/'+'/'%2B'/g | pbcopy")<br />
+                              <code>curl -X PUT -u "testuser:123" -d "password=test" http://api.nodester.com/user</code><br />
+                              <code>curl -X PUT -u "testuser:123" -d "rsakey=1234567" http://api.nodester.com/user</code>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td><a class="btn disabled danger">DELETE</a></td>
+                           <td><b>/user</b> - Deletes user account (requires basic auth)<br />
+                              <code>curl -X DELETE -u "testuser:123" http://api.nodester.com/user</code>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td><b>apps</b></td>
+                           <td>&nbsp;</td>
+                           <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td><a class="btn disabled primary">GET</a></td>
+                           <td><b>/apps</b> - Returns a list of all apps created by a user account (requires basic auth)<br />
+                              <code>curl -X GET -u "testuser:123" http://nodester.com/apps</code>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td><b>app</b></td>
+                           <td>&nbsp;</td>
+                           <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td><a class="btn disabled success">POST</a></td>
+                           <td><b>/app</b> - Creates nodejs app for hosting (requires basic auth and returns the port address required for use along with a git repo to push to)<br />
+                              <code>curl -X POST -u "testuser:123" -d "appname=a&start=hello.js" http://api.nodester.com/app</code>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td><a class="btn disabled">PUT</a></td>
+                           <td><b>/app</b> - Updates starting app name (requires basic auth, appname, and starting page and returns the port address required for use along with a git repo to push to and running status of the app)<br />
+                              <code>curl -X PUT -u "testuser:123" -d "appname=a&start=hello1.js" http://api.nodester.com/app</code>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td><a class="btn disabled">PUT</a></td>
+                           <td><b>/app</b> - Start and stop your hosted nodejs app (requires basic auth, appname, and running=true|false and returns the port address required for use along with a git repo to push to)<br />
+                              <code>curl -X PUT -u "testuser:123" -d "appname=a&running=true" http://api.nodester.com/app</code>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td><a class="btn disabled danger">DELETE</a></td>
+                           <td><b>/app </b>- Deletes nodejs app (requires basic auth and appname)<br />
+                              <code>curl -X DELETE -u "testuser:123" -d "appname=test" http://api.nodester.com/app</code>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td><a class="btn disabled primary">GET</a></td>
+                           <td><b>/app/&lt;appname&gt;</b> - get nodejs app info (requires basic auth and appname)<br />
+                              <code>curl -u "testuser:123"  http://api.nodester.com/app/appname</code>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td><b>applogs</b></td>
+                           <td>&nbsp;</td>
+                           <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td><a class="btn disabled primary">GET</a></td>
+                           <td><b>/applogs/&lt;appname&gt;</b> - Gets nodejs app logs (requires basic auth and appname)<br />
+                              <code>curl -u "testuser:123"  http://api.nodester.com/applogs/appname</code>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td><b>env</b></td>
+                           <td>&nbsp;</td>
+                           <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td><a class="btn disabled">PUT</a></td>
+                           <td><b>/env</b> - Create/update environment key/value pair (requires basic auth, appname, and environment key and value)<br />
+                              <code>curl -X PUT -u "testuser:123" -d "appname=a&key=color&value=blue" http://api.nodester.com/env</code>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td><a class="btn disabled danger">DELETE</a></td>
+                           <td><b>/env</b> - Deletes environment key/value pair (requires basic auth, appname, and environment key)<br />
+                              <code>curl -X DELETE -u "testuser:123" -d "appname=test&key=color" http://api.nodester.com/env</code>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td><a class="btn disabled primary">GET</a></td>
+                           <td><b>/env</b> - Gets environment info (requires basic auth, appname, and environment key)<br />
+                              <code>curl -u "testuser:123" -d "appname=test&key=color" http://api.nodester.com/env</code>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td><b>status</b></td>
+                           <td>&nbsp;</td>
+                           <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td><a class="btn disabled primary">GET</a></td>
+                           <td><b>/status</b> - Returns platform status and number of apps hosted and running<br />
+                              <code>curl http://nodester.com/status</code>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td><b>npm</b></td>
+                           <td>&nbsp;</td>
+                           <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td><a class="btn disabled success">POST</a></td>
+                           <td><b>/npm</b> - Allows you to manage the NPM packages for an application.<br />
+                              <code>curl -X POST  -u "testuser:123" -d "appname=a&action=install&package=express" http://api.nodester.com/npm</code><br />
+                              <code>curl -X POST  -u "testuser:123" -d "appname=a&action=update&package=express" http://api.nodester.com/npm</code><br />
+                              <code>curl -X POST  -u "testuser:123" -d "appname=a&action=uninstall&package=express" http://api.nodester.com/npm</code>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td><b>appdomains</b></td>
+                           <td>&nbsp;</td>
+                           <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td><a class="btn disabled success">POST</a></td>
+                           <td><b>/appdomains</b> - Creates app domain for hosting example.com (requires basic auth)<br />
+                              <code>curl -X POST -u "testuser:123" -d "appname=test&domain=example.com" http://api.nodester.com/appdomains</code>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td><a class="btn disabled danger">DELETE</a></td>
+                           <td><b>/appdomains</b> - Deletes app domain for hosting example.com (requires basic auth)<br />
+                              <code>curl -X DELETE -u "testuser:123" -d "appname=test&domain=example.com" http://api.nodester.com/appdomains</code>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td><a class="btn disabled primary">GET</a></td>
+                           <td><b>/appdomains</b> - Gets list of your domains (requires basic auth)<br />
+                              <code>curl -u "testuser:123"  http://api.nodester.com/appdomains</code>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td><b>reset_password</b></td>
+                           <td>&nbsp;</td>
+                           <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td><a class="btn disabled success">POST</a></td>
+                           <td><b>/reset_password</b> - Sends a e-mail with a token to reset your user password<br />
+                              <code>curl -X POST -d "user=your_username" http://nodester.com/reset_password</code>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td><a class="btn disabled">PUT</a></td>
+                           <td><b>/reset_password/&lt;token&gt;</b> - Updates your password using the provided token<br />
+                              <code>curl -X PUT -d "password=your_new_password" http://nodester.com/reset_password/&lt;token&gt;</code>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td><b>gitreset</b></td>
+                           <td>&nbsp;</td>
+                           <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td><a class="btn disabled danger">DELETE</a></td>
+                           <td><b>/gitreset</b> - Resets your Nodester git repository and npm list (pass in appname)<br />
+                              <code>curl -X DELETE -u "testuser:123" -d "appname=a" http://api.nodester.com/gitreset</code>
+                           </td>
+                        </tr>
+                     </table>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- /container -->
+      <footer class="footer">
+         <div class="container">
+            <p>
+               &#169; <script type="text/javascript">
+                  var theDate=new Date()
+                      document.write(theDate.getFullYear())
+               </script> Nodester, inc. | <a href="about.html">about us</a> | <a href="http://twitter.com/nodester">twitter</a> | <a href="http://github.com/nodester">github</a>
+            </p>
+         </div>
       </footer>
-
-    </div> <!-- /container -->
-
-  </body>
+   </body>
 </html>
+

@@ -1,148 +1,143 @@
-
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Nodester -> Open Source Node.JS PaaS</title>
-    <meta name="description" content="Open Source Node.JS Platform as a Service">
-
-    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
-    <!--[if lt IE 9]>
+   <head>
+      <meta charset="utf-8" />
+      <title>Nodester -> Open Source Node.JS PaaS</title>
+      <meta name="description" content="Open Source Node.JS Platform as a Service" />
+      <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+      <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
-    <!-- Le styles -->
-    <link href="bootstrap.css" rel="stylesheet">
-    <style type="text/css">
-      body {
-        padding-top: 60px;
-      }
-    </style>
-
-    <!-- Le fav and touch icons -->
-    <link rel="shortcut icon" href="/images/nodester_favicon.ico">
-    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
-	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
-
-	<script type="text/javascript">
-
-	  var _gaq = _gaq || [];
-	  _gaq.push(['_setAccount', 'UA-2483685-22']);
-	  _gaq.push(['_setDomainName', 'nodester.com']);
-	  _gaq.push(['_trackPageview']);
-
-	  (function() {
-	    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-	  })();
-
-	</script>
-	
-  </head>
-
-  <body>
-
-    <div class="topbar">
-      <div class="fill">
-        <div class="container">
-          <a class="brand" href="/"><img src="/images/rocket-md-right.png" width="20"> nodester</a>
-          <ul class="nav">
-            <li><a href="/">Home</a></li>
-            <li><a href="/api.html">Docs</a></li>
-            <li><a href="http://nodester.tumblr.com">Blog</a></li>
-            <li><a href="http://irc.nodester.com">IRC</a></li>
-          </ul>
-			<p class="pull-right"><a class="btn primary large" href="developer.html">Signin &raquo;</a></p>
-        </div>
+      <![endif]-->
+      <!-- Le styles -->
+      <link href="bootstrap.css" rel="stylesheet" type="text/css" />
+      <style type="text/css">
+         body {
+         padding-top: 60px;
+         }
+      </style>
+      <!-- Le fav and touch icons -->
+      <link rel="shortcut icon" href="images/nodester_favicon.ico" />
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png" />
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png" />
+      <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+      <script type="text/javascript">
+         var _gaq = _gaq || [];
+         _gaq.push(['_setAccount', 'UA-2483685-22']);
+         _gaq.push(['_setDomainName', 'nodester.com']);
+         _gaq.push(['_trackPageview']);
+         
+         (function() {
+           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+         })();
+         
+      </script>
+   </head>
+   <body>
+      <div class="topbar">
+         <div class="fill">
+            <div class="container">
+               <a class="brand" href="index.html"><img src="images/rocket-md-right.png" width="20" /> nodester</a>
+               <ul class="nav">
+                  <li><a href="index.html">Home</a></li>
+                  <li><a href="api.html">Docs</a></li>
+                  <li><a href="http://nodester.tumblr.com">Blog</a></li>
+                  <li><a href="http://irc.nodester.com">IRC</a></li>
+               </ul>
+               <p class="pull-right">
+               <form action="developer.html" class="pull-right">
+                  <input class="input-small" type="text" placeholder="Username" />
+                  <input class="input-small" type="password" placeholder="Password" />
+                  <button class="btn" type="submit">Sign in</button>
+               </form>
+               </p>
+            </div>
+         </div>
       </div>
-    </div>
-
-    <div class="container">
-	<div class="span16"><br/>
-        <h1>Welcome Nodesters!</h1>
-		<p>Nodester is a free and open source Node.JS hosting PaaS.  Our Web Admin Panel is coming soon.  Until then, here are a few tricks to get you started.</p>
-		<p>
-			<iframe width="853" height="480" src="http://www.youtube.com/embed/1OdmF26_vmc" frameborder="0" allowfullscreen></iframe>
-		</p>
-		<br/>
-		<h2><img src="/images/rocket-md-right.png" width="30"> Requesting a Coupon Code to Register</h2>
-		<p>curl -X POST -d "email=your_address@gmail.com" http://nodester.com/coupon<br/><br/>
-		<div id="reqbutton" class="btn">OR CHEAT</div>
-		<div id="reqform" style="display: none"><br/>
-			<form action="/coupon" method="post" class="form-stacked">
-				<p><label for="email">Email Adderss:</label>
-				<input type="text" name="email" id="email" value="" /><input type="submit" name="send" class="formbutton" value="Send" />
-			</form>
-		</div>
-			<br/><br/>
-			</p>
-		<br/>
-		<h2><img src="/images/rocket-md-right.png" width="30"> Registering with Coupon Code</h2>
-		<p>
-			curl -X POST -d "coupon=mycoupon&user=testuser&password=123&email=chris@nodester.com&rsakey=ssh-rsa AAAAB3NzaC1yc..." http://nodester.com/user<br><br/>
-			<div id="regbutton" class="btn">OR CHEAT</div>
-			<div id="regform" style="display: none"><br/>
-				<form action="/user" method="post" class="form-stacked">
-					<p><label for="name">Coupon:</label>
-					<input type="password" name="coupon" id="coupon" value="" /><br />		
-					<label for="name">Username:</label>
-					<input type="text" name="user" id="user" value="" /><br />		
-					<label for="name">Password:</label>
-					<input type="password" name="password" id="password" value="" /> (only alphanumeric allowed)<br />	
-					<span id="passwordError" style="display:none"><span style="color:red">Password is limited to alphanumerics - no symbols allowed.</span><br/></span>	
-					<label for="email">Email:</label>
-					<input type="text" name="email" id="email" value="" /><br />
-					<label for="rsakey">Public RSA Key:</label>
-					<textarea cols="60" rows="8" name="rsakey" id="rsakey">
-Copy & Paste RSA key from command line: 
-
-cat ~/.ssh/id_rsa.pub | pbcopy</textarea><br />
-					<input type="submit" name="send" class="formbutton" value="Send" />
-				</form>
-			</div>
-			<br/><br/>
-			</p>
-			<p>
-			npm install nodester-cli -g <br/>
-			nodester user setup &lt;username&gt; &lt;password&gt; <br/>
-			<!-- nodester user setkey  -->
-			</p><br/>
-			
-		<h2><img src="/images/rocket-md-right.png" width="30"> Launch Your Node.JS Application!</h2>
-          <p>You are ready to deploy your test Hello World app with 2 commands.</p>
-		<p>
-			nodester app create &lt;appname&gt;<br/>
-			nodester app init &lt;appname&gt; <br/>
-			http://&lt;appname&gt;.nodester.com
-		</p>
-	</div>
-	
-	<script>
-	$('#reqbutton').click(function() {
-	  $('#reqform').toggle('slow', function() {
-	    // Animation complete.
-	  });
-	});
-	$('#regbutton').click(function() {
-	  $('#regform').toggle('slow', function() {
-	    // Animation complete.
-	  });
-	});
-	</script>
-
-      <footer>
-        <p>&copy; 
-			<script type="text/javascript">
-			var theDate=new Date()
-			document.write(theDate.getFullYear())
-			</script>
-			 Nodester, inc. | <a href="/about.html">about us</a> | <a href="http://twitter.com/nodester">twitter</a> | <a href="http://github.com/nodester">github</a></p>
+      <div class="container">
+         <div class="span16">
+            <br />
+            <h1>Welcome Nodesters!</h1>
+            <p>Nodester is a free and open source Node.JS hosting PaaS.  Our Web Admin Panel is coming soon.  Until then, here are a few tricks to get you started.</p>
+            <br />
+            <p>
+               <iframe width="750" height="480" src="http://www.youtube.com/embed/1OdmF26_vmc" frameborder="0"></iframe>
+            </p>
+            <br />
+            <h2><img src="images/rocket-md-right.png" width="30" /> Requesting a Coupon Code to Register</h2>
+            <p>
+               curl -X POST -d "email=your_address@gmail.com" http://nodester.com/coupon<br /><br />
+               <button id="reqbutton" class="btn" />
+                  OR CHEAT
+         </div>
+         <div id="reqform" style="display: none">
+         <br />
+         <form action="/coupon" type="post">
+          <input class="input-large" type="text" name="email" id="email" placeholder="Email" />
+          <button class="btn" type="submit" name="send">Send</button>
+         </form>
+         </div>
+         <br /><br />
+         </p>
+         <br />
+         <h2><img src="images/rocket-md-right.png" width="30" /> Registering with Coupon Code</h2>
+         <p>
+            curl -X POST -d "coupon=mycoupon&user=testuser&password=123&email=chris@nodester.com&rsakey=ssh-rsa AAAAB3NzaC1yc..." http://nodester.com/user<br /><br />
+         <div id="regbutton" class="btn">OR CHEAT</div>
+         <div id="regform" style="display: none">
+            <br />
+            <form action="/user" method="post">
+               <input class="input-small" type="text" id="coupon" name="coupon" placeholder="Coupon" /><br /><br />
+               <input class="input-large" type="text" id="user" name="user" placeholder="Username (alphanumeric)" /><br /><br />
+               <input class="input-large" type="password" id="password" name="password" placeholder="Password (alphanumeric)" /><br /><br />
+               <span id="passwordError" style="display:none"><span style="color:red">Password is limited to alphanumerics - no symbols allowed.</span><br /><br /></span>	
+               <input class="input-large" type="text" id="email" name="email" placeholder="Email" /><br /><br />
+               <textarea class="xxlarge" id="rsakey" name="rsakey" rows="3" placeholder="Copy &amp; Paste RSA key from command line: cat ~/.ssh/id_rsa.pub | pbcopy"></textarea><br /><br />
+               <button class="btn" type="submit" name="send">Send</button>
+            </form>
+         </div>
+         <br /><br />
+         </p>
+         <p>
+            npm install nodester-cli -g <br />
+            nodester user setup &lt;username&gt; &lt;password&gt; <br />
+            <!-- nodester user setkey  -->
+         </p>
+         <br />
+         <h2><img src="images/rocket-md-right.png" width="30" /> Launch Your Node.JS Application!</h2>
+         <p>You are ready to deploy your test Hello World app with 2 commands.</p>
+         <p>
+            nodester app create &lt;appname&gt;<br />
+            nodester app init &lt;appname&gt; <br />
+            http://&lt;appname&gt;.nodester.com
+         </p>
+      </div>
+      <script>
+         $('#reqbutton').click(function() {
+           $('#reqform').toggle('slow', function() {
+             // Animation complete.
+           });
+         });
+         $('#regbutton').click(function() {
+           $('#regform').toggle('slow', function() {
+             // Animation complete.
+           });
+         });
+      </script>
+      </div>
+      <!-- /container -->
+      <footer class="footer">
+         <div class="container">
+            <p>
+               &#169; <script type="text/javascript">
+                  var theDate=new Date()
+                      document.write(theDate.getFullYear())
+               </script> Nodester, inc. | <a href="about.html">about us</a> | <a href="http://twitter.com/nodester">twitter</a> | <a href="http://github.com/nodester">github</a>
+            </p>
+         </div>
       </footer>
-
-    </div> <!-- /container -->
-
-  </body>
+   </body>
 </html>
+
