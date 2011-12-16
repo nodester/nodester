@@ -42,12 +42,13 @@
                <a class="brand" href="index.html"><img src="images/rocket-md-right.png" width="20" /> nodester</a>
                <ul class="nav">
                   <li><a href="index.html">Home</a></li>
-                  <li><a href="api.html">Docs</a></li>
+                  <li class="active"><a href="help.html">Help</a></li>
+                  <li><a href="api.html">API</a></li>
                   <li><a href="http://nodester.tumblr.com">Blog</a></li>
                   <li><a href="http://irc.nodester.com">IRC</a></li>
                </ul>
                <p class="pull-right">
-               <form action="developer.html" class="pull-right">
+               <form action="help.html" class="pull-right">
                   <input class="input-small" type="text" placeholder="Username" />
                   <input class="input-small" type="password" placeholder="Password" />
                   <button class="btn" type="submit">Sign in</button>
@@ -75,8 +76,8 @@
          <div id="reqform" style="display: none">
          <br />
          <form action="/coupon" type="post">
-          <input class="input-large" type="text" name="email" id="email" placeholder="Email" />
-          <button class="btn" type="submit" name="send">Send</button>
+         <input class="input-large" type="text" name="email" id="email" placeholder="Email" />
+         <button class="btn" type="submit" name="send">Send</button>
          </form>
          </div>
          <br /><br />
@@ -113,6 +114,31 @@
             nodester app init &lt;appname&gt; <br />
             http://&lt;appname&gt;.nodester.com
          </p>
+         <br />
+         <h2><img src="images/rocket-md-right.png" width="30" /> Launch Your Node.JS Application!</h2>
+         <p>You are ready to deploy your test Hello World app with 2 commands.</p>
+         <p>
+            nodester app create &lt;appname&gt;<br />
+            nodester app init &lt;appname&gt; <br />
+            http://&lt;appname&gt;.nodester.com
+         </p>
+         <br /><br />
+         <h1>For Experienced Nodesters with Existing Node.JS Apps</h1>
+         <p>Don't need a "hello world"? Simply skip the init command and add a nodester git remote to your existing project folder. Pushing to nodester will automatically restart your application!</p>
+         <p>
+            nodester app create &lt;appname&gt;<br />
+            git remote add nodester &lt;the_url_returned_by_our_api&gt;<br />
+            git push nodester master<br />
+            http://&lt;appname&gt;.nodester.com
+         </p>
+         <br />
+         <h2><img src="images/rocket-md-right.png" width="30" /> Do you have NPM dependencies?</h2>
+         <p>You can install any npm module you want!</p>
+         <p>
+            nodester npm install &lt;appname&gt; express socket.io yourcoolmodule<br />
+            nodester app restart &lt;appname&gt;<br />
+         </p>
+         <br />
       </div>
       <script>
          $('#reqbutton').click(function() {
