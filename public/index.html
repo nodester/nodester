@@ -1,260 +1,198 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title>Nodester | Open Source Node.JS Platform as a Service</title>
-<link rel="stylesheet" href="styles.css" type="text/css" />
-<!--
-ablaze, a free CSS web template by spyka Webmaster (www.spyka.net)
 
-Download: http://www.spyka.net/web-templates/ablaze/
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Nodester -> Open Source Node.JS PaaS</title>
+    <meta name="description" content="Open Source Node.JS Platform as a Service">
 
-License: Creative Commons Attribution
-//-->
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
 
-<script type="text/javascript" src="/jquery-1.4.4.min.js"></script>
-<script type="text/javascript" src="/thickbox.js"></script>
+    <!-- Le styles -->
+    <link href="bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+      }
+    </style>
 
-<link rel="stylesheet" href="/thickbox.css" type="text/css" />
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/images/nodester_favicon.ico">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
 
-<script type="text/javascript">
+	<script type="text/javascript">
 
- var _gaq = _gaq || [];
- _gaq.push(['_setAccount', 'UA-119008-21']);
- _gaq.push(['_trackPageview']);
+	  var _gaq = _gaq || [];
+	  _gaq.push(['_setAccount', 'UA-2483685-22']);
+	  _gaq.push(['_setDomainName', 'nodester.com']);
+	  _gaq.push(['_trackPageview']);
 
- (function() {
-   var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-   ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
- })();
+	  (function() {
+	    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	  })();
 
-</script>
-</head>
-
-<body>
-	<!-- <a href="http://github.com/nodester"><img id="ribbon" src="images/forkme_right_white_ffffff.png" /></a> -->
-	<div id="hiddenModalContent" style="display:none"> 
-		<h3>Did you get your coupon code? <a href="#" onclick="tb_remove()"> Nope, still waiting...</a></p></h3>
-		<fieldset>
-
-			<form action="/user" method="post">
-				<p><label for="name">Coupon:</label>
-				<input type="password" name="coupon" id="coupon" value="" /><br />		
-				<label for="name">Username:</label>
-				<input type="text" name="user" id="user" value="" /><br />		
-				<label for="name">Password:</label>
-				<input type="password" name="password" id="password" value="" /> (only alphanumeric allowed)<br />	
-				<span id="passwordError" style="display:none"><span style="color:red">Password is limited to alphanumerics - no symbols allowed.</span><br/></span>	
-				<label for="email">Email:</label>
-				<input type="text" name="email" id="email" value="" /><br />
-				<label for="rsakey">Public RSA Key:</label>
-				<textarea cols="60" rows="8" name="rsakey" id="rsakey">
-Copy & Paste RSA key from command line: 
-"cat ~/.ssh/id_rsa.pub | pbcopy"</textarea><br />
-				<input type="submit" name="send" class="formbutton" value="Send" />
-			</form>
-			<script>
-				$(function() {
-				    $('form').submit( function() {
-				        return validatePass( $('#password'), true, $('#passwordError') );
-				    });
-
-				    $('#password').blur( function() {
-				        validatePass( $(this), true, $('#passwordError') );
-				    });
-
-				    function validatePass(tb,required,msg) {
-				        var $tb = $(tb);
-						if ($tb.val().match(/[~!@#$%^&*()_+=-]/) != null) {
-				           $(msg).show();
-				           return false;
-				        }
-				        $(msg).hide();
-				        return true;
-				    }
-				});
-				</script>
-		</fieldset>
-	 
-	</div>
-
-	<div id="hiddenVideoContent" style="display:none;"> 
-		<p align="right"><a href="#" onclick="tb_remove()">close</a></p>
-	 	<p>
-<iframe title="YouTube video player" width="853" height="510" src="http://www.youtube.com/embed/1OdmF26_vmc?rel=0&amp;hd=1" frameborder="0" allowfullscreen></iframe>
-		</p>
-	</div>
+	</script>
 	
-	<div id="wrapper">
-		<div id="sitename">
-			<h1><a href="/"> <!-- Node<strong>ster</strong> --><img src="/images/nodesterrocketlogo.jpg" height="70"></a></h1>
-		</div>
-       <div id="nav">
-			<ul>
-				<li class="selected"><a href="/"><span>Home</span></a></li>
-                <li><a href="#TB_inline?height=400&width=600&inlineId=hiddenModalContent&modal=true" class="thickbox"><span>Register</span></a></li>
-                <li><a href="/api.html"><span>API</span></a></li>
-                <li><a href="http://irc.nodester.com"><span>IRC</span></a></li>
-                <li><a href="http://nodester.tumblr.com/"><span>Blog</span></a></li>
-                <li><a href="http://github.com/nodester"><span>GitHub</span></a></li>
-			</ul>
-		</div>
+  </head>
 
-		<div id="header" class="clear">
-			<h2><center>{ Node.JS&trade; Open Source Hosting Platform-as-a-Service }</center></h2>
-			<br/>
-			<div id="headleft">
-				<div class="tagline">
-					<p>Deploy your Node.JS applications on Nodester.com for FREE or deploy your apps to your own private cloud instance of Nodester running in your 
-						own datacenter or on Amazon EC2, Rackspace, or GoGrid!  </p>
-						
-					<p>
-						Nodester is an open source Node.JS Platform-as-a-Service written in Node.JS with a RESTful API designed to run in any cloud without a VPS!
-						It was the first of it's kind and 100% open sourced under the GNU Affero license on <a href="http://github.com/nodester"><span>GitHub</span></a>.
-						-> <a href="#TB_inline?height=700&width=980&inlineId=hiddenVideoContent&modal=true" class="thickbox">Watch the video!</a>
-					</p>
-				</div>
-			</div>
-			<br/>
-			<div id="headright" >
-				<div class="tagline">
-					<p class="nodestercommand">$ nodester app create myapp</p>
-					<p class="nodesteroutput">
-					nodester successfully created app myapp to will run on port 11449 from server.js<br/>
-					run nodester app init myapp to setup this app on localhost and server.
-					</p>
+  <body>
 
-					<p class="nodestercommand">$ nodester app init myapp</p>
-					<p class="nodesteroutput">
-						nodester initializing git repo for myapp into folder myapp<br/>
-						nodester clone complete<br/>
-						nodester app running - visit http://myapp.nodester.com
-					</p>
+    <div class="topbar">
+      <div class="fill">
+        <div class="container">
+          <a class="brand" href="/"><img src="/images/rocket-md-right.png" width="20"> nodester</a>
+          <ul class="nav">
+            <li class="active"><a href="/">Home</a></li>
+            <li><a href="/api.html">Docs</a></li>
+            <li><a href="http://nodester.tumblr.com">Blog</a></li>
+            <li><a href="http://irc.nodester.com">IRC</a></li>
 
-
-				</div>
-			</div>
-			
-		</div>
-        
-		<div id="body" class="clear">
-			<div id="contenthome" ><br/>
-				
-				<table>
-					<tr>
-						<td valign="top" width="33%">
-							<h2><img src="/images/rocket-md-right.png" width="50"> Preparing for Launch.</h2>	
-							<p>Request your free Nodester Node.JS hosting coupon.</p>	
-							<code>curl -X POST -d "email=your_address@gmail.com" http://nodester.com/coupon</code>					
-						</td>
-						<td valign="top" width="33%">
-							<h2><img src="/images/rocket-md-right.png" width="50"> All Systems Go!</h2>
-							<p>You have received your coupon and you're ready to install our Command Line Interface (CLI).</p>
-							<ol>
-							<li>npm install nodester-cli -g</li>
-							<li>nodester user setup &lt;username&gt; &lt;password&gt;</li>
-							<li>nodester user setkey &lt;file containing ssh public key&gt</li>
-							</ol>							
-						</td>
-						<td valign="top" width="33%">
-							<h2><img src="/images/rocket-md-right.png" width="50"> 3-2-1 Launch App!</h2>
-							<p>You are ready to deploy your test Hello World app with 2 commands.</p>							
-							<ol>
-								<li>nodester app create &lt;app-name&gt; &lt;initial js file&gt;</li>								
-								<li>nodester app init &lt;app-name&gt;</li>								
-							</ol>
-							<p>Visit http://myapp.nodester.com!</p>
-						</td>
-					</tr>
-				</table>
-				
-				
-				<!-- <center><p><a href="#TB_inline?height=700&width=980&inlineId=hiddenVideoContent&modal=true" class="thickbox"><img src="/images/nodestercast.jpg" width="700"></a></p></center> -->
-				
-				<h2><img src="/images/rocket-md-right.png" width="50"> Experienced Nodester with Existing App?</h2>
-				<p>Simply skip the init command and add a nodester git remote!  Init basically creates a hello world app for you locally, adds git and the nodester remote, pushes your app to nodester, and launches it.</p>
-				<code>
-					nodester app create myapp<br/><br/>
-					nodester app info myapp<br/><br/>
-					git remote add nodester the_url_returned_by_our_api and git push nodester master<br/><br/>
-				</code>
-					Do you have <b>NPM</b> modules?
-				<code>
-					 nodester npm install myapp express socket.io etc<br/><br/>
-					nodester app start myapp
-				</code>
-				<p>- OR use our REST API-</p>
-				<code>
-					curl -X POST -u "testuser:123" -d "appname=myapp&start=hello.js" http://api.nodester.com/app<br/><br/>
-					git remote add nodester the_url_returned_by_our_api <b>and</b> git push nodester master<br/><br/>
-					<b>NPM modules?</b> curl -X POST -u "testuser:123" -d "appname=myapp&action=install&package=express" http://api.nodester.com/npm<br/><br/>
-					curl -X PUT -u "testuser:123" -d "appname=myapp&running=true" http://api.nodester.com/app
-				</code>
-				<code><b>Visit your app at http://myapp.nodester.com</b></code>
-				<p><i>Don't worry :) You only need to start the application once. Subsequent git pushes will automatically pick up your changes and restart.</i></p>
-			</div>
-		</div>
-	</div>
-     <div id="footer">
-          <div class="footer-content">
-
-            <div class="footer-box">
-                <h4>About Us</h4>
-                <ul>
-                  <li>We started this project because the "other" node.js hosting services were not sending out coupon invitations.  Now anyone can host node.js apps! You can access our source code repository at <a href="http://github.com/nodester">http://github.com/nodester</a></li>
-                </ul>
-
-            </div>
-
-            <div class="footer-box">
-                <h4>Nodester Core Team</h4>
-                <ul>
-                  <li><a href="http://twitter.com/chrismatthieu">@ChrisMatthieu</a></li>
-                  <li><a href="http://twitter.com/danbuk">@DanBUK</a></li>
-                  <li><a href="http://twitter.com/marcosvm">@Marcosvm</a></li>
-                  <li><a href="http://twitter.com/wearefractal">@WeAreFractal</a></li>
-                </ul>
-
-            </div>
-
-            <div class="footer-box">
-
-                <h4>Meet our Sponsor</h4>
-                <ul>
-                  	<li><img src="/images/tropowhite.png" width="200"></li>
-					<li>Tropo is a cloud communications API and platform that natively supports Javascript-based hosted telephony apps and includes Node.JS libraries for handling really fast phone apps!</li>
-                </ul>
-            </div>
-
-            <div class="footer-box end-footer-box">
-                <h4>Search our site</h4>
-
-                <form action="#" method="get">
-                    <p>
-                        <input type="text" id="searchquery" size="18" name="searchterm" value="coming soon"/>
-
-                        <input type="submit" id="searchbutton" value="Search" class="formbutton" />
-                    </p>
-                </form>
-            </div>
-            <div class="clear"></div> 
+          </ul>
+			<p class="pull-right"><a class="btn primary large" href="developer.html">Signin &raquo;</a></p>
         </div>
-        <div id="footer-links">
-
-        <!-- A link to http://www.spyka.net must remain. To remove link see http://www.spyka.net/licensing -->
-                <p>&copy; 2011 Nodester | Node.JS is a trademark of Joyent</p>
-        </div>  
+      </div>
     </div>
-	<!-- twitter follow badge by go2web20 --> 
-	<script src='http://files.go2web20.net/twitterbadge/1.0/badge.js' type='text/javascript'></script><script type='text/javascript' charset='utf-8'><!--
-	tfb.account = 'nodester';
-	tfb.label = 'follow-us';
-	tfb.color = '#35ccff';
-	tfb.side = 'r';
-	tfb.top = 275;
-	tfb.showbadge();
-	--></script> 
-	<!-- end of twitter follow badge -->
-</body>
+
+    <div class="container">
+
+      <!-- Main hero unit for a primary marketing message or call to action -->
+      <div class="hero-unit">
+        <h1>OpenSource Node.JS PaaS</h1><br/>
+<img src="/images/nodesterbw_transparent.png" align="right" width="250">
+<!-- <img src="/images/rocket-md.png" align="right" width="250"> -->
+
+        <p>Deploy your Node.JS applications to Nodester.com for FREE or deploy your apps to your own private cloud instance of Nodester running in your own datacenter or on Amazon EC2, Rackspace, or GoGrid!
+			</p><br/><p>
+		Nodester is an open source Node.JS Platform-as-a-Service written in Node.JS with a RESTful API designed to run in any cloud without a VPS! It was the first of it's kind and 100% open sourced under the GNU Affero license on <a href="http://github.com/nodester">GitHub</a>.</p><br/>
+        <!-- <p><a class="btn primary large" href="developer.html">Learn more &raquo;</a></p> -->
+
+		<div id="reqbutton" class="btn primary large">Request Registration Coupon &raquo;</div>
+		<div id="reqform" style="display: none"><br/>
+			<form action="/coupon" method="post">
+				<p><label for="email">Email Adderss:</label>
+				<input type="text" name="email" id="email" value="" /><input type="submit" name="send" class="formbutton" value="Send" />
+			</form>
+		</div>
+
+		<script>
+		$('#reqbutton').click(function() {
+		  $('#reqform').toggle('slow', function() {
+		    // Animation complete.
+		  });
+		});
+		</script>
+
+
+		<p align="right">Nodester hosting sponsored by <a href="http://tropo.com">Tropo</a></p>
+      </div>
+
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="span-one-third">
+          <h2><img src="/images/rocket-md-right.png" width="30">Systems Check</h2>
+          <p>Request your free Nodester Node.JS hosting coupon.</p>
+          <!-- <p><a class="btn" href="#">View details &raquo;</a></p> -->
+        </div>
+        <div class="span-one-third">
+          <h2><img src="/images/rocket-md-right.png" width="30">All Systems Go</h2>
+           <p>You have received your coupon and you're ready to install our Command Line Interface (CLI).</p>
+          <!-- <p><a class="btn" href="#">View details &raquo;</a></p> -->
+       </div>
+        <div class="span-one-third">
+          <h2><img src="/images/rocket-md-right.png" width="30">3-2-1 Launch!</h2>
+          <p>You are ready to deploy your test Hello World app with 2 commands.</p>
+          <!-- <p><a class="btn" href="#">View details &raquo;</a></p> -->
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="span-one-third">
+		<p>
+			<blockquote>
+			curl -X POST -d "email=your_address@gmail.com" http://nodester.com/coupon
+			</blockquote>		
+		</p>
+      </div>
+        <div class="span-one-third">
+		<p>
+			<blockquote>
+				npm install nodester-cli -g <br/>
+				nodester user setup &lt;username&gt; &lt;password&gt; <br/>
+				nodester user setkey 
+			</blockquote>		
+		</p>
+      </div>
+        <div class="span-one-third">
+		<p>
+			<blockquote>
+			nodester app create &lt;appname&gt;<br/>
+			nodester app init &lt;appname&gt; <br/>
+			Visit http://&lt;appname&gt;.nodester.com!
+			</blockquote>		
+		</p>
+      </div>
+    </div>
+	
+
+	<div class="span16"><br/>
+          <h1>For Experienced Nodesters with Existing Node.JS Apps</h1>
+          <p>Simply skip the init command and add a nodester git remote! Init basically creates a hello world app for you locally, adds git and the nodester remote, pushes your app to nodester, and launches it.</p>
+		<blockquote>
+			<p>
+				nodester app create &lt;appname&gt;<br/>
+				nodester app info &lt;appname&gt;<br/>
+
+				git remote add nodester &lt;the_url_returned_by_our_api&gt;  <br/>
+				git push nodester master
+			</p><br/>
+		</blockquote>  
+		<p>
+			Do you have NPM modules?
+		</p> 
+		<blockquote>
+			<p>
+			nodester npm install &lt;appname&gt; express socket.io etc<br/>
+			nodester app start &lt;appname&gt;
+			</p><br/>
+		</blockquote>  
+		
+		<p>- OR use our REST API-</p>
+
+		<blockquote>
+<p>		
+		curl -X POST -u "testuser:123" -d "appname=myapp&start=hello.js" http://api.nodester.com/app<br/>
+
+		git remote add nodester &lt;the_url_returned_by_our_api&gt; and git push nodester master<br/>
+
+		NPM modules? curl -X POST -u "testuser:123" -d "appname=myapp&action=install&package=express" http://api.nodester.com/npm<br/>
+
+		curl -X PUT -u "testuser:123" -d "appname=myapp&running=true" http://api.nodester.com/app<br/>
+</p>
+		</blockquote>
+		      
+		<blockquote>Visit your app at http://&lt;appname&gt;.nodester.com</blockquote>
+		<p>Note: You only need to start the application once. Subsequent git pushes will automatically pick up your changes and restart.</p>
+	
+	</div>
+
+      <footer>
+        <p>&copy; 
+			<script type="text/javascript">
+			var theDate=new Date()
+			document.write(theDate.getFullYear())
+			</script>
+			 Nodester, inc. | <a href="/about.html">about us</a> | <a href="http://twitter.com/nodester">twitter</a> | <a href="http://github.com/nodester">github</a></p>
+      </footer>
+
+    </div> <!-- /container -->
+
+  </body>
 </html>
