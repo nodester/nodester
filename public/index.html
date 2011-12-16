@@ -10,6 +10,7 @@
       <![endif]-->
       <!-- Le styles -->
       <link href="bootstrap.css" rel="stylesheet" type="text/css" />
+      <link href="http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.css" rel="stylesheet" type="text/css" />
       <style type="text/css">
          body {
          padding-top: 60px;
@@ -21,6 +22,7 @@
       <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png" />
       <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png" />
       <script src="http://code.jquery.com/jquery-1.7.1.min.js" type="text/javascript"></script>
+      <script src="http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.js" type="text/javascript"></script>
       <script type="text/javascript">
          var _gaq = _gaq || [];
          _gaq.push(['_setAccount', 'UA-2483685-22']);
@@ -72,7 +74,7 @@
             </p>
             <br />
             <p>Nodester is an open source Node.JS Platform-as-a-Service written in Node.JS with
-               a RESTful API designed to run in any cloud without a VPS! It was the first of it's
+               a RESTful API designed to run in any cloud without a VPS! It is the first of its
                kind and 100% open sourced under the GNU Affero license on <a href="http://github.com/nodester">GitHub</a>.
             </p>
             <br />
@@ -98,28 +100,28 @@
          <div class="row">
             <div class="span-one-third">
                <h2><img src="images/rocket-md-right.png" width="30" />Systems Check</h2>
-               <p>Request your free Nodester Node.JS hosting coupon.</p>
+               <p>Request your free Nodester Node.JS hosting coupon</p>
             </div>
             <div class="span-one-third">
                <h2><img src="images/rocket-md-right.png" width="30" />All Systems Go</h2>
                <p>You have received your coupon and you're ready to install our Command Line
-                  Interface (CLI).
+                  Interface
                </p>
             </div>
             <div class="span-one-third">
                <h2><img src="images/rocket-md-right.png" width="30" />3-2-1 Launch!</h2>
-               <p>You are ready to deploy your test Hello World app with 2 commands.</p>
+               <p>You're ready to deploy your Hello World app!</p>
             </div>
          </div>
          <div class="row">
             <div class="span-one-third">
-               <blockqote>curl -X POST -d "email=your_address@gmail.com" http://nodester.com/coupon</blockquote>
+               <pre class="prettyprint"><blockqote>curl -X POST -d "email=you@gmail.com" http://nodester.com/coupon</pre>
             </div>
             <div class="span-one-third">
-               <blockquote>npm install nodester-cli -g<br />nodester user setup &lt;username&gt; &lt;password&gt;<br />nodester user setkey</blockquote>
+               <pre class="prettyprint">npm install nodester-cli -g<br />nodester user setup &lt;user&gt; &lt;pass&gt;<br />nodester user setkey</pre>
             </div>
             <div class="span-one-third">
-               <blockquote>nodester app create &lt;appname&gt;<br />nodester app init &lt;appname&gt;<br /></blockquote>
+               <pre class="prettyprint">nodester app create &lt;appname&gt;<br />nodester app init &lt;appname&gt;<br /></pre>
             </div>
          </div>
       <!-- /container -->
