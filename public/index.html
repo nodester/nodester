@@ -76,12 +76,13 @@
             </p>
             <br />
             <div id="reqbutton" class="btn primary large">
-               Request Registration Coupon &#187;
+               Request Registration Coupon
             </div>
             <div id="reqform" class="c1">
                <br />
-               <form action="./coupon" method="post">
-                  <p><label for="email">Email Adderss:</label> <input type="text" name="email" id="email" value="" /><input type="submit" name="send" class="formbutton" value="Send" /></p>
+               <form action="/coupon" type="post">
+                <input class="input-large" type="text" name="email" id="email" placeholder="Email" />
+                <button class="btn" type="submit" name="send">Send</button>
                </form>
             </div>
             <script type="text/javascript">
@@ -111,61 +112,15 @@
          </div>
          <div class="row">
             <div class="span-one-third">
-               <blockquote>
-                  curl -X POST -d "email=your_address@gmail.com" http://nodester.com/coupon
-               </blockquote>
+               <blockqote>curl -X POST -d "email=your_address@gmail.com" http://nodester.com/coupon</blockquote>
             </div>
             <div class="span-one-third">
-               <blockquote>
-                  npm install nodester-cli -g<br />
-                  nodester user setup &lt;username&gt; &lt;password&gt;<br />
-                  nodester user setkey
-               </blockquote>
+               <blockquote>npm install nodester-cli -g<br />nodester user setup &lt;username&gt; &lt;password&gt;<br />nodester user setkey</blockquote>
             </div>
             <div class="span-one-third">
-               <blockquote>
-                  nodester app create &lt;appname&gt;<br />
-                  nodester app init &lt;appname&gt;<br />
-               </blockquote>
+               <blockquote>nodester app create &lt;appname&gt;<br />nodester app init &lt;appname&gt;<br /></blockquote>
             </div>
          </div>
-         <div class="span16">
-            <br />
-            <h1>For Experienced Nodesters with Existing Node.JS Apps</h1>
-            <p>Simply skip the init command and add a nodester git remote! Init basically
-               creates a hello world app for you locally, adds git and the nodester remote, pushes
-               your app to nodester, and launches it.
-            </p>
-            <blockquote>
-               nodester app create &lt;appname&gt;<br />
-               git remote add nodester &lt;the_url_returned_by_our_api&gt;<br />
-               git push nodester master<br />
-            </blockquote>
-            <p>Do you have NPM modules?</p>
-            <blockquote>
-               nodester npm install &lt;appname&gt; express socket.io etc<br />
-               nodester app restart &lt;appname&gt;<br />
-            </blockquote>
-            <p>- OR use our REST API-</p>
-            <blockquote>
-               curl -X POST -u "testuser:123" -d "appname=myapp&amp;start=hello.js"
-               http://api.nodester.com/app<br />
-               git remote add nodester &lt;the_url_returned_by_our_api&gt; and git push nodester
-               master<br />
-               NPM modules? curl -X POST -u "testuser:123" -d
-               "appname=myapp&amp;action=install&amp;package=express"
-               http://api.nodester.com/npm<br />
-               curl -X PUT -u "testuser:123" -d "appname=myapp&amp;running=true"
-               http://api.nodester.com/app<br />
-            </blockquote>
-            <blockquote>
-               Visit your app at http://&lt;appname&gt;.nodester.com
-            </blockquote>
-            <p>Note: You only need to start the application once. Subsequent git pushes will
-               automatically pick up your changes and restart.
-            </p>
-         </div>
-      </div>
       <!-- /container -->
       <footer class="footer">
          <div class="container">
