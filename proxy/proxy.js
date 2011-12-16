@@ -62,7 +62,7 @@ bouncy(function (req, bounce) {
     stream.on('error', function (err) {
       var res = bounce.respond();
       res.statusCode = 503;
-      rreturn res.end(getErrorPage('503 - Application offline', '503', 'Application offline'));
+      return res.end(getErrorPage('503 - Application offline', '503', 'Application offline'));
     });
   } else {
     var res = bounce.respond();
