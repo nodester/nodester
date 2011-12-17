@@ -37,6 +37,25 @@
       </script>
    </head>
    <body>
+	
+	<script>
+		$(document).ready(function() {
+		   var hash = window.location.hash.substring(1);
+			if (hash == "rest") {
+				$('#clili').removeClass("active");
+				$('#cli').removeClass("active");
+				$('#restli').addClass("active");
+				$('#rest').addClass("active");
+			}
+			if (hash == "explorer") {
+				$('#clili').removeClass("active");
+				$('#cli').removeClass("active");
+				$('#explorerli').addClass("active");
+				$('#explorer').addClass("active");
+			}
+		});
+	</script>
+	
       <div class="topbar">
          <div class="fill">
             <div class="container">
@@ -68,9 +87,9 @@
                   Node.JS applications running on the Nodester platform without going to the command line.
                </p>
                <ul class="tabs" data-tabs="tabs">
-                  <li class="active"><a href="#cli">Command Line Interface (CLI)</a></li>
-                  <li><a href="#rest">REST API</a></li>
-                  <li><a href="#explorer">API Explorer</a></li>
+                  <li  id="clili" class="active"><a href="#cli">Command Line Interface (CLI)</a></li>
+                  <li id="restli"><a href="#rest">REST API</a></li>
+                  <li id="explorerli"><a href="#explorer">API Explorer</a></li>
                </ul>
                <div id="my-tab-content" class="tab-content">
                   <div class="active tab-pane" id="cli">
