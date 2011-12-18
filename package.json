@@ -5,7 +5,7 @@
    "homepage":"http://github.com/nodester/nodester",
    "repository":"git://github.com/nodester/nodester.git",
    "author":"Nodester <contact@nodester.com> (http://nodester.com/)",
-   
+
    "dependencies":{
       "coffee-script":"*",
       "colors":"*",

@@ -75,7 +75,7 @@ Operations are as simple as nodester <command> <param1> <param2>.  Here is a lis
   nodester coupon <email address>
   nodester user create <username> <password> <email address> <file containing ssh public key> <coupon code>
   nodester user setup <username> <password>
-  
+
   The commands below require you to have run 'user setup' before/
   nodester user setpass <new password>
 
@@ -127,7 +127,7 @@ http://github.com/nodester
 
 == Need Help?
 
-Hit us up in IRC at irc.freenode.net #nodester or http://irc.nodester.com 
+Hit us up in IRC at irc.freenode.net #nodester or http://irc.nodester.com
 You can also ask questions and provide feedback in our google group at http://groups.google.com/group/nodester
 
 

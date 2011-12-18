@@ -178,9 +178,9 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
   }
   sandbox.require.resolve = function (f) {
     if (f.indexOf('./') === 0) {
-      //console.log('Nodester fixing require path', f); 
+      //console.log('Nodester fixing require path', f);
       f = f.substring(1);
-      //console.log('Nodester fixed require path', f); 
+      //console.log('Nodester fixed require path', f);
     }
     return _resolve.call(this, f);
   };
