@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-/* 
+/*
 
 Nodester opensource Node.js hosting service
 
@@ -54,7 +54,7 @@ myapp.get('/monitor', function(req, res, next) {
 });
 
 // Status API
-// http://localhost:4001/status 
+// http://localhost:4001/status
 // curl http://localhost:4001/status
 var status = require('./lib/status');
 myapp.get('/status', status.get);
@@ -75,11 +75,11 @@ var user = require('./lib/user');
 myapp.post('/user', user.post);
 
 // localhost requires basic auth to access this section
-// Edit your user account 
+// Edit your user account
 // curl -X PUT -u "testuser:123" -d "password=test&rsakey=1234567" http://localhost:4001/user
 myapp.put('/user', middle.authenticate, user.put);
 
-// Delete your user account 
+// Delete your user account
 // curl -X DELETE -u "testuser:123" http://localhost:4001/user
 myapp.delete('/user', middle.authenticate, user.delete);
 
@@ -96,7 +96,7 @@ var app = require('./lib/app');
 // curl -u "testuser:123" http://localhost:4001/app/<appname>
 myapp.get('/app/:appname', middle.authenticate, middle.authenticate_app, app.get);
 
-// Create node app 
+// Create node app
 // curl -X POST -u "testuser:123" -d "appname=test&start=hello.js" http://localhost:4001/apps
 myapp.post('/app', middle.authenticate, app.post);
 
@@ -117,7 +117,7 @@ myapp.get('/app_stop', app.app_stop);
 // TODO - Fix this function, it's not doing callbacking properly so will return JSON in the wrong state!
 myapp.put('/app', middle.authenticate, middle.authenticate_app, app.put);
 
-// Delete your nodejs app 
+// Delete your nodejs app
 // curl -X DELETE -u "testuser:123" -d "appname=test" http://localhost:4001/apps
 myapp.delete('/app', middle.authenticate, middle.authenticate_app, app.delete);
 
