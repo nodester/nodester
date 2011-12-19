@@ -1,5 +1,5 @@
 #!/bin/bash
-# post-commit hook to create git file directory for node subdomain 
+# post-commit hook to create git file directory for node subdomain
 SECRETKEY=PleaseRestartMyAppMKay
 GITBASE=/git
 APPSBASE=/app

@@ -25,7 +25,7 @@ Installation:
     OR wget, ./configure, make, make install
   Create a user and group to run nodester as (do this as root)
     sudo su -
-    groupadd nodester 
+    groupadd nodester
     useradd -d /var/nodester -c "nodester" -g nodester -m -r -s /bin/bash nodester
     passwd nodester
   Login to that account and ensure that .ssh/authorized_keys exists
@@ -56,7 +56,7 @@ Installation:
     cd npm
     git checkout origin/0.2
     make dev
-    
+
     ##Fetch 0.2.6 version of node for npm
     cd ~/src
     sudo mkdir -p /usr/local/n/versions/
@@ -76,7 +76,7 @@ Installation:
 
   Install node-module dependencies (do this as nodester)
     for X in pool express npm-wrapper request daemon forever cradle coloured; do npm install ${X}; done
-  
+
   Get nodester (do this as nodester)
     cd ~
     git clone git://github.com/nodester/nodester.git
@@ -89,7 +89,7 @@ Installation:
     cd /var/nodester/nodester
     sudo cp scripts/git-shell-enforce-directory /usr/local/bin
     sudo chmod +x /usr/local/bin/git-shell-enforce-directory
-  
+
   Configure the app (do this as nodester)
     Copy nodester/example_config.js to nodester/config.js
     Edit the settings in nodester/config.js

@@ -1,5 +1,5 @@
 #!/bin/bash
-# script to create git repo for node subdomain 
+# script to create git repo for node subdomain
 # _rev is passed into the script as a parameter
 
 BASEDIR=${1};

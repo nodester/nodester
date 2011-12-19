@@ -27,17 +27,17 @@
          _gaq.push(['_setAccount', 'UA-2483685-22']);
          _gaq.push(['_setDomainName', 'nodester.com']);
          _gaq.push(['_trackPageview']);
-         
+
          (function() {
            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
          })();
-         
+
       </script>
    </head>
    <body>
-	
+
 	<script>
 		$(document).ready(function() {
 		   var hash = window.location.hash.substring(1);
@@ -55,7 +55,7 @@
 			}
 		});
 	</script>
-	
+
       <div class="topbar">
          <div class="fill">
             <div class="container">
@@ -82,8 +82,8 @@
             <div class="span16">
                <br />
                <h1>Nodester API Documentation</h1>
-               <p>Our entire platform is built on a set of REST APIs. A subset of these APIs are implemented in our CLI (command line interface). 
-                  We are also working on a web admin panel based on these APIs which will eventually allow you to provision, monitor, and control 
+               <p>Our entire platform is built on a set of REST APIs. A subset of these APIs are implemented in our CLI (command line interface).
+                  We are also working on a web admin panel based on these APIs which will eventually allow you to provision, monitor, and control
                   Node.JS applications running on the Nodester platform without going to the command line.
                </p>
                <ul class="tabs" data-tabs="tabs">
@@ -95,7 +95,7 @@
                   <div class="active tab-pane" id="cli">
                      <p>
                         Our command line interface allows you to manage your user account and applications with simple commands. Before you can begin using
-                        these commands, you need to install the Nodester CLI using NPM. 
+                        these commands, you need to install the Nodester CLI using NPM.
                      </p>
                      <p>
                         <b>npm install nodester-cli -g</b>
@@ -413,7 +413,7 @@
 
                   <div class="tab-pane" id="explorer">
 					<p>Nodester has partnered with Apigee to provide this API Explorer interface for developers to experiment with our RESTful PaaS API.  Follow these instructions to get started and have fun!</p>
-					<p>	
+					<p>
 					1. Click on the padlock (top left) to authenticate using your Nodester credentials <br/>
 
 					2. If necessary edit the {sample} parts of the URL with the right information such as your appname<br/>
@@ -423,7 +423,7 @@
 					4. Click on the orange GET/POST/PUT/DELETE button to run the API request
 					</p><br />
 					<iframe src="https://apigee.com/chris17/embed/console/nodester-api" width="100%" height="600"></iframe>
-					
+
 	              </div>
 
 
