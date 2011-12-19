@@ -81,6 +81,9 @@
             <div id="reqbutton" class="btn primary large">
                Request Registration Coupon
             </div>
+ 			<div id="videobutton" class="btn danger large">
+				Watch Video &raquo;
+			</div>
             <div id="reqform" class="c1">
                <br />
                <form action="/coupon" method="post">
@@ -94,6 +97,10 @@
                          // Animation complete.
                        });
                      });
+				$('#videobutton').click(function() {
+					window.location.href = 'http://www.youtube.com/watch?v=jwsP1Ejv-_w';
+				});
+
             </script>
             <p class="c2">Nodester hosting sponsored by <a href="http://tropo.com">Tropo</a></p>
          </div>
