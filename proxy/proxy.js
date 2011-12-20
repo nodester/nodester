@@ -58,7 +58,7 @@ bouncy(function (req, bounce) {
     return res.end(getErrorPage('500 - Application error', '503', 'Application error'));
   });
   if (route) {
-    var stream = bounce(route);
+    var stream = bounce(route, { headers: { Connection: 'close' } });
     stream.on('error', function (err) {
       var res = bounce.respond();
       res.statusCode = 503;
