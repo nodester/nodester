@@ -105,6 +105,8 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
   // environment variables which cannot be overriden by config.
   env.app_port = app_port;
   env.app_host = app_host;
+  env.port = app_port;
+  env.host = app_host;
   sandbox.process.mainModule = sandbox.module;
   sandbox.process.kill = function () {
     return 'process.kill is disabled'
