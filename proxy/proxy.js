@@ -52,6 +52,7 @@ bouncy(function (req, bounce) {
   }
   var host = req.headers.host.replace(/:\d+$/, '');
   var route = proxymap[host] || proxymap[''];
+  console.log(host + ':' + route);
   req.on('error', function (err) {
     var res = bounce.respond();
     res.statusCode = 500;
