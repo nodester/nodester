@@ -121,6 +121,7 @@
 	         <h2><img src="images/rocket-md-right.png" width="30" /> Registering with a Coupon Code</h2>
 	         <p>
 	         <pre class="prettyprint">curl -X POST -d "coupon=mycoupon&user=testuser&password=123&email=chris@nodester.com&rsakey=ssh-rsa AAAA..." http://nodester.com/user</pre>
+	         <p><span class="label important">Important</span> See <a href="/help.html#faq">FAQs</a> for instructions on obtaining your RSA key.</p>
 	         <div id="regbutton" class="btn">OR CHEAT</div>
 	         <div id="regform" style="display: none">
 	            <br />
@@ -162,6 +163,11 @@
          </div>
          <div class="tab-pane" id="faq">
 				<table class="bordered-table zebra-striped">
+					<tr>
+						<td>RSA Keys</td>
+						<td>RSA/SSH keys are used with <a href="http://git-scm.com/">git</a> to push or deploy your applications on Nodester. Mac and Linux users can copy and paste their RSA keys into nodester's registration form 
+							by running "cat ~/.ssh/id_rsa.pub | pbcopy" from the command line.  Windows users can find a good article for installing git and obtaining their RSA key from <a href="http://help.github.com/win-set-up-git/">http://help.github.com/win-set-up-git/</a> </td>
+					</tr>
 					<tr>
 						<td>Ports</td>
 						<td>Your application's port must match the port that we assign your application. This port is provided at the time of app creation but your can retrieve 
