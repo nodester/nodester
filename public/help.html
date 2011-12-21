@@ -23,6 +23,8 @@
       <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png" />
       <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
       <script src="http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.js" type="text/javascript"></script>
+	  <script src="http://twitter.github.com/bootstrap/1.4.0/bootstrap-tabs.js"></script>
+
       <script type="text/javascript">
          var _gaq = _gaq || [];
          _gaq.push(['_setAccount', 'UA-2483685-22']);
@@ -38,6 +40,18 @@
       </script>
    </head>
    <body>
+	<script>
+		$(document).ready(function() {
+		   var hash = window.location.hash.substring(1);
+			if (hash == "faq") {
+				$('#faqli').addClass("active");
+				$('#helpli').removeClass("active");
+				$('#help').removeClass("active");
+				$('#faq').addClass("active");
+			}
+		});
+	</script>
+	
       <div class="topbar">
          <div class="fill">
             <div class="container">
@@ -48,6 +62,7 @@
                   <li><a href="http://nodester.tumblr.com">Blog</a></li>
                   <li><a href="http://irc.nodester.com">IRC</a></li>
                   <li class="active"><a href="help.html">Help</a></li>
+                  <li><a href="http://site.nodester.com">Status</a></li>
                </ul>
                <p class="pull-right">
                <form action="http://admin.nodester.com/login" method="post" class="pull-right">
@@ -63,70 +78,119 @@
          <div class="span16">
             <br />
             <h1>Welcome Nodesters!</h1>
-            <p>Here are a few tricks to get you started.</p>
+            <p>There are many avenues to get help with hosting or deploying your node.js applications to Nodester. Here is what we recommend: </p>
+			<p>
+				<ul>
+					<li><b>IRC Chat</b> - http://freenode.net#nodester <b>-OR-</b> <a href="http://irc.nodester.com">http://irc.nodester.com</a></li>
+					<li><b>Google Groups</b> - <a href="http://groups.google.com/group/nodester">http://groups.google.com/group/nodester</a></li>
+					<li><b>GitHub Issues</b> - <a href="https://github.com/nodester/nodester/issues">https://github.com/nodester/nodester/issues</a></li>
+				</ul>
+			</p>
+	
+			<p>The <b>General Help</b> tab below includes a few basic tricks to get you started while the <b>FAQ</b> tab dives deeper into topics that we have encountered a few times.</p>
             <br />
-            <p>
-               <iframe width="853" height="480" src="http://www.youtube.com/embed/jwsP1Ejv-_w?hd=1" frameborder="0" allowfullscreen></iframe>
-            </p>
-            <br />
-            <h2><img src="images/rocket-md-right.png" width="30" /> Requesting a Coupon Code to Register</h2>
-            <p>
-            <pre class="prettyprint">curl -X POST -d "email=your_address@gmail.com" http://nodester.com/coupon</pre>
-            <div id="reqbutton" class="btn">OR CHEAT</div>
-         </div>
+			<ul class="tabs" data-tabs="tabs">
+			  <li class="active" id="helpli"><a href="#help">General Help</a></li>
+			  <li id="faqli"><a href="#faq">FAQs</a></li>
+			</ul>
 
-		<a name="register"></a>
+			<div id="my-tab-content" class="tab-content">
+	            <div class="active tab-pane" id="help">
 
-         <div id="reqform" style="display: none">
-         <br />
-         <form action="/coupon" method="post">
-          <input class="input-large" type="text" name="email" id="email" placeholder="Email" />
-          <button class="btn" type="submit">Send</button>
-         </form>
+		            <p>
+		               <iframe width="853" height="480" src="http://www.youtube.com/embed/jwsP1Ejv-_w?hd=1" frameborder="0" allowfullscreen></iframe>
+		            </p>
+		            <br />
+		            <h2><img src="images/rocket-md-right.png" width="30" /> Requesting a Coupon Code to Register</h2>
+		            <p>
+		            <pre class="prettyprint">curl -X POST -d "email=your_address@gmail.com" http://nodester.com/coupon</pre>
+	            <div id="reqbutton" class="btn">OR CHEAT</div>
+
+			<a name="register"></a>
+
+	         <div id="reqform" style="display: none">
+	         <br />
+	         <form action="/coupon" method="post">
+	          <input class="input-large" type="text" name="email" id="email" placeholder="Email" />
+	          <button class="btn" type="submit">Send</button>
+	         </form>
+	         </div>
+	         <br /><br />
+	         </p>
+	         <br />
+	         <h2><img src="images/rocket-md-right.png" width="30" /> Registering with a Coupon Code</h2>
+	         <p>
+	         <pre class="prettyprint">curl -X POST -d "coupon=mycoupon&user=testuser&password=123&email=chris@nodester.com&rsakey=ssh-rsa AAAA..." http://nodester.com/user</pre>
+	         <div id="regbutton" class="btn">OR CHEAT</div>
+	         <div id="regform" style="display: none">
+	            <br />
+	            <form action="/user" method="post">
+	               <input class="input-small" type="text" id="coupon" name="coupon" placeholder="Coupon" /><br /><br />
+	               <input class="input-large" type="text" id="user" name="user" placeholder="Username (alphanumeric)" /><br /><br />
+	               <input class="input-large" type="password" id="password" name="password" placeholder="Password (alphanumeric)" /><br /><br />
+	               <span id="passwordError" style="display:none"><span style="color:red">Password is limited to alphanumerics - no symbols allowed.</span><br /><br /></span>
+	               <input class="input-large" type="text" id="email" name="email" placeholder="Email" /><br /><br />
+	               <textarea class="xxlarge" id="rsakey" name="rsakey" rows="3" placeholder="Copy &amp; Paste RSA key from command line: cat ~/.ssh/id_rsa.pub | pbcopy"></textarea><br /><br />
+	               <button class="btn" type="submit">Send</button>
+	            </form>
+	         </div>
+	         <br /><br />
+	         </p>
+	         <br />
+	         <h2><img src="images/rocket-md-right.png" width="30" /> Setting up</h2>
+	         <p>Install the CLI and give it your credentials before blasting off</p>
+	         <pre class="prettyprint">npm install nodester-cli -g <br />nodester user setup &lt;username&gt; &lt;password&gt; <br />nodester user setkey</pre>
+	         <br />
+	         <h2><img src="images/rocket-md-right.png" width="30" /> Create Your Application</h2>
+	         <p>You are ready to deploy your test Hello World app with 2 commands.</p>
+	         <pre class="prettyprint">nodester app create &lt;appname&gt;<br />nodester app init &lt;appname&gt; <br />http://&lt;appname&gt;.nodester.com</pre>
+	         <br />
+	         <h2><img src="images/rocket-md-right.png" width="30" /> Launch Your Node.JS Application!</h2>
+	         <p>You are ready to deploy your test Hello World app with 2 commands.</p>
+	         <pre class="prettyprint">nodester app create &lt;appname&gt;<br />nodester app init &lt;appname&gt; <br />http://&lt;appname&gt;.nodester.com</pre>
+	         <br />
+	         <h2><img src="images/rocket-md-right.png" width="30" /> Do you have NPM dependencies?</h2>
+	         <p>You can install any npm module you want!</p>
+	         <pre class="prettyprint">nodester npm install &lt;appname&gt; &lt;package names&gt;<br />nodester app restart &lt;appname&gt;</pre>
+	         <br />
+	         <h1>For Experienced Nodesters with Existing Node.JS Apps</h1>
+	         <p>Don't need a "hello world"? Simply skip the init command and add a nodester git remote to your existing project folder. Pushing to nodester will automatically restart your application!</p>
+	         <pre class="prettyprint">nodester app create &lt;appname&gt;<br/>git remote add nodester &lt;the_url_returned_by_our_api&gt;<br/>git push nodester master<br/>http://&lt;appname&gt;.nodester.com</pre>
+	         <p><span class="label important">Important</span> Make sure you use the port given to you by nodester!</p>
+	         <br />
+
          </div>
-         <br /><br />
-         </p>
-         <br />
-         <h2><img src="images/rocket-md-right.png" width="30" /> Registering with a Coupon Code</h2>
-         <p>
-         <pre class="prettyprint">curl -X POST -d "coupon=mycoupon&user=testuser&password=123&email=chris@nodester.com&rsakey=ssh-rsa AAAA..." http://nodester.com/user</pre>
-         <div id="regbutton" class="btn">OR CHEAT</div>
-         <div id="regform" style="display: none">
-            <br />
-            <form action="/user" method="post">
-               <input class="input-small" type="text" id="coupon" name="coupon" placeholder="Coupon" /><br /><br />
-               <input class="input-large" type="text" id="user" name="user" placeholder="Username (alphanumeric)" /><br /><br />
-               <input class="input-large" type="password" id="password" name="password" placeholder="Password (alphanumeric)" /><br /><br />
-               <span id="passwordError" style="display:none"><span style="color:red">Password is limited to alphanumerics - no symbols allowed.</span><br /><br /></span>
-               <input class="input-large" type="text" id="email" name="email" placeholder="Email" /><br /><br />
-               <textarea class="xxlarge" id="rsakey" name="rsakey" rows="3" placeholder="Copy &amp; Paste RSA key from command line: cat ~/.ssh/id_rsa.pub | pbcopy"></textarea><br /><br />
-               <button class="btn" type="submit">Send</button>
-            </form>
-         </div>
-         <br /><br />
-         </p>
-         <br />
-         <h2><img src="images/rocket-md-right.png" width="30" /> Setting up</h2>
-         <p>Install the CLI and give it your credentials before blasting off</p>
-         <pre class="prettyprint">npm install nodester-cli -g <br />nodester user setup &lt;username&gt; &lt;password&gt; <br />nodester user setkey</pre>
-         <br />
-         <h2><img src="images/rocket-md-right.png" width="30" /> Create Your Application</h2>
-         <p>You are ready to deploy your test Hello World app with 2 commands.</p>
-         <pre class="prettyprint">nodester app create &lt;appname&gt;<br />nodester app init &lt;appname&gt; <br />http://&lt;appname&gt;.nodester.com</pre>
-         <br />
-         <h2><img src="images/rocket-md-right.png" width="30" /> Launch Your Node.JS Application!</h2>
-         <p>You are ready to deploy your test Hello World app with 2 commands.</p>
-         <pre class="prettyprint">nodester app create &lt;appname&gt;<br />nodester app init &lt;appname&gt; <br />http://&lt;appname&gt;.nodester.com</pre>
-         <br />
-         <h2><img src="images/rocket-md-right.png" width="30" /> Do you have NPM dependencies?</h2>
-         <p>You can install any npm module you want!</p>
-         <pre class="prettyprint">nodester npm install &lt;appname&gt; &lt;package names&gt;<br />nodester app restart &lt;appname&gt;</pre>
-         <br />
-         <h1>For Experienced Nodesters with Existing Node.JS Apps</h1>
-         <p>Don't need a "hello world"? Simply skip the init command and add a nodester git remote to your existing project folder. Pushing to nodester will automatically restart your application!</p>
-         <pre class="prettyprint">nodester app create &lt;appname&gt;<br/>git remote add nodester &lt;the_url_returned_by_our_api&gt;<br/>git push nodester master<br/>http://&lt;appname&gt;.nodester.com</pre>
-         <p><span class="label important">Important</span> Make sure you use the port given to you by nodester!</p>
-         <br />
+         <div class="tab-pane" id="faq">
+				<table class="bordered-table zebra-striped">
+					<tr>
+						<td>Ports</td>
+						<td>Your application's port must match the port that we assign your application. This port is provided at the time of app creation but your can retrieve 
+						your application's port, starting javascript file, and nodester git repository address at any time by running "nodester app info &lt;appname&gt;" from the CLI.</td>
+					</tr>
+					<tr>
+						<td>Web Sockets</td>
+						<td>Your application's server-side port must match the port that we assign your application (see ports section above). 
+							Your client side port should be set to port 80.</td>
+					</tr>
+					<tr>
+						<td>Logs</td>
+						<td>Your application's logs are very helpful at helping you troubleshoot issues.  You can be access these logs from the CLI by running "nodester app info &lt;appname&gt;".</td>
+					</tr>
+					<tr>
+						<td>Local File Writes</td>
+						<td>Your application can write to your local sandbox.  Remember to include a directory in your project to write to and start the name/path of the file as "./directory/filename".</td>
+					</tr>
+					<tr>
+						<td>NPM Modules</td>
+						<td>Most Node.JS applications use NPM modules especially ExpressJS.  Remember to run "nodester npm install &lt;appname&gt; &lt;modulename modulename modulename&gt;" from the CLI and restart your application
+							after successfully updating NPM.  Nodester also supports package.json allowing you to install all of your modules without listing them individually like so: "nodester npm install &lt;appname&gt;"</td>
+					</tr>
+				</table>
+           </div>
+	</div>			
+
+
+
       </div>
       <script>
          $('#reqbutton').click(function() {
