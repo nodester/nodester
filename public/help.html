@@ -191,6 +191,10 @@
 						<td>Most Node.JS applications use NPM modules especially ExpressJS.  Remember to run "nodester npm install &lt;appname&gt; &lt;modulename modulename modulename&gt;" from the CLI and restart your application
 							after successfully updating NPM.  Nodester also supports package.json allowing you to install all of your modules without listing them individually like so: "nodester npm install &lt;appname&gt;"</td>
 					</tr>
+					<tr>
+						<td>Environment Variables</td>
+						<td>We support for following environment variables globally: port, host, PORT, HOST, app_host, app_port.  This means that you can use our environment variable instead of hardcoding the port in your application like so: app.listen(process.env['port']);</td>
+					</tr>
 				</table>
            </div>
 	</div>			
