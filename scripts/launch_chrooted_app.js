@@ -4,6 +4,7 @@ var fs = require('fs'),
   path = require('path'),
   util = require('util'),
   Script = process.binding('evals').Script,
+  coffee = require('coffee-script'),
   Module = require('module');
 
 //This "preps" the chroot with SSL support
@@ -109,6 +110,7 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
   env.host = app_host;
   env.PORT = app_port;
   env.HOST = app_host;
+  sandbox.process.title = app_host;
   sandbox.process.mainModule = sandbox.module;
   sandbox.process.kill = function () {
     return 'process.kill is disabled'
