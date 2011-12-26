@@ -2,15 +2,21 @@
 
 Nodester is a free and open source Node.JS hosting platform and service for managing multi-tenant hosted NodeJS apps.  It consists of an RESTful API that allows developers to create and manage NodeJS apps online as well as a command line interface to simply steps instead of using cURL.  NodeJS apps names are assigned as subdomains that proxy to ports with an assigned addresses.  Git is used to push updates to Nodester and instances (dynos) are launched using post-receive hooks so that they run until you stop them.
 
+``` bash
 Give our platform a spin at http://nodester.com
+``` 
 
 ## Request a free hosting coupon today
 
+``` bash
   curl -X POST -d "email=you@gmail.com" http://nodester.com/coupon
+```
 
 ## Installing the Nodester CLI
 
+``` bash
   npm install nodester-cli -g
+``` 
 
 ## CLI and RESTful API Documentation
 
@@ -28,10 +34,10 @@ Subdomains can be tested locally by editing /etc/hosts like this:
 127.0.0.1	localhost a.localhost b.localhost c.localhost
 save etc/hosts and flush DNS like this: sudo dscacheutil -flushcache
 
-  http://localhost:80 # Homepage
-  http://a.localhost:80 # Runs app associated with subdomain a on couch-configured port
-  http://b.localhost:80 # Runs app associated with subdomain b on couch-configured port
-  http://chris:123@api.localhost:80/status # API to list status of all node apps
+*  http://localhost:80 # Homepage
+*  http://a.localhost:80 # Runs app associated with subdomain a on couch-configured port
+*  http://b.localhost:80 # Runs app associated with subdomain b on couch-configured port
+*  http://chris:123@api.localhost:80/status # API to list status of all node apps
 
 ## Todos
 
