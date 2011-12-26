@@ -2,7 +2,12 @@
 
 Nodester is a free and open source Node.JS hosting platform and service for managing multi-tenant hosted NodeJS apps.  It consists of an RESTful API that allows developers to create and manage NodeJS apps online as well as a command line interface to simply steps instead of using cURL.  NodeJS apps names are assigned as subdomains that proxy to ports with an assigned addresses.  Git is used to push updates to Nodester and instances (dynos) are launched using post-receive hooks so that they run until you stop them.
 
+## Demo
+
 Give our platform a spin at http://nodester.com
+
+Watch our video on how-to build and deploy a Node.JS application to Nodester in only 39 seconds!
+http://youtu.be/jwsP1Ejv-_w
 
 ## Request a free hosting coupon today
 
