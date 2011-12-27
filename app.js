@@ -171,14 +171,15 @@ var reset_password = require('./lib/reset_password');
 myapp.post('/reset_password', reset_password.post);
 myapp.put('/reset_password/:token', reset_password.put);
 
-myapp.use(express.errorHandler({
-  showStack: true
-}));
-
 //The 404 Route (ALWAYS Keep this as the last route)
 myapp.get('/*', function(req, res){
     throw new NotFound;
 });
+
+myapp.use(express.errorHandler({
+  showStack: true
+}));
+
 
 myapp.listen(4001);
 console.log('Nodester app started on port 4001');
