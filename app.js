@@ -31,6 +31,17 @@ myapp.configure(function() {
   myapp.use(middle.error());
 });
 
+
+//setup the errors
+myapp.error(function(err, req, res, next){
+    if (err instanceof NotFound) {
+		res.sendfile('404.html');
+    } else {
+		res.sendfile('500.html');
+    }
+});
+
+
 // Routes
 // Homepage
 myapp.get('/', function(req, res, next) {
@@ -168,3 +179,14 @@ console.log('Nodester app started on port 4001');
 
 nodeinfo.broadcast(13377);
 console.log('NodeInfo monitor started on port 13377');
+
+//The 404 Route (ALWAYS Keep this as the last route)
+myapp.get('/*', function(req, res){
+    throw new NotFound;
+});
+
+function NotFound(msg){
+    this.name = 'NotFound';
+    Error.call(this, msg);
+    Error.captureStackTrace(this, arguments.callee);
+}
