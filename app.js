@@ -135,7 +135,7 @@ myapp.put('/app', middle.authenticate, middle.authenticate_app, app.put);
 myapp.del('/app', middle.authenticate, middle.authenticate_app, app.deleteapp);
 
 
-myapp.del('/gitreset', middle.authenticate, middle.authenticate_app, app.gitreset);
+myapp.delete('/gitreset', middle.authenticate, middle.authenticate_app, app.gitreset);
 
 // curl -u "testuser:123" -d "appname=test" http://localhost:4001/applogs
 myapp.get('/applogs/:appname', middle.authenticate, middle.authenticate_app, app.logs);
