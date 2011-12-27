@@ -35,7 +35,8 @@ myapp.configure(function() {
 //setup the errors
 myapp.error(function(err, req, res, next){
     if (err instanceof NotFound) {
-		res.sendfile('404.html');
+		// res.sendfile('404.html');
+		res.render('404.html');
     } else {
 		res.sendfile('500.html');
     }
