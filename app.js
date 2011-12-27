@@ -35,11 +35,11 @@ myapp.configure(function() {
 //setup the errors
 myapp.error(function(err, req, res, next){
     if (err instanceof NotFound) {
-		res.sendfile('/public/404.html');
-		// res.render('404.html');
+		// res.sendfile('/public/404.html');
+		res.render('404.html');
     } else {
-		res.sendfile('/public/500.html');
-		// res.render('500.html');
+		// res.sendfile('/public/500.html');
+		res.render('500.html');
     }
 });
 
@@ -179,10 +179,7 @@ myapp.put('/reset_password/:token', reset_password.put);
 //   showStack: true
 // }));
 
-//The 404 Route (ALWAYS Keep this as the last route)
-myapp.get('/*', function(req, res){
-    throw new NotFound;
-});
+
 
 
 myapp.listen(4001);
@@ -191,6 +188,10 @@ console.log('Nodester app started on port 4001');
 nodeinfo.broadcast(13377);
 console.log('NodeInfo monitor started on port 13377');
 
+//The 404 Route (ALWAYS Keep this as the last route)
+myapp.get('/*', function(req, res){
+    throw new NotFound;
+});
 
 function NotFound(msg){
     this.name = 'NotFound';
