@@ -1,8 +1,145 @@
+<!DOCTYPE html>
+
 <html>
+<head>
+	
+	<style>
+	#canvas11{
+	position: fixed;
+	}
+
+	#canvas12{
+	position: fixed; 
+	}
+
+	#canvas13{
+	position: fixed;
+	}
+	html, body { width: 100%; height: 100%; margin: 0px; }
+	#canvas12 { width: 100%; height: 100%; margin: 0px; }
+	
+	#rocket {
+	height:295px;
+	width:298px;
+	background-image:url('images/rocket-down.png');
+	margin: auto;
+	}
+	
+	#wrapper{
+		position: absolute;
+		top: 35%;
+		height: 100%;
+		width: 100%;		
+	}
+	
+	</style>
+	
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+	<script>
+
+	//////////////////////////////////////////////////////////////////////////////////
+	// A demonstration of a Canvas nebula effect
+	// (c) 2010 by R Cecco. http://www.professorcloud.com/mainsite/canvas-nebula.htm
+	// MIT License
+	//
+	// Please retain this copyright header in all versions of the software if
+	// using significant parts of it
+	//////////////////////////////////////////////////////////////////////////////////
+
+	// **** Image link at bottom ***** //
+
+	$(document).ready(function(){	
+
+		(function ($) {			
+				// The canvas element we are drawing into.      
+				var	$canvas11 = $('#canvas11');
+				var	$canvas12 = $('#canvas12');
+				var	$canvas13 = $('#canvas13');			
+				var	ctx2 = $canvas12[0].getContext('2d');
+				var	ctx = $canvas11[0].getContext('2d');
+				var	w = $canvas11[0].width, h = $canvas11[0].height;		
+				var	img = new Image();	
+
+				// A puff.
+				var	Puff = function(p) {				
+					var	opacity,
+						sy = (Math.random()*285)>>0,//Orig= 285 //
+						sx = (Math.random()*285)>>0;//Orig= 285 //
+
+					this.p = p;
+
+					this.move = function(timeFac) {						
+						p = this.p + 0.1 * timeFac; //this is the speed Orig 0.3 //			
+						opacity = (Math.sin(p*0.05)*0.5);						
+						if(opacity <0) {
+							p = opacity = 0;
+							sy = (Math.random()*285)>>0;//Orig= 285//
+							sx = (Math.random()*285)>>0;//Orig= 285//
+						}												
+						this.p = p;																			
+						ctx.globalAlpha = opacity;						
+						ctx.drawImage($canvas13[0], sy+p, sy+p, 285-(p*2),285-(p*2), 0,0, w, h);//where 1000 is, Orig= 285//								
+					};
+				};
+
+				var	puffs = [];			
+				var	sortPuff = function(p1,p2) { return p1.p-p2.p; };	
+				puffs.push( new Puff(0) ); //Orig= 0 //
+				puffs.push( new Puff(20) );//Orig= 20 //
+				puffs.push( new Puff(40) );//Orig= 40 //
+
+				var	newTime, oldTime = 0, timeFac;
+
+				var	loop = function()
+				{								
+					newTime = new Date().getTime();				
+					if(oldTime === 0 ) {
+						oldTime=newTime;
+					}
+					timeFac = (newTime-oldTime) * 0.1;
+					if(timeFac>3) {timeFac=3;}
+					oldTime = newTime;						
+					puffs.sort(sortPuff);							
+
+					for(var i=0;i<puffs.length;i++)
+					{
+						puffs[i].move(timeFac);	
+					}					
+					ctx2.drawImage( $canvas11[0] ,0,0,570,570);//Orig=0,0,570,570//				
+					setTimeout(loop, 10 );				
+				};
+				// Turns out Chrome is much faster doing bitmap work if the bitmap is in an existing canvas rather
+				// than an IMG, VIDEO etc. So draw the big nebula image into canvas3
+				var	$canvas13 = $('#canvas13');
+				var	ctx3 = $canvas13[0].getContext('2d');
+				$(img).bind('load',null, function() {  ctx3.drawImage(img, 0,0, 570, 570);	loop(); });//where 1000 is, Orig=570//
+				img.src = 'images/nebula.jpg';
+
+		})(jQuery);	 
+	});
+
+	</script>
+</head>
+<body>
+	
+	<canvas style="display:none" id="canvas11" width="285" height="285"></canvas><!--Orig= 285x285-->
+	<canvas style="display:none" id="canvas13" width="570" height="570"></canvas><!--Orig= 570x570-->
+	<canvas id="canvas12" width="570" height="570"><!--Orig= 570x570-->*** THIS BROWSER DOES NOT SUPPORT THE CANVAS ELEMENT ***</canvas>
+	<div id="wrapper">
+		<div id="rocket"></div>
+	</div>
+</body>
+</html>
+
+
+
+
+
+<!-- <html>
 <head><title id="title">404</title></head>
 <body><br/><br/><br/><br/><br/>
 	<center><img src="http://nodester.com/images/rocket-down.png" alt="logo" /><br/>
 		<h1 style ="color:#000;font-family:Arial,Helvetica,sans-serif;font-size:38px;font-weight:bold;letter-spacing:-2px;padding:0 0 5px;margin:0;">
 			404</h1>
 	</center>
-</body></html>
+</body></html> -->
