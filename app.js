@@ -132,7 +132,7 @@ myapp.put('/app', middle.authenticate, middle.authenticate_app, app.put);
 
 // Delete your nodejs app
 // curl -X DELETE -u "testuser:123" -d "appname=test" http://localhost:4001/apps
-myapp.del('/app', app.deleteapp);
+myapp.del('/app', middle.authenticate, middle.authenticate_app, app.deleteapp);
 
 
 myapp.del('/gitreset', middle.authenticate, middle.authenticate_app, app.gitreset);
