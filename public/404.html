@@ -1,145 +1,100 @@
-<!DOCTYPE html>
-
-<html>
+<!doctype html>
+<html class="no-js">
 <head>
-	
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+	<title>404 - File not found</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
 	<style>
-	#canvas11{
-	position: fixed;
+	html, body { width: 100%; height: 100%; margin: 0px; text-align: center }
+	html { background: #333; color: #fff }
+	
+	@-webkit-keyframes rocket {
+	   from {
+	       -webkit-transform: rotate(30deg);
+	       height: 265px;
+	       width: 268px;
+	       left: 10%;
+	       top: 0px;
+	       margin-top: -265px;
+	   }
+	   to {
+	       margin-top: -148px;
+	   }
 	}
-
-	#canvas12{
-	position: fixed; 
+	
+	#nebula, #nebulabg {
+	   position: absolute;
+	   width: 100%;
+	   height: 100%;
+	   z-index: -1;
+	   top: 0;
+	   left: 0;
 	}
-
-	#canvas13{
-	position: fixed;
+	
+	.js.canvas #nebulabg {
+	   display: none;
 	}
-	html, body { width: 100%; height: 100%; margin: 0px; }
-	#canvas12 { width: 100%; height: 100%; margin: 0px; }
+	
+	.js.cssanimations #rocket {
+	    display: none;
+	}
+	.js.cssanimations .nebula-ready #rocket {
+	    display: block;
+	    -webkit-animation: rocket 2s 1 ease-out;
+	}
 	
 	#rocket {
-	height:295px;
-	width:298px;
-	background-image:url('images/rocket-down.png');
-	margin: auto;
+	    position: absolute;
+        height:295px;
+        width:298px;
+        background-image: url('http://nodester.com/images/rocket-down.png');
+        background-size: cover;
+        top: 40%;
+        margin-left: -149px;
+        margin-top: -148px;
+    	left: 50%;
 	}
 	
-	#wrapper{
-		position: absolute;
-		top: 35%;
-		height: 100%;
-		width: 100%;		
+	#rocket img {
+	   display: none;
+	}
+	
+	h1 {
+	   font-family:sans-serif;
+	   font-size:38px;
+	   font-weight:bold;
+	   padding:0 0 5px;
+	   margin:0;
+	   text-align: center;
+	   top: 70%;
+	   position: relative;
+	   text-shadow: 0 0 3px #000;
+	}
+	
+	.js.csstransitions h1 {
+	   opacity: 0;
+	   -webkit-transition: opacity 1s ease-in;
+	   -webkit-transition-delay: 2s;
+	}
+	
+	.js.cssanimations .nebula-ready h1 {
+	   opacity: 1;
 	}
 	
 	</style>
-	
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+	<script src="modernizr.js"></script>
 	<script>
-
-	//////////////////////////////////////////////////////////////////////////////////
-	// A demonstration of a Canvas nebula effect
-	// (c) 2010 by R Cecco. http://www.professorcloud.com/mainsite/canvas-nebula.htm
-	// MIT License
-	//
-	// Please retain this copyright header in all versions of the software if
-	// using significant parts of it
-	//////////////////////////////////////////////////////////////////////////////////
-
-	// **** Image link at bottom ***** //
-
-	$(document).ready(function(){	
-
-		(function ($) {			
-				// The canvas element we are drawing into.      
-				var	$canvas11 = $('#canvas11');
-				var	$canvas12 = $('#canvas12');
-				var	$canvas13 = $('#canvas13');			
-				var	ctx2 = $canvas12[0].getContext('2d');
-				var	ctx = $canvas11[0].getContext('2d');
-				var	w = $canvas11[0].width, h = $canvas11[0].height;		
-				var	img = new Image();	
-
-				// A puff.
-				var	Puff = function(p) {				
-					var	opacity,
-						sy = (Math.random()*285)>>0,//Orig= 285 //
-						sx = (Math.random()*285)>>0;//Orig= 285 //
-
-					this.p = p;
-
-					this.move = function(timeFac) {						
-						p = this.p + 0.1 * timeFac; //this is the speed Orig 0.3 //			
-						opacity = (Math.sin(p*0.05)*0.5);						
-						if(opacity <0) {
-							p = opacity = 0;
-							sy = (Math.random()*285)>>0;//Orig= 285//
-							sx = (Math.random()*285)>>0;//Orig= 285//
-						}												
-						this.p = p;																			
-						ctx.globalAlpha = opacity;						
-						ctx.drawImage($canvas13[0], sy+p, sy+p, 285-(p*2),285-(p*2), 0,0, w, h);//where 1000 is, Orig= 285//								
-					};
-				};
-
-				var	puffs = [];			
-				var	sortPuff = function(p1,p2) { return p1.p-p2.p; };	
-				puffs.push( new Puff(0) ); //Orig= 0 //
-				puffs.push( new Puff(20) );//Orig= 20 //
-				puffs.push( new Puff(40) );//Orig= 40 //
-
-				var	newTime, oldTime = 0, timeFac;
-
-				var	loop = function()
-				{								
-					newTime = new Date().getTime();				
-					if(oldTime === 0 ) {
-						oldTime=newTime;
-					}
-					timeFac = (newTime-oldTime) * 0.1;
-					if(timeFac>3) {timeFac=3;}
-					oldTime = newTime;						
-					puffs.sort(sortPuff);							
-
-					for(var i=0;i<puffs.length;i++)
-					{
-						puffs[i].move(timeFac);	
-					}					
-					ctx2.drawImage( $canvas11[0] ,0,0,570,570);//Orig=0,0,570,570//				
-					setTimeout(loop, 10 );				
-				};
-				// Turns out Chrome is much faster doing bitmap work if the bitmap is in an existing canvas rather
-				// than an IMG, VIDEO etc. So draw the big nebula image into canvas3
-				var	$canvas13 = $('#canvas13');
-				var	ctx3 = $canvas13[0].getContext('2d');
-				$(img).bind('load',null, function() {  ctx3.drawImage(img, 0,0, 570, 570);	loop(); });//where 1000 is, Orig=570//
-				img.src = 'images/nebula.jpg';
-
-		})(jQuery);	 
-	});
-
+    Modernizr.load({
+        test: Modernizr.canvas,
+        yep: 'nebula.js'
+    });
 	</script>
 </head>
 <body>
-	
-	<canvas style="display:none" id="canvas11" width="285" height="285"></canvas><!--Orig= 285x285-->
-	<canvas style="display:none" id="canvas13" width="570" height="570"></canvas><!--Orig= 570x570-->
-	<canvas id="canvas12" width="570" height="570"><!--Orig= 570x570-->*** THIS BROWSER DOES NOT SUPPORT THE CANVAS ELEMENT ***</canvas>
-	<div id="wrapper">
-		<div id="rocket"></div>
-	</div>
+	<img src="http://nodester.com/images/nebula.jpg" id="nebulabg" />
+	<div id="rocket"><img src="http://nodester.com/images/rocket-down.png" alt="Nodester" /></div>
+	<h1>404</h1>
 </body>
 </html>
-
-
-
-
-
-<!-- <html>
-<head><title id="title">404</title></head>
-<body><br/><br/><br/><br/><br/>
-	<center><img src="http://nodester.com/images/rocket-down.png" alt="logo" /><br/>
-		<h1 style ="color:#000;font-family:Arial,Helvetica,sans-serif;font-size:38px;font-weight:bold;letter-spacing:-2px;padding:0 0 5px;margin:0;">
-			404</h1>
-	</center>
-</body></html> -->
