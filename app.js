@@ -35,7 +35,7 @@ myapp.configure(function() {
 //setup the errors
 myapp.error(function(err, req, res, next){
     if (err instanceof NotFound) {
-		res.sendfile('/public/404.html');
+		res.sendfile(__dirname + '/public/404.html');
 		// res.render('404.html');
     } else {
 		res.sendfile('/public/500.html');
@@ -174,9 +174,9 @@ myapp.post('/reset_password', reset_password.post);
 myapp.put('/reset_password/:token', reset_password.put);
 
 
-myapp.use(express.errorHandler({
-  showStack: true
-}));
+// myapp.use(express.errorHandler({
+//   showStack: true
+// }));
 
 
 myapp.listen(4001);
