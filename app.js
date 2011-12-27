@@ -94,7 +94,7 @@ myapp.put('/user', middle.authenticate, user.put);
 
 // Delete your user account
 // curl -X DELETE -u "testuser:123" http://localhost:4001/user
-myapp.delete('/user', middle.authenticate, user.delete);
+myapp.del('/user', middle.authenticate, user.delete);
 
 // All Applications info
 // http://chris:123@localhost:4001/apps
@@ -132,10 +132,10 @@ myapp.put('/app', middle.authenticate, middle.authenticate_app, app.put);
 
 // Delete your nodejs app
 // curl -X DELETE -u "testuser:123" -d "appname=test" http://localhost:4001/apps
-myapp.delete('/app', middle.authenticate, middle.authenticate_app, app.delete);
+myapp.del('/app', middle.authenticate, middle.authenticate_app, app.delete);
 
 
-myapp.delete('/gitreset', middle.authenticate, middle.authenticate_app, app.gitreset);
+myapp.del('/gitreset', middle.authenticate, middle.authenticate_app, app.gitreset);
 
 // curl -u "testuser:123" -d "appname=test" http://localhost:4001/applogs
 myapp.get('/applogs/:appname', middle.authenticate, middle.authenticate_app, app.logs);
@@ -150,7 +150,7 @@ myapp.get('/applogs/:appname', middle.authenticate, middle.authenticate_app, app
 // curl -u DELETE -u "testuser:123" -d "appname=test&key=NODE_ENV" http://localhost:4001/env
 myapp.get('/env/:appname', middle.authenticate, middle.authenticate_app, app.env_get);
 myapp.put('/env', middle.authenticate, middle.authenticate_app, app.env_put);
-myapp.delete('/env', middle.authenticate, middle.authenticate_app, app.env_delete);
+myapp.del('/env', middle.authenticate, middle.authenticate_app, app.env_delete);
 
 // APP NPM Handlers
 var npm = require('./lib/npm');
@@ -164,7 +164,7 @@ myapp.post('/npm', middle.authenticate, middle.authenticate_app, npm.post);
 // curl -X DELETE -u "testuser:123" -d "appname=test&domain=<domainname>" http://localhost:4001/appdomains
 var domains = require('./lib/domains');
 myapp.post('/appdomains', middle.authenticate, middle.authenticate_app, domains.post);
-myapp.delete('/appdomains', middle.authenticate, middle.authenticate_app, domains.delete);
+myapp.del('/appdomains', middle.authenticate, middle.authenticate_app, domains.delete);
 myapp.get('/appdomains', middle.authenticate, domains.get);
 
 // curl -X POST -d "user=username" http://localhost:4001/reset_password
