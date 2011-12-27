@@ -171,14 +171,11 @@ var reset_password = require('./lib/reset_password');
 myapp.post('/reset_password', reset_password.post);
 myapp.put('/reset_password/:token', reset_password.put);
 
-//The 404 Route (ALWAYS Keep this as the last route)
-myapp.get('/*', function(req, res){
-    throw new NotFound;
-});
 
-myapp.use(express.errorHandler({
-  showStack: true
-}));
+
+// myapp.use(express.errorHandler({
+//   showStack: true
+// }));
 
 
 myapp.listen(4001);
@@ -187,8 +184,13 @@ console.log('Nodester app started on port 4001');
 nodeinfo.broadcast(13377);
 console.log('NodeInfo monitor started on port 13377');
 
+//The 404 Route (ALWAYS Keep this as the last route)
+myapp.get('/*', function(req, res){
+    throw new NotFound;
+});
+
 function NotFound(msg){
     this.name = 'NotFound';
     Error.call(this, msg);
     Error.captureStackTrace(this, arguments.callee);
-}
+};
