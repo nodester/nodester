@@ -150,7 +150,7 @@ myapp.get('/applogs/:appname', middle.authenticate, middle.authenticate_app, app
 // curl -u DELETE -u "testuser:123" -d "appname=test&key=NODE_ENV" http://localhost:4001/env
 myapp.get('/env/:appname', middle.authenticate, middle.authenticate_app, app.env_get);
 myapp.put('/env', middle.authenticate, middle.authenticate_app, app.env_put);
-myapp.del('/env', middle.authenticate, middle.authenticate_app, app.env_delete);
+myapp.del('/env/:appname/:key', middle.authenticate, middle.authenticate_app, app.env_delete);
 
 // APP NPM Handlers
 var npm = require('./lib/npm');

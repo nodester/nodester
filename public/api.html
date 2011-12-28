@@ -347,8 +347,8 @@
                         <tr>
                            <td>&nbsp;</td>
                            <td><a class="btn disabled danger">DELETE</a></td>
-                           <td><b>/env</b> - Deletes environment key/value pair (requires basic auth, appname, and environment key)<br />
-                              <code>curl -X DELETE -u "testuser:123" -d "appname=test&key=color" http://api.nodester.com/env</code>
+                           <td><b>/env/&lt;appname&gt;/&lt;key&gt;</b> - Deletes environment key/value pair (requires basic auth, appname, and environment key)<br />
+                              <code>curl -X DELETE -u "testuser:123" http://api.nodester.com/env/&lt;appname&gt;/&lt;key&gt;</code>
                            </td>
                         </tr>
                         <tr>
