@@ -309,15 +309,15 @@
                         <tr>
                            <td>&nbsp;</td>
                            <td><a class="btn disabled danger">DELETE</a></td>
-                           <td><b>/app </b>- Deletes nodejs app (requires basic auth and appname)<br />
-                              <code>curl -X DELETE -u "testuser:123" -d "appname=test" http://api.nodester.com/app</code>
+                           <td><b>/app/&lt;appname&gt; </b>- Deletes nodejs app (requires basic auth and appname)<br />
+                              <code>curl -X DELETE -u "testuser:123" http://api.nodester.com/app/&lt;appname&gt;</code>
                            </td>
                         </tr>
                         <tr>
                            <td>&nbsp;</td>
                            <td><a class="btn disabled primary">GET</a></td>
                            <td><b>/app/&lt;appname&gt;</b> - get nodejs app info (requires basic auth and appname)<br />
-                              <code>curl -u "testuser:123"  http://api.nodester.com/app/appname</code>
+                              <code>curl -u "testuser:123"  http://api.nodester.com/app/&lt;appname&gt;</code>
                            </td>
                         </tr>
                         <tr>
@@ -329,7 +329,7 @@
                            <td>&nbsp;</td>
                            <td><a class="btn disabled primary">GET</a></td>
                            <td><b>/applogs/&lt;appname&gt;</b> - Gets nodejs app logs (requires basic auth and appname)<br />
-                              <code>curl -u "testuser:123"  http://api.nodester.com/applogs/appname</code>
+                              <code>curl -u "testuser:123"  http://api.nodester.com/applogs/&lt;appname&gt;</code>
                            </td>
                         </tr>
                         <tr>
@@ -399,8 +399,8 @@
                         <tr>
                            <td>&nbsp;</td>
                            <td><a class="btn disabled danger">DELETE</a></td>
-                           <td><b>/appdomains</b> - Deletes app domain for hosting example.com (requires basic auth)<br />
-                              <code>curl -X DELETE -u "testuser:123" -d "appname=test&domain=example.com" http://api.nodester.com/appdomains</code>
+                           <td><b>/appdomains/&lt;appname&gt;/&lt;domain&gt;</b> - Deletes app domain for hosting example.com (requires basic auth)<br />
+                              <code>curl -X DELETE -u "testuser:123" http://api.nodester.com/appdomains/&lt;appname&gt;/&lt;domain&gt;</code>
                            </td>
                         </tr>
                         <tr>
@@ -437,8 +437,8 @@
                         <tr>
                            <td>&nbsp;</td>
                            <td><a class="btn disabled danger">DELETE</a></td>
-                           <td><b>/gitreset</b> - Resets your Nodester git repository and npm list (pass in appname)<br />
-                              <code>curl -X DELETE -u "testuser:123" -d "appname=a" http://api.nodester.com/gitreset</code>
+                           <td><b>/gitreset/&lt;appname&gt;</b> - Resets your Nodester git repository and npm list (pass in appname)<br />
+                              <code>curl -X DELETE -u "testuser:123" http://api.nodester.com/gitreset/&lt;appname&gt;</code>
                            </td>
                         </tr>
                      </table>
