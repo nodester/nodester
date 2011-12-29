@@ -4,7 +4,7 @@
    "version":"0.0.1",
    "homepage":"http://github.com/nodester/nodester",
    "repository":"git://github.com/nodester/nodester.git",
-   "author":"Nodester <contact@nodester.com> (http://nodester.com/)",
+   "author":"Nodester <chris@nodester.com> (http://nodester.com/)",
 
    "dependencies":{
       "coffee-script":"*",
@@ -18,7 +18,6 @@
       "cradle":"*",
       "nodeinfo":"*",
       "socket.io":"*",
-      "bouncy":"*",
       "daemon":"*"
    },
    "engines":{
