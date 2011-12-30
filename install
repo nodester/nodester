@@ -6,7 +6,12 @@ echo "| '_ \ / _ \ / _' |/ _ \/ __| __/ _ \ '__|"
 echo "| | | | (_) | (_| |  __/\__ \ ||  __/ |"
 echo "|_| |_|\___/ \__,_|\___||___/\__\___|_|"
 echo ""
-echo "Installation in progress. Make sure this installer has root!"
+echo "Installation in progress. DO NOT EXIT AT ANY TIME!"
+
+if [ "$(id -u)" != "0" ]; then
+	echo "Please run as root."
+	exit 1
+fi
 
 rm -rf ./setup/tmp/
 mkdir ./setup/tmp/
@@ -14,7 +19,7 @@ cd ./setup
 ./sys
 ./node
 ./redis
-./lxc;
+./vserver
 cd ../
 npm install
 rm -rf ./setup/tmp/

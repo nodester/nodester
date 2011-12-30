@@ -1,0 +1,12 @@
+#!/bin/sh
+echo "Installing vserver userspace..."
+mkdir ./tmp/vserver
+cd ./tmp/vserver
+
+add-apt-repository ppa:christoph-lukas/ppa
+apt-get update
+apt-get -y install linux-image-vserver linux-headers-vserver util-vserver vserver vserver-debiantools
+
+echo "Configuring vserver userspace..."
+# TODO
+
