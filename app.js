@@ -11,13 +11,12 @@ http://nodester.com
 require('coffee-script');
 
 var express = require('express'),
-    url = require('url'),
-    sys = require('sys'),
-    config = require('./config'),
-    middle = require('./lib/middle')
-    nodeinfo = require('nodeinfo');
+  url = require('url'),
+  sys = require('sys'),
+  config = require('./config'),
+  middle = require('./lib/middle');
 
-process.on('uncaughtException', function(err) {
+process.on('uncaughtException', function (err) {
   console.log(err.stack);
 });
 
@@ -25,44 +24,47 @@ var daemon = require('daemon');
 // daemon.setreuid(config.opt.userid);
 var myapp = express.createServer();
 
-myapp.configure(function() {
+myapp.configure(function () {
   myapp.use(express.bodyParser());
   myapp.use(express.static(config.opt.public_html_dir));
-  myapp.use(express.errorHandler({ showStack: true, dumpExceptions: true }));
+  myapp.use(express.errorHandler({
+    showStack: true,
+    dumpExceptions: true
+  }));
 });
 
 
 //setup the errors
-myapp.error(function(err, req, res, next){
-    if (err instanceof NotFound) {
-		res.sendfile(__dirname + '/public/404.html');
-		// res.render('404.html');
-    } else {
-		res.sendfile('/public/500.html');
-		// res.render('500.html');
-    }
+myapp.error(function (err, req, res, next) {
+  if (err instanceof NotFound) {
+    res.sendfile(__dirname + '/public/404.html');
+    // res.render('404.html');
+  } else {
+    res.sendfile('/public/500.html');
+    // res.render('500.html');
+  }
 });
 
 
 // Routes
 // Homepage
-myapp.get('/', function(req, res, next) {
+myapp.get('/', function (req, res, next) {
   res.render('index.html');
 });
 
-myapp.get('/api', function(req, res, next) {
+myapp.get('/api', function (req, res, next) {
   res.redirect('/api.html');
 });
 
-myapp.get('/admin', function(req, res, next) {
+myapp.get('/admin', function (req, res, next) {
   res.redirect('http://admin.nodester.com');
 });
 
-myapp.get('/irc', function(req, res, next) {
+myapp.get('/irc', function (req, res, next) {
   res.redirect('http://irc.nodester.com');
 });
 
-myapp.get('/monitor', function(req, res, next) {
+myapp.get('/monitor', function (req, res, next) {
   res.redirect('http://site.nodester.com');
 });
 
@@ -178,20 +180,19 @@ myapp.put('/reset_password/:token', reset_password.put);
 //   showStack: true
 // }));
 
-
 myapp.listen(4001);
 console.log('Nodester app started on port 4001');
 
-nodeinfo.broadcast(13377);
-console.log('NodeInfo monitor started on port 13377');
-
+//nodeinfo.broadcast(13377);
+//console.log('NodeInfo monitor started on port 13377');
 //The 404 Route (ALWAYS Keep this as the last route)
-myapp.get('/*', function(req, res){
-    throw new NotFound;
+myapp.get('/*', function (req, res) {
+  throw new NotFound;
 });
 
-function NotFound(msg){
-    this.name = 'NotFound';
-    Error.call(this, msg);
-    Error.captureStackTrace(this, arguments.callee);
+
+function NotFound(msg) {
+  this.name = 'NotFound';
+  Error.call(this, msg);
+  Error.captureStackTrace(this, arguments.callee);
 };
