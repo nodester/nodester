@@ -28,7 +28,7 @@ var myapp = express.createServer();
 myapp.configure(function() {
   myapp.use(express.bodyParser());
   myapp.use(express.static(config.opt.public_html_dir));
-  myapp.use(middle.error());
+  myapp.use(express.errorHandler({ showStack: true, dumpExceptions: true }));
 });
 
 
