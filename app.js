@@ -40,7 +40,7 @@ myapp.error(function (err, req, res, next) {
     res.sendfile(__dirname + '/public/404.html');
     // res.render('404.html');
   } else {
-    res.sendfile('/public/500.html');
+    res.sendfile(__dirname + '/public/500.html');
     // res.render('500.html');
   }
 });
@@ -49,7 +49,7 @@ myapp.error(function (err, req, res, next) {
 // Routes
 // Homepage
 myapp.get('/', function (req, res, next) {
-  res.render('index.html');
+  res.sendfile(__dirname +'/public/index.html');
 });
 
 myapp.get('/api', function (req, res, next) {
