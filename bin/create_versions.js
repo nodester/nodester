@@ -27,7 +27,7 @@ var installVersion = function(_version){
               var version = parseFloat(v.trim());
               if (!isNaN(version) && ignore.indexOf(version) === -1
                                   && list.indexOf(v) === -1) {
-                //execute(v);
+                execute(v);
               }
             });
           } else {
