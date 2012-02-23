@@ -14,6 +14,13 @@ var creds = crypto.createCredentials();
 
 
 var config = JSON.parse(fs.readFileSync(path.join('.nodester', 'config.json'), encoding = 'utf8'));
+// Read the package.json
+var packageJSON = {};
+var appdir = fs.readdirSync(config.appdir);
+if (appdir.indexOf('package.json') !== -1 ) {
+  packageJSON = JSON.parse(fs.readFileSync(path.join(config.appdir,'package.json'),'utf8'));
+} 
+
 config.userid = parseInt(config.userid);
 
 console.log(config);
@@ -90,7 +97,9 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
 
   sandbox.process.pid = pid;
   sandbox.process.installPrefix = '/';
-  sandbox.process.ARGV = ['node', config.start];
+  // Run a specified node version using the `n` module from TJ, if no version is
+  // found, set default to node v0.4.9, `n` can handle 0.4.9 as v0.4.9
+  sandbox.process.ARGV = ['n use ' + (packageJSON["node-version"] || '0.4.9'), config.start];
   sandbox.process.argv = sandbox.process.ARGV;
   var env = sandbox.process.env = sandbox.process.ENV = {
     // defaults which can be overriden
