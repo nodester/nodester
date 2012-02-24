@@ -1,14 +1,14 @@
-## How to install nodester in you personal cloud.
+# How to install nodester in you personal cloud.
 
 _Nodester - A node.js hosting platform_
 
-**If you want you can use the `[nodester-installer](http://github.com/nodester/nodester-installer)`, still work in progress, but functional.**
+**If you want you can use the [nodester-installer](http://github.com/nodester/nodester-installer), still work in progress, but functional.**
 
 The only thing that you need to setup your personal instance is `ssh` access- Like this:
 
     > ssh -t root@yourserver.com
 
-### Dependencies:
+## Dependencies:
 
 
 - bouncy
@@ -27,7 +27,7 @@ The only thing that you need to setup your personal instance is `ssh` access- Li
   - coloured
   - coffee-script
 
-### Installation:
+## Installation:
 
 Nodester was/is build on node 0.4.x so we recommend to have as default version the 0.4.9 or any 0.4.x version installed in your server. First of all you'll need some packages to make nodester work, the only one that you need to manually install are node.js, npm, curl and forever as follows:
 
@@ -178,6 +178,28 @@ The example config.js looks like this:
 
 Also copy `scripts/example_gitrepoclone.sh` to `scripts/gitrepoclone.sh` and update it with the key you specified in `config.js`.
 
+### Multiple versions of node:
+
+User: `root`
+
+We've created a script to install all the versions of node with a single line:
+
+    > cd /var/nodester/nodester/
+    > bin/install_versions.js --run
+
+**warning**: As you may know compiling node.js can take long, so imagine installing ~20 versions of node.js from once, that would be awful and you'll better get some coffee and wait. So, you can add something like this:
+
+    > bin/install_versions.js -v 0.4.9
+
+Which can be done also with `n` directly: `n 0.4.9` for example.
+
+Programmatically you can also require the `install_versions.js` module, and then install the version you want:
+    
+    // installer.js
+    var installer = require('./bin/install_versions.js');
+    installer('0.5.9')
+
+
 ### Setting up the database
 
 user: `nodester`
@@ -204,7 +226,7 @@ Also you migth want to chown the proxy_table to nodester:
 
     > sudo chown $USER -R nodester/var/proxy_table.json
 
-### Ready, set, GO!
+## Ready, set, GO!
 
 Start up the proxy and main/api app (do this as nodester):
 
@@ -239,10 +261,11 @@ Make changes to your repo and:
 
 GOTO-> appname.example.co 
 
-    ..
-Rejoice!
+### Rejoice!
 
 
 Sidenotes:
+
 **More info about the REST API: http://nodester.com/api.html#rest**
+
 Don't you like the REST API way? Try the [`nodester-cli`](http://github.com/nodester/nodester-cli).
