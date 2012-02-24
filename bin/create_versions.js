@@ -12,12 +12,11 @@ var installVersion = function(_version){
   var execute = function(v){
     console.log('[INFO] installing node-v'+ v.trim());
     var installprocess = exec('n ' + v.trim());
-    installprocess.on('')
     installprocess.stdout.on('end', function(){
       console.log('[INFO]  Installed node-v'+v.trim());
     });
    installprocess.on('exit', function(code) {
-      if (code != 0) {
+      if (code !== 0) {
           console.log('Failed: ' + v.trim());
       }
   });
@@ -32,8 +31,8 @@ var installVersion = function(_version){
             var installed = list.split('\n');
             d.split('\n').forEach(function(v){
               var version = parseFloat(v.trim());
-              if (!isNaN(version) && ignore.indexOf(version) === -1
-                                  && list.indexOf(v) === -1) {
+              if (!isNaN(version) && ignore.indexOf(version) === -1 && 
+                  list.indexOf(v) === -1) {
                 execute(v);
               }
             });
@@ -50,5 +49,8 @@ var installVersion = function(_version){
 
 // TO execute this module you need to pass the param --run
 if (process.argv[2] === '--run') installVersion();
+if (process.argv[2] === '-v' && !isNaN(parseInt(process.arg[3] || ''))) {
+  installVersion(process.arg[3]);
+}
 
-module.exports = exports = new installVersion;
+module.exports = exports = installVersion;
