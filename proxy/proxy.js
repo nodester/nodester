@@ -22,7 +22,6 @@ fs.watchFile(config.opt.proxy_table_file, function (oldts, newts) {
       console.log('Proxy map failed to update! (read)');
       throw err;
     } else {
-      console.log(data);
       proxymap = JSON.parse(data||{});
       console.log('Proxy map updated');
     }

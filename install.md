@@ -2,7 +2,7 @@
 
 _Nodester - A node.js hosting platform_
 
-*If you want you can use the `[nodester-installer](http://github.com/nodester/nodester-installer), still work in progress, but functional.*
+**If you want you can use the `[nodester-installer](http://github.com/nodester/nodester-installer)`, still work in progress, but functional.**
 
 The only thing that you need to setup your personal instance is `ssh` access- Like this:
 
@@ -56,76 +56,79 @@ The `n` command will handle all the installation process from the version, this 
 
 Then login to the account `nodester` and ensure that .ssh/authorized_keys exists:
 
-    ssh nodester@yourhost
-    cd ~
-    mkdir .ssh
-    touch .ssh/authorized_keys
-    chmod go-rwx .ssh/authorized_keys
+    > ssh nodester@yourhost
+    > cd ~
+    > mkdir .ssh
+    > touch .ssh/authorized_keys
+    > chmod go-rwx .ssh/authorized_keys
   
 Update sudoers to allow running of the proxy on port 80 (do this as root), and umount of git repos:
 
-    sudo visudo
-    And add the following lines
-    nodester ALL = NOPASSWD: /var/nodester/nodester/bin/proxy_start.sh *
-    nodester ALL = NOPASSWD: /var/nodester/nodester/bin/proxy_stop.sh
-    nodester ALL = NOPASSWD: /var/nodester/nodester/bin/app_start.sh *
-    nodester ALL = NOPASSWD: /var/nodester/nodester/bin/app_stop.sh *
+    > sudo visudo
+
+And add the following lines:
+
+    > nodester ALL = NOPASSWD: /var/nodester/nodester/bin/proxy_start.sh *
+    > nodester ALL = NOPASSWD: /var/nodester/nodester/bin/proxy_stop.sh
+    > nodester ALL = NOPASSWD: /var/nodester/nodester/bin/app_start.sh *
+    > nodester ALL = NOPASSWD: /var/nodester/nodester/bin/app_stop.sh *
 
 Export paths (to make npm work):
 
-    cd ~
-    echo -e "root = ~/.node_libraries\nmanroot = ~/local/share/man\nbinroot = ~/bin" > ~/.npmrc
-    echo -e "export PATH=\"\${PATH}:~/bin\";" >> ~/.bashrc
-    source ~/.bashrc
+    > cd ~
+    > echo -e "root = ~/.node_libraries\nmanroot = ~/local/share/man\nbinroot = ~/bin" > ~/.npmrc
+    > echo -e "export PATH=\"\${PATH}:~/bin\";" >> ~/.bashrc
+    > source ~/.bashrc
 
 *(Optional)* Sometimes at deploying with previous versions of npm can be difficult and annoying, **This part is a hack to use the old npm with the new node until certain packages can catch up and be installed with npm@0.3.x**
 
-    mkdir ~/src
-    cd src
-    git clone git://github.com/isaacs/npm.git ./npm
-    cd npm
-    git checkout origin/0.2
-    make dev
+    > mkdir ~/src
+    > cd src
+    > git clone git://github.com/isaacs/npm.git ./npm
+    > cd npm
+    > git checkout origin/0.2
+    > make dev
 
 *(Optional)* Fetch 0.2.6 version of node for npm
 
-    cd ~/src
-    sudo mkdir -p /usr/local/n/versions/
-    wget http://nodejs.org/dist/node-v0.2.6.tar.gz
-    tar -vzxr node-v0.2.6.tar.gz
-    cd node-v0.2.6
-    ./configure --prefix=/usr/local/n/versions/0.2.6
-    make
-    sudo make install
+    > cd ~/src
+    > sudo mkdir -p /usr/local/n/versions/
+    > wget http://nodejs.org/dist/node-v0.2.6.tar.gz
+    > tar -vzxr node-v0.2.6.tar.gz
+    > cd node-v0.2.6
+    > ./configure --prefix=/usr/local/n/versions/0.2.6
+    > make
+    > sudo make install
 
-    cd ~/bin
-    cp npm\@0.2.18 nodester-npm
-    vim nodester-npm
-        "Replace '#!/usr/bin/env node' with '#!/usr/local/n/versions/0.2.6/bin/node'
+    > cd ~/bin
+    > cp npm\@0.2.18 nodester-npm
+    > vim nodester-npm
+
+Replace `'#!/usr/bin/env node'` with `'#!/usr/local/n/versions/0.2.6/bin/node'`
 
 
 ## Install dependencies
 
 Install node-module dependencies (do this as nodester)
 
-    for X in pool express npm-wrapper request daemon forever cradle coloured; do npm install ${X}; done
+    > for X in pool express npm-wrapper request daemon forever cradle coloured; do npm install ${X}; done
 
 Get nodester (do this as nodester)
 
-    cd ~
-    git clone git://github.com/nodester/nodester.git
-    cd nodester
+    > cd ~
+    > git clone git://github.com/nodester/nodester.git
+    > cd nodester
 
 Ensure that the ownership of nodester/proxy is all root for security (do this as root)
 
-    cd /var/nodester
-    sudo chown -R root:root nodester/proxy
+    > cd /var/nodester
+    > sudo chown -R root:root nodester/proxy
 
 Install the git folder shell to restrict git to per user folders (do this as root)
 
-    cd /var/nodester/nodester
-    sudo cp scripts/git-shell-enforce-directory /usr/local/bin
-    sudo chmod +x /usr/local/bin/git-shell-enforce-directory
+    > cd /var/nodester/nodester
+    > sudo cp scripts/git-shell-enforce-directory /usr/local/bin
+    > sudo chmod +x /usr/local/bin/git-shell-enforce-directory
 
 ## Configuration
 
@@ -135,6 +138,7 @@ You'll need to either install CouchDB or get a CouchOne|iriscouch|cloudant accou
 
 The example config.js looks like this:
 
+    // config.js
     exports.opt = {
       couch_user: 'alejandromg', 
       couch_pass: 'alejandromg_password',
