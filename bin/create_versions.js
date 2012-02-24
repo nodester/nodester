@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var exec = require('child_process').exec;
+var exec = require('child_process').spawn;
 
 // Install all the versions
 // But ignore these because they are too old
@@ -11,9 +11,16 @@ var installVersion = function(_version){
   // Like sudoer?
   var execute = function(v){
     console.log('[INFO] installing node-v'+ v.trim());
-    exec('n ' + v.trim(), function(e,d){
-        if (e) console.log(e);
+    var installprocess = exec('n ' + v.trim());
+    installprocess.on('')
+    installprocess.stdout.on('end', function(){
+      console.log('[INFO]  Installed node-v'+v.trim());
     });
+   installprocess.on('exit', function(code) {
+      if (code != 0) {
+          console.log('Failed: ' + v.trim());
+      }
+  });
   };
   if (_version){
     execute(_version);
