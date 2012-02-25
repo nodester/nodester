@@ -316,7 +316,7 @@
                            <td>&nbsp;</td>
                            <td><a class="btn disabled primary">GET</a></td>
                            <td><b>/app/&lt;appname&gt;</b> - get nodejs app info (requires basic auth and appname)<br />
-                              <code>curl -u "testuser:123"  http://api.nodester.com/app/&lt;appname&gt;</code>
+                              <code>curl -X GET -u "testuser:123"  http://api.nodester.com/app/&lt;appname&gt;</code>
                            </td>
                         </tr>
                         <tr>
@@ -328,7 +328,7 @@
                            <td>&nbsp;</td>
                            <td><a class="btn disabled primary">GET</a></td>
                            <td><b>/applogs/&lt;appname&gt;</b> - Gets nodejs app logs (requires basic auth and appname)<br />
-                              <code>curl -u "testuser:123"  http://api.nodester.com/applogs/&lt;appname&gt;</code>
+                              <code>curl -X GET -u "testuser:123"  http://api.nodester.com/applogs/&lt;appname&gt;</code>
                            </td>
                         </tr>
                         <tr>
@@ -354,7 +354,7 @@
                            <td>&nbsp;</td>
                            <td><a class="btn disabled primary">GET</a></td>
                            <td><b>/env</b> - Gets environment info (requires basic auth, appname, and environment key)<br />
-                              <code>curl -u "testuser:123" -d "key=color" http://api.nodester.com/env/&lt;appname&gt;</code>
+                              <code>curl -X GET -u "testuser:123" http://api.nodester.com/env/&lt;appname&gt;</code>
                            </td>
                         </tr>
                         <tr>
@@ -366,7 +366,7 @@
                            <td>&nbsp;</td>
                            <td><a class="btn disabled primary">GET</a></td>
                            <td><b>/status</b> - Returns platform status and number of apps hosted and running<br />
-                              <code>curl http://nodester.com/status</code>
+                              <code>curl -X GET http://nodester.com/status</code>
                            </td>
                         </tr>
                         <tr>
@@ -406,7 +406,7 @@
                            <td>&nbsp;</td>
                            <td><a class="btn disabled primary">GET</a></td>
                            <td><b>/appdomains</b> - Gets list of your domains (requires basic auth)<br />
-                              <code>curl -u "testuser:123"  http://api.nodester.com/appdomains</code>
+                              <code>curl -X GET -u "testuser:123"  http://api.nodester.com/appdomains</code>
                            </td>
                         </tr>
                         <tr>
