@@ -68,10 +68,10 @@ Update sudoers to allow running of the proxy on port 80 (do this as root), and u
 
 And add the following lines:
 
-    > nodester ALL = NOPASSWD: /var/nodester/nodester/bin/proxy_start.sh *
-    > nodester ALL = NOPASSWD: /var/nodester/nodester/bin/proxy_stop.sh
-    > nodester ALL = NOPASSWD: /var/nodester/nodester/bin/app_start.sh *
-    > nodester ALL = NOPASSWD: /var/nodester/nodester/bin/app_stop.sh *
+    nodester ALL = NOPASSWD: /var/nodester/nodester/bin/proxy_start.sh *
+    nodester ALL = NOPASSWD: /var/nodester/nodester/bin/proxy_stop.sh
+    nodester ALL = NOPASSWD: /var/nodester/nodester/bin/app_start.sh *
+    nodester ALL = NOPASSWD: /var/nodester/nodester/bin/app_stop.sh *
 
 Export paths (to make npm work):
 
@@ -207,9 +207,9 @@ user: `nodester`
 First you'll need to seed the CouchDB tables:
 
     > cd ./nodester/scripts/couchdb/
-    > node ./create_all_couchdb_tables.js
-    > node ./create_all_couchdb_tables.js
-    > node ./setup_default_views.js
+    > ./create_all_couchdb_tables.js
+    > ./create_all_couchdb_tables.js
+    > ./setup_default_views.js
 
 ### Finals steps
 
