@@ -107,7 +107,19 @@ var myPid = daemon.start();
     });
 
     var start_child = function () {
-        child = spawn((path.extname(args[0]) == '.coffee' ? '/usr/bin/coffee' : '/usr/bin/node'), args, {
+      var pack = {};
+      // we don't know what kind of package.json are we dealing
+      try {
+        pack =  JSON.parse(fs.readFileSync(path.join(args,'package.json'), 'utf8'));
+      } catch(e){ 
+        // Set default to the parent version
+        pack['node-version'] = process.version;
+      }
+      // n handles only number paths without v0.x.x  => 0.x.x
+        var version = pack['node-version'].replace('v',''); 
+        child = spawn((path.extname(args[0]) == '.coffee'
+                        ? '/usr/bin/coffee'
+                        : '/usr/local/n/versions/' + version +'/bin/node'), args, {
           env: env
         });
         child.stdout.on('data', log_line.bind('stdout'));
