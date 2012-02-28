@@ -107,13 +107,13 @@ myapp.get('/apps', middle.authenticate, apps.get);
 
 var app = require('./lib/app');
 // Application info
-// http://chris:123@localhost:4001/app/<appname>
-// curl -u "testuser:123" http://localhost:4001/app/<appname>
-myapp.get('/app/:appname', middle.authenticate, middle.authenticate_app, app.get);
+// http://chris:123@localhost:4001/apps/<appname>
+// curl -u "testuser:123" http://localhost:4001/apps/<appname>
+myapp.get('/apps/:appname', middle.authenticate, middle.authenticate_app, app.get);
 
 // Create node app
 // curl -X POST -u "testuser:123" -d "appname=test&start=hello.js" http://localhost:4001/apps
-myapp.post('/app', middle.authenticate, app.post);
+myapp.post('/apps', middle.authenticate, app.post);
 
 
 // App backend restart handler
@@ -125,16 +125,16 @@ myapp.get('/app_stop', app.app_stop);
 // start=hello.js - To update the initial run script
 // running=true - To Start the app
 // running=false - To Stop the app
-// curl -X PUT -u "testuser:123" -d "appname=test&start=hello.js" http://localhost:4001/app
-// curl -X PUT -u "testuser:123" -d "appname=test&running=true" http://localhost:4001/app
-// curl -X PUT -u "testuser:123" -d "appname=test&running=false" http://localhost:4001/app
-// curl -X PUT -u "testuser:123" -d "appname=test&running=restart" http://localhost:4001/app
+// curl -X PUT -u "testuser:123" -d "start=hello.js" http://localhost:4001/apps/test
+// curl -X PUT -u "testuser:123" -d "running=true" http://localhost:4001/apps/test
+// curl -X PUT -u "testuser:123" -d "running=false" http://localhost:4001/apps/test
+// curl -X PUT -u "testuser:123" -d "running=restart" http://localhost:4001/apps/test
 // TODO - Fix this function, it's not doing callbacking properly so will return JSON in the wrong state!
-myapp.put('/app', middle.authenticate, middle.authenticate_app, app.put);
+myapp.put('/apps', middle.authenticate, middle.authenticate_app, app.put);
 
 // Delete your nodejs app
-// curl -X DELETE -u "testuser:123" -d "appname=test" http://localhost:4001/apps
-myapp.del('/app/:appname', middle.authenticate, middle.authenticate_app, app.delete);
+// curl -X DELETE -u "testuser:123" -d http://localhost:4001/apps/test
+myapp.del('/apps/:appname', middle.authenticate, middle.authenticate_app, app.delete);
 
 
 myapp.del('/gitreset/:appname', middle.authenticate, middle.authenticate_app, app.gitreset);
