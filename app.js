@@ -150,8 +150,16 @@ myapp.get('/applogs/:appname', middle.authenticate, middle.authenticate_app, app
 // curl -u GET -u "testuser:123" -d "appname=test" http://localhost:4001/env
 // curl -u PUT -u "testuser:123" -d "appname=test&key=NODE_ENV&value=production" http://localhost:4001/env
 // curl -u DELETE -u "testuser:123" -d "appname=test&key=NODE_ENV" http://localhost:4001/env
-myapp.get('/env/:appname', middle.authenticate, middle.authenticate_app, app.env_get);
+
+// Get info about available versions.
+// NOTE: I think putting these at /env/ is a good choice since they are environment settings
+// curl -XGET http://localhost:4001/env/version
 myapp.get('/env/version', app.env_version);
+// Get info about a specific version and see if it's installed
+// without need of basic auth
+// curl -XGET http://localhost:4001/env/:version
+myapp.get('/env/version/:version', app.check_env_version);
+myapp.get('/env/:appname', middle.authenticate, middle.authenticate_app, app.env_get);
 myapp.put('/env', middle.authenticate, middle.authenticate_app, app.env_put);
 myapp.del('/env/:appname/:key', middle.authenticate, middle.authenticate_app, app.env_delete);
 
