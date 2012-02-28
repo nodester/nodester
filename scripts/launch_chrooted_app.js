@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 
-var fs = require('fs'),
-  path = require('path'),
-  util = require('util'),
-  Script = process.binding('evals').Script,
-  coffee = require('coffee-script'),
-  Module = require('module');
+var fs            = require('fs'),
+    path          = require('path'),
+    util          = require('util'),
+    Script        = process.binding('evals').Script,
+    coffee        = require('coffee-script'),
+    Module        = require('module'),
+    node_versions = require('../lib/lib').node_versions;
 
 //This "preps" the chroot with SSL support
 var c = process.binding('crypto').Connection;
@@ -27,6 +28,7 @@ if (appdir.indexOf('package.json') !== -1 ) {
       }
     }
 } 
+// RUN status (true/false)
 
 config.userid = parseInt(config.userid);
 
@@ -106,7 +108,13 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
   sandbox.process.installPrefix = '/';
   // Run a specified node version using the `n` module from TJ, if no version is
   // found, set default to node v0.4.9, `n` can handle 0.4.9 as v0.4.9
-  var version = sandbox.module["node"] = packageJSON["node"] || '0.4.9';
+  var version = sandbox.module["node"] = packageJSON["node"];
+  version = version.replace('v','').trim()
+  // Simple check for the version requested by the user and the availables
+  var RUN = (node_versions().indexOf(version) !== -1);
+  if (!RUN){
+    version = process.version.replace('v','');
+  }
   sandbox.process.ARGV = ['n use ' + version, config.start];
   sandbox.process.argv = sandbox.process.ARGV;
   var env = sandbox.process.env = sandbox.process.ENV = {
@@ -180,6 +188,7 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
         var _listen = h.listen;
         h.listen = function (port) {
           port = parseInt(port, 10);
+          if (!RUN) console.log('[WARN] You asked for node-v'+version+' but it\'s not avaiable, running as '+process.version);
           if (port !== app_port) {
             console.log('[ERROR] You asked to listen on port', port, 'but nodester will use port', app_port, 'instead..');
           } else {

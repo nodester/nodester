@@ -7,6 +7,7 @@ var daemon = require('daemon');
 var fs = require('fs');
 var path = require('path');
 var net = require('net');
+var node_versions = require('../lib/lib').node_versions();
 
 var config = JSON.parse(fs.readFileSync(path.join('.nodester', 'config.json'), encoding = 'utf8'));
 
@@ -125,27 +126,32 @@ var myPid = daemon.start();
         var version = pack['node'] === undefined ? process.version : pack['node']; 
         // n dir only handles number paths without v0.x.x  => 0.x.x
         version = version.replace('v','').trim();
-        // The spawn process only works with absolute paths, and by default n'd saved every
-        // version of node in /usr/local/n/version
-        child = spawn((path.extname(args[0]) == '.coffee'
-                        ? '/usr/bin/coffee'
-                        : '/usr/local/n/versions/' + version +'/bin/node'), args, {
-          env: env
-        });
-        child.stdout.on('data', log_line.bind('stdout'));
-        child.stderr.on('data', log_line.bind('stderr'));
-        child.on('exit', function (code) {
-          if (code > 0 && run_count > run_max) {
-            log_line.call('Watcher', 'Error: Restarted too many times, bailing.', LOG_STDERR);
-            clearInterval(child_watcher_timer);
-          } else if (code > 0) {
-            log_line.call('Watcher', 'Process died with exit code ' + code + '. Restarting...', LOG_STDERR);
-            child = null;
-          } else {
-            log_line.call('Watcher', 'Process exited cleanly. Dieing.', LOG_STDERR);
-            clearInterval(child_watcher_timer);
-          }
-        });
+        if (node_versions.indexOf(version) !== -1) {
+          // The spawn process only works with absolute paths, and by default n'd saved every
+          // version of node in /usr/local/n/version
+          child = spawn((path.extname(args[0]) == '.coffee'
+                          ? '/usr/bin/coffee'
+                          : '/usr/local/n/versions/' + version +'/bin/node'), args, {
+            env: env
+          });
+          child.stdout.on('data', log_line.bind('stdout'));
+          child.stderr.on('data', log_line.bind('stderr'));
+          child.on('exit', function (code) {
+            if (code > 0 && run_count > run_max) {
+              log_line.call('Watcher', 'Error: Restarted too many times, bailing.', LOG_STDERR);
+              clearInterval(child_watcher_timer);
+            } else if (code > 0) {
+              log_line.call('Watcher', 'Process died with exit code ' + code + '. Restarting...', LOG_STDERR);
+              child = null;
+            } else {
+              log_line.call('Watcher', 'Process exited cleanly. Dieing.', LOG_STDERR);
+              clearInterval(child_watcher_timer);
+            }
+          });
+        } else {
+          log_line.call('Watcher', 'Process exited cleanly. node.js Version:'+version + ' not avaiable', LOG_STDERR);
+          clearInterval(child_watcher_timer);
+        }
       };
     var child_watcher = function () {
         if (child === null) {
