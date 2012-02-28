@@ -16,9 +16,16 @@ var creds = crypto.createCredentials();
 var config = JSON.parse(fs.readFileSync(path.join('.nodester', 'config.json'), encoding = 'utf8'));
 // Read the package.json
 var packageJSON = {};
-var appdir = fs.readdirSync(config.appdir);
+// asuming that here we are already chrooted, so the app path is '/'
+var appdir = fs.readdirSync('/');
 if (appdir.indexOf('package.json') !== -1 ) {
-  packageJSON = JSON.parse(fs.readFileSync(path.join(config.appdir,'package.json'),'utf8'));
+  try {
+    packageJSON = JSON.parse(fs.readFileSync(path.join('/','package.json'),'utf8'));
+  } catch(exp) {
+      packageJSON = {
+       node:process.version
+      }
+    }
 } 
 
 config.userid = parseInt(config.userid);
@@ -99,8 +106,8 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
   sandbox.process.installPrefix = '/';
   // Run a specified node version using the `n` module from TJ, if no version is
   // found, set default to node v0.4.9, `n` can handle 0.4.9 as v0.4.9
-  var _version = sandbox.module["node-version"] = packageJSON["node-version"] || '0.4.9';
-  sandbox.process.ARGV = ['n use ' + _version, config.start];
+  var version = sandbox.module["node"] = packageJSON["node"] || '0.4.9';
+  sandbox.process.ARGV = ['n use ' + version, config.start];
   sandbox.process.argv = sandbox.process.ARGV;
   var env = sandbox.process.env = sandbox.process.ENV = {
     // defaults which can be overriden
@@ -176,7 +183,7 @@ daemon.daemonize(path.join('.nodester', 'logs', 'daemon.log'), path.join('.nodes
           if (port !== app_port) {
             console.log('[ERROR] You asked to listen on port', port, 'but nodester will use port', app_port, 'instead..');
           } else {
-            console.log('[INFO] Nodester running node ' + _version);
+            console.log('[INFO] Nodester running node ' + version);
             console.log('[INFO] Nodester listening on port:', app_port);
           }
           _listen.call(h, app_port);

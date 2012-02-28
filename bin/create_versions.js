@@ -12,8 +12,11 @@ var installVersion = function(_version){
   var execute = function(v){
     console.log('[INFO] installing node-v'+ v.trim());
     var installprocess = exec('n ' + v.trim());
-    installprocess.stdout.on('end', function(){
-      console.log('[INFO]  Installed node-v'+v.trim());
+    installprocess.stderr.on('end', function(data){
+      console.log('[INFO]  stderr node-v'+v.trim()+' :' + data);
+    });
+    installprocess.stdout.on('end', function(data){
+      console.log('[INFO] stdout Installed node-v'+v.trim()+' :' +data);
     });
    installprocess.on('exit', function(code) {
       if (code !== 0) {
