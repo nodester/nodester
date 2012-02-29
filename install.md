@@ -29,7 +29,27 @@ The only thing that you need to setup your personal instance is `ssh` access- Li
 
 ## Installation:
 
-Nodester was/is build on node 0.4.x so we recommend to have as default version the 0.4.9 or any 0.4.x version installed in your server. First of all you'll need some packages to make nodester work, the only one that you need to manually install are node.js, npm, curl and forever as follows:
+Nodester was/is build on node 0.4.x so we recommend to have as default version the 0.4.9 or any 0.4.x version installed in your server. Since nodester is able to manage multiple versions of node.js, you can install `n` before node.js or after it. We recommend to install before node.js:
+
+    > git clone https://github.com/visionmedia/n.git
+    > cd n
+    > make
+    > make install
+
+Check if `n` is installed correctly, otherwise (inside `n` dir):
+
+    > sudo cp bin/n /usr/local/bin
+
+Then you can use `n` as a node.js version manager, like this:
+
+    > n 0.4.9  #which is currently used by nodester
+
+**note**: It's a good practice to install any node.js version as root.
+Then go to [here](#a)
+
+If you don't want to git#clone the repo, follow these instructions:
+
+First of all you'll need some packages to make nodester work, the only one that you need to manually install are node.js, npm, curl and forever as follows:
 
     > Install node.js (0.4.x recommended) as you prefer (wget/pkg/git clone)
 
@@ -46,6 +66,9 @@ Then install again node 0.4.x as n child:
     > n 0.4.x
 
 The `n` command will handle all the installation process from the version, this is done from this way, so we after can use `n use 0.4.x` as unique method to run application. Meanwhile you are install node again trough `n` setup the user and the permissions needed to run your personal instance of `nodester`.
+
+<a id="a" />
+### Create the environment
 
 **Create a user and group to run nodester as (do this as root)**
 
@@ -222,7 +245,7 @@ If you did all the steps correctly, you are ready to go, but first let's create 
     > mkdir -p nodester/var/
     > echo '{"example.co":4001, "api.example.co":4001}' > nodester/var/proxy_table.json
 
-Also you migth want to chown the proxy_table to nodester:
+Also you might want to chown the proxy_table to nodester:
 
     > sudo chown $USER -R nodester/var/proxy_table.json
 
@@ -268,4 +291,4 @@ Sidenotes:
 
 **More info about the REST API: http://nodester.com/api.html#rest**
 
-Don't you like the REST API way? Try the [`nodester-cli`](http://github.com/nodester/nodester-cli).
+Don't like the REST API way? Try the [`nodester-cli`](http://github.com/nodester/nodester-cli).

@@ -23,10 +23,10 @@ if (appdir.indexOf('package.json') !== -1 ) {
   try {
     packageJSON = JSON.parse(fs.readFileSync(path.join('/','package.json'),'utf8'));
   } catch(exp) {
-      packageJSON = {
-       node:process.version
-      }
+    packageJSON = {
+     node:process.version
     }
+  }
 } 
 // RUN status (true/false)
 
