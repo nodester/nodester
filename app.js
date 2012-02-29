@@ -110,11 +110,12 @@ var app = require('./lib/app');
 // http://chris:123@localhost:4001/apps/<appname>
 // curl -u "testuser:123" http://localhost:4001/apps/<appname>
 myapp.get('/apps/:appname', middle.authenticate, middle.authenticate_app, app.get);
+myapp.get('/app/:appname', middle.deprecated, middle.authenticate, middle.authenticate_app, app.get); // deprecated
 
 // Create node app
 // curl -X POST -u "testuser:123" -d "appname=test&start=hello.js" http://localhost:4001/apps
 myapp.post('/apps', middle.authenticate, app.post);
-
+myapp.post('/app', middle.deprecated, middle.authenticate, app.post); // deprecated
 
 // App backend restart handler
 myapp.get('/app_restart', app.app_restart);
@@ -131,11 +132,12 @@ myapp.get('/app_stop', app.app_stop);
 // curl -X PUT -u "testuser:123" -d "running=restart" http://localhost:4001/apps/test
 // TODO - Fix this function, it's not doing callbacking properly so will return JSON in the wrong state!
 myapp.put('/apps', middle.authenticate, middle.authenticate_app, app.put);
+myapp.put('/app', middle.deprecated, middle.authenticate, middle.authenticate_app, app.put); // deprecated
 
 // Delete your nodejs app
 // curl -X DELETE -u "testuser:123" -d http://localhost:4001/apps/test
 myapp.del('/apps/:appname', middle.authenticate, middle.authenticate_app, app.delete);
-
+myapp.del('/app/:appname', middle.deprecated, middle.authenticate, middle.authenticate_app, app.delete); // deprecated
 
 myapp.del('/gitreset/:appname', middle.authenticate, middle.authenticate_app, app.gitreset);
 
