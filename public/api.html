@@ -280,43 +280,38 @@
                            </td>
                         </tr>
                         <tr>
-                           <td><b>app</b></td>
-                           <td>&nbsp;</td>
-                           <td>&nbsp;</td>
-                        </tr>
-                        <tr>
                            <td>&nbsp;</td>
                            <td><a class="btn disabled success">POST</a></td>
-                           <td><b>/app</b> - Creates nodejs app for hosting (requires basic auth and returns the port address required for use along with a git repo to push to)<br />
-                              <code>curl -X POST -u "testuser:123" -d "appname=a&start=hello.js" http://api.nodester.com/app</code>
+                           <td><b>/apps</b> - Creates nodejs app for hosting (requires basic auth and returns the port address required for use along with a git repo to push to)<br />
+                              <code>curl -X POST -u "testuser:123" -d "appname=a&amp;start=hello.js" http://api.nodester.com/apps/a</code>
                            </td>
                         </tr>
                         <tr>
                            <td>&nbsp;</td>
                            <td><a class="btn disabled">PUT</a></td>
-                           <td><b>/app</b> - Updates starting app name (requires basic auth, appname, and starting page and returns the port address required for use along with a git repo to push to and running status of the app)<br />
-                              <code>curl -X PUT -u "testuser:123" -d "appname=a&start=hello1.js" http://api.nodester.com/app</code>
+                           <td><b>/apps/&lt;appname&gt;</b> - Updates starting app name (requires basic auth, appname, and starting page and returns the port address required for use along with a git repo to push to and running status of the app)<br />
+                              <code>curl -X PUT -u "testuser:123" -d "start=hello1.js" http://api.nodester.com/apps/a</code>
                            </td>
                         </tr>
                         <tr>
                            <td>&nbsp;</td>
                            <td><a class="btn disabled">PUT</a></td>
-                           <td><b>/app</b> - Start and stop your hosted nodejs app (requires basic auth, appname, and running=true|false and returns the port address required for use along with a git repo to push to)<br />
-                              <code>curl -X PUT -u "testuser:123" -d "appname=a&running=true" http://api.nodester.com/app</code>
+                           <td><b>/apps/&lt;appname&gt;</b> - Start and stop your hosted nodejs app (requires basic auth, appname, and running=true|false and returns the port address required for use along with a git repo to push to)<br />
+                              <code>curl -X PUT -u "testuser:123" -d "running=true" http://api.nodester.com/apps/a</code>
                            </td>
                         </tr>
                         <tr>
                            <td>&nbsp;</td>
                            <td><a class="btn disabled danger">DELETE</a></td>
-                           <td><b>/app/&lt;appname&gt; </b>- Deletes nodejs app (requires basic auth and appname)<br />
-                              <code>curl -X DELETE -u "testuser:123" http://api.nodester.com/app/&lt;appname&gt;</code>
+                           <td><b>/apps/&lt;appname&gt; </b>- Deletes nodejs app (requires basic auth and appname)<br />
+                              <code>curl -X DELETE -u "testuser:123" http://api.nodester.com/apps/&lt;appname&gt;</code>
                            </td>
                         </tr>
                         <tr>
                            <td>&nbsp;</td>
                            <td><a class="btn disabled primary">GET</a></td>
-                           <td><b>/app/&lt;appname&gt;</b> - get nodejs app info (requires basic auth and appname)<br />
-                              <code>curl -X GET -u "testuser:123"  http://api.nodester.com/app/&lt;appname&gt;</code>
+                           <td><b>/apps/&lt;appname&gt;</b> - get nodejs app info (requires basic auth and appname)<br />
+                              <code>curl -X GET -u "testuser:123"  http://api.nodester.com/apps/&lt;appname&gt;</code>
                            </td>
                         </tr>
                         <tr>
