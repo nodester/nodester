@@ -298,8 +298,8 @@
                         <tr>
                            <td>&nbsp;</td>
                            <td><a class="btn disabled success">POST</a></td>
-                           <td><b>/apps</b> - Creates nodejs app for hosting (requires basic auth and returns the port address required for use along with a git repo to push to)<br />
-                              <code>curl -X POST -u "testuser:123" -d "appname=a&amp;start=hello.js" http://api.nodester.com/apps/a</code>
+                           <td><b>/apps/&lt;appname&gt;</b> - Creates nodejs app for hosting (requires basic auth and returns the port address required for use along with a git repo to push to)<br />
+                              <code>curl -X POST -u "testuser:123" -d "start=hello.js" http://api.nodester.com/apps/a</code>
                            </td>
                         </tr>
                         <tr>
