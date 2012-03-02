@@ -115,6 +115,7 @@ myapp.get('/app/:appname', middle.deprecated, middle.authenticate, middle.authen
 // Create node app
 // curl -X POST -u "testuser:123" -d "appname=test&start=hello.js" http://localhost:4001/apps
 myapp.post('/apps/:appname', middle.authenticate, app.post);
+myapp.post('/apps', middle.authenticate, app.post);
 myapp.post('/app', middle.deprecated, middle.authenticate, app.post); // deprecated
 
 // App backend restart handler
