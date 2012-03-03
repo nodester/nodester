@@ -7,3 +7,5 @@ bin/.nodester.config
 .DS_Store
 *.log
 node_modules
+test
+*.un~

@@ -29,7 +29,7 @@ http://youtu.be/jwsP1Ejv-_w
 
 ## Installing Nodester on Amazon EC2, Rackspace, GoGrid, or your own datacenter services
 
-Please see install.txt for setup instructions (https://github.com/nodester/nodester/blob/master/install.txt)
+Please see install.md for setup instructions (https://github.com/nodester/nodester/blob/master/install.md)
 
 ## Testing Locally
 
