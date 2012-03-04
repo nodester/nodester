@@ -7,3 +7,4 @@ wait
 source ./.nodester.config
 
 node $APP_DIR/scripts/start_hosted_apps.js start "$@"
+ 

@@ -134,6 +134,7 @@ var myPid = daemon.start();
                         : '/usr/local/n/versions/' + version +'/bin/node'), args, {
           env: env
         });
+        log_line.call('Watcher', 'Running node v-' + version, LOG_STDERR);
         child.stdout.on('data', log_line.bind('stdout'));
         child.stderr.on('data', log_line.bind('stderr'));
         child.on('exit', function (code) {
