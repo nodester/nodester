@@ -71,13 +71,13 @@
                   <li><a href="http://blog.nodester.com">Blog</a></li>
 
                </ul>
-               <!-- <p class="pull-right">
+               <p class="pull-right">
                <form action="http://admin.nodester.com/login" method="post" class="pull-right">
                   <input class="input-small" type="text" placeholder="Username" name="user[user]" />
                   <input class="input-small" type="password" placeholder="Password" name="user[pass]" />
                   <button class="btn" type="submit">Sign in</button>
                </form>
-               </p> -->
+               </p>
             </div>
          </div>
       </div>
@@ -199,6 +199,22 @@
                            <td>nodester npm uninstall &lt;appname&gt; &lt;packages&gt;</td>
                         </tr>
                         <tr>
+                           <td><b>env</b></td>
+                           <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td>nodester env get &lt;appname&gt;</td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td>nodester env set &lt;appname&gt; &lt;key&gt; &lt;value&gt;</td>
+                        </tr>
+                        <tr>
+                           <td>&nbsp;</td>
+                           <td>nodester env delete &lt;appname&gt; &lt;key&gt;</td>
+                        </tr>
+                        <tr>
                            <td><b>domain</b></td>
                            <td>&nbsp;</td>
                         </tr>
@@ -280,43 +296,38 @@
                            </td>
                         </tr>
                         <tr>
-                           <td><b>app</b></td>
-                           <td>&nbsp;</td>
-                           <td>&nbsp;</td>
-                        </tr>
-                        <tr>
                            <td>&nbsp;</td>
                            <td><a class="btn disabled success">POST</a></td>
-                           <td><b>/app</b> - Creates nodejs app for hosting (requires basic auth and returns the port address required for use along with a git repo to push to)<br />
-                              <code>curl -X POST -u "testuser:123" -d "appname=a&start=hello.js" http://api.nodester.com/app</code>
+                           <td><b>/apps/&lt;appname&gt;</b> - Creates nodejs app for hosting (requires basic auth and returns the port address required for use along with a git repo to push to)<br />
+                              <code>curl -X POST -u "testuser:123" -d "start=hello.js" http://api.nodester.com/apps/a</code>
                            </td>
                         </tr>
                         <tr>
                            <td>&nbsp;</td>
                            <td><a class="btn disabled">PUT</a></td>
-                           <td><b>/app</b> - Updates starting app name (requires basic auth, appname, and starting page and returns the port address required for use along with a git repo to push to and running status of the app)<br />
-                              <code>curl -X PUT -u "testuser:123" -d "appname=a&start=hello1.js" http://api.nodester.com/app</code>
+                           <td><b>/apps/&lt;appname&gt;</b> - Updates starting app name (requires basic auth, appname, and starting page and returns the port address required for use along with a git repo to push to and running status of the app)<br />
+                              <code>curl -X PUT -u "testuser:123" -d "start=hello1.js" http://api.nodester.com/apps/a</code>
                            </td>
                         </tr>
                         <tr>
                            <td>&nbsp;</td>
                            <td><a class="btn disabled">PUT</a></td>
-                           <td><b>/app</b> - Start and stop your hosted nodejs app (requires basic auth, appname, and running=true|false and returns the port address required for use along with a git repo to push to)<br />
-                              <code>curl -X PUT -u "testuser:123" -d "appname=a&running=true" http://api.nodester.com/app</code>
+                           <td><b>/apps/&lt;appname&gt;</b> - Start and stop your hosted nodejs app (requires basic auth, appname, and running=true|false and returns the port address required for use along with a git repo to push to)<br />
+                              <code>curl -X PUT -u "testuser:123" -d "running=true" http://api.nodester.com/apps/a</code>
                            </td>
                         </tr>
                         <tr>
                            <td>&nbsp;</td>
                            <td><a class="btn disabled danger">DELETE</a></td>
-                           <td><b>/app/&lt;appname&gt; </b>- Deletes nodejs app (requires basic auth and appname)<br />
-                              <code>curl -X DELETE -u "testuser:123" http://api.nodester.com/app/&lt;appname&gt;</code>
+                           <td><b>/apps/&lt;appname&gt; </b>- Deletes nodejs app (requires basic auth and appname)<br />
+                              <code>curl -X DELETE -u "testuser:123" http://api.nodester.com/apps/&lt;appname&gt;</code>
                            </td>
                         </tr>
                         <tr>
                            <td>&nbsp;</td>
                            <td><a class="btn disabled primary">GET</a></td>
-                           <td><b>/app/&lt;appname&gt;</b> - get nodejs app info (requires basic auth and appname)<br />
-                              <code>curl -u "testuser:123"  http://api.nodester.com/app/&lt;appname&gt;</code>
+                           <td><b>/apps/&lt;appname&gt;</b> - get nodejs app info (requires basic auth and appname)<br />
+                              <code>curl -X GET -u "testuser:123"  http://api.nodester.com/apps/&lt;appname&gt;</code>
                            </td>
                         </tr>
                         <tr>
@@ -328,7 +339,7 @@
                            <td>&nbsp;</td>
                            <td><a class="btn disabled primary">GET</a></td>
                            <td><b>/applogs/&lt;appname&gt;</b> - Gets nodejs app logs (requires basic auth and appname)<br />
-                              <code>curl -u "testuser:123"  http://api.nodester.com/applogs/&lt;appname&gt;</code>
+                              <code>curl -X GET -u "testuser:123"  http://api.nodester.com/applogs/&lt;appname&gt;</code>
                            </td>
                         </tr>
                         <tr>
@@ -354,7 +365,7 @@
                            <td>&nbsp;</td>
                            <td><a class="btn disabled primary">GET</a></td>
                            <td><b>/env</b> - Gets environment info (requires basic auth, appname, and environment key)<br />
-                              <code>curl -u "testuser:123" -d "appname=test&key=color" http://api.nodester.com/env</code>
+                              <code>curl -X GET -u "testuser:123" http://api.nodester.com/env/&lt;appname&gt;</code>
                            </td>
                         </tr>
                         <tr>
@@ -366,7 +377,7 @@
                            <td>&nbsp;</td>
                            <td><a class="btn disabled primary">GET</a></td>
                            <td><b>/status</b> - Returns platform status and number of apps hosted and running<br />
-                              <code>curl http://nodester.com/status</code>
+                              <code>curl -X GET http://nodester.com/status</code>
                            </td>
                         </tr>
                         <tr>
@@ -406,7 +417,7 @@
                            <td>&nbsp;</td>
                            <td><a class="btn disabled primary">GET</a></td>
                            <td><b>/appdomains</b> - Gets list of your domains (requires basic auth)<br />
-                              <code>curl -u "testuser:123"  http://api.nodester.com/appdomains</code>
+                              <code>curl -X GET -u "testuser:123"  http://api.nodester.com/appdomains</code>
                            </td>
                         </tr>
                         <tr>
