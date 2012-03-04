@@ -29,9 +29,9 @@ The only thing that you need to setup your personal instance is `ssh` access- Li
 
 ## Installation:
 
-Nodester was/is build on node 0.4.x so we recommend to have as default version the 0.4.9 or any 0.4.x version installed in your server. Since nodester is able to manage multiple versions of node.js, you can install `n` before node.js or after it. We recommend to install before node.js:
+Nodester was/is build on node 0.4.x so we recommend to have as the default version the 0.4.9 one or any of the 0.4.x series installed in your server. Since nodester is able to manage multiple versions of node.js, you can install [`n`]("http://github.com/visionmedia/n") before node.js or after it. We recommend to install before node.js:
 
-    > git clone https://github.com/visionmedia/n.git
+    > git clone https://github.com/nodester/n.git
     > cd n
     > make
     > make install
@@ -67,7 +67,7 @@ Then install again node 0.4.x as n child:
 
 The `n` command will handle all the installation process from the version, this is done from this way, so we after can use `n use 0.4.x` as unique method to run application. Meanwhile you are install node again trough `n` setup the user and the permissions needed to run your personal instance of `nodester`.
 
-<a id="a" />
+<a name="a" />
 ### Create the environment
 
 **Create a user and group to run nodester as (do this as root)**
@@ -198,8 +198,11 @@ The example config.js looks like this:
       }
     };
 
-
 Also copy `scripts/example_gitrepoclone.sh` to `scripts/gitrepoclone.sh` and update it with the key you specified in `config.js`.
+
+### The chroot template
+
+The way in how nodester works is pretty straigthforward, so, when a user does a `nodester app restart|start` nodester takes the `node_base_folder` param and it use it to create|mount the sandbox for the app, the `node_base_folder` has the whole environment in which the node-versions are installed and everything that an app needs to work. Soon we are going to publish an example of this environment. So you can install it easily. 
 
 ### Multiple versions of node:
 
@@ -292,3 +295,8 @@ Sidenotes:
 **More info about the REST API: http://nodester.com/api.html#rest**
 
 Don't like the REST API way? Try the [`nodester-cli`](http://github.com/nodester/nodester-cli).
+
+### Credits
+
+- [Nodester]("http://nodester.com")
+- `n` By [TJ Holowaychuk]("http://github.com/visionmedia")
