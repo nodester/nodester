@@ -1,38 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
    <head>
-      <meta charset="utf-8" />
-      <title>Nodester -> Open Source Node.JS PaaS</title>
-      <meta name="description" content="Open Source Node.JS Platform as a Service" />
-      <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+      <meta charset="utf-8">
+      <title>Nodester -&gt; Open Source Node.JS PaaS</title>
+      <meta name="description" content="Nodester is an open source Node.JS Platform as a Service.">
+
       <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+      	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
       <![endif]-->
-      <!-- Le styles -->
-      <link href="bootstrap.css" rel="stylesheet" type="text/css" />
-      <style type="text/css">
-         body {
-         padding-top: 60px;
-         }
-      </style>
-      <!-- Le fav and touch icons -->
-      <link rel="shortcut icon" href="images/nodester_favicon.ico" />
-      <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
-      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png" />
-      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png" />
-      <script type="text/javascript">
-         var _gaq = _gaq || [];
-         _gaq.push(['_setAccount', 'UA-2483685-22']);
-         _gaq.push(['_setDomainName', 'nodester.com']);
-         _gaq.push(['_trackPageview']);
 
-         (function() {
-           var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-         })();
+      <link rel="stylesheet" href="bootstrap.css" >
+      <link rel="stylesheet" href="http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.css" >
+      <link rel="stylesheet" href="/fancybox/jquery.fancybox-1.3.4.css">
 
-      </script>
+      <link rel="shortcut icon" href="images/nodester_favicon.ico">
+      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
    </head>
    <body>
       <div class="topbar">
@@ -105,7 +89,7 @@
             </div>
 
             <h1>Promote Nodester!</h1>
-			<p>You can help us get the word out about of free and open source node.js platform-as-a-service via the following social networks:</p>
+						<p>You can help us get the word out about of free and open source node.js platform-as-a-service via the following social networks:</p>
             <div class="row">
                <div class="span3">
                   <a href="http://geekli.st/invite/nodester"><img class="thumbnail" src="images/gklst_final_green.jpg" width="140"/></a> 
@@ -127,16 +111,27 @@
          </div>
       </div>
       <!-- /container -->
+
       <footer class="footer">
          <div class="container">
             <p>
-               &#169; <script type="text/javascript">
-                  var theDate=new Date()
-                      document.write(theDate.getFullYear())
-               </script> Nodester, inc. | <a href="about.html">about us</a> | <a href="http://twitter.com/nodester">twitter</a> | <a href="http://github.com/nodester">github</a>
+               &#169; <script>var theDate=new Date();document.write(theDate.getFullYear())</script>
+               Nodester, inc. | <a href="about.html">about us</a> | <a href="http://twitter.com/nodester">twitter</a> | <a href="http://github.com/nodester">github</a>
             </p>
          </div>
       </footer>
+
+      <script>
+        var _gaq=[['_setAccount','UA-2483685-22'],['_setDomainName', 'nodester.com'],['_trackPageview']];
+        (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+        g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+        s.parentNode.insertBefore(g,s)}(document,'script'));
+      </script>
+
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+      <script src="http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.js"></script>
+      <script src="fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+      <script src="scripts/script.js"></script>
+
    </body>
 </html>
-

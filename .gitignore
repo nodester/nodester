@@ -1,4 +1,4 @@
-.app.pid
+.app.pid*
 config.js
 proxy/.monitor
 scripts/gitrepoclone.sh
