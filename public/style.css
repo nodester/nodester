@@ -1,0 +1,43 @@
+.hero-unit h1 {
+	margin: -20px 0 10px 0;
+	color: #333;
+}
+.hero-unit p {
+	width: 510px;
+}
+
+.sponsor {
+	margin-top: 20px;
+	color: #888;
+}
+
+.btn, input.btn {
+	-moz-border-radius: 3px;
+	display: inline-block;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	-moz-box-shadow: 0 2px 0 #b7245a;
+	-webkit-box-shadow: 0 2px 0 #b7245a;
+	box-shadow: 0 2px 0 #b7245a;
+	background: -moz-linear-gradient(0% 50% 90deg,#e74425, #e62e25, #f63329 15%);
+	background: -webkit-gradient(linear, 0% 0%, 0% 56%, from(#e74425), to(#e62e25), color-stop(.9,#f63329));
+	color: #fff;
+	font-family: arial,helvetica,sans-serif;
+	font-size: 17px;
+	font-weight: bold;
+	padding: 7px 20px;
+	margin: 0 !important;
+	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+}
+.btn:hover, input.btn:hover {
+	text-decoration:none;
+	cursor: pointer;
+	color:#efefef;
+	background: -moz-linear-gradient(0% 50% 90deg,#e74425, #e62e25, #f63329 15%);
+	background: -webkit-gradient(linear, 0% 0%, 0% 56%, from(#e74425), to(#e62e25), color-stop(.9,#f63329));
+}
+.btn:active, input.btn:active {
+	text-decoration:none;
+	cursor: pointer;
+	box-shadow: inset 0 0 20px rgba(0,0,0,.1), 0 2px 0 #b7245a;
+}

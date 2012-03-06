@@ -2,7 +2,7 @@
 <html lang="en">
    <head>
       <meta charset="utf-8">
-      <title>Nodester -&gt; Open Source Node.JS PaaS</title>
+      <title>Nodester | Open Source Node.JS PaaS</title>
       <meta name="description" content="Nodester is an open source Node.JS Platform as a Service.">
 
       <!--[if lt IE 9]>
@@ -10,17 +10,19 @@
       <![endif]-->
 
       <link rel="stylesheet" href="bootstrap.css" >
+      <link rel="stylesheet" href="style.css" >
       <link rel="stylesheet" href="http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.css" >
       <link rel="stylesheet" href="fancybox/jquery.fancybox-1.3.4.css">
 
       <link rel="shortcut icon" href="images/nodester_favicon.ico">
-      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
-      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+
+      <link href="http://fonts.googleapis.com/css?family=Bitter:400,700" rel="stylesheet">
+
    </head>
    <body>
-      <div class="topbar">
-         <div class="fill">
+
+      <div class="navbar navbar-fixed-top">
+         <div class="navbar-inner">
             <div class="container">
                <a class="brand" href="index.html"><img src="images/rocket-md-right.png" width="20" /> nodester</a>
                <ul class="nav">
@@ -29,78 +31,79 @@
                   <li><a href="help.html">Help</a></li>
                   <li><a href="http://irc.nodester.com">IRC</a></li>
                   <li><a href="http://blog.nodester.com">Blog</a></li>
-
                </ul>
-               <p class="pull-right">
-               <form action="http://admin.nodester.com/login" method="post" class="pull-right">
+               <div class="pull-right">
+               <!--<form action="http://admin.nodester.com/login" method="post" class="pull-right">
                   <input class="input-small" type="text" placeholder="Username" name="user[user]" />
                   <input class="input-small" type="password" placeholder="Password" name="user[pass]" />
-                  <button class="btn" type="submit">Sign in</button>
-               </form>
-               </p>
+                  <input class="btn" type="submit" value="Sign In"></input>
+               </form>-->
+               </div>
             </div>
          </div>
       </div>
       <div class="container">
          <div class="hero-unit">
-            <h1>OpenSource Node.JS PaaS</h1>
+            <h1>Open Source Node Platform</h1>
             <br />
             <img src="images/nodesterbw_transparent.png" align="right" width="250" />
-            <p>Deploy your Node.JS applications to Nodester.com for FREE or deploy your apps to
-               your own private cloud instance of Nodester running in your own datacenter or on
+            <p>Deploy your Node.JS applications to Nodester for <strong>free</strong>, or deploy them to
+               your own private cloud instance of Nodester running in your own datacenter, or on
                Amazon EC2, Rackspace, or GoGrid!
             </p>
             <br />
-            <p>Nodester is an open source Node.JS Platform-as-a-Service, written in Node.JS with
+            <p>Nodester is an open source Node.JS platform-as-a-service, written in Node.JS with
                a RESTful API and designed to run in any cloud without a VPS! It is the first of its
-               kind and 100% open sourced under the GNU Affero license on <a href="http://github.com/nodester">GitHub</a>.
+               kind and 100% open source under the GNU Affero license on <a href="http://github.com/nodester">GitHub</a>.
             </p>
             <br />
-            <div id="reqbutton" class="btn primary large">
+            <a id="reqbutton" class="btn btn-primary btn-large">
                Request Registration Coupon
-            </div>
- 			<div id="videobutton" class="btn danger large">
+            </a>
+ 			<div id="videobutton" class="btn btn-danger btn-large">
 				Watch Video &raquo;
 			</div>
+
             <div id="reqform" class="c1">
                <br />
                <form action="/coupon" method="post">
                 <input class="input-large" type="text" name="email" id="email" placeholder="Email" />
-                <button class="btn" type="submit">Send</button>
+                <a class="btn" type="submit">Send</a>
                </form>
             </div>
 
-            <p class="c2">Nodester hosting sponsored by <a href="http://tropo.com">Tropo</a></p>
+            <p class="sponsor">Nodester hosting generously provided by <a href="http://tropo.com">Tropo</a></p>
          </div>
 
+         <hr>
          <div class="row">
-            <div class="span-one-third">
+            <div class="span4">
                <h2><img src="images/rocket-md-right.png" width="30" /> Systems Check</h2>
-               <p>Request your free Nodester Node.JS hosting coupon</p>
+               <p>Start by requesting your free Nodester hosting coupon like so:</p>
             </div>
-            <div class="span-one-third">
+            <div class="span4">
                <h2><img src="images/rocket-md-right.png" width="30" /> All Systems Go</h2>
-               <p>You have received your coupon and you're ready to install our Command Line
-                  Interface
+               <p>Once you have received your coupon, you're ready to install our command line interface
                </p>
             </div>
-            <div class="span-one-third">
-               <h2><img src="images/rocket-md-right.png" width="30" /> 3-2-1 Launch!</h2>
-               <p>You're ready to deploy your Hello World app!</p>
+            <div class="span4">
+               <h2><img src="images/rocket-md-right.png" width="30" /> 3-2-1 <em>Launch!</em></h2>
+               <p>You're ready to deploy your app!</p>
             </div>
          </div>
 
          <div class="row">
-            <div class="span-one-third">
-               <pre class="prettyprint">curl -X POST -d "email=you@gmail.com" http://nodester.com/coupon<br /><br/></pre>
+            <div class="span4">
+               <pre>curl -X POST -d "email=you@awesome.com"<br>http://nodester.com/coupon<br /><br/></pre>
             </div>
-            <div class="span-one-third">
-               <pre class="prettyprint">npm install nodester-cli -g<br />nodester user setup &lt;user&gt; &lt;pass&gt;<br />nodester user setkey</pre>
+            <div class="span4">
+               <pre>npm install nodester-cli -g<br />nodester user setup &lt;user&gt; &lt;pass&gt;<br />nodester user setkey</pre>
             </div>
-            <div class="span-one-third">
-               <pre class="prettyprint">nodester app create &lt;appname&gt;<br />nodester app init &lt;appname&gt;<br /><br /></pre>
+            <div class="span4">
+               <pre>nodester app create &lt;appname&gt;<br />nodester app init &lt;appname&gt;<br /><br /></pre>
             </div>
          </div>
+         <hr>
       <!-- /container -->
 
       <footer class="footer">
@@ -121,6 +124,7 @@
 
       <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
       <script src="http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.js"></script>
+      <script src="scripts/bootstrap.min.js"></script>
       <script src="fancybox/jquery.fancybox-1.3.4.pack.js"></script>
       <script src="scripts/script.js"></script>
 
