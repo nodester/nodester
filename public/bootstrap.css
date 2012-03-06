@@ -41,6 +41,7 @@ html {
   font-size: 100%;
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
+  overflow-y: scroll;
 }
 a:focus {
   outline: thin dotted #333;
@@ -74,7 +75,6 @@ select,
 textarea {
   margin: 0;
   font-size: 100%;
-  vertical-align: middle;
 }
 button, input {
   *overflow: visible;
@@ -104,6 +104,7 @@ textarea {
   overflow: auto;
   vertical-align: top;
 }
+footer{color:#888;}
 body {
   margin: 0;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -320,7 +321,6 @@ h3,
 h4,
 h5,
 h6 {
-  margin: 0;
   font-weight: bold;
   color: #333333;
   text-rendering: optimizelegibility;
@@ -751,17 +751,17 @@ select,
 .uneditable-input {
   display: inline-block;
   width: 210px;
-  height: 18px;
-  padding: 4px;
-  margin-bottom: 9px;
-  font-size: 13px;
+  height: 24px;
+  padding: 4px 4px 4px 7px;
+  font-size: 16px;
   line-height: 18px;
-  color: #555555;
+  color: #666;
   border: 1px solid #ccc;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
 }
+input.btn{border:none;}
 .uneditable-textarea {
   width: auto;
   height: auto;
@@ -857,11 +857,11 @@ input, textarea {
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-  -webkit-transition: border linear 0.2s, box-shadow linear 0.2s;
+  /*-webkit-transition: border linear 0.2s, box-shadow linear 0.2s;
   -moz-transition: border linear 0.2s, box-shadow linear 0.2s;
   -ms-transition: border linear 0.2s, box-shadow linear 0.2s;
   -o-transition: border linear 0.2s, box-shadow linear 0.2s;
-  transition: border linear 0.2s, box-shadow linear 0.2s;
+  transition: border linear 0.2s, box-shadow linear 0.2s;*/
 }
 input:focus, textarea:focus {
   border-color: rgba(82, 168, 236, 0.8);
@@ -1728,7 +1728,7 @@ legend + .control-group {
   float: left;
   margin: 0 10px 0 0;
 }
-.navbar .nav.pull-right {
+.pull-right {
   float: right;
 }
 .navbar .nav > li {

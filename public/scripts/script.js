@@ -1,5 +1,7 @@
 $(function() {
 
+	$('.dropdown-toggle').dropdown()
+
 	$('#reqbutton').click(function() {
 		$('#reqform').toggle(200, function() {});
 	});
@@ -10,23 +12,20 @@ $(function() {
 	$('#videobutton').click(function() {
 		// window.location.href = 'http://www.youtube.com/watch?v=jwsP1Ejv-_w';
 		$.fancybox({
-			'padding'		: 0,
-			'autoScale'		: false,
-			'transitionIn'	: 'elastic',
-			'transitionOut'	: 'none',
-			'title'			: this.title,
+			'openEffect'	: 'elastic',
+			'closeEffect'	: 'fade',
+			'padding'			: 0, 
 			'width'			: 680,
 			'height'		: 495,
 			'href'			: 'http://www.youtube.com/watch?v=jwsP1Ejv-_w&hd=1&feature=player_embedded#at=41'.replace(new RegExp("watch\\?v=", "i"), 'v/'),
 			'type'			: 'swf',
 			'swf'				: {
-				'wmode'						: 'transparent',
 				'allowfullscreen'	: 'true'
 			}
 		});
 	});
 
-	  var hash = window.location.hash.substring(1);
+	  /*var hash = window.location.hash.substring(1);
 		if (hash == "faq") {
 			$('#faqli').addClass("active");
 			$('#helpli').removeClass("active");
@@ -44,6 +43,6 @@ $(function() {
 			$('#cli').removeClass("active");
 			$('#explorerli').addClass("active");
 			$('#explorer').addClass("active");
-		}
+		}*/
 
 });

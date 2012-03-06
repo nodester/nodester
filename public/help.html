@@ -2,40 +2,41 @@
 <html lang="en">
    <head>
       <meta charset="utf-8">
-      <title>Nodester -&gt; Open Source Node.JS PaaS</title>
+      <title>Nodester | Open Source Node.JS PaaS</title>
       <meta name="description" content="Nodester is an open source Node.JS Platform as a Service.">
 
       <!--[if lt IE 9]>
       	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
       <![endif]-->
-      
+
       <link rel="stylesheet" href="bootstrap.css" >
-      <link rel="stylesheet" href="http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.css" >
-      <link rel="stylesheet" href="fancybox/jquery.fancybox-1.3.4.css">
+      <link rel="stylesheet" href="style.css" >
+      <link rel="stylesheet" href="http://fancyapps.com/fancybox/source/jquery.fancybox.css?v=2.0.5">
 
       <link rel="shortcut icon" href="images/nodester_favicon.ico">
 
+      <link href="http://fonts.googleapis.com/css?family=Bitter:400,700" rel="stylesheet">
+
    </head>
    <body>
-	
-      <div class="topbar">
-         <div class="fill">
+
+      <div class="navbar navbar-fixed-top" data-dropdown="dropdown">
+         <div class="navbar-inner">
             <div class="container">
                <a class="brand" href="index.html"><img src="images/rocket-md-right.png" width="20" /> nodester</a>
                <ul class="nav">
-                  <li><a href="index.html">Home</a></li>
+                  <li class="active"><a href="index.html">Home</a></li>
                   <li><a href="api.html">API</a></li>
-                  <li class="active"><a href="help.html">Help</a></li>
+                  <li><a href="help.html">Help</a></li>
                   <li><a href="http://irc.nodester.com">IRC</a></li>
                   <li><a href="http://blog.nodester.com">Blog</a></li>
                </ul>
-               <p class="pull-right">
+
                <form action="http://admin.nodester.com/login" method="post" class="pull-right">
-                  <input class="input-small" type="text" placeholder="Username" name="user[user]" />
-                  <input class="input-small" type="password" placeholder="Password" name="user[pass]" />
-                  <button class="btn" type="submit">Sign in</button>
+                  <input class="input-small" type="text" placeholder="username" name="user[user]" />
+                  <input class="input-small" type="password" placeholder="password" name="user[pass]" />
+                  <input class="btn" type="submit" value="Sign In" ></input>
                </form>
-               </p>
             </div>
          </div>
       </div>
@@ -83,7 +84,7 @@
 	         <br />
 	         <h2><img src="images/rocket-md-right.png" width="30" /> Registering with a Coupon Code</h2>
 	         <p>
-	         <pre class="prettyprint">curl -X POST -d "coupon=mycoupon&user=testuser&password=123&email=chris@nodester.com&rsakey=ssh-rsa AAAA..." http://nodester.com/user</pre>
+	         <pre class="prettyprint">curl -X POST -d "coupon=coupon&user=testusr&password=123&email=chris@nodester.com&rsakey=ssh-rsa AAAA..." http://nodester.com/user</pre>
 	         <p><span class="label important">Important</span> 
 				RSA key instructions for <a href="http://help.github.com/mac-set-up-git/" target="_new">Mac OSX</a> | <a href="http://help.github.com/linux-set-up-git/" target="_new">Linux</a> | <a href="http://help.github.com/win-set-up-git/" target="_new">Windows</a> 
 	         <div id="regbutton" class="btn">OR CHEAT</div>
@@ -110,7 +111,7 @@
 	         <pre class="prettyprint">npm install nodester-cli -g <br />nodester user setup &lt;username&gt; &lt;password&gt; <br />nodester user setkey</pre>
 	         
 	         <br />
-	         <h2><img src="images/rocket-md-right.png" width="30" /> Create & Launch Your Node.JS Application!</h2>
+	         <h2><img src="images/rocket-md-right.png" width="30" /> Create &amp; Launch Your Node.JS Application!</h2>
 	         <p>You are ready to deploy your test Hello World app with 2 commands.</p>
 	         <pre class="prettyprint">nodester app create &lt;appname&gt;<br />nodester app init &lt;appname&gt; <br />http://&lt;appname&gt;.nodester.com</pre>
 	         
@@ -202,8 +203,7 @@
       </script>
 
       <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-      <script src="http://twitter.github.com/bootstrap/1.4.0/bootstrap-tabs.js"></script>
-      <script src="http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.js"></script>
+      <script src="scripts/bootstrap.min.js"></script>
       <script src="fancybox/jquery.fancybox-1.3.4.pack.js"></script>
       <script src="scripts/script.js"></script>
 
