@@ -1,10 +1,5 @@
 /* I will clean up this horrible mess I've made, I promise! */
 
-.hero-unit h1 {
-	margin: -20px 0 10px 0;
-	color: #333;
-}
-
 .hero-unit p {
 	width: 517px;
 }
@@ -93,26 +88,26 @@
 	font-size: 13px;
 	padding: 5px 20px;
 
-	background: -webkit-linear-gradient(#eee, #ddd, #eee 5%);
-	background: -moz-linear-gradient(#eee, #ddd, #eee 5%);
-	background: -o-linear-gradient(#eee, #ddd, #eee 5%);
-	background: -ms-linear-gradient(#eee, #ddd, #eee 5%);
-	background: linear-gradient(#eee, #ddd, #eee 5%);
+	background: -webkit-linear-gradient(#fefefe, #ddd, #eee 5%);
+	background: -moz-linear-gradient(#fefefe, #ddd, #eee 5%);
+	background: -o-linear-gradient(#fefefe, #ddd, #eee 5%);
+	background: -ms-linear-gradient(#fefefe, #ddd, #eee 5%);
+	background: linear-gradient(#fefefe, #ddd, #eee 5%);
 	color: #777;
 
-	-webkit-box-shadow: inset 0 -2px 0 #ccc;
-	-moz-box-shadow: inset 0 -2px 0 #ccc;
-	box-shadow: inset 0 -2px 0 #ccc;
+	-webkit-box-shadow: inset 0 -2px 0 #bbb;
+	-moz-box-shadow: inset 0 -2px 0 #bbb;
+	box-shadow: inset 0 -2px 0 #bbb;
 	text-shadow: none;
 	font-weight: normal;
 }
 
 .navbar input[type=submit]:hover {
-	background: -webkit-linear-gradient(#ccc, #ddd, #ccc 15%);
-	background: -moz-linear-gradient(#ccc, #ddd, #ccc 15%);
-	background: -o-linear-gradient(#ccc, #ddd, #ccc 15%);
-	background: -ms-linear-gradient(#ccc, #ddd, #ccc 15%);
-	background: linear-gradient(#ccc, #ddd, #ccc 15%);
+	background: -webkit-linear-gradient(#bbb, #ddd, #ddd 15%);
+	background: -moz-linear-gradient(#bbb, #ddd, #ddd 15%);
+	background: -o-linear-gradient(#bbb, #ddd, #ddd 15%);
+	background: -ms-linear-gradient(#bbb, #ddd, #ddd 15%);
+	background: linear-gradient(#bbb, #ddd, #ddd 15%);
 	color: #555;
 
 	-webkit-box-shadow: inset 0 -2px 0 #aaa;
@@ -121,9 +116,9 @@
 }
 
 .navbar input[type=submit]:active {
-	-webkit-box-shadow: inset 0 -2px 0 #aaa, inset 0 0 20px #aaa;
-	-moz-box-shadow: inset 0 -2px 0 #aaa, inset 0 0 20px #aaa;
-	box-shadow: inset 0 -2px 0 #aaa, inset 0 0 20px #aaa;
+	-webkit-box-shadow: inset 0 -2px 0 #aaa, inset 0 0 10px #aaa;
+	-moz-box-shadow: inset 0 -2px 0 #aaa, inset 0 0 10px #aaa;
+	box-shadow: inset 0 -2px 0 #aaa, inset 0 0 10px #aaa;
 }
 
 #reqform {

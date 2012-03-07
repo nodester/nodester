@@ -8,15 +8,18 @@ http://nodester.com/api.html
 http://nodester.com/help.html
 http://nodester.com/about.html
 
-http://nodester.com/styles/bootstrap.min.css
+http://nodester.com/styles/bootstrap.css
 http://nodester.com/styles/fb.css
 
 http://nodester.com/scripts/bootstrap.min.js
 http://nodester.com/scripts/fb.js
 
-# If no connection available.
-FALLBACK:
-# /network-thing.html /offline.html
+http://fonts.googleapis.com/css?family=Bitter:400,700
 
-# Use from network if available.
+
+FALLBACK:
+# /requires-net.html /offline-sorry-bro.html
+
+
 NETWORK:
+*.google-analytics.com/ga.js
