@@ -1,7 +1,5 @@
 /* Yes, this CSS is very hack-n-slash - I promise to make it better when
 		I finish the design ;)
-
-		Webkit only while testing.
 */
 
 .hero-unit h1 {
@@ -15,7 +13,7 @@
 	margin-top: 20px;
 	color: #888;
 }
-.row h2 img {margin:7px 7px -7px 0;opacity:.7;}
+.row h2 img, .rocket-point {margin:7px 7px -7px 0;opacity:.7;}
 
 .navbar form {
 	margin:0;
@@ -82,3 +80,29 @@ margin-top: 6px;
 }
 
 #reqform {height:70px;padding-top:25px;}
+#regform{height:350px;padding-top:25px;}
+
+.api-label {
+	font-size:13px;
+	text-shadow: 0 -1px 0 rgba(0,0,0,.2);
+	opacity:.7;
+	-webkit-box-shadow: inset 0 0 1px rgba(10,10,10,.2);
+	   -moz-box-shadow: inset 0 0 1px rgba(10,10,10,.2);
+	        box-shadow: inset 0 0 1px rgba(10,10,10,.2);
+	font-weight: normal !important;
+	padding: 5px 10px;
+	margin-top: 10px !important;
+	color: #fff;
+	-webkit-border-radius: 4px;
+	   -moz-border-radius: 4px;
+	        border-radius: 4px;
+}
+.api-label:hover {
+	color: #fff;
+	text-decoration: none;
+}
+
+.team {
+	margin: 10px 0;
+	width: 850px;
+}

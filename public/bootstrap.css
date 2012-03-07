@@ -557,16 +557,10 @@ pre code {
   background-color: #c67605;
 }
 .label-success {
-  background-color: #468847;
-}
-.label-success:hover {
-  background-color: #356635;
+  background-color: #57A957;
 }
 .label-info {
   background-color: #3a87ad;
-}
-.label-info:hover {
-  background-color: #2d6987;
 }
 table {
   max-width: 100%;
@@ -574,6 +568,7 @@ table {
   border-spacing: 0;
 }
 .table {
+	background: #fff;
   width: 100%;
   margin-bottom: 18px;
 }
@@ -732,7 +727,6 @@ select,
 textarea {
   font-size: 13px;
   font-weight: normal;
-  line-height: 18px;
 }
 input,
 button,
