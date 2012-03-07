@@ -33,9 +33,8 @@ Please see install.md for setup instructions (https://github.com/nodester/nodest
 
 ## Testing Locally
 
-Subdomains can be tested locally by editing /etc/hosts like this:
-127.0.0.1	localhost a.localhost b.localhost c.localhost
-save etc/hosts and flush DNS like this: sudo dscacheutil -flushcache
+Subdomains can be tested locally by editing /etc/hosts like so: `127.0.0.1	localhost a.localhost b.localhost c.localhost`,
+then save etc/hosts and flush DNS with  `sudo dscacheutil -flushcache`.
 
 *  http://localhost:80 # Homepage
 *  http://a.localhost:80 # Runs app associated with subdomain a on couch-configured port
