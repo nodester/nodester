@@ -171,7 +171,7 @@
 					<tr>
 						<td>RSA Keys</td>
 						<td>RSA/SSH keys are used with <a href="http://git-scm.com/">git</a> to push or deploy your applications on Nodester. Mac and Linux users can copy and paste their RSA keys into nodester's registration form 
-							by running "cat ~/.ssh/id_rsa.pub | pbcopy" from the command line.  Windows users can find a good article for installing git and obtaining their RSA key from <a href="http://help.github.com/win-set-up-git/">http://help.github.com/win-set-up-git/</a> </td>
+							by running "cat ~/.ssh/id_rsa.pub | pbcopy" from the command line.  RSA key instructions for <a href="http://help.github.com/mac-set-up-git/" target="_new">Mac OSX</a> | <a href="http://help.github.com/linux-set-up-git/" target="_new">Linux</a> | <a href="http://help.github.com/win-set-up-git/" target="_new">Windows</a>  </td>
 					</tr>
 					<tr>
 						<td>Ports</td>
@@ -199,6 +199,20 @@
 					<tr>
 						<td>Environment Variables</td>
 						<td>We support for following environment variables globally: port, host, PORT, HOST, app_host, app_port.  This means that you can use our environment variable instead of hardcoding the port in your application like so: app.listen(process.env['port']);</td>
+					</tr>
+					<tr>
+						<td>Windows Users</td>
+						<td>The most common problems experienced by Windows users typically come down to the RSA key not being setup properly or the files not being properly checked into git before pushing to Nodester.  
+							Both issues result in your code not actually being deployed to Nodester (hence the unhappy rocket).
+							<br /><br />
+							In regards to the RSA key, please follow the instructions above for creating an RSA key on your system. (We recommend not generating one with a passphrase or else git will be asking you for this password separately on every git push.)
+							Once you have a shiny new RSA key, you can run "nodester user setkey {full system path to the key file including the id_rsa.pub key name or whatever you called it.}". This will send your new RSA key to Nodester which will give your system
+							git access to nodester to push your app.
+							<br /><br />
+							Since git may or may not contain all of your updates at this point, we would that you edit one of your files in your app directory by adding a space or tab (whitespace) somewhere and saving it again.  Run 'git add .' from the command line
+							followed by a 'git commit -m "updated text"' to commit your change followed by a 'git push origin master' to re-push your files to Nodester.  If everything is successful, git will push your app to Nodester and your application will automatically be
+							restarted running the version of node.js listed in your package.js file.  (See note above for changing versions of node.js.) 						
+						</td>
 					</tr>
 				</table>
            </div>
