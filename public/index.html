@@ -1,113 +1,115 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" manifest="manifest.appcache">
    <head>
       <meta charset="utf-8">
-      <title>Nodester -&gt; Open Source Node.JS PaaS</title>
-      <meta name="description" content="Nodester is an open source Node.JS Platform as a Service.">
+      <title>Nodester | Open Source Node.js Hosting</title>
+      <meta name="description" content="Nodester is an open-source hosting platform on which you can host your Node.js apps, completely free of charge.">
 
       <!--[if lt IE 9]>
       	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
       <![endif]-->
 
-      <link rel="stylesheet" href="bootstrap.css" >
-      <link rel="stylesheet" href="http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.css" >
-      <link rel="stylesheet" href="fancybox/jquery.fancybox-1.3.4.css">
+      <link rel="stylesheet" href="styles/bootstrap.css" >
+      <link rel="stylesheet" href="styles/style.css" >
+      <link rel="stylesheet" href="fancybox/fb.css">
 
       <link rel="shortcut icon" href="images/nodester_favicon.ico">
-      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
-      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+
+      <link href="http://fonts.googleapis.com/css?family=Bitter:400,700" rel="stylesheet">
+
    </head>
    <body>
-      <div class="topbar">
-         <div class="fill">
+
+      <div class="navbar navbar-fixed-top" data-dropdown="dropdown">
+         <div class="navbar-inner">
             <div class="container">
-               <a class="brand" href="index.html"><img src="images/rocket-md-right.png" width="20" /> nodester</a>
+               <a class="brand" href="index.html"><img src="images/rocket-md-right.png" alt="nodester" width="20" /> nodester</a>
                <ul class="nav">
                   <li class="active"><a href="index.html">Home</a></li>
                   <li><a href="api.html">API</a></li>
                   <li><a href="help.html">Help</a></li>
                   <li><a href="http://irc.nodester.com">IRC</a></li>
                   <li><a href="http://blog.nodester.com">Blog</a></li>
-
                </ul>
-               <p class="pull-right">
+
                <form action="http://admin.nodester.com/login" method="post" class="pull-right">
-                  <input class="input-small" type="text" placeholder="Username" name="user[user]" />
-                  <input class="input-small" type="password" placeholder="Password" name="user[pass]" />
-                  <button class="btn" type="submit">Sign in</button>
+                  <input class="input-small" type="text" placeholder="username" name="user[user]" />
+                  <input class="input-small" type="password" placeholder="password" name="user[pass]" />
+                  <input class="btn" type="submit" value="Sign In" />
                </form>
-               </p>
             </div>
          </div>
       </div>
       <div class="container">
          <div class="hero-unit">
-            <h1>OpenSource Node.JS PaaS</h1>
-            <br />
-            <img src="images/nodesterbw_transparent.png" align="right" width="250" />
-            <p>Deploy your Node.JS applications to Nodester.com for FREE or deploy your apps to
-               your own private cloud instance of Nodester running in your own datacenter or on
+            <h1>Open-Source Node Platform</h1>
+            <br>
+            <img src="images/nodesterbw_transparent.png" alt="Rocket" class="pull-right" width="250" />
+            <p>Deploy your Node.js applications to Nodester for <strong>free</strong>, or to
+               your own private cloud instance of Nodester running in your own datacenter, or on
                Amazon EC2, Rackspace, or GoGrid!
             </p>
-            <br />
-            <p>Nodester is an open source Node.JS Platform-as-a-Service, written in Node.JS with
+            <br>
+            <p>Nodester is an open-source Node.js platform-as-a-service, written in Node.js with
                a RESTful API and designed to run in any cloud without a VPS! It is the first of its
-               kind and 100% open sourced under the GNU Affero license on <a href="http://github.com/nodester">GitHub</a>.
+               kind and 100% open-source under the GNU Affero license on <a href="http://github.com/nodester">GitHub</a>.
             </p>
-            <br />
-            <div id="reqbutton" class="btn primary large">
+            <br>
+            <a id="reqbutton" class="btn btn-primary btn-large">
                Request Registration Coupon
-            </div>
- 			<div id="videobutton" class="btn danger large">
+            </a>
+ 			<div id="videobutton" class="btn btn-danger btn-large">
 				Watch Video &raquo;
 			</div>
+
             <div id="reqform" class="c1">
-               <br />
+               <br>
                <form action="/coupon" method="post">
                 <input class="input-large" type="text" name="email" id="email" placeholder="Email" />
-                <button class="btn" type="submit">Send</button>
+                <input class="btn" type="submit" value="Send" />
                </form>
             </div>
 
-            <p class="c2">Nodester hosting sponsored by <a href="http://tropo.com">Tropo</a></p>
+            <p class="sponsor">Nodester hosting generously provided by <a href="http://tropo.com">Tropo</a></p>
          </div>
 
+         <hr>
          <div class="row">
-            <div class="span-one-third">
-               <h2><img src="images/rocket-md-right.png" width="30" /> Systems Check</h2>
-               <p>Request your free Nodester Node.JS hosting coupon</p>
+            <div class="span4">
+               <h2><img src="images/rocket-md-right.png" alt="Rocket" width="30" /> Systems Check</h2>
+               <p>Start by requesting your free Nodester hosting coupon like so:</p>
             </div>
-            <div class="span-one-third">
-               <h2><img src="images/rocket-md-right.png" width="30" /> All Systems Go</h2>
-               <p>You have received your coupon and you're ready to install our Command Line
-                  Interface
+            <div class="span4">
+               <h2><img src="images/rocket-md-right.png" alt="Rocket" width="30" /> All Systems Go</h2>
+               <p>Once you have received your coupon, you're ready to install our command line interface
                </p>
             </div>
-            <div class="span-one-third">
-               <h2><img src="images/rocket-md-right.png" width="30" /> 3-2-1 Launch!</h2>
-               <p>You're ready to deploy your Hello World app!</p>
+            <div class="span4">
+               <h2><img src="images/rocket-md-right.png" alt="Rocket" width="30" /> 3-2-1 <em>Launch!</em></h2>
+               <p>You're ready to deploy your app!</p>
             </div>
          </div>
 
          <div class="row">
-            <div class="span-one-third">
-               <pre class="prettyprint">curl -X POST -d "email=you@gmail.com" http://nodester.com/coupon<br /><br/></pre>
+            <div class="span4">
+               <pre>curl -X POST -d "email=you@gmail.com"<br>http://nodester.com/coupon<br><br/></pre>
             </div>
-            <div class="span-one-third">
-               <pre class="prettyprint">npm install nodester-cli -g<br />nodester user setup &lt;user&gt; &lt;pass&gt;<br />nodester user setkey</pre>
+            <div class="span4">
+               <pre>npm install nodester-cli -g<br>nodester user setup &lt;user&gt; &lt;pass&gt;<br>nodester user setkey</pre>
             </div>
-            <div class="span-one-third">
-               <pre class="prettyprint">nodester app create &lt;appname&gt;<br />nodester app init &lt;appname&gt;<br /><br /></pre>
+            <div class="span4">
+               <pre>nodester app create &lt;appname&gt;<br>nodester app init &lt;appname&gt;<br><br></pre>
             </div>
          </div>
+         <hr>
+      </div>
       <!-- /container -->
 
       <footer class="footer">
          <div class="container">
             <p>
-               &#169; <script>var theDate=new Date();document.write(theDate.getFullYear())</script>
-               Nodester, inc. | <a href="about.html">about us</a> | <a href="http://twitter.com/nodester">twitter</a> | <a href="http://github.com/nodester">github</a>
+               Copyright &#169; <script>var theDate=new Date();document.write(theDate.getFullYear())</script>
+               Nodester, Inc. | <a href="about.html">about us</a> | <a href="http://twitter.com/nodester">twitter</a> | <a href="http://github.com/nodester">github</a>
             </p>
          </div>
       </footer>
@@ -120,8 +122,8 @@
       </script>
 
       <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-      <script src="http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.js"></script>
-      <script src="fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+      <script src="fancybox/fb.js"></script>
+      <script src="scripts/bootstrap.min.js"></script>
       <script src="scripts/script.js"></script>
 
    </body>

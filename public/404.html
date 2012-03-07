@@ -20,9 +20,7 @@
 		       top: 0px;
 		       margin-top: -265px;
 		   }
-		   to {
-		       margin-top: -148px;
-		   }
+		   to {margin-top: -148px;}
 		}
 	    
 	    @-webkit-keyframes text {
@@ -30,9 +28,7 @@
 	            top: 50%;
 	            opacity: 0;
 	        }
-	        50% {
-	            opacity: 1;
-	        }
+	        50% {opacity: 1;}
 	        to {
 	            top: 90%;
 	            opacity: 0;
@@ -48,38 +44,26 @@
 		   left: 0;
 		}
 		
-		.js.canvas #nebulabg {
+		#nebulabg, #rocket, #rocket img, #audio {
 		   display: none;
 		}
-		
-		.js.cssanimations #rocket {
-		    display: none;
-		}
 		.js.cssanimations .audio-ready #rocket,
-	    .js.cssanimations .audio-timeout #rocket  {
+	  .js.cssanimations .audio-timeout #rocket  {
 		    display: block;
 		    -webkit-animation: rocket 2s 1 ease-out;
 		}
 		
 		#rocket {
 		    position: absolute;
-	        height:295px;
-	        width:298px;
-	        background-image: url('http://nodester.com/images/rocket-down.png');
-	        background-size: cover;
-	        top: 40%;
-	        margin-left: -149px;
-	        margin-top: -148px;
+        height:295px;
+        width:298px;
+        background-image: url('http://nodester.com/images/rocket-down.png');
+        background-size: cover;
+        top: 40%;
+        margin-left: -149px;
+        margin-top: -148px;
 	    	left: 50%;
 		}
-		
-		#rocket img {
-	        display: none;
-		}
-	    
-	    #audio {
-	        display: none;
-	    }
 		
 		h1, .js.cssanimations p.description span {
 		   font-family:sans-serif;
@@ -93,32 +77,32 @@
 		   text-shadow: 0 0 3px #000;
 		}
 	    
-	    .js.cssanimations p.description {
-	        display: block;
-	        height: 0;
-	        margin: 0;
-	        padding: 0;
-	    }
+    .js.cssanimations p.description {
+        display: block;
+        height: 0;
+        margin: 0;
+        padding: 0;
+    }
 		
-	    .js.cssanimations .audio-ready p.description span,
-	    .js.cssanimations .audio-timeout p.description span {
-	        -webkit-animation: text 5s infinite ease-in;
-	    }
-	    
-	    .js.cssanimations p.description span {
-	        position: absolute;
-	        opacity: 0; 
-	        display: block;
-	        width: 100%;
-	    }
-	    
-	    .js.cssanimations p.description span:nth-child(2) {
-	        -webkit-animation-delay: 1s;
-	    }
-	    .js.cssanimations p.description span:nth-child(3) {
-	        -webkit-animation-delay: 2s;
-	    }
-	    
+    .js.cssanimations .audio-ready p.description span,
+    .js.cssanimations .audio-timeout p.description span {
+        -webkit-animation: text 5s infinite ease-in;
+    }
+    
+    .js.cssanimations p.description span {
+        position: absolute;
+        opacity: 0; 
+        display: block;
+        width: 100%;
+    }
+    
+    .js.cssanimations p.description span:nth-child(2) {
+        -webkit-animation-delay: 1s;
+    }
+    .js.cssanimations p.description span:nth-child(3) {
+        -webkit-animation-delay: 2s;
+    }
+    
 		.js.cssanimations h1 {
 	        top: 40%;
 	        margin-left: 128px;
@@ -135,11 +119,11 @@
 	        -webkit-transform: rotate(-20deg);
 		}	
 	</style>
-	<script src="modernizr.js"></script>
+	<script src="scripts/modernizr.js"></script>
 	<script>
     Modernizr.load({
         test: Modernizr.canvas,
-        yep: 'nebula.js'
+        yep: 'scripts/nebula.js'
     });
     Modernizr.load({
         test: Modernizr.postmessage, 

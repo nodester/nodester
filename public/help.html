@@ -1,28 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" manifest="manifest.appcache">
    <head>
       <meta charset="utf-8">
-      <title>Nodester -&gt; Open Source Node.JS PaaS</title>
-      <meta name="description" content="Nodester is an open source Node.JS Platform as a Service.">
+      <title>Nodester | Help</title>
+      <meta name="description" content="Nodester is an open-source hosting platform on which you can host your Node.js apps, completely free of charge.">
 
       <!--[if lt IE 9]>
       	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
       <![endif]-->
-      <link rel="stylesheet" href="bootstrap.css" >
-      <link rel="stylesheet" href="http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.css" >
-      <link rel="stylesheet" href="fancybox/jquery.fancybox-1.3.4.css">
+
+      <link rel="stylesheet" href="styles/bootstrap.css" >
+      <link rel="stylesheet" href="styles/style.css" >
+      <link rel="stylesheet" href="fancybox/fb.css">
 
       <link rel="shortcut icon" href="images/nodester_favicon.ico">
-      <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-      <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
-      <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+
+      <link href="http://fonts.googleapis.com/css?family=Bitter:400,700" rel="stylesheet">
+
    </head>
    <body>
-	
-      <div class="topbar">
-         <div class="fill">
+
+      <div class="navbar navbar-fixed-top" data-dropdown="dropdown">
+         <div class="navbar-inner">
             <div class="container">
-               <a class="brand" href="index.html"><img src="images/rocket-md-right.png" width="20" /> nodester</a>
+               <a class="brand" href="index.html"><img src="images/rocket-md-right.png" alt="nodester" width="20" /> nodester</a>
                <ul class="nav">
                   <li><a href="index.html">Home</a></li>
                   <li><a href="api.html">API</a></li>
@@ -30,115 +31,111 @@
                   <li><a href="http://irc.nodester.com">IRC</a></li>
                   <li><a href="http://blog.nodester.com">Blog</a></li>
                </ul>
-               <p class="pull-right">
+
                <form action="http://admin.nodester.com/login" method="post" class="pull-right">
-                  <input class="input-small" type="text" placeholder="Username" name="user[user]" />
-                  <input class="input-small" type="password" placeholder="Password" name="user[pass]" />
-                  <button class="btn" type="submit">Sign in</button>
+                  <input class="input-small" type="text" placeholder="username" name="user[user]" />
+                  <input class="input-small" type="password" placeholder="password" name="user[pass]" />
+                  <input class="btn" type="submit" value="Sign In" ></input>
                </form>
-               </p>
             </div>
          </div>
       </div>
       <div class="container">
-         <div class="span16">
-            <br />
-            <h1>Welcome Nodesters!</h1>
-            <p>There are many avenues to get help with hosting or deploying your node.js applications to Nodester. Here is what we recommend: </p>
-			<p>
-				<ul>
-					<li><b>IRC Chat</b> - http://freenode.net#nodester <b>-OR-</b> <a href="http://irc.nodester.com">http://irc.nodester.com</a></li>
-					<li><b>Google Groups</b> - <a href="http://groups.google.com/group/nodester">http://groups.google.com/group/nodester</a></li>
-					<li><b>GitHub Issues</b> - <a href="https://github.com/nodester/nodester/issues">https://github.com/nodester/nodester/issues</a></li>
-				</ul>
-			</p>
+          <br>
+          <h1>Welcome Nodesters!</h1>
+          <p>There are many avenues to get help with hosting or deploying your Node.js applications to Nodester. Here is what we recommend: </p>
+			<ul>
+				<li><b>IRC Chat</b> - <a href="http://freenode.net#nodester">http://freenode.net#nodester</a> <b>-OR-</b> <a href="http://irc.nodester.com">http://irc.nodester.com</a></li>
+				<li><b>Google Groups</b> - <a href="http://groups.google.com/group/nodester">http://groups.google.com/group/nodester</a></li>
+				<li><b>GitHub Issues</b> - <a href="https://github.com/nodester/nodester/issues">https://github.com/nodester/nodester/issues</a></li>
+			</ul>
+
 	
 			<p>The <b>General Help</b> tab below includes a few basic tricks to get you started while the <b>FAQ</b> tab dives deeper into topics that we have encountered a few times.</p>
-            <br />
-			<ul class="tabs" data-tabs="tabs">
-			  <li class="active" id="helpli"><a href="#help">General Help</a></li>
-			  <li id="faqli"><a href="#faq">FAQs</a></li>
-			  <li id="videoli"><a href="#video">How-To Video</a></li>
+            <br>
+			<ul class="nav nav-tabs" data-tabs="tabs">
+			  <li class="active"><a href="#help"	data-toggle="tab">General Help</a></li>
+			  <li><a href="#faq"									data-toggle="tab">FAQs</a></li>
+			  <li><a href="#video"								data-toggle="tab">How-To Video</a></li>
 			</ul>
 
 			<div id="my-tab-content" class="tab-content">
-	            <div class="active tab-pane" id="help">
+				<div class="active tab-pane" id="help">
+					<br>
+					<h2><img src="images/rocket-md-right.png" alt="Rocket" class="rocket-point" width="30" /> Requesting a Coupon Code to Register</h2>
+					<p>
+					<pre class="prettyprint">curl -X POST -d "email=your_address@gmail.com" http://nodester.com/coupon</pre>
+					<div id="reqbutton" class="btn">OR CHEAT</div>
 
-		            <br />
-		            <h2><img src="images/rocket-md-right.png" width="30" /> Requesting a Coupon Code to Register</h2>
-		            <p>
-		            <pre class="prettyprint">curl -X POST -d "email=your_address@gmail.com" http://nodester.com/coupon</pre>
-	            <div id="reqbutton" class="btn">OR CHEAT</div>
-
-			<a name="register"></a>
+					<a name="register"></a>
 
 	         <div id="reqform" style="display: none">
-	         <br />
+	         <br>
 	         <form action="/coupon" method="post">
 	          <input class="input-large" type="text" name="email" id="email" placeholder="Email" />
-	          <button class="btn" type="submit">Send</button>
+	          <input class="btn" type="submit" value="Send" />
 	         </form>
 	         </div>
-	         <br /><br />
+	         <br><br>
 	         </p>
-	         <br />
-	         <h2><img src="images/rocket-md-right.png" width="30" /> Registering with a Coupon Code</h2>
+	         <br>
+	         <h2><img src="images/rocket-md-right.png" alt="Rocket" class="rocket-point" width="30" /> Registering with a Coupon Code</h2>
 	         <p>
-	         <pre class="prettyprint">curl -X POST -d "coupon=mycoupon&user=testuser&password=123&email=chris@nodester.com&rsakey=ssh-rsa AAAA..." http://nodester.com/user</pre>
+	         <pre class="prettyprint">curl -X POST -d "coupon=coupon&user=testusr&password=123&email=chris@nodester.com&rsakey=ssh-rsa AAAA..." http://nodester.com/user</pre>
 	         <p><span class="label important">Important</span> 
 				RSA key instructions for <a href="http://help.github.com/mac-set-up-git/" target="_new">Mac OSX</a> | <a href="http://help.github.com/linux-set-up-git/" target="_new">Linux</a> | <a href="http://help.github.com/win-set-up-git/" target="_new">Windows</a> 
 	         <div id="regbutton" class="btn">OR CHEAT</div>
 	         <div id="regform" style="display: none">
-	            <br />
+	            <br>
 	            <form action="/user" method="post">
-	               <input class="input-small" type="text" id="coupon" name="coupon" placeholder="Coupon" /><br /><br />
-	               <input class="input-large" type="text" id="user" name="user" placeholder="Username (alphanumeric)" /><br /><br />
-	               <input class="input-large" type="password" id="password" name="password" placeholder="Password" /><br /><br />
-	               <span id="passwordError" style="display:none"><span style="color:red">Password is limited to alphanumerics - no symbols allowed.</span><br /><br /></span>
-	               <input class="input-large" type="text" id="email" name="email" placeholder="Email" /><br /><br />
-	               <textarea class="xxlarge" id="rsakey" name="rsakey" rows="3" placeholder="Copy &amp; Paste RSA key from command line: cat ~/.ssh/id_rsa.pub | pbcopy"></textarea><br />
-					Mac and Linux users can copy and paste their RSA keys into nodester's registration form by running "cat ~/.ssh/id_rsa.pub | pbcopy" from the command line.<br /><br />
-	               <button class="btn" type="submit">Send</button>
+	               <input class="input-large" type="text" id="coupon" name="coupon" placeholder="Coupon Code" /><br><br>
+	               <input class="input-large" type="text" id="user" name="user" placeholder="Username (alphanumeric)" /><br><br>
+	               <input class="input-large" type="password" id="password" name="password" placeholder="Password" /><br><br>
+	               <span id="passwordError" style="display:none"><span style="color:red">Password is limited to alphanumerics - no symbols allowed.</span><br><br></span>
+	               <input class="input-large" type="text" id="email" name="email" placeholder="Email" /><br><br>
+	               <textarea class="xxlarge" id="rsakey" name="rsakey" rows="3" placeholder="RSA Key"></textarea><br><br>
+									<p>Mac and Linux users can copy and paste their RSA keys into nodester's registration form by running "cat ~/.ssh/id_rsa.pub | pbcopy" from the command line.</p>
+	               <input class="btn" type="submit" value="Send" />
 	            </form>
 	         </div>
-	         <br /><br />
+	         <br><br>
 	         </p>
 	         
-	         <br />
-	         <h2><img src="images/rocket-md-right.png" width="30" /> Getting Started</h2>
+	         <br>
+	         <h2><img src="images/rocket-md-right.png" alt="Rocket" class="rocket-point" width="30" /> Getting Started</h2>
 			 <p>Install Git - <a href="http://git-scm.com/download">http://git-scm.com/download</a></p>
 	         <p>Install the Nodester CLI and give it your credentials before blasting off</p>
-	         <pre class="prettyprint">npm install nodester-cli -g <br />nodester user setup &lt;username&gt; &lt;password&gt; <br />nodester user setkey</pre>
+	         <pre class="prettyprint">npm install nodester-cli -g <br>nodester user setup &lt;username&gt; &lt;password&gt; <br>nodester user setkey</pre>
 	         
-	         <br />
-	         <h2><img src="images/rocket-md-right.png" width="30" /> Create & Launch Your Node.JS Application!</h2>
+	         <br>
+	         <h2><img src="images/rocket-md-right.png" alt="Rocket" class="rocket-point" width="30" /> Create &amp; Launch Your Node.js Application!</h2>
 	         <p>You are ready to deploy your test Hello World app with 2 commands.</p>
-	         <pre class="prettyprint">nodester app create &lt;appname&gt;<br />nodester app init &lt;appname&gt; <br />http://&lt;appname&gt;.nodester.com</pre>
+	         <pre class="prettyprint">nodester app create &lt;appname&gt;<br>nodester app init &lt;appname&gt; <br>http://&lt;appname&gt;.nodester.com</pre>
 	         
-	         <br />
-	         <h2><img src="images/rocket-md-right.png" width="30" /> Updating Your Node.JS Application!</h2>
-	         <p>Now that your Node.JS application is running, you can make changes to server.js and push your updates to Nodester. Note: Git push also restarts your application.</p>
-	         <pre class="prettyprint">cd ./&lt;appname&gt;<br />git push origin master<br />http://&lt;appname&gt;.nodester.com</pre>
+	         <br>
+	         <h2><img src="images/rocket-md-right.png" alt="Rocket" class="rocket-point" width="30" /> Updating Your Node.js Application!</h2>
+	         <p>Now that your Node.js application is running, you can make changes to server.js and push your updates to Nodester. Note: Git push also restarts your application.</p>
+	         <pre class="prettyprint">cd ./&lt;appname&gt;<br>git push origin master<br>http://&lt;appname&gt;.nodester.com</pre>
 	         
-	         <br />
-	         <h2><img src="images/rocket-md-right.png" width="30" /> Do you have NPM dependencies?</h2>
+	         <br>
+	         <h2><img src="images/rocket-md-right.png" alt="Rocket" class="rocket-point" width="30" /> Do you have NPM dependencies?</h2>
 	         <p>You can install any npm module you want!</p>
-	         <pre class="prettyprint">nodester npm install &lt;appname&gt; &lt;package names&gt;<br />nodester app restart &lt;appname&gt;</pre>
+	         <pre class="prettyprint">nodester npm install &lt;appname&gt; &lt;package names&gt;<br>nodester app restart &lt;appname&gt;</pre>
 	         
-	         <br />
-	         <h1>For Experienced Nodesters with Existing Node.JS Apps</h1>
+	         <br>
+	         <h1>For Experienced Nodesters with Existing Node.js Apps</h1>
 	         <p>Don't need a "hello world"? Simply skip the init command and add a nodester git remote to your existing project folder. Pushing to nodester will automatically restart your application!</p>
 	         <pre class="prettyprint">nodester app create &lt;appname&gt;<br/>git remote add nodester &lt;the_url_returned_by_our_api&gt;<br/>git push nodester master<br/>http://&lt;appname&gt;.nodester.com</pre>
 	         <p><span class="label important">Important</span> Make sure you use the port given to you by nodester!</p>
-	         <br />
+	         <br>
 
          </div>
          <div class="tab-pane" id="faq">
-				<table class="bordered-table zebra-striped">
+				<table class="table table-bordered table-striped">
 					<tr>
-						<td>Node.JS Version</td>
-						<td>Nodester is currently running Node.JS versions 0.4.9, 0.4.12, and 0.6.12. We are working to add support for more versions of Node.JS. You can specify which 
-							version your app runs on in its secured sandbox via your package.json file. More info at: <a href="http://blog.nodester.com/post/18702499832/nodester-now-running-node-js-0-6-12">http://blog.nodester.com/post/18702499832/nodester-now-running-node-js-0-6-12</a>. </td>
+						<td>Node.js Version</td>
+						<td>Nodester is currently running Node.js versions 0.4.9, 0.4.12, and 0.6.12. We are working to add support for more versions of Node.js. You can specify which 
+							version your app runs on in its secured sandbox via your package.json file. More info <a href="http://blog.nodester.com/post/18702499832/nodester-now-running-node-js-0-6-12">here</a>. </td>
 					</tr>
 					<tr>
 						<td>RSA Keys</td>
@@ -165,7 +162,7 @@
 					</tr>
 					<tr>
 						<td>NPM Modules</td>
-						<td>Most Node.JS applications use NPM modules especially ExpressJS.  Remember to run "nodester npm install &lt;appname&gt; &lt;modulename modulename modulename&gt;" from the CLI and restart your application
+						<td>Most Node.js applications use NPM modules especially ExpressJS.  Remember to run "nodester npm install &lt;appname&gt; &lt;modulename modulename modulename&gt;" from the CLI and restart your application
 							after successfully updating NPM.  Nodester also supports package.json allowing you to install all of your modules without listing them individually like so: "nodester npm install &lt;appname&gt;"</td>
 					</tr>
 					<tr>
@@ -176,14 +173,12 @@
            </div>
 
 	         <div class="tab-pane" id="video">
-					<br/>
+						<br/>
 		           <p>
 		              <iframe width="853" height="480" src="http://www.youtube.com/embed/jwsP1Ejv-_w?hd=1" frameborder="0" allowfullscreen></iframe>
 		           </p>
-			</div>
-
-			</div>			
-
+				</div>
+			<hr>
       <!-- /container -->
 
       <footer class="footer">
@@ -203,9 +198,7 @@
       </script>
 
       <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-      <script src="http://twitter.github.com/bootstrap/1.4.0/bootstrap-tabs.js"></script>
-      <script src="http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.js"></script>
-      <script src="fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+      <script src="scripts/bootstrap.min.js"></script>
       <script src="scripts/script.js"></script>
 
    </body>

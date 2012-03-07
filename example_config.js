@@ -24,7 +24,7 @@ exports.opt = {
   ssl_ca_file: '',
   ssl_cert_file: '',
   ssl_key_file: '',
-  node_base_folder: '/opt/node-v0.4.9_npm_v1.0.3',
+  node_base_folder: '/opt/node-v0.4.9_npm_v1.0.3', // Remember, we also have v0.6.12!
 
   //Amazon SES mail info
   SES: {

@@ -1,0 +1,162 @@
+/* I will clean up this horrible mess I've made, I promise! */
+
+.hero-unit p {
+	width: 517px;
+}
+
+.sponsor {
+	margin-top: 20px;
+	color: #888;
+}
+
+.row h2 img,.rocket-point {
+	margin: 7px 7px -7px 0;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=70)";
+	filter: alpha(opacity=70);
+	opacity: .7;
+}
+
+.navbar form {
+	margin: 0;
+	float: right;
+}
+
+.navbar input[type=text],.navbar input[type=password] {
+	background-color: #444;
+	background-color: rgba(255, 255, 255, 0.3);
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 13px;
+	padding: 1px 9px;
+	border: 1px solid #ddd;
+
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	margin-top: 6px;
+
+	-webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 0px rgba(255, 255, 255, 0.25);
+	-moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 0px rgba(255, 255, 255, 0.25);
+	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 0px rgba(255, 255, 255, 0.25);
+}
+
+.btn,input.btn {
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	display: inline-block;
+
+	-webkit-box-shadow: inset 0 -2px 0 #b7245a;
+	-moz-box-shadow: inset 0 -2px 0 #b7245a;
+	box-shadow: inset 0 -2px 0 #b7245a;
+
+	background: -webkit-linear-gradient(#e74425, #e62e25, #f63329 15%);
+	background: -moz-linear-gradient(#e74425, #e62e25, #f63329 15%);
+	background: -o-linear-gradient(#e74425, #e62e25, #f63329 15%);
+	background: -ms-linear-gradient(#e74425, #e62e25, #f63329 15%);
+	background: linear-gradient(#e74425, #e62e25, #f63329 15%);
+	color: #fff;
+	font-family: arial,helvetica,sans-serif;
+	font-size: 17px;
+	font-weight: bold;
+	padding: 7px 20px;
+	margin: 0 !important;
+	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+.btn:hover,input.btn:hover {
+	text-decoration: none;
+	cursor: pointer;
+	color: #efefef;
+
+	background: -webkit-linear-gradient(#e74425, #e62e25, #f63329 15%);
+	background: -moz-linear-gradient(#e74425, #e62e25, #f63329 15%);
+	background: -o-linear-gradient(#e74425, #e62e25, #f63329 15%);
+	background: -ms-linear-gradient(#e74425, #e62e25, #f63329 15%);
+	background: linear-gradient(#e74425, #e62e25, #f63329 15%);
+}
+
+.btn:active,input.btn:active {
+	text-decoration: none;
+	cursor: pointer;
+
+	-webkit-box-shadow: inset 0 0 20px rgba(0,0,0,.2), inset 0 -2px 0 #b7245a;
+	-moz-box-shadow: inset 0 0 20px rgba(0,0,0,.2), inset 0 -2px 0 #b7245a;
+	box-shadow: inset 0 0 20px rgba(0,0,0,.2), inset 0 -2px 0 #b7245a;
+}
+
+.navbar input[type=submit] {
+	font-size: 13px;
+	padding: 5px 20px;
+
+	background: -webkit-linear-gradient(#fefefe, #ddd, #eee 5%);
+	background: -moz-linear-gradient(#fefefe, #ddd, #eee 5%);
+	background: -o-linear-gradient(#fefefe, #ddd, #eee 5%);
+	background: -ms-linear-gradient(#fefefe, #ddd, #eee 5%);
+	background: linear-gradient(#fefefe, #ddd, #eee 5%);
+	color: #777;
+
+	-webkit-box-shadow: inset 0 -2px 0 #bbb;
+	-moz-box-shadow: inset 0 -2px 0 #bbb;
+	box-shadow: inset 0 -2px 0 #bbb;
+	text-shadow: none;
+	font-weight: normal;
+}
+
+.navbar input[type=submit]:hover {
+	background: -webkit-linear-gradient(#bbb, #ddd, #ddd 15%);
+	background: -moz-linear-gradient(#bbb, #ddd, #ddd 15%);
+	background: -o-linear-gradient(#bbb, #ddd, #ddd 15%);
+	background: -ms-linear-gradient(#bbb, #ddd, #ddd 15%);
+	background: linear-gradient(#bbb, #ddd, #ddd 15%);
+	color: #555;
+
+	-webkit-box-shadow: inset 0 -2px 0 #aaa;
+	-moz-box-shadow: inset 0 -2px 0 #aaa;
+	box-shadow: inset 0 -2px 0 #aaa;
+}
+
+.navbar input[type=submit]:active {
+	-webkit-box-shadow: inset 0 -2px 0 #aaa, inset 0 0 10px #aaa;
+	-moz-box-shadow: inset 0 -2px 0 #aaa, inset 0 0 10px #aaa;
+	box-shadow: inset 0 -2px 0 #aaa, inset 0 0 10px #aaa;
+}
+
+#reqform {
+	height: 70px;
+	padding-top: 25px;
+}
+
+#regform {
+	height: 350px;
+	padding-top: 25px;
+}
+
+.api-label {
+	font-size: 13px;
+	text-shadow: 0 -1px 0 rgba(0,0,0,.2);
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=70)";
+	filter: alpha(opacity=70);
+	opacity: .7;
+
+	-webkit-box-shadow: inset 0 0 1px rgba(10,10,10,.2);
+	-moz-box-shadow: inset 0 0 1px rgba(10,10,10,.2);
+	box-shadow: inset 0 0 1px rgba(10,10,10,.2);
+	font-weight: normal !important;
+	padding: 5px 10px;
+	margin-top: 10px !important;
+	color: #fff;
+
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+}
+
+.api-label:hover {
+	color: #fff;
+	text-decoration: none;
+}
+
+.team {
+	margin: 10px 0;
+	width: 850px;
+}
