@@ -176,7 +176,9 @@
 					<tr>
 						<td>Ports</td>
 						<td>Your application's port must match the port that we assign your application. This port is provided at the time of app creation but your can retrieve 
-						your application's port, starting javascript file, and nodester git repository address at any time by running "nodester app info &lt;appname&gt;" from the CLI.</td>
+						your application's port, starting javascript file, and nodester git repository address at any time by running "nodester app info &lt;appname&gt;" from the CLI.
+						You can also simply use process.env['app_port'] as an environmental variable and Nodester will automatically use the port assigned or you could 
+						do something like this to make it easy to switch between localhost and production: <i>appPort = process.env['app_port'] || 3000</i></td>
 					</tr>
 					<tr>
 						<td>Web Sockets</td>
