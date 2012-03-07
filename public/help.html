@@ -189,7 +189,7 @@
 					</tr>
 					<tr>
 						<td>Local File Writes</td>
-						<td>Your application can write to your local sandbox.  Remember to include a directory in your project to write to and start the name/path of the file as "./directory/filename".</td>
+						<td>Your application can write to your local sandbox.  Remember to include a directory in your project to write to and start the name/path of the file as "./directory/filename" or consider doing something like <i>fs.readFile(__dirname + '/conf/mynode.conf'</i>.</td>
 					</tr>
 					<tr>
 						<td>NPM Modules</td>
@@ -205,7 +205,7 @@
 						<td>The most common problems experienced by Windows users typically come down to the RSA key not being setup properly or the files not being properly checked into git before pushing to Nodester.  
 							Both issues result in your code not actually being deployed to Nodester (hence the unhappy rocket).
 							<br /><br />
-							In regards to the RSA key, please follow the instructions above for creating an RSA key on your system. (We recommend not generating one with a passphrase or else git will be asking you for this password separately on every git push.)
+							In regards to the RSA key, please follow the instructions above for creating an RSA key on your system. 
 							Once you have a shiny new RSA key, you can run "nodester user setkey {full system path to the key file including the id_rsa.pub key name or whatever you called it.}". This will send your new RSA key to Nodester which will give your system
 							git access to nodester to push your app.
 							<br /><br />
@@ -213,6 +213,11 @@
 							followed by a 'git commit -m "updated text"' to commit your change followed by a 'git push origin master' to re-push your files to Nodester.  If everything is successful, git will push your app to Nodester and your application will automatically be
 							restarted running the version of node.js listed in your package.js file.  (See note above for changing versions of node.js.) 						
 						</td>
+					</tr>
+					<tr>
+						<td>Password request on git pushes</td>
+						<td>If you added a passphrase to your RSA key when generating one, git will prompt you for a password every time you push your app code to Nodester.
+							This password is your RSA passphrase NOT your Nodester password. </td>
 					</tr>
 				</table>
            </div>
