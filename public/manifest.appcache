@@ -1,0 +1,12 @@
+CACHE MANIFEST
+# 7MAR12 4:11PM
+
+http://nodester.com/index.html
+http://nodester.com/header.png
+
+# If no connection available.
+FALLBACK:
+# /network-thing.html /offline.html
+
+# Use from network if available.
+NETWORK:

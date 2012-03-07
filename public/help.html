@@ -2,8 +2,8 @@
 <html lang="en">
    <head>
       <meta charset="utf-8">
-      <title>Nodester | Open Source Node.JS PaaS</title>
-      <meta name="description" content="Nodester is an open source Node.JS Platform as a Service.">
+      <title>Nodester | Help</title>
+      <meta name="description" content="Nodester is an open-source hosting platform on which you can host your Node.js apps, completely free of charge.">
 
       <!--[if lt IE 9]>
       	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -43,7 +43,7 @@
       <div class="container">
           <br>
           <h1>Welcome Nodesters!</h1>
-          <p>There are many avenues to get help with hosting or deploying your node.js applications to Nodester. Here is what we recommend: </p>
+          <p>There are many avenues to get help with hosting or deploying your Node.js applications to Nodester. Here is what we recommend: </p>
 			<ul>
 				<li><b>IRC Chat</b> - <a href="http://freenode.net#nodester">http://freenode.net#nodester</a> <b>-OR-</b> <a href="http://irc.nodester.com">http://irc.nodester.com</a></li>
 				<li><b>Google Groups</b> - <a href="http://groups.google.com/group/nodester">http://groups.google.com/group/nodester</a></li>
@@ -108,13 +108,13 @@
 	         <pre class="prettyprint">npm install nodester-cli -g <br>nodester user setup &lt;username&gt; &lt;password&gt; <br>nodester user setkey</pre>
 	         
 	         <br>
-	         <h2><img src="images/rocket-md-right.png" alt="Rocket" class="rocket-point" width="30" /> Create &amp; Launch Your Node.JS Application!</h2>
+	         <h2><img src="images/rocket-md-right.png" alt="Rocket" class="rocket-point" width="30" /> Create &amp; Launch Your Node.js Application!</h2>
 	         <p>You are ready to deploy your test Hello World app with 2 commands.</p>
 	         <pre class="prettyprint">nodester app create &lt;appname&gt;<br>nodester app init &lt;appname&gt; <br>http://&lt;appname&gt;.nodester.com</pre>
 	         
 	         <br>
-	         <h2><img src="images/rocket-md-right.png" alt="Rocket" class="rocket-point" width="30" /> Updating Your Node.JS Application!</h2>
-	         <p>Now that your Node.JS application is running, you can make changes to server.js and push your updates to Nodester. Note: Git push also restarts your application.</p>
+	         <h2><img src="images/rocket-md-right.png" alt="Rocket" class="rocket-point" width="30" /> Updating Your Node.js Application!</h2>
+	         <p>Now that your Node.js application is running, you can make changes to server.js and push your updates to Nodester. Note: Git push also restarts your application.</p>
 	         <pre class="prettyprint">cd ./&lt;appname&gt;<br>git push origin master<br>http://&lt;appname&gt;.nodester.com</pre>
 	         
 	         <br>
@@ -123,7 +123,7 @@
 	         <pre class="prettyprint">nodester npm install &lt;appname&gt; &lt;package names&gt;<br>nodester app restart &lt;appname&gt;</pre>
 	         
 	         <br>
-	         <h1>For Experienced Nodesters with Existing Node.JS Apps</h1>
+	         <h1>For Experienced Nodesters with Existing Node.js Apps</h1>
 	         <p>Don't need a "hello world"? Simply skip the init command and add a nodester git remote to your existing project folder. Pushing to nodester will automatically restart your application!</p>
 	         <pre class="prettyprint">nodester app create &lt;appname&gt;<br/>git remote add nodester &lt;the_url_returned_by_our_api&gt;<br/>git push nodester master<br/>http://&lt;appname&gt;.nodester.com</pre>
 	         <p><span class="label important">Important</span> Make sure you use the port given to you by nodester!</p>
@@ -133,8 +133,8 @@
          <div class="tab-pane" id="faq">
 				<table class="table table-bordered table-striped">
 					<tr>
-						<td>Node.JS Version</td>
-						<td>Nodester is currently running Node.JS versions 0.4.9, 0.4.12, and 0.6.12. We are working to add support for more versions of Node.JS. You can specify which 
+						<td>Node.js Version</td>
+						<td>Nodester is currently running Node.js versions 0.4.9, 0.4.12, and 0.6.12. We are working to add support for more versions of Node.js. You can specify which 
 							version your app runs on in its secured sandbox via your package.json file. More info <a href="http://blog.nodester.com/post/18702499832/nodester-now-running-node-js-0-6-12">here</a>. </td>
 					</tr>
 					<tr>
@@ -162,7 +162,7 @@
 					</tr>
 					<tr>
 						<td>NPM Modules</td>
-						<td>Most Node.JS applications use NPM modules especially ExpressJS.  Remember to run "nodester npm install &lt;appname&gt; &lt;modulename modulename modulename&gt;" from the CLI and restart your application
+						<td>Most Node.js applications use NPM modules especially ExpressJS.  Remember to run "nodester npm install &lt;appname&gt; &lt;modulename modulename modulename&gt;" from the CLI and restart your application
 							after successfully updating NPM.  Nodester also supports package.json allowing you to install all of your modules without listing them individually like so: "nodester npm install &lt;appname&gt;"</td>
 					</tr>
 					<tr>
