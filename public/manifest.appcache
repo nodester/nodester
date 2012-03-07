@@ -1,8 +1,18 @@
 CACHE MANIFEST
-# 7MAR12 4:11PM
+# 7MAR12 5:04PM
 
+CACHE:
+*
 http://nodester.com/index.html
-http://nodester.com/header.png
+http://nodester.com/api.html
+http://nodester.com/help.html
+http://nodester.com/about.html
+
+http://nodester.com/styles/bootstrap.min.css
+http://nodester.com/styles/fb.css
+
+http://nodester.com/scripts/bootstrap.min.js
+http://nodester.com/scripts/fb.js
 
 # If no connection available.
 FALLBACK:
