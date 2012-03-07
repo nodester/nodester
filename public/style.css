@@ -1,25 +1,31 @@
-/* Sorry about the state of this CSS... was so excited to get the design done ;D - jarrod */
+/* I will clean up this horrible mess I've made, I promise! */
+
 .hero-unit h1 {
 	margin: -20px 0 10px 0;
 	color: #333;
 }
+
 .hero-unit p {
 	width: 517px;
 }
+
 .sponsor {
 	margin-top: 20px;
 	color: #888;
 }
+
 .row h2 img,.rocket-point {
 	margin: 7px 7px -7px 0;
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=70)";
 	filter: alpha(opacity=70);
 	opacity: .7;
 }
+
 .navbar form {
 	margin: 0;
 	float: right;
 }
+
 .navbar input[type=text],.navbar input[type=password] {
 	background-color: #444;
 	background-color: rgba(255, 255, 255, 0.3);
@@ -27,23 +33,32 @@
 	font-size: 13px;
 	padding: 1px 9px;
 	border: 1px solid #ddd;
+
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
 	border-radius: 4px;
 	margin-top: 6px;
+
 	-webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 0px rgba(255, 255, 255, 0.25);
 	-moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 0px rgba(255, 255, 255, 0.25);
 	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 0px rgba(255, 255, 255, 0.25);
 }
+
 .btn,input.btn {
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;
 	display: inline-block;
+
 	-webkit-box-shadow: inset 0 -2px 0 #b7245a;
 	-moz-box-shadow: inset 0 -2px 0 #b7245a;
 	box-shadow: inset 0 -2px 0 #b7245a;
-	background: -webkit-gradient(linear, 0% 0%, 0% 56%, from(#e74425), to(#e62e25), color-stop(.9,#f63329));
+
+	background: -webkit-linear-gradient(#e74425, #e62e25, #f63329 15%);
+	background: -moz-linear-gradient(#e74425, #e62e25, #f63329 15%);
+	background: -o-linear-gradient(#e74425, #e62e25, #f63329 15%);
+	background: -ms-linear-gradient(#e74425, #e62e25, #f63329 15%);
+	background: linear-gradient(#e74425, #e62e25, #f63329 15%);
 	color: #fff;
 	font-family: arial,helvetica,sans-serif;
 	font-size: 17px;
@@ -52,61 +67,82 @@
 	margin: 0 !important;
 	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
 }
+
 .btn:hover,input.btn:hover {
 	text-decoration: none;
 	cursor: pointer;
 	color: #efefef;
-	background: -webkit-linear-gradient(0% 50% 90deg,#e74425, #e62e25, #f63329 15%);
-	background: -moz-linear-gradient(0% 50% 90deg,#e74425, #e62e25, #f63329 15%);
-	background: -o-linear-gradient(0% 50% 90deg,#e74425, #e62e25, #f63329 15%);
-	background: -ms-linear-gradient(0% 50% 90deg,#e74425, #e62e25, #f63329 15%);
-	background: linear-gradient(0% 50% 90deg,#e74425, #e62e25, #f63329 15%);
-	background: -webkit-gradient(linear, 0% 0%, 0% 56%, from(#e74425), to(#e62e25), color-stop(.9,#f63329));
+
+	background: -webkit-linear-gradient(#e74425, #e62e25, #f63329 15%);
+	background: -moz-linear-gradient(#e74425, #e62e25, #f63329 15%);
+	background: -o-linear-gradient(#e74425, #e62e25, #f63329 15%);
+	background: -ms-linear-gradient(#e74425, #e62e25, #f63329 15%);
+	background: linear-gradient(#e74425, #e62e25, #f63329 15%);
 }
+
 .btn:active,input.btn:active {
 	text-decoration: none;
 	cursor: pointer;
+
 	-webkit-box-shadow: inset 0 0 20px rgba(0,0,0,.2), inset 0 -2px 0 #b7245a;
 	-moz-box-shadow: inset 0 0 20px rgba(0,0,0,.2), inset 0 -2px 0 #b7245a;
 	box-shadow: inset 0 0 20px rgba(0,0,0,.2), inset 0 -2px 0 #b7245a;
 }
+
 .navbar input[type=submit] {
 	font-size: 13px;
 	padding: 5px 20px;
-	background: -webkit-gradient(linear, 0% 0%, 0% 56%, from(#eee), to(#ddd), color-stop(.6,#eee));
+
+	background: -webkit-linear-gradient(#eee, #ddd, #eee 5%);
+	background: -moz-linear-gradient(#eee, #ddd, #eee 5%);
+	background: -o-linear-gradient(#eee, #ddd, #eee 5%);
+	background: -ms-linear-gradient(#eee, #ddd, #eee 5%);
+	background: linear-gradient(#eee, #ddd, #eee 5%);
 	color: #777;
+
 	-webkit-box-shadow: inset 0 -2px 0 #ccc;
 	-moz-box-shadow: inset 0 -2px 0 #ccc;
 	box-shadow: inset 0 -2px 0 #ccc;
 	text-shadow: none;
 	font-weight: normal;
 }
+
 .navbar input[type=submit]:hover {
-	background: -webkit-gradient(linear, 0% 0%, 0% 56%, from(#ddd), to(#ccc), color-stop(.6,#ddd));
+	background: -webkit-linear-gradient(#ccc, #ddd, #ccc 15%);
+	background: -moz-linear-gradient(#ccc, #ddd, #ccc 15%);
+	background: -o-linear-gradient(#ccc, #ddd, #ccc 15%);
+	background: -ms-linear-gradient(#ccc, #ddd, #ccc 15%);
+	background: linear-gradient(#ccc, #ddd, #ccc 15%);
 	color: #555;
+
 	-webkit-box-shadow: inset 0 -2px 0 #aaa;
 	-moz-box-shadow: inset 0 -2px 0 #aaa;
 	box-shadow: inset 0 -2px 0 #aaa;
 }
+
 .navbar input[type=submit]:active {
 	-webkit-box-shadow: inset 0 -2px 0 #aaa, inset 0 0 20px #aaa;
 	-moz-box-shadow: inset 0 -2px 0 #aaa, inset 0 0 20px #aaa;
 	box-shadow: inset 0 -2px 0 #aaa, inset 0 0 20px #aaa;
 }
+
 #reqform {
 	height: 70px;
 	padding-top: 25px;
 }
+
 #regform {
 	height: 350px;
 	padding-top: 25px;
 }
+
 .api-label {
 	font-size: 13px;
 	text-shadow: 0 -1px 0 rgba(0,0,0,.2);
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=70)";
 	filter: alpha(opacity=70);
 	opacity: .7;
+
 	-webkit-box-shadow: inset 0 0 1px rgba(10,10,10,.2);
 	-moz-box-shadow: inset 0 0 1px rgba(10,10,10,.2);
 	box-shadow: inset 0 0 1px rgba(10,10,10,.2);
@@ -114,14 +150,17 @@
 	padding: 5px 10px;
 	margin-top: 10px !important;
 	color: #fff;
+
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
 	border-radius: 4px;
 }
+
 .api-label:hover {
 	color: #fff;
 	text-decoration: none;
 }
+
 .team {
 	margin: 10px 0;
 	width: 850px;
