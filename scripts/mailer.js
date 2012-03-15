@@ -10,7 +10,7 @@ mailer.SES = config.opt.SES;
 
 function send_email(doc) {
   mailer.send_mail({
-    sender: '<notifier@nodester.com>',
+    sender: 'support@nodester.com',
     to: doc.id,
     subject: 'Password reset request',
     body: 'Here is your password request token: ' + doc.value.token + '\n\nYou can reset your password via Nodester API or CLI'
