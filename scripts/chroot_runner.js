@@ -129,6 +129,8 @@ var myPid = daemon.start();
       if (node_versions.indexOf(version) !== -1) {
         // The spawn process only works with absolute paths, and by default n'd saved every
         // version of node in /usr/local/n/version
+        console.log('version', version);
+        log_line.call('Watcher','Running node-v'+version,LOG_STDERR);
         child = spawn((path.extname(args[0]) == '.coffee'
                         ? '/usr/bin/coffee'
                         : '/usr/local/n/versions/' + version +'/bin/node'), args, {

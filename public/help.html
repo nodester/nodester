@@ -118,7 +118,8 @@
 	         <h2><img src="images/rocket-md-right.png" width="30" /> Registering with a Coupon Code</h2>
 	         <p>
 	         <pre class="prettyprint">curl -X POST -d "coupon=mycoupon&user=testuser&password=123&email=chris@nodester.com&rsakey=ssh-rsa AAAA..." http://nodester.com/user</pre>
-	         <p><span class="label important">Important</span> See <a href="/help.html#faq">FAQs</a> for instructions on obtaining your RSA key.</p>
+	         <p><span class="label important">Important</span> 
+				RSA key instructions for <a href="http://help.github.com/mac-set-up-git/" target="_new">Mac OSX</a> | <a href="http://help.github.com/linux-set-up-git/" target="_new">Linux</a> | <a href="http://help.github.com/win-set-up-git/" target="_new">Windows</a> 
 	         <div id="regbutton" class="btn">OR CHEAT</div>
 	         <div id="regform" style="display: none">
 	            <br />
@@ -159,7 +160,7 @@
 	         <p><span class="label important">Important</span> Make sure you use the port given to you by nodester!</p>
 	         <br />
 
-         </div>
+         </div> 
          <div class="tab-pane" id="faq">
 				<table class="bordered-table zebra-striped">
 					<tr>
@@ -170,17 +171,19 @@
 					<tr>
 						<td>RSA Keys</td>
 						<td>RSA/SSH keys are used with <a href="http://git-scm.com/">git</a> to push or deploy your applications on Nodester. Mac and Linux users can copy and paste their RSA keys into nodester's registration form 
-							by running "cat ~/.ssh/id_rsa.pub | pbcopy" from the command line.  Windows users can find a good article for installing git and obtaining their RSA key from <a href="http://help.github.com/win-set-up-git/">http://help.github.com/win-set-up-git/</a> </td>
+							by running "cat ~/.ssh/id_rsa.pub | pbcopy" from the command line.  RSA key instructions for <a href="http://help.github.com/mac-set-up-git/" target="_new">Mac OSX</a> | <a href="http://help.github.com/linux-set-up-git/" target="_new">Linux</a> | <a href="http://help.github.com/win-set-up-git/" target="_new">Windows</a>  </td>
 					</tr>
 					<tr>
 						<td>Ports</td>
 						<td>Your application's port must match the port that we assign your application. This port is provided at the time of app creation but your can retrieve 
-						your application's port, starting javascript file, and nodester git repository address at any time by running "nodester app info &lt;appname&gt;" from the CLI.</td>
+						your application's port, starting javascript file, and nodester git repository address at any time by running "nodester app info &lt;appname&gt;" from the CLI.
+						You can also simply use process.env['app_port'] as an environmental variable and Nodester will automatically use the port assigned or you could 
+						do something like this to make it easy to switch between localhost and production: <i>appPort = process.env['app_port'] || 3000</i></td>
 					</tr>
 					<tr>
 						<td>Web Sockets</td>
 						<td>Your application's server-side port must match the port that we assign your application (see ports section above). 
-							Your client side port should be set to port 80.</td>
+							Your client side port should be set to port 80. For more information see <a href="http://blog.nodester.com/post/3634535277/running-websockets-on-nodester">http://blog.nodester.com/post/3634535277/running-websockets-on-nodester</a></td>
 					</tr>
 					<tr>
 						<td>Logs</td>
@@ -188,7 +191,7 @@
 					</tr>
 					<tr>
 						<td>Local File Writes</td>
-						<td>Your application can write to your local sandbox.  Remember to include a directory in your project to write to and start the name/path of the file as "./directory/filename".</td>
+						<td>Your application can write to your local sandbox.  Remember to include a directory in your project to write to and start the name/path of the file as "./directory/filename" or consider doing something like <i>fs.readFile(__dirname + '/conf/mynode.conf'</i>.</td>
 					</tr>
 					<tr>
 						<td>NPM Modules</td>
@@ -198,6 +201,25 @@
 					<tr>
 						<td>Environment Variables</td>
 						<td>We support for following environment variables globally: port, host, PORT, HOST, app_host, app_port.  This means that you can use our environment variable instead of hardcoding the port in your application like so: app.listen(process.env['port']);</td>
+					</tr>
+					<tr>
+						<td>Windows Users</td>
+						<td>The most common problems experienced by Windows users typically come down to the RSA key not being setup properly or the files not being properly checked into git before pushing to Nodester.  
+							Both issues result in your code not actually being deployed to Nodester (hence the unhappy rocket).
+							<br /><br />
+							In regards to the RSA key, please follow the instructions above for creating an RSA key on your system. 
+							Once you have a shiny new RSA key, you can run "nodester user setkey {full system path to the key file including the id_rsa.pub key name or whatever you called it.}". This will send your new RSA key to Nodester which will give your system
+							git access to nodester to push your app.
+							<br /><br />
+							Since git may or may not contain all of your updates at this point, we would that you edit one of your files in your app directory by adding a space or tab (whitespace) somewhere and saving it again.  Run 'git add .' from the command line
+							followed by a 'git commit -m "updated text"' to commit your change followed by a 'git push origin master' to re-push your files to Nodester.  If everything is successful, git will push your app to Nodester and your application will automatically be
+							restarted running the version of node.js listed in your package.js file.  (See note above for changing versions of node.js.) 						
+						</td>
+					</tr>
+					<tr>
+						<td>Password request on git pushes</td>
+						<td>If you added a passphrase to your RSA key when generating one, git will prompt you for a password every time you push your app code to Nodester.
+							This password is your RSA passphrase NOT your Nodester password. </td>
 					</tr>
 				</table>
            </div>
