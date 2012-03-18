@@ -12,17 +12,15 @@ The only thing that you need to setup your personal instance is `ssh` access- Li
 
 
 - bouncy
-- node.js (Latest stable version 0.4.11)
+- node.js (preferible 0.4.11)
 - npm
 - curl
 - node.js Modules:
-  -  # http-proxy -- Included in libs/3rdparty due to changes at are not in upstream yet
-  -  pool
-  -  express
+  - pool
+  - express
   - request
   - npm-wrapper
   - daemon
-  - forever
   - cradle
   - coloured
   - coffee-script
@@ -31,7 +29,7 @@ The only thing that you need to setup your personal instance is `ssh` access- Li
 
 Nodester was/is build on node 0.4.x so we recommend to have as the default version the 0.4.9 one or any of the 0.4.x series installed in your server. Since nodester is able to manage multiple versions of node.js, you can install [`n`]("http://github.com/visionmedia/n") before node.js or after it. We recommend to install before node.js:
 
-    > git clone https://github.com/nodester/n.git
+    > git clone https://github.com/visionmedia/n.git
     > cd n
     > make
     > make install
@@ -159,7 +157,7 @@ User: `nodester` (`ssh nodester@...`)
 
 You'll need to either install CouchDB or get a CouchOne|iriscouch|cloudant account, then copy `nodester/example_config.js` to `nodester/config.js`, and edit the settings in nodester/config.js, basically in this file you define the couchdb url `git` dir and `app` dir also you define the `couchdb` url, the email support, your personal domain and the one of the most important parts the `proxy_table`. You definetely want to take a look to all the options. 
 
-The example config.js looks like this:
+The example [config.js](http://github.com/nodester/nodester/tree/master/example_config.js) looks like this:
 
     // config.js
     exports.opt = {
@@ -213,7 +211,7 @@ We've created a script to install all the versions of node with a single line:
     > cd /var/nodester/nodester/
     > bin/install_versions.js --run
 
-**warning**: As you may know compiling node.js can take long, so imagine installing ~20 versions of node.js from once, that would be awful and you'll better get some coffee and wait. So, you can add something like this:
+**warning**: As you may know compiling node.js can take some time to end, so imagine installing ~20 versions of node.js from once, that would be awful and you'll better get some coffee and wait. So, you can add something like this:
 
     > bin/install_versions.js -v 0.4.9
 
