@@ -11,10 +11,10 @@ http://nodester.com
 require('coffee-script');
 
 var express = require('express'),
-  url = require('url'),
-  sys = require('sys'),
-  config = require('./config'),
-  middle = require('./lib/middle');
+    url     = require('url'),
+    sys     = require('sys'),
+    config  = require('./config'),
+    middle  = require('./lib/middle');
 
 process.on('uncaughtException', function (err) {
   console.log(err.stack);
@@ -34,19 +34,18 @@ myapp.configure(function () {
 });
 
 
-//setup the errors
+// Error handler
 myapp.error(function (err, req, res, next) {
   if (err instanceof NotFound) {
     res.sendfile(__dirname + '/public/404.html');
-    // res.render('404.html');
   } else {
     res.sendfile(__dirname + '/public/500.html');
-    // res.render('500.html');
   }
 });
 
 
-// Routes
+/* Routes  */
+
 // Homepage
 myapp.get('/', function (req, res, next) {
   res.sendfile(__dirname +'/public/index.html');
@@ -68,7 +67,7 @@ myapp.get('/monitor', function (req, res, next) {
   res.redirect('http://site.nodester.com');
 });
 
-// Status API
+/* Status API */
 // http://localhost:4001/status
 // curl http://localhost:4001/status
 var status = require('./lib/status');
@@ -102,10 +101,12 @@ myapp.del('/user', middle.authenticate, user.delete);
 // http://chris:123@localhost:4001/apps
 // curl -u "testuser:123" http://localhost:4001/apps
 var apps = require('./lib/apps');
+
 myapp.get('/apps', middle.authenticate, apps.get);
 
 
 var app = require('./lib/app');
+
 // Application info
 // http://chris:123@localhost:4001/apps/<appname>
 // curl -u "testuser:123" http://localhost:4001/apps/<appname>
@@ -155,7 +156,6 @@ myapp.get('/applogs/:appname', middle.authenticate, middle.authenticate_app, app
 // curl -u DELETE -u "testuser:123" -d "appname=test&key=NODE_ENV" http://localhost:4001/env
 
 // Get info about available versions.
-// NOTE: I think putting these at /env/ is a good choice since they are environment settings
 // curl -XGET http://localhost:4001/env/version
 myapp.get('/env/version', app.env_version);
 // Get info about a specific version and see if it's installed
@@ -188,15 +188,10 @@ myapp.post('/reset_password', reset_password.post);
 myapp.put('/reset_password/:token', reset_password.put);
 
 
-// myapp.use(express.errorHandler({
-//   showStack: true
-// }));
 
 myapp.listen(4001);
 console.log('Nodester app started on port 4001');
 
-//nodeinfo.broadcast(13377);
-//console.log('NodeInfo monitor started on port 13377');
 //The 404 Route (ALWAYS Keep this as the last route)
 myapp.get('/*', function (req, res) {
   throw new NotFound;
