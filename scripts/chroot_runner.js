@@ -138,32 +138,23 @@ var myPid = daemon.start();
       if (node_versions.indexOf(version) !== -1) {
         // The spawn process only works with absolute paths, and by default n'd saved every
         // version of node in /usr/local/n/version
-      var verb = 'n npm 0.6.12 link '
-      if (parseInt(version)<0.6) verb = 'npm link ';
-        exec('cd /app/; sudo ' + verb + 'node-watcher ',function(error,resp){
-          if (!error){
-            child = spawn((path.extname(args[0]) == '.coffee'
-                            ? '/usr/bin/coffee'
-                            : '/usr/local/n/versions/' + version +'/bin/node'), args, {
-              env: env
-            });
-            log_line.call('Watcher', 'Running node v-' + version, LOG_STDERR);
-            child.stdout.on('data', log_line.bind('stdout'));
-            child.stderr.on('data', log_line.bind('stderr'));
-            child.on('exit', function (code) {
-              if (code > 0 && run_count > run_max) {
-                log_line.call('Watcher', 'Error: Restarted too many times, bailing.', LOG_STDERR);
-                clearInterval(child_watcher_timer);
-              } else if (code > 0) {
-                log_line.call('Watcher', 'Process died with exit code ' + code + '. Restarting...', LOG_STDERR);
-                child = null;
-              } else {
-                log_line.call('Watcher', 'Process exited cleanly. Dieing.', LOG_STDERR);
-                clearInterval(child_watcher_timer);
-              }
-            });
+        child = spawn((path.extname(args[0]) == '.coffee'
+                        ? '/usr/bin/coffee'
+                        : '/usr/local/n/versions/' + version +'/bin/node'), args, {
+          env: env
+        });
+        log_line.call('Watcher', 'Running node v-' + version, LOG_STDERR);
+        child.stdout.on('data', log_line.bind('stdout'));
+        child.stderr.on('data', log_line.bind('stderr'));
+        child.on('exit', function (code) {
+          if (code > 0 && run_count > run_max) {
+            log_line.call('Watcher', 'Error: Restarted too many times, bailing.', LOG_STDERR);
+            clearInterval(child_watcher_timer);
+          } else if (code > 0) {
+            log_line.call('Watcher', 'Process died with exit code ' + code + '. Restarting...', LOG_STDERR);
+            child = null;
           } else {
-            log_line.call('Watcher', 'Process exited. Dieing. N01', LOG_STDERR);
+            log_line.call('Watcher', 'Process exited cleanly. Dieing.', LOG_STDERR);
             clearInterval(child_watcher_timer);
           }
         });
