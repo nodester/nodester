@@ -36,6 +36,13 @@ var all_views = [{
       map: function (doc) {
         emit(doc.username, doc);
       }
+    },
+    pid:{
+      map: function(doc) {
+        if (doc.pid){
+          emit(doc.pid, [doc.repo_id,doc.username,doc._id]);
+        }
+      }
     }
   }
 }, {
@@ -65,7 +72,19 @@ var all_views = [{
       }
     }
   }
-}];
+},
+{
+  table: 'admins',
+  design: 'aliasdomains',
+  views: {
+    all: {
+      map: function (doc) {
+        emit(doc.username, doc);
+      }
+    }
+  }
+}
+];
 
 for (var i in all_views) {
   (function (view) {
