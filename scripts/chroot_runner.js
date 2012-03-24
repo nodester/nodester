@@ -164,6 +164,7 @@ var myPid = daemon.start();
             });
           } else {
             log_line.call('Watcher', 'Process exited. Dieing. N01', LOG_STDERR);
+            clearInterval(child_watcher_timer);
           }
         });
       } else {
