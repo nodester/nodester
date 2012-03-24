@@ -135,7 +135,7 @@ myapp.get('/app_stop', app.app_stop);
 // TODO - Fix this function, it's not doing callbacking properly so will return JSON in the wrong state!
 myapp.put('/apps/:appname', middle.authenticate, middle.authenticate_app, app.put);
 myapp.put('/app', middle.deprecated, middle.authenticate, middle.authenticate_app, app.put); // deprecated
-
+myapp.put('/app/audit', middle.authenticate_admin,app.audit);
 // Delete your nodejs app
 // curl -X DELETE -u "testuser:123" -d http://localhost:4001/apps/test
 myapp.del('/apps/:appname', middle.authenticate, middle.authenticate_app, app.delete);
@@ -196,7 +196,6 @@ console.log('Nodester app started on port 4001');
 myapp.get('/*', function (req, res) {
   throw new NotFound;
 });
-
 
 function NotFound(msg) {
   this.name = 'NotFound';
