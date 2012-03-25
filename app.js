@@ -136,6 +136,7 @@ myapp.get('/app_stop', app.app_stop);
 myapp.put('/apps/:appname', middle.authenticate, middle.authenticate_app, app.put);
 myapp.put('/app', middle.deprecated, middle.authenticate, middle.authenticate_app, app.put); // deprecated
 myapp.put('/app/audit', middle.authenticate_admin,app.audit);
+myapp.put('/app/restart/:appname', middle.authenticate_admin,app.restartByName);
 // Delete your nodejs app
 // curl -X DELETE -u "testuser:123" -d http://localhost:4001/apps/test
 myapp.del('/apps/:appname', middle.authenticate, middle.authenticate_app, app.delete);
