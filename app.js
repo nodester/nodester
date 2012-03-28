@@ -13,12 +13,10 @@ require('coffee-script');
 var express = require('express'),
     url     = require('url'),
     sys     = require('sys'),
+    path    = require('path'),
     config  = require('./config'),
-    middle  = require('./lib/middle');
-
-process.on('uncaughtException', function (err) {
-  console.log(err.stack);
-});
+    middle  = require('./lib/middle'),
+    stats   = require('./lib/stats');
 
 var daemon = require('daemon');
 // daemon.setreuid(config.opt.userid);
@@ -42,6 +40,68 @@ myapp.error(function (err, req, res, next) {
     res.sendfile(__dirname + '/public/500.html');
   }
 });
+
+
+/*
+ * dev dashboard emitter
+*/
+var bolt = require('bolt');
+var mesh = new bolt.Node({
+    delimiter : '::',
+    host      : config.opt.redis.host,
+    port      : config.opt.redis.port,
+    user      : config.opt.redis.user,
+    auth      : config.opt.redis.auth,
+    silent    : true
+});
+mesh.start();
+
+myapp.all('*',function(req,res,next){
+  if (!path.extname(req.url)){
+    var ip = req.connection.remoteAddress || req.socket.remoteAddress;
+    if (req.headers["x-real-ip"]) ip =req.headers["x-real-ip"];
+    var toEmit = {
+      ip     : ip,
+      url    : req.url ,
+      time   : new Date,
+      method : req.method,
+      ua     : req.headers['user-agent'] || 'nodester',
+      host   : req.headers.host
+    }
+    mesh.emit('nodester::incomingRequest', toEmit);
+  }
+  next();
+})
+
+function getStats(){
+  var statistics ={}
+  for (var stat in stats){
+    if (stat != 'getDiskUsage' && stat != 'getProcesses'){
+      statistics[stat]  = stats[stat]()
+    } else {
+      stats[stat](function(error,resp){
+        if (!error)
+          statistics[stat] = resp;
+        else 
+          statistics[stat] = '0'
+      });
+    }
+  }
+  return statistics;
+}
+
+setInterval(function(){
+  mesh.emit('nodester::ping',{date:new Date})
+  mesh.emit('nodester::stats',getStats());
+},3000);
+
+
+
+process.on('uncaughtException', function (err) {
+  mesh.emit('nodester::uE', err);
+  console.log(err.stack);
+});
+
 
 
 /* Routes  */
