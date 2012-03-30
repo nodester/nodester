@@ -76,24 +76,28 @@ myapp.all('*',function(req,res,next){
 function getStats(){
   var statistics ={}
   for (var stat in stats){
+    // ignore childprocess which can cause high latency
     if (stat != 'getDiskUsage' && stat != 'getProcesses'){
       statistics[stat]  = stats[stat]()
-    } else {
+    } /* else {
       stats[stat](function(error,resp){
         if (!error)
           statistics[stat] = resp;
         else 
           statistics[stat] = '0'
       });
-    }
+    }*/
   }
   return statistics;
 }
 
 setInterval(function(){
   mesh.emit('nodester::ping',{date:new Date})
-  mesh.emit('nodester::stats',getStats());
 },3000);
+
+setInterval(function(){
+  mesh.emit('nodester::stats',getStats());
+},6500);
 
 
 
