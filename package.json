@@ -18,7 +18,8 @@
       "cradle":"*",
       "nodeinfo":"*",
       "socket.io":"*",
-      "daemon":"*"
+      "daemon":"*",
+      "bolt":"0.3.3"
    },
    "engines":{
       "node":">= 0.4.7"
