@@ -111,6 +111,8 @@ setInterval(function(){
 process.on('uncaughtException', function (err) {
   dash.emit('nodester::uE',{ msg:err.message,stack:err.stack.toString()})
   log.fatal(err.stack)
+  // Kill it with fire dude
+  process.kill(0);
 })
 
 /* Routes  */
