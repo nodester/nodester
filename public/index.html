@@ -2,13 +2,14 @@
 <html lang="en">
    <head>
       <meta charset="utf-8" />
-      <title>Nodester -&gt; Open Source Node.JS PaaS</title>
+      <title>Nodester &middot; Open Source Node.JS PaaS</title>
       <meta name="description" content="Open Source Node.JS Platform as a Service" />
       <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
       <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
       <![endif]-->
       <!-- Le styles -->
+      <link href="css/font.css" rel="stylesheet" type="text/css" />
       <link href="bootstrap.css" rel="stylesheet" type="text/css" />
       <link href="http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.css" rel="stylesheet" type="text/css" />
       <style type="text/css">
@@ -48,11 +49,11 @@
       <div class="topbar">
          <div class="fill">
             <div class="container">
-               <a class="brand" href="index.html"><img src="images/rocket-md-right.png" width="20" /> nodester</a>
-               <ul class="nav">
-                  <li class="active"><a href="index.html">Home</a></li>
-                  <li><a href="api.html">API</a></li>
-                  <li><a href="help.html">Help</a></li>
+               <a class="brand" href="/"><img src="images/rocket-md-right.png" width="40" /> <span>nodester</span></a>
+               <ul id="actions" class="nav off">
+                  <li class="active"><a href="/">Home</a></li>
+                  <li><a href="/api">API</a></li>
+                  <li><a href="/help">Help</a></li>
                   <li><a href="http://irc.nodester.com">IRC</a></li>
                   <li><a href="http://blog.nodester.com">Blog</a></li>
 
@@ -156,13 +157,30 @@
       <footer class="footer">
          <div class="container">
             <p>
-               &#169; <script type="text/javascript">
+               <a href="/help">help</a> &middot;
+               <a href="/about">about us</a> &middot;
+               &#169; 2011 - <script type="text/javascript">
                   var theDate=new Date()
                       document.write(theDate.getFullYear())
-               </script> Nodester, inc. | <a href="about.html">about us</a> | <a href="http://twitter.com/nodester">twitter</a> | <a href="http://github.com/nodester">github</a>
+               </script> Nodester, inc.  &middot; 
+               <a href="//twitter.com/nodester">twitter</a> &middot;
+               <a href="//github.com/nodester">github</a>
             </p>
          </div>
       </footer>
+      <script type="text/javascript">
+       $(document).ready(function(){
+          var topbar = $('.fill')
+          var ul = $('#actions')
+          ul.removeClass('off')
+          ul.fadeOut(500)
+          topbar.hover(function(e){
+             ul.fadeIn(300)
+          }, function(){
+             ul.fadeOut(300);
+          })
+       });
+      </script>
    </body>
 </html>
 

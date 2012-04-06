@@ -2,50 +2,55 @@
 
 require.paths.unshift('/usr/lib/node_modules');
 
-var spawn = require('child_process').spawn;
-var exec = require('child_process').exec;
-var daemon = require('daemon');
-var fs = require('fs');
-var path = require('path');
-var net = require('net');
-var node_versions = require('../lib/lib').node_versions();
-
-
-var config = JSON.parse(fs.readFileSync(path.join('.nodester', 'config.json'), encoding = 'utf8'));
-
-var cfg = require('../config').opt;
-
-var oldmask, newmask = 0000;
+var spawn        = require('child_process').spawn
+  , exec         = require('child_process').exec
+  , daemon       = require('daemon')
+  , fs           = require('fs')
+  , path         = require('path')
+  , net          = require('net')
+  , Logger       = require('bunyan')
+  , nodeVersions = require('../lib/lib').node_versions()
+  , config       = JSON.parse(fs.readFileSync(path.join('.nodester', 'config.json'),'utf8'))
+  , cfg          = require('../config').opt
+  , newmask      = 0000
+  , log          = new Logger({name: "nodester"})
+  , run_max      = 5
+  , run_count    = 0
+  , LOG_STDOUT   = 1
+  , LOG_STDERR   = 2
+  , oldmask
+  ;
 
 oldmask = process.umask(newmask);
-console.log('Changed umask from: ' + oldmask.toString(8) + ' to ' + newmask.toString(8));
 
-var run_max = 5;
-var run_count = 0;
-
-var LOG_STDOUT = 1;
-var LOG_STDERR = 2;
-
+  info('Changed umask from: ' + oldmask.toString(8) + ' to ' + newmask.toString(8));
 
 var env = {
   PATH: '/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin',
   NODE_ENV: 'production'
 };
+
 if (config.env) {
   Object.keys(config.env).forEach(function (key) {
     env[key] = String(config.env[key]);
   });
 }
+
 env.app_port = parseInt(config.port, 10);
 env.app_host = config.ip;
-var args = ['/app/' + config.start];
-var chroot_res = daemon.chroot(config.appchroot);
+
+var args = ['/app/' + config.start]
+  , chroot_res = daemon.chroot(config.appchroot)
+  ;
+
 if (chroot_res !== true) {
   log_line('chroot_runner', 'Failed to chroot to ' + config.apphome, LOG_STDERR);
   pre_shutdown();
   process.exit(1);
 }
+
 var ch_uid = daemon.setreuid(config.userid);
+
 if (ch_uid !== true) {
   log_line.call('chroot_runner', 'Failed to change user to ' + config.userid, LOG_STDERR);
   pre_shutdown();
@@ -56,26 +61,36 @@ var child = null;
 var child_watcher_time = null;
 var log_lines = [];
 var myPid = daemon.start();
+
 (function () {
 
+  // Default log writer
   var log_listen = function (p, cb) {
-      var srv = net.createServer(function (conn) {
-        var logs = JSON.stringify({
-          logs: log_lines.join('\n')
-        });
-        conn.write(logs);
-        conn.end();
-      });
-      srv.listen(p, cb);
-    };
+    var srv = net.createServer(function (conn) {
+      var srvLog = new Logger({name:'nodester',stream:conn});
+      log_lines.map(function(line){
+        switch line[1] {
+          case 2:
+            srvLog.warn(line[0])
+            break;
+          default
+           srvLog.info(line[0]);
+           break;
+        }
+      })
+      conn.end();
+    });
+    srv.listen(p, cb);
+  }
 
   var log_line = function (line, stdout) {
-      if (typeof this == 'string') {
-        line = this + line;
-      }
-      log_lines.push(line);
-      if (log_lines.length > 150) log_lines.shift();
-    };
+    if (!stdout) var stdout = 1;
+    if (typeof this == 'string')
+      line = this + line;
+    log_lines.push([line,stdout]);
+    if (log_lines.length > 250) 
+      log_lines.shift();
+  };
 
   log_line.call('chroot_runner', 'New PID: ' + myPid.toString());
   if (path.existsSync('/.nodester/pids/runner.pid')) fs.unlinkSync('/.nodester/pids/runner.pid');
@@ -83,7 +98,7 @@ var myPid = daemon.start();
 
   var log_sock_path = path.join('/', '.nodester', 'logs.sock');
   log_listen(log_sock_path, function () {
-    log_line('chroot_runner', 'log_listen\'ing', LOG_STDERR);
+    log_line.call('chroot_runner', 'log_listen\'ing', LOG_STDERR);
     try {
       fs.chmodSync(log_sock_path, '0777');
     } catch (e) {
@@ -130,10 +145,6 @@ var myPid = daemon.start();
       var version = pack['node'] === undefined ? process.version : pack['node']; 
       // n dir only handles number paths without v0.x.x  => 0.x.x
       version = version.replace('v','').trim();
-      
-      // Insert node-watcher code and link the dependency
-
-
 
       if (node_versions.indexOf(version) !== -1) {
         // The spawn process only works with absolute paths, and by default n'd saved every
@@ -171,4 +182,6 @@ var myPid = daemon.start();
       };
     child_watcher_timer = setInterval(child_watcher, 750);
   });
+
 })();
+/* TODO */

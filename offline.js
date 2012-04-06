@@ -9,24 +9,24 @@ http://nodester.com
 
 */
 
-var express = require('express'),
-    url     = require('url'),
-    sys     = require('sys'),
-    config  = require('./config'),
-    middle  = require('./lib/middle');
+var express = require('express')
+  , url     = require('url')
+  , sys     = require('sys')
+  , config  = require('./config')
+  , middle  = require('./lib/middle')
+  ;
 
 process.on('uncaughtException', function (err) {
+  console.log(new Date,'=> '+ err.message)
   console.log(err.stack);
 });
 
+var app = express.createServer();
 
-// daemon.setreuid(config.opt.userid);
-var myapp = express.createServer();
-
-myapp.configure(function () {
-  myapp.use(express.bodyParser());
-  myapp.use(express.static(__dirname+'/public/images'));
-  myapp.use(express.errorHandler({
+app.configure(function () {
+  app.use(express.bodyParser());
+  app.use(express.static(__dirname+'/public/images'));
+  app.use(express.errorHandler({
     showStack: true,
     dumpExceptions: true
   }));
@@ -34,7 +34,7 @@ myapp.configure(function () {
 
 
 // Error handler
-myapp.error(function (err, req, res, next) {
+app.error(function (err, req, res, next) {
   if (err instanceof NotFound) {
     res.sendfile(__dirname + '/public/404.html');
   } else {
@@ -43,17 +43,17 @@ myapp.error(function (err, req, res, next) {
 });
 
 /* Routes  */
-myapp.all('*',function(req,res,next){
+app.all('*',function(req,res,next){
   res.sendfile(__dirname+'/public/offline.html');
 })
-myapp.all('/images/*',function(req,res){
+app.all('/images/*',function(req,res){
   res.sendfile(__dirname+'/public/'+req.url);
 })
-myapp.get('/',function(req,res){
+app.get('/',function(req,res){
   res.sendfile(__dirname+'/public/offline.html');
 })
 // Homepage
-myapp.listen(4001);
+app.listen(4001);
 console.log('Nodester mainteinance app started on port 4001');
 
 

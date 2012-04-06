@@ -1,52 +1,45 @@
 #!/usr/bin/env node
 
 /*
-
-Nodester opensource Node.js hosting service
-
-Written by: @ChrisMatthieu & @DanBUK
-http://nodester.com
-
+ * Nodester opensource Node.js hosting service
+ * Written by: @ChrisMatthieu & @DanBUK
+ * Mainteiner: Alejandro Morales (@_alejandromg)
+ * http://nodester.com
+ * http://github.com/nodester
 */
-require('coffee-script');
 
-var express = require('express'),
-    url     = require('url'),
-    sys     = require('sys'),
-    path    = require('path'),
-    config  = require('./config'),
-    middle  = require('./lib/middle'),
-    stats   = require('./lib/stats');
+var express = require('express')
+  , url     = require('url')
+  , sys     = require('util')
+  , path    = require('path')
+  , Logger  = require('bunyan')
+  , log     = process.log = new Logger({name: "nodester"})
+  , config  = require('./config')
+  , middle  = require('./lib/middle')
+  , stats   = require('./lib/stats')
+  ;
 
-var daemon = require('daemon');
-// daemon.setreuid(config.opt.userid);
-var myapp = express.createServer();
+var __app__ = express.createServer()
+  , app = __app__
+  ;
 
-myapp.configure(function () {
-  myapp.use(express.bodyParser());
-  myapp.use(express.static(config.opt.public_html_dir));
-  myapp.use(express.errorHandler({
+app.configure(function () {
+  app.use(express.bodyParser());
+  app.use(express.logger('dev'))
+  app.use(express.static(config.opt.public_html_dir));
+  app.use(express.errorHandler({
     showStack: true,
     dumpExceptions: true
   }));
 });
 
-
-// Error handler
-myapp.error(function (err, req, res, next) {
-  if (err instanceof NotFound) {
-    res.sendfile(__dirname + '/public/404.html');
-  } else {
-    res.sendfile(__dirname + '/public/500.html');
-  }
-});
-
-
 /*
- * dev dashboard emitter
+ * status emitter
 */
+
 var bolt = require('bolt');
-var mesh = new bolt.Node({
+
+var dash = new bolt.Node({
     delimiter : '::',
     host      : config.opt.redis.host,
     port      : config.opt.redis.port,
@@ -54,23 +47,38 @@ var mesh = new bolt.Node({
     auth      : config.opt.redis.auth,
     silent    : true
 });
-mesh.start();
 
-myapp.all('*',function(req,res,next){
+dash.start();
+
+/*
+ * Error handler
+ */
+
+app.error(function (err, req, res, next) {
+  if (err instanceof NotFound) {
+    res.sendfile(__dirname + '/public/404.html')
+  } else {
+    log.warn(err)
+    dash.emit('nodester::500',{msg:err.message,stack:err.stack.toString()})
+    res.sendfile(__dirname + '/public/500.html')
+  }
+});
+
+app.all('*',function(req,res,next){
   if (!path.extname(req.url)){
     var ip = req.connection.remoteAddress || req.socket.remoteAddress;
     if (req.headers["x-real-ip"]) ip =req.headers["x-real-ip"];
     var toEmit = {
       ip     : ip,
-      url    : req.url ,
+      url    : req.url,
       time   : new Date,
       method : req.method,
       ua     : req.headers['user-agent'] || 'nodester',
       host   : req.headers.host
     }
-    mesh.emit('nodester::incomingRequest', toEmit);
+    dash.emit('nodester::incomingRequest', toEmit)
   }
-  next();
+  next()
 })
 
 function getStats(){
@@ -79,186 +87,291 @@ function getStats(){
     // ignore childprocess which can cause high latency
     if (stat != 'getDiskUsage' && stat != 'getProcesses'){
       statistics[stat]  = stats[stat]()
-    } /* else {
-      stats[stat](function(error,resp){
-        if (!error)
-          statistics[stat] = resp;
-        else 
-          statistics[stat] = '0'
-      });
-    }*/
+    }
   }
   return statistics;
 }
 
+/*
+ * Ping every 3 seconds
+*/
 setInterval(function(){
-  mesh.emit('nodester::ping',{date:new Date})
-},3000);
+  dash.emit('nodester::ping',{date:new Date})
+},3000)
+
+/*
+ * emit stats every 5 seconds
+*/
 
 setInterval(function(){
-  mesh.emit('nodester::stats',getStats());
-},6500);
-
+  dash.emit('nodester::stats',getStats())
+}, 5000)
 
 
 process.on('uncaughtException', function (err) {
-  mesh.emit('nodester::uE', err);
-  console.log(err.stack);
-});
-
-
+  dash.emit('nodester::uE',{ msg:err.message,stack:err.stack.toString()})
+  log.fatal(err.stack)
+})
 
 /* Routes  */
 
-// Homepage
-myapp.get('/', function (req, res, next) {
-  res.sendfile(__dirname +'/public/index.html');
+/* 
+ * Homepage Showcase
+ * 
+ */
+app.get('/', function (req, res, next) {
+  res.sendfile(__dirname +'/public/index.html')
 });
-
-myapp.get('/api', function (req, res, next) {
-  res.redirect('/api.html');
+app.get('/api', function (req, res, next) {
+  res.sendfile(__dirname +'/public/api.html')
 });
-
-myapp.get('/admin', function (req, res, next) {
+app.get('/help', function (req, res, next) {
+  res.sendfile(__dirname +'/public/help.html')
+});
+app.get('/about', function (req, res, next) {
+  res.sendfile(__dirname +'/public/about.html')
+});
+app.get('/admin', function (req, res, next) {
   res.redirect('http://admin.nodester.com');
 });
-
-myapp.get('/irc', function (req, res, next) {
+app.get('/irc', function (req, res, next) {
   res.redirect('http://irc.nodester.com');
 });
-
-myapp.get('/monitor', function (req, res, next) {
-  res.redirect('http://site.nodester.com');
+app.get('/status', function (req, res, next) {
+  res.redirect('http://status.nodester.com');
 });
 
-/* Status API */
-// http://localhost:4001/status
-// curl http://localhost:4001/status
+/*
+ * shorthands
+*/
+var auth       = middle.authenticate
+  , authApp    = middle.authenticate_app
+  , authAdmin  = middle.authenticate_admin
+  , deprecated = middle.deprecated
+ ;
+
+/* 
+ * Status endPoint 
+ * @Public: true
+ * @HTTP method: http://api.host.com/status
+ * @raw:  curl http://api.host.com/status
+ * @cli: nodester status
+ */
 var status = require('./lib/status');
-myapp.get('/status', status.get);
 
-// New coupon request
-// curl -X POST -d "email=dan@nodester.com" http://localhost:4001/coupon
+app.get('/status', status.get);
+
+/*
+ * New coupon request
+ * @Public: true
+ * @raw:
+ *    # send coupon
+ *    curl -X POST -d "email=dan@nodester.com" http://localhost:4001/coupon
+ *: curl http://localhost:4001/unsent
+ * @cli: nodester coupon
+ */
+
 var coupon = require('./lib/coupon');
-myapp.post('/coupon', coupon.post);
+app.post('/coupon', coupon.post);
+app.get('/unsent', coupon.unsent);
 
-// curl http://localhost:4001/unsent
-myapp.get('/unsent', coupon.unsent);
+/*
+ * User actions
+ */
 
-
-// New user account registration
-// curl -X POST -d "user=testuser&password=123&email=chris@nodefu.com&coupon=hiyah" http://localhost:4001/user
-// curl -X POST -d "user=me&password=123&coupon=hiyah" http://localhost:4001/user
 var user = require('./lib/user');
-myapp.post('/user', user.post);
 
-// localhost requires basic auth to access this section
-// Edit your user account
-// curl -X PUT -u "testuser:123" -d "password=test&rsakey=1234567" http://localhost:4001/user
-myapp.put('/user', middle.authenticate, user.put);
+/*
+ * New user account registration
+ * @Public: true with params
+ * @params: user,password,email,coupon
+ * @raw:  curl -X POST -d "user=testuser&password=123&email=chris@nodefu.com&coupon=hiyah" http://localhost:4001/user
+ *        curl -X POST -d "user=me&password=123&coupon=hiyah" http://localhost:4001/user
+ * @cli: nodester user register <coupon-code>
+ */
 
-// Delete your user account
-// curl -X DELETE -u "testuser:123" http://localhost:4001/user
-myapp.del('/user', middle.authenticate, user.delete);
+app.post('/user', user.post);
 
-// All Applications info
-// http://chris:123@localhost:4001/apps
-// curl -u "testuser:123" http://localhost:4001/apps
+
+/*
+ * Edit your user account
+ * @Public: false, only with authentication
+ * @raw: curl -X PUT -u "testuser:123" -d "password=test&rsakey=1234567" http://localhost:4001/user
+ * @cli: nodester user 
+ */
+
+app.put('/user', auth, user.put);
+
+
+/*
+ * Delete your user account
+ * @Public: false, only with authentication
+ * @raw: curl -X DELETE -u "testuser:123" http://localhost:4001/user
+ * @cli: not available,security issues
+*/
+app.del('/user', auth, user.delete);
+
+/*
+ * Apps related info
+ */
 var apps = require('./lib/apps');
 
-myapp.get('/apps', middle.authenticate, apps.get);
+/* 
+ * All Applications info
+ * @HTTP: http://chris:123@localhost:4001/apps
+ * @raw: curl -u "testuser:123" http://localhost:4001/apps
+ * @cli: nodester apps
+ */
+app.get('/apps', auth, apps.get);
+
+/*
+ * App actions
+ * @Public: false
+ */
+var _app_ = require('./lib/app')
 
 
-var app = require('./lib/app');
+/* 
+ * Application info
+ * @HTTP: http://chris:123@localhost:4001/apps/<appname>
+ * @raw: curl -u "testuser:123" http://localhost:4001/apps/<appname>
+ * @cli: nodester app info <appname>
+ */ 
+app.get('/apps/:appname', auth, authApp, _app_.get);
+app.get('/app/:appname', deprecated, auth, authApp, _app_.get); // deprecated
 
-// Application info
-// http://chris:123@localhost:4001/apps/<appname>
-// curl -u "testuser:123" http://localhost:4001/apps/<appname>
-myapp.get('/apps/:appname', middle.authenticate, middle.authenticate_app, app.get);
-myapp.get('/app/:appname', middle.deprecated, middle.authenticate, middle.authenticate_app, app.get); // deprecated
+/*
+ * Create node app
+ * @raw: curl -X POST -u "testuser:123" -d "appname=test&start=hello.js" http://localhost:4001/apps
+ * @cli: nodester app create <appname> <initfile.js>
+*/
 
-// Create node app
-// curl -X POST -u "testuser:123" -d "appname=test&start=hello.js" http://localhost:4001/apps
-myapp.post('/apps/:appname', middle.authenticate, app.post);
-myapp.post('/apps', middle.authenticate, app.post);
-myapp.post('/app', middle.deprecated, middle.authenticate, app.post); // deprecated
+app.post('/apps/:appname', auth, _app_.post);
+app.post('/apps', auth, _app_.post);
+app.post('/app', deprecated, auth, _app_.post);
 
-// App backend restart handler
-myapp.get('/app_restart', app.app_restart);
-myapp.get('/app_start', app.app_start);
-myapp.get('/app_stop', app.app_stop);
+/*
+ * App backend restart|start|stop handler
+ * @Public : true
+ * @HTTP   : http://api.test.com/app_restart
+ * @cli: nodester app restart|start|stop <appname>
+ */
+app.get('/app_restart', _app_.app_restart);
+app.get('/app_start', _app_.app_start);
+app.get('/app_stop', _app_.app_stop);
 
-// Update node app
-// start=hello.js - To update the initial run script
-// running=true - To Start the app
-// running=false - To Stop the app
-// curl -X PUT -u "testuser:123" -d "start=hello.js" http://localhost:4001/apps/test
-// curl -X PUT -u "testuser:123" -d "running=true" http://localhost:4001/apps/test
-// curl -X PUT -u "testuser:123" -d "running=false" http://localhost:4001/apps/test
-// curl -X PUT -u "testuser:123" -d "running=restart" http://localhost:4001/apps/test
-// TODO - Fix this function, it's not doing callbacking properly so will return JSON in the wrong state!
-myapp.put('/apps/:appname', middle.authenticate, middle.authenticate_app, app.put);
-myapp.put('/app', middle.deprecated, middle.authenticate, middle.authenticate_app, app.put); // deprecated
-myapp.put('/app/audit', middle.authenticate_admin,app.audit);
-myapp.put('/app/restart/:appname', middle.authenticate_admin,app.restartByName);
-// Delete your nodejs app
-// curl -X DELETE -u "testuser:123" -d http://localhost:4001/apps/test
-myapp.del('/apps/:appname', middle.authenticate, middle.authenticate_app, app.delete);
-myapp.del('/app/:appname', middle.deprecated, middle.authenticate, middle.authenticate_app, app.delete); // deprecated
+/*
+ * Update node app
+ * @Public  false only with auth
+ * @params  start=initfile.js
+ * @params  running=true|false (stop,start)
+ * Raw output:
+ *    curl -X PUT -u "testuser:123" -d "start=hello.js" http://localhost:4001/apps/test  
+ *    curl -X PUT -u "testuser:123" -d "running=true" http://localhost:4001/apps/test
+ *    curl -X PUT -u "testuser:123" -d "running=false" http://localhost:4001/apps/test
+ *    curl -X PUT -u "testuser:123" -d "running=restart" http://localhost:4001/apps/test
+ * TODO - Fix this function, it's not doing callbacking properly so will return JSON in the wrong state!
+*/
 
-myapp.del('/gitreset/:appname', middle.authenticate, middle.authenticate_app, app.gitreset);
+app.put('/apps/:appname', auth, authApp, _app_.put);
+app.put('/app', deprecated, auth,authApp, _app_.put); // deprecated
 
-// curl -u "testuser:123" -d "appname=test" http://localhost:4001/applogs
-myapp.get('/applogs/:appname', middle.authenticate, middle.authenticate_app, app.logs);
+/*
+ * Admin tasks
+ */
+app.put('/app/audit', authAdmin,_app_.audit);
+app.put('/app/restart/:appname', authAdmin, _app_.restartByName);
 
-// Retrieve information about or update a node app's ENV variables
-// This fulfills all four RESTful verbs.
-// GET will retrieve the list of all keys.
-// PUT will either create or update.
-// DELETE will delete the key if it exists.
-// curl -u GET -u "testuser:123" -d "appname=test" http://localhost:4001/env
-// curl -u PUT -u "testuser:123" -d "appname=test&key=NODE_ENV&value=production" http://localhost:4001/env
-// curl -u DELETE -u "testuser:123" -d "appname=test&key=NODE_ENV" http://localhost:4001/env
+/*
+ * Delete your nodejs app
+ * @Public : false (with auth onlye)
+ * @raw    : curl -X DELETE -u "testuser:123" -d http://localhost:4001/apps/test
+ */
+app.del('/apps/:appname', auth, authApp, _app_.delete);
+app.del('/app/:appname',deprecated, auth, authApp, _app_.delete); // deprecated
+app.del('/gitreset/:appname', auth, authApp, _app_.gitreset);
 
-// Get info about available versions.
-// curl -XGET http://localhost:4001/env/version
-myapp.get('/env/version', app.env_version);
-// Get info about a specific version and see if it's installed
-// without need of basic auth
-// curl -XGET http://localhost:4001/env/:version
-myapp.get('/env/version/:version', app.check_env_version);
-myapp.get('/env/:appname', middle.authenticate, middle.authenticate_app, app.env_get);
-myapp.put('/env', middle.authenticate, middle.authenticate_app, app.env_put);
-myapp.del('/env/:appname/:key', middle.authenticate, middle.authenticate_app, app.env_delete);
+/*
+ * Logs
+ * @Public: false
+ * @raw: curl -u "testuser:123" -d "appname=test" http://localhost:4001/applogs
+ */
+app.get('/applogs/:appname', auth, authApp, _app_.logs);
 
-// APP NPM Handlers
+/* 
+ * Retrieve information about or update a node app's ENV variables
+ * This fulfills all four RESTful verbs.
+ * @method: GET will retrieve the list of all keys.
+ * @method: PUT will either create or update.
+ * @method: DELETE will delete the key if it exists.
+ * Raw output: 
+ *     curl -u GET -u "testuser:123" -d "appname=test" http://localhost:4001/env
+ *     curl -u PUT -u "testuser:123" -d "appname=test&key=NODE_ENV&value=production" http://localhost:4001/env
+ *     curl -u DELETE -u "testuser:123" -d "appname=test&key=NODE_ENV" http://localhost:4001/env
+ *
+ * Get info about available versions.
+ * @raw: curl -XGET http://localhost:4001/env/version
+ */
+
+app.get('/env/version', _app_.env_version);
+
+/*
+ * Get info about a specific version and see if it's installed
+ * without need of basic auth
+ * @raw: curl -XGET http://localhost:4001/env/:version
+ */
+app.get('/env/version/:version', _app_.check_env_version);
+app.get('/env/:appname', auth, authApp, _app_.env_get);
+app.put('/env', auth, authApp, _app_.env_put);
+app.del('/env/:appname/:key', auth, authApp, _app_.env_delete);
+
+/*
+ * APP NPM Handlers
+ */
 var npm = require('./lib/npm');
-// curl -X POST -u "testuser:123" -d "appname=test&package=express" http://localhost:4001/appnpm
-// curl -X POST -u "testuser:123" -d "appname=test&package=express" http://localhost:4001/npm
-// curl -X POST -u "testuser:123" -d "appname=test&package=express,express-extras,foo" http://localhost:4001/npm
-myapp.post('/appnpm', middle.authenticate, middle.authenticate_app, npm.post);
-myapp.post('/npm', middle.authenticate, middle.authenticate_app, npm.post);
 
-// curl -X POST -u "testuser:123" -d "appname=test&domain=<domainname>" http://localhost:4001/appdomains
-// curl -X DELETE -u "testuser:123" -d "appname=test&domain=<domainname>" http://localhost:4001/appdomains
+/* 
+ * Install package
+ * @raw: 
+ *    curl -X POST -u "testuser:123" -d "appname=test&package=express" http://localhost:4001/appnpm
+ *    curl -X POST -u "testuser:123" -d "appname=test&package=express" http://localhost:4001/npm
+ *    curl -X POST -u "testuser:123" -d "appname=test&package=express,express-extras,foo" http://localhost:4001/npm
+ */
+ 
+app.post('/appnpm', auth, authApp, npm.post);
+app.post('/npm', auth, authApp, npm.post);
+
+/*
+ * Domain handler
+ */
 var domains = require('./lib/domains');
-myapp.post('/appdomains', middle.authenticate, middle.authenticate_app, domains.post);
-myapp.del('/appdomains/:appname/:domain', middle.authenticate, middle.authenticate_app, domains.delete);
-myapp.get('/appdomains', middle.authenticate, domains.get);
 
-// curl -X POST -d "user=username" http://localhost:4001/reset_password
-// curl -X PUT -d "password=newpassword" http://localhost:4001/reset_password/<token>
+/*
+ * Point domains to nodester
+ * @raw: curl -X POST -u "testuser:123" -d "appname=test&domain=<domainname>" http://localhost:4001/appdomains
+ *       curl -X DELETE -u "testuser:123" -d "appname=test&domain=<domainname>" http://localhost:4001/appdomains
+ * @cli: nodester domains
+ */
+
+app.post('/appdomains', auth, authApp, domains.post);
+app.del('/appdomains/:appname/:domain', auth, authApp, domains.delete);
+app.get('/appdomains', auth, domains.get);
+
+/*
+ * Reset Password actions
+ * @raw: curl -X POST -d "user=username" http://localhost:4001/reset_password
+ *       curl -X PUT -d "password=newpassword" http://localhost:4001/reset_password/<token>
+ */
 var reset_password = require('./lib/reset_password');
-myapp.post('/reset_password', reset_password.post);
-myapp.put('/reset_password/:token', reset_password.put);
+app.post('/reset_password', reset_password.post);
+app.put('/reset_password/:token', reset_password.put);
 
+// default listener
+app.listen(4001);
 
+log.info('Nodester app started on port %d', app.address().port);
 
-myapp.listen(4001);
-console.log('Nodester app started on port 4001');
-
-//The 404 Route (ALWAYS Keep this as the last route)
-myapp.get('/*', function (req, res) {
+app.get('/*', function (req, res) {
   throw new NotFound;
 });
 
@@ -267,3 +380,8 @@ function NotFound(msg) {
   Error.call(this, msg);
   Error.captureStackTrace(this, arguments.callee);
 };
+
+// Globalization of log
+process.log = log 
+
+/* End of file */

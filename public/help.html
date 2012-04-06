@@ -2,13 +2,14 @@
 <html lang="en">
    <head>
       <meta charset="utf-8" />
-      <title>Nodester -> Open Source Node.JS PaaS</title>
+      <title>Nodester  &middot; Open Source Node.JS PaaS</title>
       <meta name="description" content="Open Source Node.JS Platform as a Service" />
       <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
       <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
       <![endif]-->
       <!-- Le styles -->
+      <link href="css/font.css" rel="stylesheet" type="text/css" />
       <link href="bootstrap.css" rel="stylesheet" type="text/css" />
       <link href="http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.css" rel="stylesheet" type="text/css" />
       <style type="text/css">
@@ -55,13 +56,14 @@
       <div class="topbar">
          <div class="fill">
             <div class="container">
-               <a class="brand" href="index.html"><img src="images/rocket-md-right.png" width="20" /> nodester</a>
-               <ul class="nav">
-                  <li><a href="index.html">Home</a></li>
-                  <li><a href="api.html">API</a></li>
-                  <li class="active"><a href="help.html">Help</a></li>
+               <a class="brand" href="/"><img src="images/rocket-md-right.png" width="40" /> <span>nodester</span></a>
+               <ul id="actions" class="nav off">
+                  <li class="active"><a href="/">Home</a></li>
+                  <li><a href="/api">API</a></li>
+                  <li><a href="/help">Help</a></li>
                   <li><a href="http://irc.nodester.com">IRC</a></li>
                   <li><a href="http://blog.nodester.com">Blog</a></li>
+
                </ul>
                <p class="pull-right">
                <form action="http://admin.nodester.com/login" method="post" class="pull-right">
@@ -154,10 +156,10 @@
 	         <p>You can install any npm module you want!</p>
 	         <pre class="prettyprint">nodester npm install &lt;appname&gt; &lt;package names&gt;<br />nodester app restart &lt;appname&gt;</pre>
 	         <br />
-	         <h1>For Experienced Nodesters with Existing Node.JS Apps</h1>
+	         <h2>For Experienced Nodesters with Existing Node.JS Apps</h2>
 	         <p>Don't need a "hello world"? Simply skip the init command and add a nodester git remote to your existing project folder. Pushing to nodester will automatically restart your application!</p>
 	         <pre class="prettyprint">nodester app create &lt;appname&gt;<br/>git remote add nodester &lt;the_url_returned_by_our_api&gt;<br/>git push nodester master<br/>http://&lt;appname&gt;.nodester.com</pre>
-	         <p><span class="label important">Important</span> Make sure you use the port given to you by nodester!</p>
+	         <p><span class="label important">Important</span> Make sure you use the port given to you by nodester! Replacing the port in your listen method with <code>listen(process.env['app_port'] || 3000)</code></p>
 	         <br />
 
          </div> 
@@ -176,9 +178,9 @@
 					<tr>
 						<td>Ports</td>
 						<td>Your application's port must match the port that we assign your application. This port is provided at the time of app creation but your can retrieve 
-						your application's port, starting javascript file, and nodester git repository address at any time by running "nodester app info &lt;appname&gt;" from the CLI.
+						your application's port, starting javascript file, and nodester git repository address at any time by running <code>nodester app info &lt;appname&gt;</code> from the CLI.
 						You can also simply use process.env['app_port'] as an environmental variable and Nodester will automatically use the port assigned or you could 
-						do something like this to make it easy to switch between localhost and production: <i>appPort = process.env['app_port'] || 3000</i></td>
+						do something like this to make it easy to switch between localhost and production: <code>appPort = process.env['app_port'] || 3000</code></td>
 					</tr>
 					<tr>
 						<td>Web Sockets</td>
@@ -187,20 +189,20 @@
 					</tr>
 					<tr>
 						<td>Logs</td>
-						<td>Your application's logs are very helpful at helping you troubleshoot issues.  You can be access these logs from the CLI by running "nodester app logs &lt;appname&gt;".</td>
+						<td>Your application's logs are very helpful at helping you troubleshoot issues.  You can be access these logs from the CLI by running <code>nodester app info &lt;appname&gt;</code>.</td>
 					</tr>
 					<tr>
 						<td>Local File Writes</td>
-						<td>Your application can write to your local sandbox.  Remember to include a directory in your project to write to and start the name/path of the file as "./directory/filename" or consider doing something like <i>fs.readFile(__dirname + '/conf/mynode.conf'</i>.</td>
+						<td>Your application can write to your local sandbox.  Remember to include a directory in your project to write to and start the name/path of the file as "./directory/filename" or consider doing something like <code>fs.readFile(__dirname + '/conf/mynode.conf'</code>.</td>
 					</tr>
 					<tr>
 						<td>NPM Modules</td>
-						<td>Most Node.JS applications use NPM modules especially ExpressJS.  Remember to run "nodester npm install &lt;appname&gt; &lt;modulename modulename modulename&gt;" from the CLI and restart your application
-							after successfully updating NPM.  Nodester also supports package.json allowing you to install all of your modules without listing them individually like so: "nodester npm install &lt;appname&gt;"</td>
+						<td>Most Node.JS applications use NPM modules especially ExpressJS.  Remember to run <code>nodester npm install &lt;appname&gt; &lt; modulename1 modulename2 modulename3</code> from the CLI and restart your application
+							after successfully updating NPM.  Nodester also supports package.json allowing you to install all of your modules without listing them individually like so: <code>nodester npm install &lt;appname&gt;</code></td>
 					</tr>
 					<tr>
 						<td>Environment Variables</td>
-						<td>We support for following environment variables globally: port, host, PORT, HOST, app_host, app_port.  This means that you can use our environment variable instead of hardcoding the port in your application like so: app.listen(process.env['port']);</td>
+						<td>We support for following environment variables globally: port, host, PORT, HOST, app_host, app_port.  This means that you can use our environment variable instead of hardcoding the port in your application like so: <code>app.listen(process.env['app_port']);</code></td>
 					</tr>
 					<tr>
 						<td>Windows Users</td>
@@ -248,18 +250,36 @@
            });
          });
       </script>
-      </div>
-      <!-- /container -->
-      <footer class="footer">
+       <footer class="footer">
          <div class="container">
             <p>
-               &#169; <script type="text/javascript">
+               <a href="/help">help</a> &middot;
+               <a href="/about">about us</a> &middot;
+               &#169; 2011 - <script type="text/javascript">
                   var theDate=new Date()
                       document.write(theDate.getFullYear())
-               </script> Nodester, inc. | <a href="about.html">about us</a> | <a href="http://twitter.com/nodester">twitter</a> | <a href="http://github.com/nodester">github</a>
+               </script> Nodester, inc.  &middot; 
+               <a href="//twitter.com/nodester">twitter</a> &middot;
+               <a href="//github.com/nodester">github</a>
             </p>
          </div>
       </footer>
+      </div>
+      <!-- /container -->
+
+      <script type="text/javascript">
+       $(document).ready(function(){
+          var topbar = $('.fill')
+          var ul = $('#actions')
+          ul.removeClass('off')
+          ul.fadeOut(500)
+          topbar.hover(function(e){
+             ul.fadeIn(300)
+          }, function(){
+             ul.fadeOut(300);
+          })
+       });
+      </script>
    </body>
 </html>
 

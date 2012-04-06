@@ -202,6 +202,8 @@ Also copy `scripts/example_gitrepoclone.sh` to `scripts/gitrepoclone.sh` and upd
 
 The way in how nodester works is pretty straigthforward, so, when a user does a `nodester app restart|start` nodester takes the `node_base_folder` param and it use it to create|mount the sandbox for the app, the `node_base_folder` has the whole environment in which the node-versions are installed and everything that an app needs to work. Soon we are going to publish an example of this environment. So you can install it easily. 
 
+Also you can take a look at [this](https://help.ubuntu.com/community/BasicChroot)
+
 ### Multiple versions of node:
 
 User: `root`
@@ -298,3 +300,4 @@ Don't like the REST API way? Try the [`nodester-cli`](http://github.com/nodester
 
 - [Nodester]("http://nodester.com")
 - `n` By [TJ Holowaychuk]("http://github.com/visionmedia")
+

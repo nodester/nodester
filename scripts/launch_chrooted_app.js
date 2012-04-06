@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 
-var fs            = require('fs'),
-    path          = require('path'),
-    util          = require('util'),
-    Script        = process.binding('evals').Script,
-    coffee        = require('coffee-script'),
-    Module        = require('module'),
-    node_versions = require('../lib/lib').node_versions;
+var fs            = require('fs')
+  , path          = require('path')
+  , util          = require('util')
+  , Script        = process.binding('evals').Script
+  , coffee        = require('coffee-script')
+  , Module        = require('module')
+  , node_versions = require('../lib/lib').node_versions
+  , c             = process.binding('crypto').Connection
+  , crypto        = require('crypto')
+  , creds         = crypto.createCredentials()
+  ;
 
-//This "preps" the chroot with SSL support
-var c = process.binding('crypto').Connection;
-var crypto = require('crypto');
-var creds = crypto.createCredentials();
 
 
 var config = JSON.parse(fs.readFileSync(path.join('.nodester', 'config.json'), encoding = 'utf8'));
