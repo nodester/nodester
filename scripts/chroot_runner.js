@@ -69,7 +69,7 @@ var myPid = daemon.start();
     var srv = net.createServer(function (conn) {
       var srvLog = new Logger({name:'nodester',stream:conn});
       log_lines.map(function(line){
-        switch line[1] {
+        switch (line[1]){
           case 2:
             srvLog.warn(line[0])
             break;
