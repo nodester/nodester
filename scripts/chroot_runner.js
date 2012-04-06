@@ -71,9 +71,9 @@ var myPid = daemon.start();
       log_lines.map(function(line){
         switch (line[1]){
           case 2:
-            srvLog.warn(line[0])
+            srvLog.warn(line[0]);
             break;
-          default
+          default:
            srvLog.info(line[0]);
            break;
         }
