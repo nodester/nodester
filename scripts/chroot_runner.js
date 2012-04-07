@@ -23,7 +23,7 @@ var spawn        = require('child_process').spawn
 
 oldmask = process.umask(newmask);
 
-  info('Changed umask from: ' + oldmask.toString(8) + ' to ' + newmask.toString(8));
+  log.info('Changed umask from: ' + oldmask.toString(8) + ' to ' + newmask.toString(8));
 
 var env = {
   PATH: '/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin',
