@@ -13,7 +13,7 @@ var spawn        = require('child_process').spawn
   , config       = JSON.parse(fs.readFileSync(path.join('.nodester', 'config.json'),'utf8'))
   , cfg          = require('../config').opt
   , newmask      = 0000
-  , log          = new Logger({name: "nodester"})
+  , log          = process.log || new Logger({name: "nodester"})
   , run_max      = 5
   , run_count    = 0
   , LOG_STDOUT   = 1
@@ -23,7 +23,7 @@ var spawn        = require('child_process').spawn
 
 oldmask = process.umask(newmask);
 
-  log.info('Changed umask from: ' + oldmask.toString(8) + ' to ' + newmask.toString(8));
+log.info('Changed umask from: ' + oldmask.toString(8) + ' to ' + newmask.toString(8));
 
 var env = {
   PATH: '/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin',
