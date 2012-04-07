@@ -42,7 +42,7 @@
             <div class="container">
                <a class="brand" href="/"><img src="images/rocket-md-right.png" width="40" /> <span>nodester</span></a>
                <ul id="actions" class="nav off">
-                  <li class="active"><a href="/">Home</a></li>
+                  <li><a href="/">Home</a></li>
                   <li><a href="/api">API</a></li>
                   <li><a href="/help">Help</a></li>
                   <li><a href="http://irc.nodester.com">IRC</a></li>
@@ -138,16 +138,11 @@
       <!-- /container -->
 
       <script type="text/javascript">
-       $(document).ready(function(){
+      $(document).ready(function(){
           var topbar = $('.fill')
           var ul = $('#actions')
           ul.removeClass('off')
-          ul.fadeOut(2500)
-          topbar.hover(function(e){
-             ul.fadeIn(300)
-          }, function(){
-             ul.fadeOut(300);
-          })
+          ul.fadeIn(2500)
        });
       </script>
    </body>
