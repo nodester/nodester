@@ -25,7 +25,6 @@ var __app__ = express.createServer()
 
 app.configure(function () {
   app.use(express.bodyParser());
-  app.use(express.logger('dev'))
   app.use(express.static(config.opt.public_html_dir));
   app.use(express.errorHandler({
     showStack: true,
