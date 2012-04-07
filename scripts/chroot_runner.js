@@ -1,38 +1,31 @@
 #!/usr/bin/env node
 
 require.paths.unshift('/usr/lib/node_modules');
-
-var spawn            = require('child_process').spawn
-  , exec             = require('child_process').exec
-  , daemon           = require('daemon')
-  , fs               = require('fs')
-  , path             = require('path')
-  , net              = require('net')
-  , node_versions    = require('../lib/lib').node_versions()
-  , config           = JSON.parse(fs.readFileSync(path.join('.nodester', 'config.json'), encoding = 'utf8'))
-  , cfg              = require('../config').opt
-  , oldmask, newmask = 0000
-  ;
-
+var spawn = require('child_process').spawn;
+var exec = require('child_process').exec;
+var daemon = require('daemon');
+var fs = require('fs');
+var path = require('path');
+var net = require('net');
+var node_versions = require('../lib/lib').node_versions();
+var config = JSON.parse(fs.readFileSync(path.join('.nodester', 'config.json'), encoding = 'utf8'));
+var cfg = require('../config').opt;
+var oldmask, newmask = 0000;
 oldmask = process.umask(newmask);
 console.log('Changed umask from: ' + oldmask.toString(8) + ' to ' + newmask.toString(8));
-var run_max    = 5
-  , run_count  = 0
-  , LOG_STDOUT = 1
-  , LOG_STDERR = 2
-  ;
-
+var run_max = 5;
+var run_count = 0;
+var LOG_STDOUT = 1;
+var LOG_STDERR = 2;
 var env = {
   PATH: '/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin',
   NODE_ENV: 'production'
 };
-
 if (config.env) {
   Object.keys(config.env).forEach(function (key) {
     env[key] = String(config.env[key]);
   });
 }
-
 env.app_port = parseInt(config.port, 10);
 env.app_host = config.ip;
 var args = ['/app/' + config.start];
@@ -54,30 +47,22 @@ var log_lines = [];
 var myPid = daemon.start();
 (function () {
   var log_listen = function (p, cb) {
-    var srv = net.createServer(function (conn) {
-      var srvLog = new Logger({name:'nodester',stream:conn});
-      log_lines.map(function(line){
-        switch (line[1]){
-          case 2:
-            srvLog.warn(line[0]);
-            break;
-          default:
-           srvLog.info(line[0]);
-           break;
-        }
-      })
-      conn.end();
-    });
-    srv.listen(p, cb);
-  }
+      var srv = net.createServer(function (conn) {
+        var logs = JSON.stringify({
+          logs: log_lines.join('\n')
+        });
+        conn.write(logs);
+        conn.end();
+      });
+      srv.listen(p, cb);
+    };
   var log_line = function (line, stdout) {
-    if (!stdout) var stdout = 1;
-    if (typeof this == 'string')
-      line = this + line;
-    log_lines.push([line,stdout]);
-    if (log_lines.length > 250) 
-      log_lines.shift();
-  };
+      if (typeof this == 'string') {
+        line = this + line;
+      }
+      log_lines.push(line);
+      if (log_lines.length > 150) log_lines.shift();
+    };
   log_line.call('chroot_runner', 'New PID: ' + myPid.toString());
   if (path.existsSync('/.nodester/pids/runner.pid')) fs.unlinkSync('/.nodester/pids/runner.pid');
   fs.writeFileSync('/.nodester/pids/runner.pid', myPid.toString());
