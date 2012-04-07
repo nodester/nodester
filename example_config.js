@@ -4,7 +4,7 @@ exports.opt = {
   couch_host: '127.0.0.1',
   couch_port: 5984,
   couch_prefix: 'nodester',
-  couch_tables: ['coupons', 'nodefu', 'nextport', 'apps', 'repos', 'aliasdomains', 'password_resets'],
+  couch_tables: ['coupons', 'nodefu', 'nextport', 'apps', 'repos', 'aliasdomains', 'password_resets', 'admins'],
   home_dir: '/var/nodester',
   app_dir: '/var/nodester/nodester',
   git_home_dir: '/git',
@@ -25,6 +25,14 @@ exports.opt = {
   ssl_cert_file: '',
   ssl_key_file: '',
   node_base_folder: '/opt/node-v0.4.9_npm_v1.0.3',
+
+  redis: {
+    host: '127.0.0.1',
+    port: 6379,
+    user: 'nodester',
+    auth: 'password'
+
+  },  
 
   //Amazon SES mail info
   SES: {
