@@ -138,9 +138,7 @@ app.get('/admin', function (req, res, next) {
 app.get('/irc', function (req, res, next) {
   res.redirect('http://irc.nodester.com');
 });
-app.get('/status', function (req, res, next) {
-  res.redirect('http://status.nodester.com');
-});
+
 
 /*
  * shorthands
@@ -162,6 +160,9 @@ var status = require('./lib/status');
 
 app.get('/status', status.get);
 
+app.get('/status.json', function (req, res, next) {
+  res.redirect('http://status.nodester.com');
+});
 /*
  * New coupon request
  * @Public: true
