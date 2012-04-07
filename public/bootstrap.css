@@ -11,9 +11,14 @@
 /* Reset.less
  * Props to Eric Meyer (meyerweb.com) for his CSS reset file. We're using an adapted version here	that cuts out some of the reset HTML elements we will never need here (i.e., dfn, samp, etc).
  * ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+ @import url('http://fonts.googleapis.com/css?family=Open+Sans+Condensed:700|Open+Sans');
+html {
+   background-color:#F3F3F3
+}
 html, body {
   margin: 0;
   padding: 0;
+  font-family:'Open Sans','Arial';
 }
 h1,
 h2,
@@ -181,13 +186,19 @@ textarea {
  * Basic and global styles for generating a grid system, structural layout, and page templates
  * ------------------------------------------------------------------------------------------- */
 body {
-  background-color: #ffffff;
-  margin: 0;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 13px;
-  font-weight: normal;
-  line-height: 18px;
-  color: #404040;
+  margin             : 0 auto;
+  font-family        : "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size          : 13px;
+  font-weight        : normal;
+  line-height        : 18px;
+  color              : #404040;
+  width              : 100%;
+  -moz-box-shadow    : 0px 2px 12px rgba(0,0,0,0.2);
+  -webkit-box-shadow : 0px 2px 12px rgba(0,0,0,0.2);
+  box-shadow         : 0px 2px 12px rgba(0,0,0,0.2);
+  background         :#F3F3F3;
+  padding-top        : 60px;
+  padding            : 36px 0 0;
 }
 .container {
   width: 940px;
@@ -1351,6 +1362,7 @@ table .headerSortUp.purple, table .headerSortDown.purple {
 }
 .topbar form.pull-right {
   float: right;
+  padding-top: 10px;
 }
 .topbar input {
   background-color: #444;
@@ -1362,7 +1374,7 @@ table .headerSortUp.purple, table .headerSortDown.purple {
   padding: 4px 9px;
   color: #ffffff;
   color: rgba(255, 255, 255, 0.75);
-  border: 1px solid #111;
+  /*border: 1px solid #111;*/
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
@@ -1432,7 +1444,7 @@ table .headerSortUp.purple, table .headerSortDown.purple {
   text-decoration: none;
 }
 .topbar div > ul a:hover, .nav a:hover {
-  color: #ffffff;
+  color: #222;
   text-decoration: none;
 }
 .topbar div > ul .active > a, .nav .active > a {
@@ -1510,7 +1522,7 @@ table .headerSortUp.purple, table .headerSortDown.purple {
   background-image: -o-linear-gradient(top, #292929, #191919);
   background-image: linear-gradient(top, #292929, #191919);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#292929', endColorstr='#191919', GradientType=0);
-  color: #ffffff;
+  color: #444;
 }
 .topbar div > ul .menu-dropdown .active a,
 .nav .menu-dropdown .active a,
@@ -2465,3 +2477,126 @@ button.btn::-moz-focus-inner, input[type=submit].btn::-moz-focus-inner {
   -moz-box-shadow: 0 1px 4px rgba(0, 105, 214, 0.25);
   box-shadow: 0 1px 4px rgba(0, 105, 214, 0.25);
 }
+/*
+ Styles v2
+*/
+body{
+  font-family:'Open Sans';font-weight: normal;text-shadow: 0 1px 0 #ffffff;}
+h1 {
+  font-weight: normal;
+  font-family: "Open Sans Condensed", "Lucida Grande", "Verdana", sans-serif;
+  font-size: 38px;
+  line-height: 38px;
+  text-shadow: 0 1px 0 #ffffff;
+  display: block;
+  margin: 0;
+  padding: 0 30px 0 0; 
+}
+.brand{
+font-family: "Open Sans Condensed";
+vertical-align: -webkit-baseline-middle;
+}
+.brand img { 
+  vertical-align:-webkit-baseline-middle;
+  vertical-align:-moz-baseline-middle;
+  vertical-align:-o-baseline-middle;
+  vertical-align:baseline-middle;
+}
+.brand span {
+  font-size:30px;
+  vertical-align:-webkit-baseline-middle;
+  vertical-align:-moz-baseline-middle;
+  vertical-align:-o-baseline-middle;
+  vertical-align:baseline-middle;
+}
+footer {
+  text-align:center;
+}
+.hero-unit{
+  background:#fff;
+  border-bottom: 1px solid whiteSmoke;
+}
+body >.container {
+  background:#fff;
+  padding: 20px;
+  box-shadow:2px 0 #ccc, -2px -2px #ccc;
+}
+pre.prettyprint {
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+}
+#reqbutton2 {
+  text-shadow: 0px -1px 0px #E09600;
+  color: white;
+  background-color: #FEB41C;
+  background-image: -moz-linear-gradient(top, #FFD23A, #E09600);
+  background-image: -ms-linear-gradient(top, #FFD23A, #E09600);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#FFD23A), to(#E09600));
+  background-image: -webkit-linear-gradient(top, #FFD23A, #E09600);
+  background-image: -o-linear-gradient(top, #FFD23A, #E09600);
+  background-image: linear-gradient(top, #FFD23A, #E09600);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffd23a', endColorstr='#e09600', GradientType=0);
+  border-color: #FEB41C #E09600 #E09600 #FEB41C;
+  border-color: rgba(0, 0, 0, 0.25) rgba(0, 0, 0, 0.35) rgba(0, 0, 0, 0.35) rgba(0, 0, 0, 0.25);
+}
+#videobutton2 {
+  text-shadow: 0px -1px 0px #C22200;
+  color: white;
+  background-color: #E0401C;
+  background-image: -moz-linear-gradient(top, #FE5E3A, #C22200);
+  background-image: -ms-linear-gradient(top, #FE5E3A, #C22200);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#FE5E3A), to(#C22200));
+  background-image: -webkit-linear-gradient(top, #FE5E3A, #C22200);
+  background-image: -o-linear-gradient(top, #FE5E3A, #C22200);
+  background-image: linear-gradient(top, #FE5E3A, #C22200);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fe5e3a', endColorstr='#c22200', GradientType=0);
+  border-color: #E0401C #C22200 #C22200 #E0401C;
+  border-color: rgba(0, 0, 0, 0.25) rgba(0, 0, 0, 0.35) rgba(0, 0, 0, 0.35) rgba(0, 0, 0, 0.25);
+}
+#videobutton:hover{
+ color: #FFFFE4;
+text-shadow: 0px -1px 0px #A40400;
+}
+#videobutton:hover, .#videobutton:active {
+background-color: #C22200;
+}
+.btn:hover {
+background-position: 0 -3px !important;
+}
+.off {
+  display: none !important;
+}
+#actions {
+  padding: 9px;
+font-size: 17px;
+}
+.thumbnail {
+  border: 10px solid white !important;
+  box-shadow: 2px 2px whitesmoke,-2px -2px whitesmoke !important;
+}
+#contrib {
+  list-style:none;
+}
+li {display:inline;}
+.hackers{
+  padding-top:30px;
+  padding-bottom:30px;
+}
+.hackcont{
+  text-align:center;
+}
+.hackcont iframe:first-child {
+  max-width:80px;
+  
+}
+.hackcont ul {
+  font-size:15px;
+}
+table {
+  font-size:15px;
+}
+
+.fill {
+  background: url(images/top.png) repeat-x left top #F3F3F3!important;
+
+}
+ .brand span {color:#222;}

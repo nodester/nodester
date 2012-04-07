@@ -1,46 +1,66 @@
 #!/usr/bin/env node
 
-var lib = require('../lib/lib'),
-  fs = require('fs'),
-  config = require('../config'),
-  bouncy = require('bouncy');
+var Logger = require('bunyan')
+  , log    = process.log = new Logger({name: "proxy::nodester"})
+  , lib    = require('../lib/lib')
+  , fs     = require('fs')
+  , path   = require('path')
+  , config = require('../config')
+  , bouncy = require('bouncy')
+  ;
 
-console.log('Starting proxy initialization');
 
-var proxymap = {};
+
+log.info('Starting proxy initialization');
+
+// Set some defaults in case that read process fail.
+var proxymap = {
+  "nodester.com":4001,
+  "api.nodester.com":4001
+};
 
 // Ghetto hack for error page
 var getErrorPage = function (title, code, error) {
-    var errorPage = '<html><head><title id="title">{title}</title></head><body><br/><br/><br/><br/><br/><center><img src="http://nodester.com/images/rocket-down.png" alt="logo" /><br/><h1 style ="color:#000;font-family:Arial,Helvetica,sans-serif;font-size:38px;font-weight:bold;letter-spacing:-2px;padding:0 0 5px;margin:0;">{code}</h1><h3 style ="color:#000;font-family:Arial,Helvetica,sans-serif;font-size:24px;font-weight:bold;padding:0 0 5px;margin:0;">{error}</h3></center></body></html>';
-    return errorPage.replace('{title}', title).replace('{code}', code).replace('{error}', error);
-  };
+  var errorPage = '<html><head><title id="title">{title}</title></head><body><br/><br/><br/><br/><br/><center><img src="http://nodester.com/images/rocket-down.png" alt="logo" /><br/><h1 style ="color:#000;font-family:Arial,Helvetica,sans-serif;font-size:38px;font-weight:bold;letter-spacing:-2px;padding:0 0 5px;margin:0;">{code}</h1><h3 style ="color:#000;font-family:Arial,Helvetica,sans-serif;font-size:24px;font-weight:bold;padding:0 0 5px;margin:0;">{error}</h3></center></body></html>';
+  return errorPage.replace(/\{title\}/gi, title)
+                  .replace(/\{code\}/gi, code)
+                  .replace(/\{error\}/gi, error)
+};
 
 //Update proxymap any time the routing file is updated
 fs.watchFile(config.opt.proxy_table_file, function (oldts, newts) {
   fs.readFile(config.opt.proxy_table_file, function (err, data) {
     if (err) {
-      console.log('Proxy map failed to update! (read)');
+      log.info('Proxy map failed to update! (read)')
       throw err;
     } else {
-      proxymap = JSON.parse(data);
-      console.log('Proxy map updated');
+      try {
+        proxymap = JSON.parse(data);
+        log.info('Proxy map updated')
+      } catch(e){
+        log.warn(e)
+      }
+      
     }
   });
 });
 
 //Don't crash br0
 process.on('uncaughtException', function (err) {
-  console.log('Uncaught error: ' + err.stack);
+  log.fatal(err.stack);
+  // Handled by upstart job "respawn"
+  process.kill(0)
 });
+
 
 
 //Pulls out DB records and puts them in a routing file
 lib.update_proxytable_map(function (err) {
   if (err) {
-    console.log('err writing initial proxy file: ' + JSON.stringify(err));
+    log.fatal('err writing initial proxy file: ' + JSON.stringify(err));
     throw err;
   } else {
-    console.log('Initial Proxy file written successfully!');
+    log.info('Initial Proxy file written successfully!');
   }
 });
 
@@ -52,7 +72,9 @@ bouncy(function (req, bounce) {
   }
   var host = req.headers.host.replace(/:\d+$/, '');
   var route = proxymap[host] || proxymap[''];
-  console.log(host + ':' + route);
+  // log only urls that are not media files like public folders, css,js
+  if (!path.extname(req.url))
+    log.info(host + ':' + route);
   req.on('error', function (err) {
     var res = bounce.respond();
     res.statusCode = 500;
@@ -71,4 +93,5 @@ bouncy(function (req, bounce) {
     return res.end(getErrorPage('404 - Application not found', '404', 'Application not found'));
   }
 }).listen(80);
-console.log('Proxy initialization completed');
+
+log.info('Proxy initialization completed');
