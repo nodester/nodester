@@ -111,7 +111,13 @@ process.on('uncaughtException', function (err) {
   dash.emit('nodester::uE',{ msg:err.message,stack:err.stack.toString()})
   log.fatal(err.stack)
   // Kill it with fire dude
-  process.kill(0);
+  var slog = fs.createWriteStream(path.join(config.opt.logs_dir + 'apperror.log'), {'flags': 'a'});
+  slog.write('\n<-- new error -->\n');
+  slog.end('\n' + err.message + '\n' + err.stack +'\n')
+  setTimeout(function(){
+    //let the process write the log
+    process.kill(0)
+  },150)
 })
 
 /* Routes  */

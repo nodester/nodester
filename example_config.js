@@ -11,6 +11,7 @@ exports.opt = {
   apps_home_dir: '/app',
   public_html_dir: '/var/nodester/nodester/public',
   proxy_table_file: '/var/nodester/var/proxy_table.json',
+  logs_dir: '/node/logs/',
   tl_dom: 'testnodester.com',
   api_dom: 'api.testnodester.com',
   git_user: 'nodester',
