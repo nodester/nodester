@@ -48,8 +48,17 @@ fs.watchFile(config.opt.proxy_table_file, function (oldts, newts) {
 //Don't crash br0
 process.on('uncaughtException', function (err) {
   log.fatal(err.stack);
-  // Handled by upstart job "respawn"
-  process.kill(0)
+  /*
+   * Write to a specific file errors, this is useful when your restart script
+   * respawn the process and delete the logs, becuase an uE
+  */
+  var slog = fs.createWriteStream(path.join(config.opt.logs_dir + 'proxyerror.log'), {'flags': 'a'});
+  slog.write('\n<-- new error -->\n');
+  slog.end('\n' + err.message + '\n' + err.stack +'\n')
+  setTimeout(function(){
+    //let the process write the log
+    process.kill(0)
+  },150)
 });
 
 
