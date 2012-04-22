@@ -91,14 +91,9 @@ bouncy(function (req, bounce) {
   });
   if (route) {
     // pass headers to the app
-    var headers = {
-      Connection: 'close'
-    }
-    for (var key in req.headers){ 
-      headers[key] = req.headers[key];
-    }
-    if (headers.Connection !== 'close') headers.Connection = 'close';
-    var stream = bounce(route, headers);
+    delete req.headers.host; // avoiding infiny loops
+    req.headers.Connection = 'close';
+    var stream = bounce(route, req.headers);
     stream.on('error', function (err) {
       var res = bounce.respond();
       res.statusCode = 503;
