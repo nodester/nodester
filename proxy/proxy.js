@@ -75,36 +75,44 @@ lib.update_proxytable_map(function (err) {
 });
 
 bouncy(function (req, bounce) {
-  if (!req.headers.host) {
-    var res = bounce.respond();
-    res.statusCode = 400;
-    return res.end(getErrorPage('400 - Invalid request', '400', 'Invalid request'));
-  }
-  var host = req.headers.host.replace(/:\d+$/, '');
-  var route = proxymap[host] || proxymap[''];
-  // log only urls that are not media files like public folders, css,js
-  if (!path.extname(req.url)) {
-    log.info(host + ':' + route);
-  }
-  req.on('error', function (err) {
+  try {
+    if (!req.headers.host) {
+      var res = bounce.respond();
+      res.statusCode = 400;
+      return res.end(getErrorPage('400 - Invalid request', '400', 'Invalid request'));
+    }
+    var host = req.headers.host.replace(/:\d+$/, '');
+    var route = proxymap[host] || proxymap[''];
+    // log only urls that are not media files like public folders, css,js
+    if (!path.extname(req.url)) {
+      log.info(host + ':' + route);
+    
+    req.on('error', function (err) {
+      var res = bounce.respond();
+      res.statusCode = 500;
+      return res.end(getErrorPage('500 - Application error', '503', 'Application error'));
+    });
+    if (route) {
+      // pass headers to the app
+      delete req.headers.host; // avoiding infiny loops
+      if (req.headers.connection) req.headers.connection = 'close';
+      req.headers.Connection = 'close';
+      var stream = bounce(route, req.headers);
+      stream.on('error', function (err) {
+        var res = bounce.respond();
+        res.statusCode = 503;
+        return res.end(getErrorPage('503 - Application offline', '503', 'Application offline'));
+      });
+    } else {
+      var res = bounce.respond();
+      res.statusCode = 404;
+      return res.end(getErrorPage('404 - Application not found', '404', 'Application not found'));
+    }
+  } catch(e){
+    log.warn(e);
     var res = bounce.respond();
     res.statusCode = 500;
     return res.end(getErrorPage('500 - Application error', '503', 'Application error'));
-  });
-  if (route) {
-    // pass headers to the app
-    delete req.headers.host; // avoiding infiny loops
-    req.headers.Connection = 'close';
-    var stream = bounce(route, req.headers);
-    stream.on('error', function (err) {
-      var res = bounce.respond();
-      res.statusCode = 503;
-      return res.end(getErrorPage('503 - Application offline', '503', 'Application offline'));
-    });
-  } else {
-    var res = bounce.respond();
-    res.statusCode = 404;
-    return res.end(getErrorPage('404 - Application not found', '404', 'Application not found'));
   }
 }).listen(80);
 
