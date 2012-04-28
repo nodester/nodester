@@ -86,7 +86,7 @@ bouncy(function (req, bounce) {
     // log only urls that are not media files like public folders, css,js
     if (!path.extname(req.url)) {
       log.info(host + ':' + route);
-    
+    }
     req.on('error', function (err) {
       var res = bounce.respond();
       res.statusCode = 500;
@@ -109,7 +109,6 @@ bouncy(function (req, bounce) {
       return res.end(getErrorPage('404 - Application not found', '404', 'Application not found'));
     }
   } catch(e){
-    log.warn(e);
     var res = bounce.respond();
     res.statusCode = 500;
     return res.end(getErrorPage('500 - Application error', '503', 'Application error'));
