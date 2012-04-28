@@ -34,13 +34,14 @@ fs.watchFile(config.opt.proxy_table_file, function (oldts, newts) {
       log.info('Proxy map failed to update! (read)')
       throw err;
     } else {
+      var old = JSON.parse(JSON.stringify(proxymap));
       try {
         proxymap = JSON.parse(data);
         log.info('Proxy map updated')
       } catch(e){
         log.warn(e)
+        proxymap = old;
       }
-      
     }
   });
 });
@@ -82,8 +83,9 @@ bouncy(function (req, bounce) {
   var host = req.headers.host.replace(/:\d+$/, '');
   var route = proxymap[host] || proxymap[''];
   // log only urls that are not media files like public folders, css,js
-  if (!path.extname(req.url))
+  if (!path.extname(req.url)) {
     log.info(host + ':' + route);
+  }
   req.on('error', function (err) {
     var res = bounce.respond();
     res.statusCode = 500;
