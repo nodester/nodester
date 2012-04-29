@@ -53,7 +53,7 @@ process.on('uncaughtException', function (err) {
    * Write to a specific file errors, this is useful when your restart script
    * respawn the process and delete the logs, becuase an uE
   */
-  var slog = fs.createWriteStream(path.join(config.opt.logs_dir + 'proxyerror.log'), {'flags': 'a'});
+  var slog = fs.createWriteStream(path.join(config.opt.logs_dir, 'proxyerror.log'), {'flags': 'a'});
   slog.write('\n<-- new error -->\n');
   slog.end('\n' + err.message + '\n' + err.stack +'\n')
   setTimeout(function(){
@@ -109,6 +109,7 @@ bouncy(function (req, bounce) {
       return res.end(getErrorPage('404 - Application not found', '404', 'Application not found'));
     }
   } catch(e){
+    log.warn(e);
     var res = bounce.respond();
     res.statusCode = 500;
     return res.end(getErrorPage('500 - Application error', '503', 'Application error'));
