@@ -132,10 +132,10 @@ var myPid = daemon.start();
           if (digits < 0.6){ 
             log_line.call('data', WARN +' :: You are running in node-'+ version + 
                           '. You might want to upgrade to node-v0.6.17' ,LOG_STDERR);
-          } else if (digits === 0.6 && version.substr(-1) < 17){
+          } else if (digits === 0.6 && version.substr(-2) < 17){
             log_line.call('data', WARN + ' :: You need to upgrade to 0.6.17 Change the value in your package.json',LOG_STDERR);
           }
-          
+
           log_line.call('Watcher', 'Running node v-' + version, LOG_STDERR);
           child.stdout.on('data', log_line.bind('stdout'));
           child.stderr.on('data', log_line.bind('stderr'));
