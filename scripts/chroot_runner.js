@@ -120,6 +120,22 @@ var myPid = daemon.start();
           child = spawn((path.extname(args[0]) == '.coffee' ? '/usr/bin/coffee' : '/usr/local/n/versions/' + version + '/bin/node'), args, {
             env: env
           });
+          
+          /*
+          * Check if the version of node is 0.4.x or <0.6.17
+          * because of:
+          * http://blog.nodejs.org/2012/05/07/http-server-security-vulnerability-please-upgrade-to-0-6-17/
+          */
+          var digits = parseFloat(version,10);
+          var WARN = '\033[1m\033[31mWARN\033[39m\033[22m';
+
+          if (digits < 0.6){ 
+            log_line.call('data', WARN +' :: You are running in node-'+ version + 
+                          '. You might want to upgrade to node-v0.6.17' ,LOG_STDERR);
+          } else if (digits === 0.6 && version.substr(-1) < 17){
+            log_line.call('data', WARN + ' :: You need to upgrade to 0.6.17 Change the value in your package.json',LOG_STDERR);
+          }
+          
           log_line.call('Watcher', 'Running node v-' + version, LOG_STDERR);
           child.stdout.on('data', log_line.bind('stdout'));
           child.stderr.on('data', log_line.bind('stderr'));
