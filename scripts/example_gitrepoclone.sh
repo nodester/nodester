@@ -50,6 +50,11 @@ if [ -f ./.gitmodules ]; then
     git submodule update;
 fi
 
+if [ -f ./package.json ]; then
+    echo "Updating npm modules..."
+    npm install
+fi
+
 cd $OLD_PWD
 
 echo "Attempting to restart your app: ${gitdir}"
