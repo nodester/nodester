@@ -114,6 +114,8 @@ bouncy(function (req, bounce) {
     res.statusCode = 500;
     return res.end(getErrorPage('500 - Application error', '503', 'Application error'));
   }
+}).on('error', function(){
+  log.fatal('Bouncy goes nuts');
 }).listen(80);
 
 log.info('Proxy initialization completed');
