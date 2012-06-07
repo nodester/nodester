@@ -15,7 +15,7 @@ echo -e "\033[33m\033[1m
 echo ""
 echo ""
 
-SECRETKEY=PleaseRestartMyAppMKay
+SECRETKEY=PleaseRestartMyAppMKey
 GITBASE=/git
 APPSBASE=/app
 
