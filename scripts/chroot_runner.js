@@ -119,10 +119,17 @@ var myPid = daemon.start();
           // version of node in /usr/local/n/version
           var nodePath =  '/usr/local/n/versions/' + version + '/bin/node'
           var coffeePath = nodePath + '  /node/coffeelauncher';
+          var spawingPath = nodePath;
 
           log_line.call('data','Spawing ' + args[0], LOG_STDOUT);
 
-          child = spawn((path.extname(args[0]) == '.coffee' ? coffeePath : nodePath ), args, {
+          if (path.extname(args[0]) === '.coffee') {
+            spawingPath = coffeePath;
+          }
+
+          log_line.call('data','Spawing path ' + spawingPath, LOG_STDOUT);
+
+          child = spawn(spawingPath, args, {
             env: env
           });
           
