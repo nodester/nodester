@@ -117,8 +117,8 @@ var myPid = daemon.start();
         if (node_versions.indexOf(version) !== -1) {
           // The spawn process only works with absolute paths, and by default n'd saved every
           // version of node in /usr/local/n/version
-          var nodePath =  '/usr/local/n/versions/' + version + '/bin/node'
-          var coffeePath = nodePath + ' ' +  __dirname + '/coffeelauncher';
+          var nodePath =  '/usr/local/n/versions/' + version + '/bin/node';
+          var coffeePath = nodePath + ' ' +  '/usr/local/n/coffeelauncher';
           var spawingPath = nodePath;
 
           log_line.call('data','Spawing ' + args[0], LOG_STDOUT);
@@ -126,8 +126,6 @@ var myPid = daemon.start();
           if (path.extname(args[0]) === '.coffee') {
             spawingPath = coffeePath;
           }
-
-          log_line.call('data','Spawing path ' + spawingPath, LOG_STDOUT);
 
           child = spawn(spawingPath, args, {
             env: env
