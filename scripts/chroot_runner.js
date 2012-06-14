@@ -143,7 +143,7 @@ var myPid = daemon.start();
               log_line.call('data',WARN + ':: coffee server file can not be spawned');
               return false;
             }
-            log_line.call('data', WARN +' :: You need to run`nodester npm install APPNAME '+
+            log_line.call('data', WARN + ' :: You need to run `nodester npm install APPNAME ' +
                           'coffee-script` before start this app, if you already did this ignore this msg',
                           LOG_STDERR);
           }
