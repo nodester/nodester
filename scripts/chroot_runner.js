@@ -131,7 +131,7 @@ var myPid = daemon.start();
               args[0] = '/app/'+ old[0];
             } else {
                var timestamp = Date.now();
-               args[0] = '/app/nodester-' timestamp + '.js';
+               args[0] = '/app/nodester-'+ timestamp + '.js';
             }
             
             /* dirty hack to make coffee files work*/ 
