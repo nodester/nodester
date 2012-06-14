@@ -118,13 +118,34 @@ var myPid = daemon.start();
           // The spawn process only works with absolute paths, and by default n'd saved every
           // version of node in /usr/local/n/version
           var nodePath =  '/usr/local/n/versions/' + version + '/bin/node';
-          var coffeePath = nodePath + ' ' +  '/usr/local/n/coffeelauncher';
           var spawingPath = nodePath;
+          var WARN = '\033[1m\033[31mWARN\033[39m\033[22m';
 
           log_line.call('data','Spawing ' + args[0], LOG_STDOUT);
 
           if (path.extname(args[0]) === '.coffee') {
-            spawingPath = coffeePath;
+            var old = fs.readdirSync('/app/').filter(function(file){
+              return /nodester\-[0-9]{13,}\.js/g.test(file);
+            });
+            if (old.length === 1){
+              args[0] = '/app/'+ old[0];
+            } else {
+               var timestamp = Date.now();
+               args[0] = '/app/nodester-' timestamp + '.js';
+            }
+            
+            /* dirty hack to make coffee files work*/ 
+            var coffeeCode = "require('coffee-script')\n"
+                           + "require(__dirname + '/"+ config.start + "')\n";
+            try {
+              fs.writeFileSync(args[0], coffeeCode ,'utf8');
+            } catch(ex){
+              log_line.call('data',WARN + ':: coffee server file can not be spawned');
+              return false;
+            }
+            log_line.call('data', WARN +' :: You need to run`nodester npm install APPNAME'+
+                          'coffee-script` before start this app, if you already did this ignore this msg',
+                          LOG_STDERR);
           }
 
           child = spawn(spawingPath, args, {
@@ -137,7 +158,6 @@ var myPid = daemon.start();
           * http://blog.nodejs.org/2012/05/07/http-server-security-vulnerability-please-upgrade-to-0-6-17/
           */
           var digits = parseFloat(version,10);
-          var WARN = '\033[1m\033[31mWARN\033[39m\033[22m';
 
           if (digits < 0.6){ 
             log_line.call('data', WARN +' :: You are running in node-'+ version + 
