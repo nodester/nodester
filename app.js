@@ -39,22 +39,9 @@ app.configure(function () {
 
 // var bolt = require('bolt');
 
-try { 
 
-  var dash = new bolt.Node({
-      delimiter : '::',
-      host      : config.opt.redis.host,
-      port      : config.opt.redis.port,
-      user      : config.opt.redis.user,
-      auth      : config.opt.redis.auth,
-      silent    : true
-  });
-
-  dash.start();
-} catch (e){
-  var EventEmitter = require('events').EventEmitter;
-  var dash = process.dash = new EventEmitter;
-}
+var EventEmitter = require('events').EventEmitter;
+var dash = process.dash = new EventEmitter;
 
 /*
  * Error handler
