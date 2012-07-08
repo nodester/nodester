@@ -115,7 +115,7 @@ var myPid = daemon.start();
         // for single flags as an array of them
         if (!pack.flags) pack.flags = [];
         if (typeof pack.flags == 'string') pack.flags = [pack.flags];
-        if (!pack.flags.hasOwnProperty('join')) pack.flags = [];
+        if (!pack.flags.hasOwnProperty('length')) pack.flags = [];
 
         // What if the try/catch read the package but there is no `node`?
         var version = pack.node === undefined ? process.version : pack.node;
