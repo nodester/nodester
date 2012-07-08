@@ -107,10 +107,18 @@ var myPid = daemon.start();
           pack = JSON.parse(fs.readFileSync(packPath, 'utf8'));
         } catch (e) {
           // Set default to the parent node version
-          pack['node'] = process.version;
+          pack.node = process.version;
+          pack.flags = [];
         }
+
+        // Double check for flags and add support
+        // for single flags as an array of them
+        if (!pack.flags) pack.flags = [];
+        if (typeof pack.flags == 'string') pack.flags = [pack.flags];
+        if (!pack.flags.hasOwnProperty('join')) pack.flags = [];
+
         // What if the try/catch read the package but there is no `node`?
-        var version = pack['node'] === undefined ? process.version : pack['node'];
+        var version = pack.node === undefined ? process.version : pack.node;
         // n dir only handles number paths without v0.x.x  => 0.x.x
         version = version.replace('v', '').trim();
         // Insert node-watcher code and link the dependency
@@ -118,11 +126,13 @@ var myPid = daemon.start();
           // The spawn process only works with absolute paths, and by default n'd saved every
           // version of node in /usr/local/n/version
           var nodePath =  '/usr/local/n/versions/' + version + '/bin/node';
-          var spawingPath = nodePath;
+          var spawingPath = nodePath + ' ' + pack.flags.join(' ');
           var WARN = '\033[1m\033[31mWARN\033[39m\033[22m';
 
           log_line.call('data','Spawing ' + args[0], LOG_STDOUT);
-
+          if (pack.flags.length) {
+            log_line.call('data', 'with these flags: ' + pack.flags, LOG_STDOUT);
+          }
           if (path.extname(args[0]) === '.coffee') {
             var old = fs.readdirSync('/app/').filter(function(file){
               return /nodester\-[0-9]{13,}\.js/g.test(file);
