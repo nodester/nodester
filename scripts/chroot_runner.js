@@ -126,7 +126,7 @@ var myPid = daemon.start();
           // The spawn process only works with absolute paths, and by default n'd saved every
           // version of node in /usr/local/n/version
           var nodePath =  '/usr/local/n/versions/' + version + '/bin/node';
-          var spawingPath = nodePath + ' ' + pack.flags.join(' ');
+          var spawingPath = nodePath;
           var WARN = '\033[1m\033[31mWARN\033[39m\033[22m';
 
           log_line.call('data','Spawing ' + args[0], LOG_STDOUT);
@@ -158,7 +158,7 @@ var myPid = daemon.start();
                           LOG_STDERR);
           }
 
-          child = spawn(spawingPath, args, {
+          child = spawn(spawingPath, pack.flags.concat(args), {
             env: env
           });
           
