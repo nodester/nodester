@@ -9,7 +9,14 @@ var Logger = require('bunyan')
   , bouncy = require('bouncy')
   ;
 
-
+try {
+  var ssl = {
+    key: fs.readFileSync(config.ssl_key_file),
+    cert: fs.readFileSync(config.ssl_cert_file)
+  };
+} catch (excp) {
+  var ssl = false;
+}
 
 log.info('Starting proxy initialization');
 
@@ -49,22 +56,12 @@ fs.watchFile(config.opt.proxy_table_file, function (oldts, newts) {
 //Don't crash br0
 process.on('uncaughtException', function (err) {
   log.fatal(err.stack);
-  /*
-   * Write to a specific file errors, this is useful when your restart script
-   * respawn the process and delete the logs, becuase an uE
-  */
-  /*var slog = fs.createWriteStream(path.join(config.opt.logs_dir, 'proxyerror.log'), {'flags': 'a'});
-  slog.write('\n<-- new error -->\n');
-  slog.end('\n' + err.message + '\n' + err.stack +'\n')*/
   setTimeout(function(){
-    //let the process write the log
     process.kill(0)
   },150)
 });
 
 
-
-//Pulls out DB records and puts them in a routing file
 lib.update_proxytable_map(function (err) {
   if (err) {
     log.fatal('err writing initial proxy file: ' + JSON.stringify(err));
@@ -74,7 +71,7 @@ lib.update_proxytable_map(function (err) {
   }
 });
 
-bouncy(function (req, bounce) {
+function proxy (req, bounce) {
   try {
     if (!req.headers.host) {
       var res = bounce.respond();
@@ -114,8 +111,17 @@ bouncy(function (req, bounce) {
     res.statusCode = 500;
     return res.end(getErrorPage('500 - Application error', '503', 'Application error'));
   }
-}).on('error', function(){
+}
+
+
+bouncy(proxy).on('error', function(){
   log.fatal('Bouncy goes nuts');
 }).listen(80);
+
+if (ssl) {
+  bouncy(ssl, proxy).on('error', function(){
+    log.fatal('Bouncy goes nuts');
+  }).listen(433);
+}
 
 log.info('Proxy initialization completed');
