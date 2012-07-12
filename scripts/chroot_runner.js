@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env node1
 
 require.paths.unshift('/usr/lib/node_modules');
 var spawn = require('child_process').spawn;
