@@ -12,8 +12,8 @@ var Logger = require('bunyan')
 
 try {
   var ssl = {
-    key: fs.readFileSync(config.ssl_key_file, 'utf8'),
-    cert: fs.readFileSync(config.ssl_cert_file, 'utf8')
+    key: fs.readFileSync(config.opt.ssl_key_file, 'utf8'),
+    cert: fs.readFileSync(config.opt.ssl_cert_file, 'utf8')
   };
 } catch (excp) {
   https = false;
