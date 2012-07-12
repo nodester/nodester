@@ -7,15 +7,16 @@ var Logger = require('bunyan')
   , path   = require('path')
   , config = require('../config')
   , bouncy = require('bouncy')
+  , https = true
   ;
 
 try {
   var ssl = {
-    key: fs.readFileSync(config.ssl_key_file),
-    cert: fs.readFileSync(config.ssl_cert_file)
+    key: fs.readFileSync(config.ssl_key_file, 'utf8'),
+    cert: fs.readFileSync(config.ssl_cert_file, 'utf8')
   };
 } catch (excp) {
-  var ssl = false;
+  https = false;
 }
 
 log.info('Starting proxy initialization');
@@ -118,7 +119,8 @@ bouncy(proxy).on('error', function(){
   log.fatal('Bouncy goes nuts');
 }).listen(80);
 
-if (ssl) {
+if (https) {
+  log.info('Setting up https server');
   bouncy(ssl, proxy).on('error', function(){
     log.fatal('Bouncy goes nuts');
   }).listen(433);
