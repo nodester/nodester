@@ -1,162 +1,134 @@
 #!/usr/bin/env node
 
-require.paths.unshift('/usr/lib/node_modules/');
-var http = require('http'),
-  config = require("../config"),
-  util = require('util'),
-  exec = require('child_process').exec,
-  app = require('../lib/app');
+/*jshint laxcomma:true, node:true */
 
+"use strict";
+var cp     = require('child_process')
+  , cradle   = require('cradle')
+  , request = require('request')
+  , async  = require('async')
+  , config = require('../config')
+  , app    = require('../lib/app')
+  , exec   = cp.exec;
+  
 require('colors');
 
-var action = process.argv[2],
-  all = false,
-  this_repo = false,
-  past = '';
+var cfg = config.opt
+  , port = cfg.couch_port
+  , host = cfg.couch_host
+  , user = cfg.couch_user
+  , pass = cfg.couch_pass
+  , range =cfg.bach_range || 10;
+
+// function request(opt, cb){
+//   //console.dir(opt)
+//   setTimeout(function(){
+//     var running = true;
+//     if (Math.floor(Math.random()*10)%2) {
+//       running= false
+//     }
+//     //console.log(running);
+//     var data = {
+//       body: {
+//         running: running
+//       },
+//     }
+//     cb(null, data);
+//   }, 1040)
+// }
 
 
-if (process.argv[3] && process.argv[3].toLowerCase() === 'all') {
-  all = true;
-} else if (process.argv[3]) {
-  all = false;
-  this_repo = process.argv[3];
-}
+cradle.setup({
+   host: host,
+   cache: true, 
+   raw: false,
+    
+   auth: {
+     username: user,
+     password: pass
+   },
+   port: port
+ });
 
-switch (action) {
-case 'start':
-  verb = 'Starting'.green;
-  past = 'started';
-  break;
-case 'stop':
-  verb = 'Stopping'.red.bold;
-  past = 'stopped';
-  break;
-default:
-  action = 'restart';
-  verb = 'Restarting'.yellow;
-  past = 'restarted';
-  break;
-}
-
-var couch_http = http.createClient(config.opt.couch_port, config.opt.couch_host);
-if (config.opt.couch_prefix.length > 0) {
-  var cprefix = config.opt.couch_prefix + '_';
+if (cfg.couch_prefix.length > 0) {
+  var cprefix = cfg.couch_prefix + '_';
 } else {
   var cprefix = '';
 }
 
-// var request = couch_http.request(
-//   'GET',
-//   '/' + cprefix + 'apps' + '/_design/nodeapps/_view/all',
-//   {
-//     'host': config.opt.couch_host,
-//     'Authorization': "Basic " + base64_encode(new Buffer(config.opt.couch_user + ":" + (config.opt.couch_pass || "")))
-//   }
-// );
-// NATIVE BASE64 HANDLING
-var buff = new Buffer(config.opt.couch_user + ':' + config.opt.couch_pass, encoding = 'ascii');
-var dbcreds = buff.toString('base64');
-var request = couch_http.request('GET', '/' + cprefix + 'apps' + '/_design/nodeapps/_view/all', {
-  'host': config.opt.couch_host,
-  'Authorization': "Basic " + dbcreds || ""
-});
 
 
-request.end();
-request.on('response', function (response) {
-  var buff = '';
-  if (response.statusCode != 200) {
-    util.log(response.statusCode);
-    util.log('Error: Cannot query CouchDB');
-    process.exit(1);
+var bach = [];
+
+var sliceArray = function(array){
+  if (array.length) {
+    // slice the apps on groups of bach_range 
+    // To avoid overload in both parts
+    bach.push(array.splice(0, range));
+    sliceArray(array);
+  } else {
+    done();
   }
-  response.setEncoding('utf8');
-  response.on('data', function (chunk) {
-    buff += chunk;
-  });
-  response.on('end', function () {
-    var resp = JSON.parse(buff);
-    start_running_apps(resp.rows);
-  });
-});
+};
 
-var apps = [],
-  count = 0,
-  g = 0,
-  f = 0,
-  good = "SUCCESS ✔",
-  bad = "FAILURE ✖";
+function iterator (app, cb){
+  console.log('Restarting '.bold.grey, app.id);
+  request({
+    uri: 'http://' + cfg.api_dom + '/app/restart/' + app.id,
+    method: 'PUT'
+  }, function (err, data){
+    if (err) {
+      return cb(err);
+    }
+    if (data.body.running == 'true' || data.body.running === true){
+      console.log(app.id, " Running ✔ ".bold.green);
+      cb(null, 'ok');
+    } else {
+      console.log(app.id, data.body.running, " ✖".bold.red);
+      cb(data.body.running);
+    }
+  });
+}
+function restartApp (apps) {
+  return function (cb) {
+    async.forEachLimit(apps, 10, iterator, function(err){
+      if (err) return cb(err);
+      cb(null,'ok');
+    });
+  };
+}
+function done(){
+  if (bach.length){
+    var tasks = [];
+    bach.forEach(function(appl){
+      tasks.push(restartApp.call(this, appl));
+    });
+    async.series(tasks, function (err, results){
+      console.log(arguments);
+    });
+  }
+}
+
+var apps  = [],
+    count = 0,
+    g     = 0,
+    f     = 0,
+    good  = "SUCCESS ✔",
+    bad   = "FAILURE ✖";
 
 // Another bad idea but we don't want this thing crashing
+
 process.on('uncaughtException', function (err) {
-  util.print('UNCAUGHT ERROR! '.red + err);
+  console.log('UNCAUGHT ERROR! '.red + err);
 });
-var handleResponse = function (data) {
-    if (data instanceof Object) {
-      if (data.status.indexOf('failed') > -1) {
-        f++;
-      } else {
-        g++;
-      }
-      util.print(' [' + ((data.status.indexOf('failed') > -1) ? bad.bold.red : good.bold.green) + ']\n');
-    } else {
-      g++;
-      util.print(' [' + good.bold.green + ']\n');
-    }
-    //Let the process fire up and daemonize before starting the next one
-    setTimeout(next, 500);
-    //next();
-  };
 
-var next = function () {
-    if (apps.length > 0) {
-      var len = apps.length;
-      var doc = apps.pop();
-      console.log(JSON.stringify(doc));
-      if (doc && doc.username && doc.repo_id && doc.start && doc.port) {
-        util.print(verb + ' (' + len + '): [' + (doc.username + '/' + doc.repo_id + '/' + doc.start + ':' + doc.port).blue + ']');
-        var method = 'app_' + action;
-        try {
-          app[method]({
-            query: {
-              repo_id: doc.repo_id,
-              restart_key: config.opt.restart_key
-            }
-          }, {
-            writeHead: function (data) {},
-            send: handleResponse,
-            end: handleResponse,
-          });
-        } catch (err) {
-          f++;
-          util.print(err + '\n');
-          util.print('[' + bad.red.bold + ']\n');
-        }
-      } else {
-        f++;
-        util.print('Missing records.\n')
-        util.print('[' + bad.red.bold + ']\n')
-        next();
-      }
-    } else {
-      util.log(('All ' + count + ' apps ' + past).bold);
-      util.log(g + ' apps ' + past + ' successfully');
-      if (f) {
-        util.log((f + ' apps failed to ' + action).red.bold);
-      }
-    }
-  };
+var c = new(cradle.Connection), db = c.database(cprefix + 'apps');
 
-var start_running_apps = function (apps_arr) {
-    for (var i in apps_arr) {
-      var doc = apps_arr[i].value;
-      count++;
-      apps.push(doc);
-    }
-    if (all) {
-      util.log(verb + ' ALL (' + count + ') apps..');
-    } else {
-      util.log(verb + ' ' + count + ' apps..');
-    }
-    next();
-  };
+db.view('nodeapps/all', function(err, doc){
+  if (err) {
+    console.error(err);
+    process.kill(1);
+  } else {
+    sliceArray(doc);
+  }
+});
