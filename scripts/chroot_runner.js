@@ -45,8 +45,8 @@ function logger (log, code, level) {
     pid  : process.pid,
     path : __dirname,
     log  : log,
-    memory: memory.rss
-    time: Date.now() - timer;
+    memory: memory.rss,
+    time: Date.now() - timer
   };
   process.nextTick(function(){
     return db.publish(cfg.redis.channel || 'apps::warning', doLog(format, vars), function(err){
