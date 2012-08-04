@@ -50,6 +50,7 @@ We are always looking for areas to improve Nodester!  Here are a few of the big 
 * Write an install.js script and npm installer module
 * Ability to start app with additional instances (dynos)
 * Horizontal scaling
+* Add Support for Crypto frameworks
 
 Feel free to suggest improvements at https://github.com/nodester/nodester/issues
 
