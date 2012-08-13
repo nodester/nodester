@@ -1,9 +1,10 @@
-//
-//          Numbus
-// Aprender es cosa de niños
-//
-//  2012 (c) for numbus LLC
-//
+#!/usr/bin/env node
+
+/*
+ * Nodester OpenSource Node.js hosting service
+ * http://nodester.com
+ * http://github.com/nodester
+*/
 
 /*jshint node:true, noempty:true, laxcomma:true, laxbreak:false */
 
