@@ -17,17 +17,17 @@ var run_max = 5;
 var run_count = 0;
 var LOG_STDOUT = 1;
 var LOG_STDERR = 2;
+var timer = new Date();
+var db = redis.createClient(cfg.redis);
 var env = {
   PATH: '/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin',
   NODE_ENV: 'production'
 };
-var timer = +new Date;
-var db = redis.createClient(cfg.redis);
 
 function doLog (format, vars) { 
    return format.replace(/(^|[^\\])\$(\w*)/g, function (v, w, x) { 
-     return w + vars[x] 
-   }) 
+     return w + vars[x];
+   });
 }
 
 function logger (log, code, level) {
@@ -54,7 +54,7 @@ function logger (log, code, level) {
       timer = Date.now();
     });
   });
-};
+}
 
 
 function pings () {
@@ -197,7 +197,7 @@ var myPid = daemon.start();
           }
           if (path.extname(args[0]) === '.coffee') {
             var old = fs.readdirSync('/app/').filter(function(file){
-              return /nodester\-[0-9]{13,}\.js/g.test(file);
+              return (/nodester\-[0-9]{13,}\.js/g).test(file);
             });
             if (old.length === 1){
               args[0] = '/app/'+ old[0];
@@ -208,7 +208,7 @@ var myPid = daemon.start();
             
             /* dirty hack to make coffee files work*/ 
             var coffeeCode = "require('coffee-script')\n"
-                           + "require(__dirname + '/"+ config.start + "')\n";
+                           + "require(__dirname + '/" + config.start + "')\n";
             try {
               fs.writeFileSync(args[0], coffeeCode ,'utf8');
             } catch(ex){
@@ -261,7 +261,8 @@ var myPid = daemon.start();
             logger(msg, lcode);
           });
         } else {
-          log_line.call('Watcher', 'Process exited cleanly. node.js Version:' + version + ' not avaiable', LOG_STDERR);
+          var msg = 'Process exited cleanly. node.js Version:' + version + ' not avaiable';
+          log_line.call('Watcher', msg, LOG_STDERR);
           logger(msg, 'N0');
           clearInterval(child_watcher_timer);
         }
