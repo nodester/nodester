@@ -7,11 +7,12 @@ var daemon = require('daemon');
 var fs = require('fs');
 var path = require('path');
 var net = require('net');
-var redis = require('redis');
 var node_versions = require('../lib/lib').node_versions();
 var config = JSON.parse(fs.readFileSync(path.join('.nodester', 'config.json'), encoding = 'utf8'));
 var cfg = require('../config').opt;
 var oldmask, newmask = 0000;
+oldmask = process.umask(newmask);
+console.log('Changed umask from: ' + oldmask.toString(8) + ' to ' + newmask.toString(8));
 var run_max = 5;
 var run_count = 0;
 var LOG_STDOUT = 1;
@@ -20,67 +21,12 @@ var env = {
   PATH: '/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin',
   NODE_ENV: 'production'
 };
-var timer = +new Date;
-var db = redis.createClient(cfg.redis);
-
-function doLog(format, vars) {
-  return format.replace(/(^|[^\\])\$(\w*)/g, function (v, w, x) {
-    return w + vars[x]
-  })
-}
-
-function logger(log, code, level) {
-  // Codes:
-  // N0 -> Version not supported
-  // N1 -> Normal
-  // E1 -> Restarted too many times
-  // E2 -> Exit with a number code
-  // E3 -> Other errors
-  var format = "[$date] $code: $memory $time $pid on $path: $log";
-  var memory = process.memoryUsage();
-  var vars = {
-    date: (new Date()).toISOString(),
-    code: code || 'N1',
-    pid: process.pid,
-    path: __dirname,
-    log: log,
-    memory: memory.rss,
-    time: Date.now() - timer
-  };
-  process.nextTick(function () {
-    return db.publish(cfg.redis.channel || 'apps::warning', doLog(format, vars), function (err) {
-      if (err) console.warn(err);
-      timer = Date.now();
-    });
-  });
-};
-
-function pings() {
-  var format = '[$date] $code: $memory $pid on $path';
-  var memory = process.memoryUsage();
-  var vars = {
-    date: (new Date()).toISOString(),
-    code: 'PING',
-    pid: process.pid,
-    path: __dirname,
-    memory: memory.rss
-  };
-  return db.publish(cfg.redis.channel + '::pings', doLog(format, vars), function (err) {
-    // ignore errors;
-    return true;
-  });
-}
-// Hey, I'm Alive!
-setInterval(pings, 10000);
-oldmask = process.umask(newmask);
-console.log('Changed umask from: ' + oldmask.toString(8) + ' to ' + newmask.toString(8));
 if (config.env) {
   Object.keys(config.env).forEach(function (key) {
     env[key] = String(config.env[key]);
   });
 }
 env.app_port = parseInt(config.port, 10);
-env.PORT = parseInt(config.port, 10);
 env.app_host = config.ip;
 var args = ['/app/' + config.start];
 var chroot_res = daemon.chroot(config.appchroot);
@@ -129,9 +75,7 @@ var myPid = daemon.start();
       log_line('chroot_runner', 'Failed to chmod logs.sock', LOG_STDERR);
     }
     process.on('SIGINT', function () {
-      var msg = 'SIGINT recieved, sending SIGTERM to children';
-      logger(msg, 'WARN');
-      log_line.call('chroot_runner', msg);
+      log_line.call('chroot_runner', 'SIGINT recieved, sending SIGTERM to children.');
       if (child !== null) {
         log_line.call('chroot_runner', 'Child PID: ' + child.pid.toString());
         process.kill(child.pid, 'SIGTERM');
@@ -223,29 +167,19 @@ var myPid = daemon.start();
           child.stdout.on('data', log_line.bind('stdout'));
           child.stderr.on('data', log_line.bind('stderr'));
           child.on('exit', function (code) {
-            var msg = '',
-              lcode = 'E0';
             if (code > 0 && run_count > run_max) {
-              msg = 'Error: Restarted too many times, bailing.';
-              lcode = "E1";
-              log_line.call('Watcher', msg, LOG_STDERR);
+              log_line.call('Watcher', 'Error: Restarted too many times, bailing.', LOG_STDERR);
               clearInterval(child_watcher_timer);
             } else if (code > 0) {
-              msg = 'Process died with exit code ' + code + '. Restarting...';
-              lcode = 2;
-              log_line.call('Watcher', msg, LOG_STDERR);
+              log_line.call('Watcher', 'Process died with exit code ' + code + '. Restarting...', LOG_STDERR);
               child = null;
             } else {
-              msg = 'Process exited cleanly. Dieing.';
-              lcode = 'E3';
-              log_line.call('Watcher', msg, LOG_STDERR);
+              log_line.call('Watcher', 'Process exited cleanly. Dieing.', LOG_STDERR);
               clearInterval(child_watcher_timer);
             }
-            logger(msg, lcode);
           });
         } else {
           log_line.call('Watcher', 'Process exited cleanly. node.js Version:' + version + ' not avaiable', LOG_STDERR);
-          logger(msg, 'N0');
           clearInterval(child_watcher_timer);
         }
       };
