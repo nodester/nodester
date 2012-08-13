@@ -16,7 +16,7 @@ var cluster = require('cluster')
   , pkg         = require('./package')
   , spawn       = cp.spawn
   , clusterConf = config.cluster || {}
-  , logger      = require('bunyan').createLogger(config.log || {})
+  , logger      = require('bunyan').createLogger(config.log || {name: 'nodester'})
   , pro         = []
   , workers     = [];
 
