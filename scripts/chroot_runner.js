@@ -1,7 +1,6 @@
 #!/usr/bin/env node1
 
 require.paths.unshift('/usr/lib/node_modules');
-
 var spawn = require('child_process').spawn;
 var exec = require('child_process').exec;
 var daemon = require('daemon');
@@ -17,20 +16,20 @@ var run_max = 5;
 var run_count = 0;
 var LOG_STDOUT = 1;
 var LOG_STDERR = 2;
-var timer = new Date();
-var db = redis.createClient(cfg.redis);
 var env = {
   PATH: '/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin',
   NODE_ENV: 'production'
 };
+var timer = +new Date;
+var db = redis.createClient(cfg.redis);
 
-function doLog (format, vars) { 
-   return format.replace(/(^|[^\\])\$(\w*)/g, function (v, w, x) { 
-     return w + vars[x];
-   });
+function doLog(format, vars) {
+  return format.replace(/(^|[^\\])\$(\w*)/g, function (v, w, x) {
+    return w + vars[x]
+  })
 }
 
-function logger (log, code, level) {
+function logger(log, code, level) {
   // Codes:
   // N0 -> Version not supported
   // N1 -> Normal
@@ -40,45 +39,41 @@ function logger (log, code, level) {
   var format = "[$date] $code: $memory $time $pid on $path: $log";
   var memory = process.memoryUsage();
   var vars = {
-    date : (new Date()).toISOString(),
+    date: (new Date()).toISOString(),
     code: code || 'N1',
-    pid  : process.pid,
-    path : __dirname,
-    log  : log,
+    pid: process.pid,
+    path: __dirname,
+    log: log,
     memory: memory.rss,
     time: Date.now() - timer
   };
-  process.nextTick(function(){
-    return db.publish(cfg.redis.channel || 'apps::warning', doLog(format, vars), function(err){
+  process.nextTick(function () {
+    return db.publish(cfg.redis.channel || 'apps::warning', doLog(format, vars), function (err) {
       if (err) console.warn(err);
       timer = Date.now();
     });
   });
-}
+};
 
-
-function pings () {
+function pings() {
   var format = '[$date] $code: $memory $pid on $path';
   var memory = process.memoryUsage();
   var vars = {
-    date : (new Date()).toISOString(),
+    date: (new Date()).toISOString(),
     code: 'PING',
-    pid  : process.pid,
-    path : __dirname,
+    pid: process.pid,
+    path: __dirname,
     memory: memory.rss
   };
-  return db.publish(cfg.redis.channel + '::pings', doLog(format, vars), function(err){
+  return db.publish(cfg.redis.channel + '::pings', doLog(format, vars), function (err) {
     // ignore errors;
     return true;
   });
 }
-
 // Hey, I'm Alive!
 setInterval(pings, 10000);
-
 oldmask = process.umask(newmask);
 console.log('Changed umask from: ' + oldmask.toString(8) + ' to ' + newmask.toString(8));
-
 if (config.env) {
   Object.keys(config.env).forEach(function (key) {
     env[key] = String(config.env[key]);
@@ -87,7 +82,6 @@ if (config.env) {
 env.app_port = parseInt(config.port, 10);
 env.PORT = parseInt(config.port, 10);
 env.app_host = config.ip;
-
 var args = ['/app/' + config.start];
 var chroot_res = daemon.chroot(config.appchroot);
 if (chroot_res !== true) {
@@ -172,13 +166,11 @@ var myPid = daemon.start();
           pack.node = process.version;
           pack.flags = [];
         }
-
         // Double check for flags and add support
         // for single flags as an array of them
         if (!pack.flags) pack.flags = [];
         if (typeof pack.flags == 'string') pack.flags = [pack.flags];
         if (!pack.flags.hasOwnProperty('length')) pack.flags = [];
-
         // What if the try/catch read the package but there is no `node`?
         var version = pack.node === undefined ? process.version : pack.node;
         // n dir only handles number paths without v0.x.x  => 0.x.x
@@ -187,64 +179,55 @@ var myPid = daemon.start();
         if (node_versions.indexOf(version) !== -1) {
           // The spawn process only works with absolute paths, and by default n'd saved every
           // version of node in /usr/local/n/version
-          var nodePath =  '/usr/local/n/versions/' + version + '/bin/node';
+          var nodePath = '/usr/local/n/versions/' + version + '/bin/node';
           var spawingPath = nodePath;
           var WARN = '\033[1m\033[31mWARN\033[39m\033[22m';
-
-          log_line.call('data','Spawing ' + args[0], LOG_STDOUT);
+          log_line.call('data', 'Spawing ' + args[0], LOG_STDOUT);
           if (pack.flags.length) {
             log_line.call('data', 'with these flags: ' + pack.flags, LOG_STDOUT);
           }
           if (path.extname(args[0]) === '.coffee') {
-            var old = fs.readdirSync('/app/').filter(function(file){
-              return (/nodester\-[0-9]{13,}\.js/g).test(file);
+            var old = fs.readdirSync('/app/').filter(function (file) {
+              return /nodester\-[0-9]{13,}\.js/g.test(file);
             });
-            if (old.length === 1){
-              args[0] = '/app/'+ old[0];
+            if (old.length === 1) {
+              args[0] = '/app/' + old[0];
             } else {
-               var timestamp = Date.now();
-               args[0] = '/app/nodester-'+ timestamp + '.js';
-            }
-            
-            /* dirty hack to make coffee files work*/ 
-            var coffeeCode = "require('coffee-script')\n"
-                           + "require(__dirname + '/" + config.start + "')\n";
+              var timestamp = Date.now();
+              args[0] = '/app/nodester-' + timestamp + '.js';
+            } /* dirty hack to make coffee files work*/
+            var coffeeCode = "require('coffee-script')\n" + "require(__dirname + '/" + config.start + "')\n";
             try {
-              fs.writeFileSync(args[0], coffeeCode ,'utf8');
-            } catch(ex){
+              fs.writeFileSync(args[0], coffeeCode, 'utf8');
+            } catch (ex) {
               log_line.call('data', WARN + ':: coffee server file can not be spawned');
               return false;
             }
-            log_line.call('data', WARN + ' :: You need to run `nodester npm install APPNAME ' +
-                          'coffee-script` before start this app, if you already did this ignore this msg',
-                          LOG_STDERR);
+            log_line.call('data', WARN + ' :: You need to run `nodester npm install APPNAME ' + 'coffee-script` before start this app, if you already did this ignore this msg', LOG_STDERR);
           }
-
           child = spawn(spawingPath, pack.flags.concat(args), {
             env: env
           });
-          
           /*
-          * Check if the version of node is 0.4.x or <0.6.17
-          * because of:
-          * http://blog.nodejs.org/2012/05/07/http-server-security-vulnerability-please-upgrade-to-0-6-17/
-          */
-          var digits = parseFloat(version,10);
-
-          if (digits < 0.6){ 
-            log_line.call('data', WARN +' :: You are running in node-'+ version + 
-                          '. You might want to upgrade to node-v0.6.17' ,LOG_STDERR);
-          } else if (digits === 0.6 && version.substr(-2) < 17){
-            log_line.call('data', WARN + ' :: You need to upgrade to 0.6.17 Change the value in your package.json',LOG_STDERR);
+           * Check if the version of node is 0.4.x or <0.6.17
+           * because of:
+           * http://blog.nodejs.org/2012/05/07/http-server-security-vulnerability-please-upgrade-to-0-6-17/
+           */
+          var digits = parseFloat(version, 10);
+          if (digits < 0.6) {
+            log_line.call('data', WARN + ' :: You are running in node-' + version + '. You might want to upgrade to node-v0.6.17', LOG_STDERR);
+          } else if (digits === 0.6 && version.substr(-2) < 17) {
+            log_line.call('data', WARN + ' :: You need to upgrade to 0.6.17 Change the value in your package.json', LOG_STDERR);
           }
-
           log_line.call('Watcher', 'Running node v-' + version, LOG_STDERR);
           child.stdout.on('data', log_line.bind('stdout'));
           child.stderr.on('data', log_line.bind('stderr'));
           child.on('exit', function (code) {
-            var msg = '', lcode = 'E0';
+            var msg = '',
+              lcode = 'E0';
             if (code > 0 && run_count > run_max) {
-              msg = 'Error: Restarted too many times, bailing.'; lcode = "E1";
+              msg = 'Error: Restarted too many times, bailing.';
+              lcode = "E1";
               log_line.call('Watcher', msg, LOG_STDERR);
               clearInterval(child_watcher_timer);
             } else if (code > 0) {
@@ -261,8 +244,7 @@ var myPid = daemon.start();
             logger(msg, lcode);
           });
         } else {
-          var msg = 'Process exited cleanly. node.js Version:' + version + ' not avaiable';
-          log_line.call('Watcher', msg, LOG_STDERR);
+          log_line.call('Watcher', 'Process exited cleanly. node.js Version:' + version + ' not avaiable', LOG_STDERR);
           logger(msg, 'N0');
           clearInterval(child_watcher_timer);
         }
