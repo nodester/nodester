@@ -8,7 +8,11 @@
  * http://github.com/nodester
 */
 
+/*jshint node:true, laxcomma:true*/
+"use strict";
+
 var express = require('express')
+  , fs      = require('fs')
   , url     = require('url')
   , sys     = require('util')
   , path    = require('path')
@@ -19,13 +23,18 @@ var express = require('express')
   , stats   = require('./lib/stats')
   ;
 
-var __app__ = express.createServer()
-  , app = __app__
-  ;
+/*
+  Patch console#* with Bunyan
+*/
+console.error = log.warn.bind(log);
+console.log = log.info.bind(log);
+
+var app = express.createServer();
 
 app.configure(function () {
+  app.use(express.logger('dev'));
   app.use(express.bodyParser());
-  app.use(express.static(config.opt.public_html_dir));
+  app.use(express['static'](config.opt.public_html_dir));
   app.use(express.errorHandler({
     showStack: true,
     dumpExceptions: true
@@ -36,50 +45,46 @@ app.configure(function () {
  * status emitter
 */
 
-
-// var bolt = require('bolt');
-
-
 var EventEmitter = require('events').EventEmitter;
-var dash = process.dash = new EventEmitter;
+var dash = process.dash = new EventEmitter();
 
 /*
  * Error handler
- */
+*/
 
 app.error(function (err, req, res, next) {
   if (err instanceof NotFound) {
-    res.sendfile(__dirname + '/public/404.html')
+    res.sendfile(__dirname + '/public/404.html');
   } else {
-    log.warn(err)
-    dash.emit('nodester::500',{msg:err.message,stack:err.stack.toString()})
-    res.sendfile(__dirname + '/public/500.html')
+    log.warn(err);
+    dash.emit('nodester::500',{ msg: err.message, stack: err.stack.toString()});
+    res.sendfile(__dirname + '/public/500.html');
   }
 });
 
 app.all('*',function(req,res,next){
   if (!path.extname(req.url)){
     var ip = req.connection.remoteAddress || req.socket.remoteAddress;
-    if (req.headers["x-real-ip"]) ip =req.headers["x-real-ip"];
+    if (req.headers["x-real-ip"]) ip = req.headers["x-real-ip"];
     var toEmit = {
       ip     : ip,
       url    : req.url,
-      time   : new Date,
+      time   : new Date(),
       method : req.method,
       ua     : req.headers['user-agent'] || 'nodester',
       host   : req.headers.host
-    }
-    dash.emit('nodester::incomingRequest', toEmit)
+    };
+    dash.emit('nodester::incomingRequest', toEmit);
   }
-  next()
-})
+  next();
+});
 
 function getStats(){
-  var statistics ={}
+  var statistics = {};
   for (var stat in stats){
     // ignore childprocess which can cause high latency
     if (stat != 'getDiskUsage' && stat != 'getProcesses'){
-      statistics[stat]  = stats[stat]()
+      statistics[stat]  = stats[stat]();
     }
   }
   return statistics;
@@ -89,52 +94,49 @@ function getStats(){
  * Ping every 3 seconds
 */
 setInterval(function(){
-  dash.emit('nodester::ping',{date:new Date})
-},3000)
+  dash.emit('nodester::ping', { date: new Date() });
+}, 3000);
 
 /*
  * emit stats every 5 seconds
 */
 
 setInterval(function(){
-  dash.emit('nodester::stats',getStats())
-}, 5000)
+  dash.emit('nodester::stats', getStats());
+}, 10000);
 
 
 process.on('uncaughtException', function (err) {
-  dash.emit('nodester::uE',{ msg:err.message,stack:err.stack.toString()})
-  log.fatal(err.stack)
+  dash.emit('nodester::uE', { msg: err.message, stack: err.stack.toString()});
+  log.fatal(err.stack);
   // Kill it with fire dude
   var slog = fs.createWriteStream(path.join(config.opt.logs_dir + 'apperror.log'), {'flags': 'a'});
   slog.write('\n<-- new error -->\n');
-  slog.end('\n' + err.message + '\n' + err.stack +'\n')
+  slog.end('\n' + err.message + '\n' + err.stack +'\n');
   setTimeout(function(){
     //let the process write the log
-    process.kill(0)
-  },150)
-})
+    process.kill(0);
+  },150);
+});
 
 /* Routes  */
 
 /* 
- * Homepage Showcase
+ * Static Resources 
  * 
  */
-app.get('/', function (req, res, next) {
-  res.sendfile(__dirname +'/public/index.html')
+
+['','api','help','about'].forEach(function(staticResource){
+  app.get('/' + staticResource, function(req, res){
+    if (!staticResource) staticResource =  'index';
+    res.sendfile(__dirname + '/public/' + staticResource + '.html');
+  });
 });
-app.get('/api', function (req, res, next) {
-  res.sendfile(__dirname +'/public/api.html')
-});
-app.get('/help', function (req, res, next) {
-  res.sendfile(__dirname +'/public/help.html')
-});
-app.get('/about', function (req, res, next) {
-  res.sendfile(__dirname +'/public/about.html')
-});
+
 app.get('/admin', function (req, res, next) {
   res.redirect('http://admin.nodester.com');
 });
+
 app.get('/irc', function (req, res, next) {
   res.redirect('http://irc.nodester.com');
 });
@@ -163,6 +165,7 @@ app.get('/status', status.get);
 app.get('/status.json', function (req, res, next) {
   res.redirect('http://status.nodester.com');
 });
+
 /*
  * New coupon request
  * @Public: true
@@ -230,7 +233,7 @@ app.get('/apps', auth, apps.get);
  * App actions
  * @Public: false
  */
-var _app_ = require('./lib/app')
+var _app_ = require('./lib/app');
 
 
 /* 
@@ -368,22 +371,23 @@ var reset_password = require('./lib/reset_password');
 app.post('/reset_password', reset_password.post);
 app.put('/reset_password/:token', reset_password.put);
 
-// default listener
-app.listen(4001);
-
-log.info('Nodester app started on port %d', app.address().port);
 
 app.get('/*', function (req, res) {
-  throw new NotFound;
+  throw new NotFound();
 });
 
 function NotFound(msg) {
   this.name = 'NotFound';
   Error.call(this, msg);
-  Error.captureStackTrace(this, arguments.callee);
-};
+  Error.captureStackTrace(this, NotFound);
+}
 
 // Globalization of log
-process.log = log 
+process.log = log;
 
 /* End of file */
+
+// default listener
+app.listen(4001, function () {
+  log.info('Nodester app started on port %d', app.address().port);  
+});
