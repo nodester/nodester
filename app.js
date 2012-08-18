@@ -326,6 +326,7 @@ app.get('/env/version', _app_.env_version);
  */
 app.get('/env/version/:version', _app_.check_env_version);
 app.get('/env/:appname', auth, authApp, _app_.env_get);
+app.put('/env/:appname', auth, authApp, _app_.env_put);
 app.put('/env', auth, authApp, _app_.env_put);
 app.del('/env/:appname/:key', auth, authApp, _app_.env_delete);
 
