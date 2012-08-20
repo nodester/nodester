@@ -351,8 +351,8 @@
                         <tr>
                            <td>&nbsp;</td>
                            <td><a class="btn disabled">PUT</a></td>
-                           <td><b>/env</b> - Create/update environment key/value pair (requires basic auth, appname, and environment key and value)<br />
-                              <code>curl -X PUT -u "testuser:123" -d "appname=a&key=color&value=blue" http://api.nodester.com/env</code>
+                           <td><b>/env</b> - Create/update environment key/value pair (requires basic auth and environment key and value)<br />
+                              <code>curl -X PUT -u "testuser:123" -d "key=color&amp;value=blue" http://api.nodester.com/env/&lt;appname&gt;</code>
                            </td>
                         </tr>
                         <tr>
