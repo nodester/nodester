@@ -2490,7 +2490,7 @@ h1 {
   text-shadow: 0 1px 0 #ffffff;
   display: block;
   margin: 0;
-  padding: 0 30px 0 0; 
+  
 }
 .brand{
 font-family: "Open Sans Condensed";
@@ -2576,7 +2576,7 @@ font-size: 17px;
 #contrib {
   list-style:none;
 }
-li {display:inline;}
+li {display:block;}
 .hackers{
   padding-top:30px;
   padding-bottom:30px;
