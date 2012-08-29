@@ -42,7 +42,16 @@
 <div class="topbar">
   <div class="fill">
     <div class="container">
-      <a class="brand" href="/"><img src="images/rocket-md-right.png" width="40" /> <span>nodester</span></a>
+      <a class="brand" href="/">
+        <div style="float:left; clear:none;padding:0px;margin:0px;">
+          <img src="images/rocket-md-right.png" width="40" />
+        </div>
+        <div style="float:left; clear:none;">
+          <span>nodester</span>
+          <div style="font-size:12px; color:#0064CD">Powered by AppFog</div>
+        </div>
+      </a>
+      
       <ul id="actions" class="nav off">
         <li class="active"><a href="/">Home</a></li>
         <li><a href="/api">API</a></li>
@@ -63,101 +72,36 @@
 
 <div class="container">
   <div class="hero-unit">
-    <h1>OpenSource Node.JS PaaS</h1>
-    <br />
-    <img src="images/nodesterbw_transparent.png" align="right" width="250" />
-    <p>
-       Deploy your Node.JS applications to Nodester.com for FREE or deploy your apps to
-       your own private cloud instance of Nodester running in your own datacenter or on
-       Amazon EC2, Rackspace, or GoGrid!
-    </p>
-    <br />
-    <p>
-       Nodester is an open source Node.JS Platform-as-a-Service written in Node.JS with
-       a RESTful API designed to run in any cloud without a VPS! It is the first of its
-       kind and 100% open sourced under the GNU Affero license on <a href="http://github.com/nodester">GitHub</a>.
-    </p>
-    <br />
-  <p>We now support Node.JS versions 0.4.12, 0.6.12, 0.6.17, and <strong>0.8.1!</strong></p>
-  <br />
-  <div id="reqbutton" class="btn primary large">
-     Request Registration Coupon
+    <div style="clear:both; overflow:hidden;">
+      <div style="width:580px; clear:none; float:left;">
+        <h1>OpenSource Node.JS PaaS</h1>
+        <div class="well"><h2>Nodester Joined AppFog - <a href="http://blog.appfog.com/appfog-acquires-nodester-shares-love-for-node-devs">Learn more</a></h2></div>
+        <p>Deploy your Node.JS applications to Nodester.com for FREE or deploy your apps to your own private cloud instance of Nodester running in your own datacenter or on Amazon EC2, Rackspace, HP Cloud or Azure! </p>
+        <p> Nodester is an open source Node.JS Platform-as-a-Service written in Node.JS with a RESTful API designed to run in any cloud without a VPS! It is the first of its kind and 100% open sourced on <a href="http://github.com/nodester">GitHub</a>.</p>
+        <br />
+      <p>We now support Node.JS versions 0.4.12, 0.6.12, and 0.6.17</p>
+      <a href="https://console.appfog.com/signup?utm_source=nodester&utm_medium=website&utm_campaign=nodester" class="btn primary large">
+         <font size="4">Run Your Node.js Apps Now »</font>
+      </a>
+      <p><font size="2">Or check out the <a href="http://github.com/nodester">Nodester source code</a>.</font></p>
+    </div>
+    <div style="width:200px; clear:none; float:right;">
+      <img src="images/nodester_appfog_orbit_2.png" align="right" width="250" />
+      <p class="c2" style="clear:both; float:right;">
+        Nodester hosting sponsored by 
+        <a href="http://tropo.com"><img src="https://www.tropo.com/images/top/tropo-logo-new-wide.png" width="100"></a>
+      </p>
+    </div>
   </div>
-  <div id="videobutton" class="btn danger large">
-    Watch Video &raquo;
-  </div>
-  <div id="reqform" class="c1">
-     <br />
-     <form action="/coupon" method="post">
-      <input class="input-large" type="text" name="email" id="email" placeholder="Email" />
-      <button class="btn" type="submit">Send</button>
-     </form>
-  </div>
-  <script type="text/javascript">
-    $('#reqbutton').click(function() {
-      $('#reqform').toggle('slow', function() {
-       // Animation complete.
-      });
-    });
-    $('#videobutton').click(function() {
-       // window.location.href = 'http://www.youtube.com/watch?v=jwsP1Ejv-_w';
-       $.fancybox({
-             'padding'      : 0,
-             'autoScale'    : false,
-             'transitionIn' : 'elastic',
-             'transitionOut'   : 'none',
-             'title'        : this.title,
-             'width'        : 680,
-             'height'    : 495,
-             'href'         : 'http://www.youtube.com/watch?v=jwsP1Ejv-_w&hd=1&feature=player_embedded#at=41'.replace(new RegExp("watch\\?v=", "i"), 'v/'),
-             'type'         : 'swf',
-             'swf'       : {
-             'wmode'        : 'transparent',
-             'allowfullscreen' : 'true'
-             }
-          });
-    });
-  </script>
-  <p class="c2">
-    Nodester hosting sponsored by 
-    <a href="http://tropo.com"><img src="https://www.tropo.com/images/top/tropo-logo-new-wide.png" width="100"></a>
-  </p>
   </div>
   <!-- BLOCKS -->
+
          <div class="row">
-            <div class="span-one-third">
-               <h2><img src="images/rocket-md-right.png" width="30" /> Systems Check</h2>
-               <p>Request your free Nodester Node.JS hosting coupon</p>
-            </div>
-            <div class="span-one-third">
-               <h2><img src="images/rocket-md-right.png" width="30" /> All Systems Go</h2>
-               <p>You have received your coupon and you're ready to install our Command Line
-                  Interface
-               </p>
-            </div>
-            <div class="span-one-third">
-               <h2><img src="images/rocket-md-right.png" width="30" /> 3-2-1 Launch!</h2>
-               <p>You're ready to deploy your Hello World app!</p>
-            </div>
-         </div>
-         <div class="row">
-            <div class="span-one-third">
-               <pre class="prettyprint">curl -X POST -d "email=you@gmail.com" http://nodester.com/coupon<br /><br/></pre>
-            </div>
-            <div class="span-one-third">
-               <pre class="prettyprint">npm install nodester-cli -g<br />nodester user setup &lt;user&gt; &lt;pass&gt;<br />nodester user setkey</pre>
-            </div>
-            <div class="span-one-third">
-               <pre class="prettyprint">nodester app create &lt;appname&gt;<br />nodester app init &lt;appname&gt;<br /><br /></pre>
-            </div>
-         </div>
-         <div class="row">
-         <div class="hackcont">
-         <p><strong> Share the love </strong></p>
-         <a href="https://twitter.com/share" class="twitter-share-button" data-via="nodester" data-size="small" data-related="nodester" data-hashtags="nodester">Tweet</a>
-         <iframe src="http://ghbtns.com/github-btn.html?user=nodester&repo=nodester&type=watch&count=true"
-  allowtransparency="true" frameborder="0" scrolling="0" width="110px" height="20px"></iframe>
-         </div>
+           <div class="hackcont">
+             <p><strong> Share the love </strong></p>
+             <a href="https://twitter.com/share" class="twitter-share-button" data-via="nodester" data-size="small" data-related="nodester" data-hashtags="nodester">Tweet</a>
+             <iframe src="http://ghbtns.com/github-btn.html?user=nodester&repo=nodester&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="110px" height="20px"></iframe>
+           </div>
          </div>
       <!-- /container -->
       <footer class="footer">
@@ -184,4 +128,4 @@
        !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
       </script>
    </body>
-</html>|
+</html>
