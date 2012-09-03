@@ -27,6 +27,9 @@ var proxymap = {
   "api.nodester.com":4001
 };
 
+// Avoid DDOS
+var bannedIPs = ['212.44.42.5'];
+
 // Ghetto hack for error page
 var getErrorPage = function (title, code, error) {
   var errorPage = '<html><head><title id="title">{title}</title></head><body><br/><br/><br/><br/><br/><center><img src="http://nodester.com/images/rocket-down.png" alt="logo" /><br/><h1 style ="color:#000;font-family:Arial,Helvetica,sans-serif;font-size:38px;font-weight:bold;letter-spacing:-2px;padding:0 0 5px;margin:0;">{code}</h1><h3 style ="color:#000;font-family:Arial,Helvetica,sans-serif;font-size:24px;font-weight:bold;padding:0 0 5px;margin:0;">{error}</h3></center></body></html>';
@@ -53,6 +56,21 @@ fs.watchFile(config.opt.proxy_table_file, function (oldts, newts) {
     }
   });
 });
+
+fs.watchFile(__dirname + '/ips.json', function(oldts, newts){
+  fs.readFile(__dirname + '/ips.json', function(err, data){
+    if (err) {
+      log.info('Can\'t load the ips (read)');
+    } else {
+      try {
+        bannedIPs = JSON.parse(data)
+        log.info('ips updated')
+      } catch (exc) {
+        log.warn(exc)
+      }
+    }
+  })
+})
 
 //Don't crash br0
 process.on('uncaughtException', function (err) {
@@ -83,7 +101,13 @@ function proxy (req, bounce) {
     var route = proxymap[host] || proxymap[''];
     // log only urls that are not media files like public folders, css,js
     if (!path.extname(req.url)) {
-      log.info(host + ':' + route);
+      var ip = req.headers['x-real-ip'] || req.headers['x-forwarded-for'] || req.client.remoteAddress
+      if (bannedIPs.indexOf(ip) > -1) {
+        var res = bounce.respond()
+        res.statusCode = 509
+        return res.end('Bandwith Limit Exceed')
+      }
+      log.info(host + ':' + route, ip);
     }
     req.on('error', function (err) {
       var res = bounce.respond();
