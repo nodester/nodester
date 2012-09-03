@@ -63,7 +63,7 @@ function readIP (){
       log.info('Can\'t load the ips (read)');
     } else {
       try {
-        bannedIPs = JSON.parse(data);
+        bannedIPs = data;
         log.info('ips updated');
       } catch (exc) {
         log.warn(exc);
