@@ -58,12 +58,12 @@ fs.watchFile(config.opt.proxy_table_file, function (oldts, newts) {
 });
 
 function readIP (){
-   return fs.readFile(__dirname + '/ips.json', function(err, data){
+   return fs.readFile(__dirname + '/ips.json','utf8', function(err, data){
     if (err) {
       log.info('Can\'t load the ips (read)');
     } else {
       try {
-        bannedIPs = data;
+        bannedIPs = JSON.parse(data);
         log.info('ips updated');
       } catch (exc) {
         log.warn(exc);
