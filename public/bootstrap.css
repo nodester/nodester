@@ -2602,3 +2602,5 @@ table {
  .brand span {color:#222;}
 
 li.active a { border-radius:10px;}
+
+.tabs li.active a { border-radius:10px 10px 0 0; }
