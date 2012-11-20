@@ -26,8 +26,9 @@ if (config.env) {
     env[key] = String(config.env[key]);
   });
 }
-env.app_port = parseInt(config.port, 10);
-env.app_host = config.ip;
+env.app_port = env.PORT = parseInt(config.port, 10);
+env.app_host = env.HOST = config.ip;
+
 var args = ['/app/' + config.start];
 var chroot_res = daemon.chroot(config.appchroot);
 if (chroot_res !== true) {
